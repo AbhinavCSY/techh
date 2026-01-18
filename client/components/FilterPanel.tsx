@@ -204,22 +204,38 @@ export function FilterPanel({
             <label className="text-xs font-medium text-gray-700 block mb-2">
               Time Range
             </label>
-            <Select
-              value={filters.timeFilter}
-              onValueChange={(value) =>
-                onFilterChange({ timeFilter: value as any })
-              }
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="week">This Week</SelectItem>
-                <SelectItem value="month">This Month</SelectItem>
-                <SelectItem value="quarter">This Quarter</SelectItem>
-                <SelectItem value="custom">Custom Range</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              <button
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white text-left flex items-center justify-between hover:border-gray-400"
+              >
+                <span className="text-gray-700">
+                  {filters.timeFilter === 'week' && 'This Week'}
+                  {filters.timeFilter === 'month' && 'This Month'}
+                  {filters.timeFilter === 'quarter' && 'This Quarter'}
+                  {filters.timeFilter === 'custom' && 'Custom Range'}
+                </span>
+                <ChevronDown className="w-4 h-4 text-gray-500" />
+              </button>
+              <div className="mt-2 flex flex-col gap-2">
+                {['week', 'month', 'quarter', 'custom'].map((time) => (
+                  <button
+                    key={time}
+                    onClick={() => onFilterChange({ timeFilter: time as any })}
+                    className={cn(
+                      'px-3 py-2 text-xs font-medium rounded-md transition-colors text-left',
+                      filters.timeFilter === time
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    )}
+                  >
+                    {time === 'week' && 'This Week'}
+                    {time === 'month' && 'This Month'}
+                    {time === 'quarter' && 'This Quarter'}
+                    {time === 'custom' && 'Custom Range'}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* View Type Toggle */}
