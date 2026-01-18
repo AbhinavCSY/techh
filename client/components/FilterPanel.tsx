@@ -292,22 +292,40 @@ export function FilterPanel({
             <label className="text-xs font-medium text-gray-700 block mb-2">
               Sort By
             </label>
-            <Select
-              value={filters.sortBy}
-              onValueChange={(value) =>
-                onFilterChange({ sortBy: value as any })
-              }
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="risk">Risk Level (Highest First)</SelectItem>
-                <SelectItem value="cve-count">CVE Count</SelectItem>
-                <SelectItem value="asset-count">Asset Count</SelectItem>
-                <SelectItem value="recency">Recently Added</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              <button
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white text-left flex items-center justify-between hover:border-gray-400"
+              >
+                <span className="text-gray-700">
+                  {filters.sortBy === 'risk' && 'Risk Level (Highest First)'}
+                  {filters.sortBy === 'cve-count' && 'CVE Count'}
+                  {filters.sortBy === 'asset-count' && 'Asset Count'}
+                  {filters.sortBy === 'recency' && 'Recently Added'}
+                </span>
+                <ChevronDown className="w-4 h-4 text-gray-500" />
+              </button>
+              <div className="mt-2 flex flex-col gap-2">
+                {[
+                  { value: 'risk', label: 'Risk Level (Highest First)' },
+                  { value: 'cve-count', label: 'CVE Count' },
+                  { value: 'asset-count', label: 'Asset Count' },
+                  { value: 'recency', label: 'Recently Added' },
+                ].map(({ value, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => onFilterChange({ sortBy: value as any })}
+                    className={cn(
+                      'px-3 py-2 text-xs font-medium rounded-md transition-colors text-left',
+                      filters.sortBy === value
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    )}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Export */}
