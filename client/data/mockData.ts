@@ -246,6 +246,11 @@ const techStackDatabase: TechStack[] = [
     remediations: [
       { id: 'rem-7', title: 'Update Django to 4.2', description: 'Upgrade to latest Django version', priority: 'medium', estimatedTime: '6-10 hours' },
     ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: 'no risk' },
+      packageReliability: { score: 10, riskLevel: 'no risk' },
+      behavioralIntegrity: { score: 9, riskLevel: 'no risk' },
+    },
   },
   {
     id: 'ts-7',
