@@ -275,7 +275,13 @@ interface DetailsPanelProps {
   onNavigateToIncident: (techStackId: string, cveId: string) => void;
 }
 
-function DetailsPanel({ item, isAsset, allAssets, onClose }: DetailsPanelProps) {
+function DetailsPanel({
+  item,
+  isAsset,
+  allAssets,
+  onClose,
+  onNavigateToIncident,
+}: DetailsPanelProps) {
   const getAssociatedAssets = (techStackId: string) => {
     return allAssets.filter((asset) =>
       asset.techStacks.some((ts: any) => ts.id === techStackId)
