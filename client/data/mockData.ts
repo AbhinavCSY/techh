@@ -373,6 +373,7 @@ const assetDatabase: Asset[] = [
     cveCount: 5,
     topCriticalCVE: techStackDatabase[0].cves[0],
     lastUpdated: new Date('2024-02-15'),
+    isScanned: true,
   },
   {
     id: 'asset-2',
@@ -387,6 +388,7 @@ const assetDatabase: Asset[] = [
     cveCount: 3,
     topCriticalCVE: techStackDatabase[3].cves[0],
     lastUpdated: new Date('2024-02-14'),
+    isScanned: true,
   },
   {
     id: 'asset-3',
@@ -396,6 +398,7 @@ const assetDatabase: Asset[] = [
     techStacks: [techStackDatabase[2], techStackDatabase[7], techStackDatabase[8]],
     cveCount: 0,
     lastUpdated: new Date('2024-02-13'),
+    isScanned: true,
   },
   {
     id: 'asset-4',
@@ -410,6 +413,7 @@ const assetDatabase: Asset[] = [
     cveCount: 2,
     topCriticalCVE: techStackDatabase[4].cves[0],
     lastUpdated: new Date('2024-02-12'),
+    isScanned: true,
   },
   {
     id: 'asset-5',
@@ -424,6 +428,7 @@ const assetDatabase: Asset[] = [
     cveCount: 4,
     topCriticalCVE: techStackDatabase[1].cves[0],
     lastUpdated: new Date('2024-02-11'),
+    isScanned: true,
   },
   {
     id: 'asset-6',
@@ -434,6 +439,7 @@ const assetDatabase: Asset[] = [
     cveCount: 2,
     topCriticalCVE: techStackDatabase[6].cves[0],
     lastUpdated: new Date('2024-02-10'),
+    isScanned: false,
   },
 ];
 
