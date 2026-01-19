@@ -231,6 +231,9 @@ export default function Index() {
           isAsset={grouping === 'asset'}
           allAssets={assetDatabase}
           onClose={() => setShowDetails(false)}
+          onNavigateToIncident={(techStackId, cveId) =>
+            navigate(`/incident/${techStackId}/${cveId}`)
+          }
         />
       )}
     </div>
