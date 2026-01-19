@@ -5,6 +5,20 @@ export interface CVE {
   score: number;
 }
 
+export interface VersionHistory {
+  version: string;
+  releaseDate: Date;
+  isEOL: boolean;
+}
+
+export interface Remediation {
+  id: string;
+  title: string;
+  description: string;
+  priority: 'critical' | 'high' | 'medium' | 'low';
+  estimatedTime: string;
+}
+
 export interface TechStack {
   id: string;
   name: string;
@@ -16,7 +30,11 @@ export interface TechStack {
   secureVersion?: string;
   cves: CVE[];
   riskLevel: 'critical' | 'high' | 'medium' | 'low';
+  riskScore: number;
   createdAt: Date;
+  license: string;
+  versionHistory: VersionHistory[];
+  remediations: Remediation[];
 }
 
 export interface Asset {
