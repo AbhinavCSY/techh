@@ -19,6 +19,17 @@ export interface Remediation {
   estimatedTime: string;
 }
 
+export interface PackageReliabilityIndicator {
+  score: number;
+  riskLevel: 'no risk' | 'low' | 'medium' | 'high' | 'critical';
+}
+
+export interface PackageReliabilityIndicators {
+  contributorReputation: PackageReliabilityIndicator;
+  packageReliability: PackageReliabilityIndicator;
+  behavioralIntegrity: PackageReliabilityIndicator;
+}
+
 export interface TechStack {
   id: string;
   name: string;
