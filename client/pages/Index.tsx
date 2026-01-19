@@ -89,30 +89,36 @@ export default function Index() {
             </div>
 
             {/* Key Metrics */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mt-4">
               <MetricCard
-                label="Critical Issues"
-                value={metrics.criticalCount}
+                label="Total Tech Stacks"
+                value={metrics.totalTechStacks}
+                color="blue"
+                icon="📦"
+              />
+              <MetricCard
+                label="Assets Monitored"
+                value={metrics.assetsMonitored}
+                color="purple"
+                icon="🎯"
+              />
+              <MetricCard
+                label="Critical CVEs"
+                value={metrics.criticalCVEs}
                 color="red"
                 icon="🔴"
               />
               <MetricCard
-                label="High Risk"
-                value={metrics.highCount}
+                label="EOL Technologies"
+                value={metrics.totalEOL}
                 color="orange"
-                icon="🟠"
-              />
-              <MetricCard
-                label="Total CVEs"
-                value={metrics.totalCVEs}
-                color="yellow"
                 icon="⚠️"
               />
               <MetricCard
-                label={grouping === 'tech-stack' ? 'Tech Stacks' : 'Assets'}
-                value={grouping === 'tech-stack' ? filteredTechStacks.length : filteredAssets.length}
-                color="blue"
-                icon="📦"
+                label="Assets Scanned"
+                value={metrics.assetScanned}
+                color="green"
+                icon="✓"
               />
             </div>
           </div>
