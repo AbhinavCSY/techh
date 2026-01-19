@@ -85,7 +85,18 @@ const techStackDatabase: TechStack[] = [
     secureVersion: '2.20.0',
     cves: commonCVEs['Log4j'],
     riskLevel: 'critical',
+    riskScore: 9.2,
     createdAt: new Date('2024-01-15'),
+    license: 'Apache License 2.0',
+    versionHistory: [
+      { version: '2.14.1', releaseDate: new Date('2022-01-15'), isEOL: false },
+      { version: '2.17.0', releaseDate: new Date('2021-12-28'), isEOL: false },
+      { version: '2.20.0', releaseDate: new Date('2023-10-20'), isEOL: false },
+    ],
+    remediations: [
+      { id: 'rem-1', title: 'Update to 2.20.0', description: 'Upgrade Log4j to the latest stable version', priority: 'critical', estimatedTime: '2-4 hours' },
+      { id: 'rem-2', title: 'Implement input validation', description: 'Add strict input validation for all user inputs', priority: 'high', estimatedTime: '4-8 hours' },
+    ],
   },
   {
     id: 'ts-2',
