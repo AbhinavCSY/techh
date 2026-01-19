@@ -573,3 +573,35 @@ function DetailRow({ label, value }: { label: string; value: string | number }) 
     </div>
   );
 }
+
+function DetailRowClickable({
+  label,
+  value,
+  isClickable = false,
+  onClick,
+}: {
+  label: string;
+  value: string | number;
+  isClickable?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={!isClickable}
+      className={cn(
+        'w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg transition-colors',
+        isClickable
+          ? 'hover:bg-gray-100 cursor-pointer'
+          : 'cursor-default'
+      )}
+    >
+      <span className="text-sm font-medium text-gray-600">{label}</span>
+      <span className="font-semibold text-gray-900">{value}</span>
+    </button>
+  );
+}
+
+function cn(...classes: (string | boolean | undefined)[]) {
+  return classes.filter(Boolean).join(' ');
+}
