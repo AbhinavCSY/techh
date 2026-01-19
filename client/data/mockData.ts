@@ -350,6 +350,11 @@ const techStackDatabase: TechStack[] = [
     remediations: [
       { id: 'rem-10', title: 'Upgrade MongoDB', description: 'Update MongoDB to version 7.0', priority: 'medium', estimatedTime: '4-8 hours' },
     ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 9, riskLevel: 'no risk' },
+      packageReliability: { score: 8, riskLevel: 'low' },
+      behavioralIntegrity: { score: 8, riskLevel: 'low' },
+    },
   },
 ];
 
