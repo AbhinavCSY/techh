@@ -273,6 +273,11 @@ const techStackDatabase: TechStack[] = [
     remediations: [
       { id: 'rem-8', title: 'Update Express.js', description: 'Update to Express 4.18.2', priority: 'high', estimatedTime: '2-3 hours' },
     ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: 'no risk' },
+      packageReliability: { score: 8, riskLevel: 'low' },
+      behavioralIntegrity: { score: 8, riskLevel: 'low' },
+    },
   },
   {
     id: 'ts-8',
