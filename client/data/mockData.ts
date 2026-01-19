@@ -110,6 +110,11 @@ const techStackDatabase: TechStack[] = [
       { id: 'rem-1', title: 'Update to 2.20.0', description: 'Upgrade Log4j to the latest stable version', priority: 'critical', estimatedTime: '2-4 hours' },
       { id: 'rem-2', title: 'Implement input validation', description: 'Add strict input validation for all user inputs', priority: 'high', estimatedTime: '4-8 hours' },
     ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: 'no risk' },
+      packageReliability: { score: 7, riskLevel: 'low' },
+      behavioralIntegrity: { score: 8, riskLevel: 'low' },
+    },
   },
   {
     id: 'ts-2',
