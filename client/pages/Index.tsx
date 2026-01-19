@@ -57,16 +57,15 @@ export default function Index() {
   };
 
   const getMetrics = () => {
-    const criticalCount = (grouping === 'tech-stack' ? filteredTechStacks : filteredAssets).filter(
-      (item: any) => item.riskLevel === 'critical'
-    ).length;
-    const highCount = (grouping === 'tech-stack' ? filteredTechStacks : filteredAssets).filter(
-      (item: any) => item.riskLevel === 'high'
-    ).length;
-    const totalCVEs = filteredTechStacks.reduce((acc, ts) => acc + ts.cves.length, 0);
-    const totalAssets = Math.max(...assetDatabase.map(a => a.techStacks.length));
+    const totalTechStacks = techStackDatabase.length;
+    const assetsMonitored = assetDatabase.length;
+    const criticalCVEs = techStackDatabase.reduce((acc, ts) =>
+      acc + ts.cves.filter(cve => cve.severity === 'critical').length, 0
+    );
+    const totalEOL = techStackDatabase.filter(ts => ts.isEOL).length;
+    const assetScanned = assetDatabase.filter(a => a.isScanned).length;
 
-    return { criticalCount, highCount, totalCVEs, totalAssets };
+    return { totalTechStacks, assetsMonitored, criticalCVEs, totalEOL, assetScanned };
   };
 
   const metrics = getMetrics();
