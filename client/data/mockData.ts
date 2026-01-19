@@ -164,6 +164,11 @@ const techStackDatabase: TechStack[] = [
     remediations: [
       { id: 'rem-4', title: 'Minor dependency update', description: 'Update some peer dependencies', priority: 'low', estimatedTime: '1-2 hours' },
     ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: 'no risk' },
+      packageReliability: { score: 10, riskLevel: 'no risk' },
+      behavioralIntegrity: { score: 10, riskLevel: 'no risk' },
+    },
   },
   {
     id: 'ts-4',
