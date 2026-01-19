@@ -219,6 +219,11 @@ const techStackDatabase: TechStack[] = [
     remediations: [
       { id: 'rem-6', title: 'Upgrade PostgreSQL to 15.3', description: 'Migrate database from EOL 13.10 to 15.3', priority: 'critical', estimatedTime: '12-20 hours' },
     ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: 'no risk' },
+      packageReliability: { score: 9, riskLevel: 'no risk' },
+      behavioralIntegrity: { score: 9, riskLevel: 'no risk' },
+    },
   },
   {
     id: 'ts-6',
