@@ -46,6 +46,7 @@ export interface TechStack {
   license: string;
   versionHistory: VersionHistory[];
   remediations: Remediation[];
+  reliabilityIndicators: PackageReliabilityIndicators;
 }
 
 export interface Asset {
