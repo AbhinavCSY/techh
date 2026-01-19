@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useFilters, filterTechStacks, filterAssets, sortTechStacks, sortAssets } from '@/hooks/useFilters';
 import { techStackDatabase, assetDatabase } from '@/data/mockData';
 import { FilterPanel } from '@/components/FilterPanel';
@@ -8,7 +9,8 @@ import { TechStackTableView } from '@/components/TechStackTableView';
 import { AssetTableView } from '@/components/AssetTableView';
 import { exportAsCSV, exportAsJSON, exportAsPDF } from '@/lib/exportUtils';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, AlertTriangle } from 'lucide-react';
+import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 export default function Index() {
   const {
