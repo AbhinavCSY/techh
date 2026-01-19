@@ -420,6 +420,11 @@ function DetailsPanel({
                   )}
                 </div>
 
+                {/* Package Reliability Indicators */}
+                {item.reliabilityIndicators && (
+                  <PackageReliabilityCard indicators={item.reliabilityIndicators} compact={true} />
+                )}
+
                 {/* Version History */}
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-3">
