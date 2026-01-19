@@ -300,6 +300,11 @@ const techStackDatabase: TechStack[] = [
     remediations: [
       { id: 'rem-9', title: 'Update Docker', description: 'Update Docker daemon to 25.0', priority: 'low', estimatedTime: '1-2 hours' },
     ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: 'no risk' },
+      packageReliability: { score: 10, riskLevel: 'no risk' },
+      behavioralIntegrity: { score: 10, riskLevel: 'no risk' },
+    },
   },
   {
     id: 'ts-9',
