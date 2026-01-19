@@ -191,6 +191,11 @@ const techStackDatabase: TechStack[] = [
     remediations: [
       { id: 'rem-5', title: 'Upgrade to Node 20', description: 'Update Node.js to latest LTS', priority: 'high', estimatedTime: '4-6 hours' },
     ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: 'no risk' },
+      packageReliability: { score: 8, riskLevel: 'low' },
+      behavioralIntegrity: { score: 9, riskLevel: 'no risk' },
+    },
   },
   {
     id: 'ts-5',
