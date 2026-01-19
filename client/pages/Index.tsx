@@ -7,6 +7,7 @@ import { TechStackCardView } from '@/components/TechStackCardView';
 import { AssetCardView } from '@/components/AssetCardView';
 import { TechStackTableView } from '@/components/TechStackTableView';
 import { AssetTableView } from '@/components/AssetTableView';
+import { PackageReliabilityCard } from '@/components/PackageReliabilityCard';
 import { exportAsCSV, exportAsJSON, exportAsPDF } from '@/lib/exportUtils';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from 'lucide-react';
