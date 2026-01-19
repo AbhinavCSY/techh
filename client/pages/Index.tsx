@@ -261,6 +261,8 @@ function MetricCard({
     orange: 'bg-orange-50 border-orange-200 text-orange-900',
     yellow: 'bg-yellow-50 border-yellow-200 text-yellow-900',
     blue: 'bg-blue-50 border-blue-200 text-blue-900',
+    purple: 'bg-purple-50 border-purple-200 text-purple-900',
+    green: 'bg-green-50 border-green-200 text-green-900',
   };
 
   return (
