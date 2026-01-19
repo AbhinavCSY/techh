@@ -323,6 +323,11 @@ const techStackDatabase: TechStack[] = [
       { version: '1.27.0', releaseDate: new Date('2023-08-23'), isEOL: false },
     ],
     remediations: [],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: 'no risk' },
+      packageReliability: { score: 10, riskLevel: 'no risk' },
+      behavioralIntegrity: { score: 10, riskLevel: 'no risk' },
+    },
   },
   {
     id: 'ts-10',
