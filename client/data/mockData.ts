@@ -138,6 +138,11 @@ const techStackDatabase: TechStack[] = [
     remediations: [
       { id: 'rem-3', title: 'Upgrade to Spring 6.1', description: 'Migrate from EOL version 5.3 to current 6.1', priority: 'critical', estimatedTime: '8-16 hours' },
     ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: 'no risk' },
+      packageReliability: { score: 9, riskLevel: 'no risk' },
+      behavioralIntegrity: { score: 9, riskLevel: 'no risk' },
+    },
   },
   {
     id: 'ts-3',
