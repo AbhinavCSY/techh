@@ -272,6 +272,7 @@ interface DetailsPanelProps {
   isAsset: boolean;
   allAssets: any[];
   onClose: () => void;
+  onNavigateToIncident: (techStackId: string, cveId: string) => void;
 }
 
 function DetailsPanel({ item, isAsset, allAssets, onClose }: DetailsPanelProps) {
