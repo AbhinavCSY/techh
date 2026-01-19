@@ -29,12 +29,17 @@ const App = () => (
   </QueryClientProvider>
 );
 
-let root: Root | null = null;
-const rootElement = document.getElementById("root");
-
-if (rootElement) {
-  if (!root) {
-    root = createRoot(rootElement);
+// Store root in window to persist across HMR
+declare global {
+  interface Window {
+    __APP_ROOT__?: Root;
   }
-  root.render(<App />);
+}
+
+const rootElement = document.getElementById("root");
+if (rootElement) {
+  if (!window.__APP_ROOT__) {
+    window.__APP_ROOT__ = createRoot(rootElement);
+  }
+  window.__APP_ROOT__.render(<App />);
 }
