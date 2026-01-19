@@ -13,6 +13,7 @@ import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 export default function Index() {
+  const navigate = useNavigate();
   const {
     viewType,
     setViewType,
