@@ -58,6 +58,7 @@ export interface Asset {
   cveCount: number;
   topCriticalCVE?: CVE;
   lastUpdated: Date;
+  isScanned: boolean;
 }
 
 const commonCVEs: Record<string, CVE[]> = {
