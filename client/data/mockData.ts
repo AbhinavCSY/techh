@@ -109,7 +109,17 @@ const techStackDatabase: TechStack[] = [
     secureVersion: '6.1.0',
     cves: commonCVEs['Spring Framework'],
     riskLevel: 'critical',
+    riskScore: 9.0,
     createdAt: new Date('2024-01-10'),
+    license: 'Apache License 2.0',
+    versionHistory: [
+      { version: '5.3.15', releaseDate: new Date('2022-12-01'), isEOL: true },
+      { version: '6.0.0', releaseDate: new Date('2023-09-30'), isEOL: false },
+      { version: '6.1.0', releaseDate: new Date('2024-01-01'), isEOL: false },
+    ],
+    remediations: [
+      { id: 'rem-3', title: 'Upgrade to Spring 6.1', description: 'Migrate from EOL version 5.3 to current 6.1', priority: 'critical', estimatedTime: '8-16 hours' },
+    ],
   },
   {
     id: 'ts-3',
