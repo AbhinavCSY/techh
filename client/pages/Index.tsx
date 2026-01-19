@@ -381,26 +381,96 @@ function DetailsPanel({
                   </div>
                 </div>
 
+                {/* Basic Information */}
                 <div className="space-y-3">
-                  <DetailRow label="Type" value={item.type} />
-                  <DetailRow label="Risk Level" value={item.riskLevel} />
-                  <DetailRow label="CVEs" value={item.cves.length} />
-                  <DetailRow label="EOL Status" value={item.isEOL ? 'Yes' : 'No'} />
+                  <DetailRowClickable
+                    label="Type"
+                    value={item.type}
+                    isClickable={false}
+                  />
+                  <DetailRowClickable
+                    label="Risk Score"
+                    value={`${item.riskScore}/10 (${item.riskLevel.toUpperCase()})`}
+                    isClickable={false}
+                  />
+                  <DetailRowClickable
+                    label="License"
+                    value={item.license}
+                    isClickable={false}
+                  />
+                  <DetailRowClickable
+                    label="EOL Status"
+                    value={item.isEOL ? '⚠️ End of Life' : '✓ Active'}
+                    isClickable={false}
+                  />
                   {item.secureVersion && (
-                    <DetailRow label="Secure Version" value={`v${item.secureVersion}`} />
+                    <DetailRowClickable
+                      label="Secure Version"
+                      value={`v${item.secureVersion}`}
+                      isClickable={false}
+                    />
                   )}
                 </div>
 
+                {/* Version History */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">
+                    Version History
+                  </h4>
+                  <div className="space-y-2">
+                    {item.versionHistory
+                      .sort(
+                        (a: any, b: any) =>
+                          new Date(b.releaseDate).getTime() -
+                          new Date(a.releaseDate).getTime()
+                      )
+                      .map((version: any, idx: number) => (
+                        <div
+                          key={idx}
+                          className={cn(
+                            'p-3 rounded-lg border text-xs',
+                            version.isEOL
+                              ? 'bg-red-50 border-red-200'
+                              : idx === 0
+                              ? 'bg-blue-50 border-blue-200 ring-1 ring-blue-200'
+                              : 'bg-gray-50 border-gray-200'
+                          )}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold">v{version.version}</span>
+                            <span className="text-gray-500">
+                              {new Date(version.releaseDate).toLocaleDateString()}
+                            </span>
+                          </div>
+                          {idx === 0 && (
+                            <Badge className="mt-2 bg-blue-100 text-blue-800 text-xs">
+                              Current
+                            </Badge>
+                          )}
+                          {version.isEOL && (
+                            <Badge className="mt-2 bg-red-100 text-red-800 text-xs">
+                              EOL
+                            </Badge>
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+
+                {/* Vulnerabilities/Incidents */}
                 {item.cves.length > 0 && (
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-3">
-                      Vulnerabilities
+                      Vulnerabilities/Incidents ({item.cves.length})
                     </h4>
-                    <div className="space-y-2">
+                    <div className="space-y-2 max-h-64 overflow-y-auto">
                       {item.cves.map((cve: any) => (
-                        <div
+                        <button
                           key={cve.id}
-                          className="p-3 bg-red-50 rounded-lg border border-red-200"
+                          onClick={() =>
+                            onNavigateToIncident(item.id, cve.id)
+                          }
+                          className="w-full text-left p-3 bg-red-50 rounded-lg border border-red-200 hover:bg-red-100 transition-colors cursor-pointer"
                         >
                           <div className="flex items-start gap-2">
                             <span className="text-lg">🔴</span>
@@ -412,35 +482,80 @@ function DetailsPanel({
                                 {cve.id} • {cve.severity.toUpperCase()}
                               </p>
                               <p className="text-xs text-red-600 mt-1">
-                                CVSS Score: {cve.score}
+                                CVSS: {cve.score.toFixed(1)} • Click for details →
                               </p>
                             </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Associated Assets */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">
+                    Used by {getAssociatedAssets(item.id).length} Asset
+                    {getAssociatedAssets(item.id).length !== 1 ? 's' : ''}
+                  </h4>
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {getAssociatedAssets(item.id).map((asset) => (
+                      <div
+                        key={asset.id}
+                        className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+                      >
+                        <p className="font-semibold text-sm">{asset.name}</p>
+                        <p className="text-xs text-gray-600">
+                          {asset.type.replace('-', ' ')} • Risk:{' '}
+                          <span className="font-semibold">{asset.riskLevel}</span>
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Remediations */}
+                {item.remediations && item.remediations.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">
+                      Recommended Remediations
+                    </h4>
+                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                      {item.remediations.map((rem: any) => (
+                        <div
+                          key={rem.id}
+                          className={cn(
+                            'p-3 rounded-lg border text-xs',
+                            rem.priority === 'critical'
+                              ? 'bg-red-50 border-red-200'
+                              : rem.priority === 'high'
+                              ? 'bg-orange-50 border-orange-200'
+                              : 'bg-blue-50 border-blue-200'
+                          )}
+                        >
+                          <p className="font-semibold">{rem.title}</p>
+                          <p className="text-gray-600 mt-1">{rem.description}</p>
+                          <div className="flex items-center justify-between mt-2">
+                            <Badge
+                              className={cn(
+                                rem.priority === 'critical'
+                                  ? 'bg-red-100 text-red-800'
+                                  : rem.priority === 'high'
+                                  ? 'bg-orange-100 text-orange-800'
+                                  : 'bg-blue-100 text-blue-800'
+                              )}
+                            >
+                              {rem.priority}
+                            </Badge>
+                            <span className="text-xs text-gray-500">
+                              {rem.estimatedTime}
+                            </span>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
-
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">
-                    Used by {getAssociatedAssets(item.id).length} Asset
-                    {getAssociatedAssets(item.id).length !== 1 ? 's' : ''}
-                  </h4>
-                  <div className="space-y-2 max-h-64 overflow-y-auto">
-                    {getAssociatedAssets(item.id).map((asset) => (
-                      <div
-                        key={asset.id}
-                        className="p-3 bg-gray-50 rounded-lg border border-gray-200"
-                      >
-                        <p className="font-semibold text-sm">{asset.name}</p>
-                        <p className="text-xs text-gray-600">
-                          {asset.type.replace('-', ' ')} • Risk: {asset.riskLevel}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </>
             )}
           </div>
