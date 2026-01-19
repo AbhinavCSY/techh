@@ -131,7 +131,16 @@ const techStackDatabase: TechStack[] = [
     isUpgradable: false,
     cves: commonCVEs['React'],
     riskLevel: 'low',
+    riskScore: 3.5,
     createdAt: new Date('2024-02-01'),
+    license: 'MIT',
+    versionHistory: [
+      { version: '18.2.0', releaseDate: new Date('2023-09-15'), isEOL: false },
+      { version: '18.3.0', releaseDate: new Date('2024-01-10'), isEOL: false },
+    ],
+    remediations: [
+      { id: 'rem-4', title: 'Minor dependency update', description: 'Update some peer dependencies', priority: 'low', estimatedTime: '1-2 hours' },
+    ],
   },
   {
     id: 'ts-4',
@@ -144,7 +153,16 @@ const techStackDatabase: TechStack[] = [
     secureVersion: '20.10.0',
     cves: commonCVEs['Node.js'],
     riskLevel: 'high',
+    riskScore: 7.8,
     createdAt: new Date('2023-12-20'),
+    license: 'MIT',
+    versionHistory: [
+      { version: '18.12.0', releaseDate: new Date('2023-08-15'), isEOL: false },
+      { version: '20.10.0', releaseDate: new Date('2024-01-20'), isEOL: false },
+    ],
+    remediations: [
+      { id: 'rem-5', title: 'Upgrade to Node 20', description: 'Update Node.js to latest LTS', priority: 'high', estimatedTime: '4-6 hours' },
+    ],
   },
   {
     id: 'ts-5',
@@ -157,7 +175,17 @@ const techStackDatabase: TechStack[] = [
     secureVersion: '15.3',
     cves: commonCVEs['PostgreSQL'],
     riskLevel: 'high',
+    riskScore: 7.5,
     createdAt: new Date('2024-01-05'),
+    license: 'PostgreSQL License',
+    versionHistory: [
+      { version: '13.10', releaseDate: new Date('2023-07-01'), isEOL: true },
+      { version: '14.8', releaseDate: new Date('2023-11-15'), isEOL: false },
+      { version: '15.3', releaseDate: new Date('2024-02-01'), isEOL: false },
+    ],
+    remediations: [
+      { id: 'rem-6', title: 'Upgrade PostgreSQL to 15.3', description: 'Migrate database from EOL 13.10 to 15.3', priority: 'critical', estimatedTime: '12-20 hours' },
+    ],
   },
   {
     id: 'ts-6',
@@ -170,7 +198,16 @@ const techStackDatabase: TechStack[] = [
     secureVersion: '4.2.0',
     cves: commonCVEs['Django'],
     riskLevel: 'medium',
+    riskScore: 5.2,
     createdAt: new Date('2024-01-20'),
+    license: 'BSD License',
+    versionHistory: [
+      { version: '3.2.18', releaseDate: new Date('2023-12-01'), isEOL: false },
+      { version: '4.2.0', releaseDate: new Date('2024-02-03'), isEOL: false },
+    ],
+    remediations: [
+      { id: 'rem-7', title: 'Update Django to 4.2', description: 'Upgrade to latest Django version', priority: 'medium', estimatedTime: '6-10 hours' },
+    ],
   },
   {
     id: 'ts-7',
@@ -183,7 +220,16 @@ const techStackDatabase: TechStack[] = [
     secureVersion: '4.18.2',
     cves: commonCVEs['Express.js'],
     riskLevel: 'high',
+    riskScore: 7.5,
     createdAt: new Date('2024-01-25'),
+    license: 'MIT',
+    versionHistory: [
+      { version: '4.17.1', releaseDate: new Date('2023-09-01'), isEOL: false },
+      { version: '4.18.2', releaseDate: new Date('2024-01-15'), isEOL: false },
+    ],
+    remediations: [
+      { id: 'rem-8', title: 'Update Express.js', description: 'Update to Express 4.18.2', priority: 'high', estimatedTime: '2-3 hours' },
+    ],
   },
   {
     id: 'ts-8',
@@ -196,7 +242,16 @@ const techStackDatabase: TechStack[] = [
     secureVersion: '25.0.0',
     cves: [],
     riskLevel: 'low',
+    riskScore: 2.1,
     createdAt: new Date('2024-02-05'),
+    license: 'Apache License 2.0',
+    versionHistory: [
+      { version: '20.10.12', releaseDate: new Date('2023-10-01'), isEOL: false },
+      { version: '25.0.0', releaseDate: new Date('2024-02-06'), isEOL: false },
+    ],
+    remediations: [
+      { id: 'rem-9', title: 'Update Docker', description: 'Update Docker daemon to 25.0', priority: 'low', estimatedTime: '1-2 hours' },
+    ],
   },
   {
     id: 'ts-9',
@@ -208,7 +263,13 @@ const techStackDatabase: TechStack[] = [
     isUpgradable: false,
     cves: [],
     riskLevel: 'low',
+    riskScore: 1.8,
     createdAt: new Date('2024-02-10'),
+    license: 'Apache License 2.0',
+    versionHistory: [
+      { version: '1.27.0', releaseDate: new Date('2023-08-23'), isEOL: false },
+    ],
+    remediations: [],
   },
   {
     id: 'ts-10',
@@ -221,7 +282,16 @@ const techStackDatabase: TechStack[] = [
     secureVersion: '7.0.0',
     cves: [],
     riskLevel: 'medium',
+    riskScore: 4.2,
     createdAt: new Date('2024-01-30'),
+    license: 'SSPL/Community',
+    versionHistory: [
+      { version: '5.0.10', releaseDate: new Date('2023-12-01'), isEOL: false },
+      { version: '7.0.0', releaseDate: new Date('2024-02-01'), isEOL: false },
+    ],
+    remediations: [
+      { id: 'rem-10', title: 'Upgrade MongoDB', description: 'Update MongoDB to version 7.0', priority: 'medium', estimatedTime: '4-8 hours' },
+    ],
   },
 ];
 
