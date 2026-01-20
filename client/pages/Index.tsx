@@ -484,36 +484,61 @@ function DetailsPanel({
                   </div>
                 </div>
 
+                {/* CVE Scanning Section */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-lg">🔍</span>
+                    <h4 className="font-semibold text-blue-900">CVE Vulnerability Scan</h4>
+                  </div>
+                  <p className="text-sm text-blue-800 mb-4">
+                    Scan associated assets for known vulnerabilities in this package
+                  </p>
+                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                    <span>⚡</span>
+                    Scan {getAssociatedAssets(item.id).length} Associated Assets
+                  </button>
+                </div>
+
                 {/* Vulnerabilities/Incidents */}
                 {item.cves.length > 0 && (
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-3">
-                      Vulnerabilities/Incidents ({item.cves.length})
+                      Known Vulnerabilities ({item.cves.length})
                     </h4>
                     <div className="space-y-2 max-h-64 overflow-y-auto">
                       {item.cves.map((cve: any) => (
-                        <button
+                        <div
                           key={cve.id}
-                          onClick={() =>
-                            onNavigateToIncident(item.id, cve.id)
-                          }
-                          className="w-full text-left p-3 bg-red-50 rounded-lg border border-red-200 hover:bg-red-100 transition-colors cursor-pointer"
+                          className="p-3 bg-red-50 rounded-lg border border-red-200 hover:shadow-md transition-shadow"
                         >
                           <div className="flex items-start gap-2">
                             <span className="text-lg">🔴</span>
                             <div className="flex-1">
-                              <p className="font-semibold text-sm text-red-900">
-                                {cve.title}
-                              </p>
-                              <p className="text-xs text-red-700 mt-1">
-                                {cve.id} • {cve.severity.toUpperCase()}
-                              </p>
-                              <p className="text-xs text-red-600 mt-1">
-                                CVSS: {cve.score.toFixed(1)} • Click for details →
-                              </p>
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1">
+                                  <p className="font-semibold text-sm text-red-900">
+                                    {cve.title}
+                                  </p>
+                                  <p className="text-xs text-red-700 mt-1">
+                                    {cve.id} • {cve.severity.toUpperCase()}
+                                  </p>
+                                  <p className="text-xs text-red-600 mt-1">
+                                    CVSS: {cve.score.toFixed(1)}
+                                  </p>
+                                </div>
+                                <button
+                                  onClick={() =>
+                                    onNavigateToIncident(item.id, cve.id)
+                                  }
+                                  className="flex-shrink-0 p-2 rounded-lg bg-white hover:bg-red-100 transition-colors border border-red-200 text-red-600 hover:text-red-700"
+                                  title="View CVE Details"
+                                >
+                                  ℹ️
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </button>
+                        </div>
                       ))}
                     </div>
                   </div>
