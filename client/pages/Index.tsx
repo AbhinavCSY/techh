@@ -304,10 +304,28 @@ function DetailsPanel({
   onClose,
   onNavigateToIncident,
 }: DetailsPanelProps) {
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanResults, setScanResults] = useState<any>(null);
+
   const getAssociatedAssets = (techStackId: string) => {
     return allAssets.filter((asset) =>
       asset.techStacks.some((ts: any) => ts.id === techStackId)
     );
+  };
+
+  const handleScanAssets = async (techStackId: string) => {
+    setIsScanning(true);
+    // Simulate scanning delay
+    setTimeout(() => {
+      const associatedAssets = getAssociatedAssets(techStackId);
+      setScanResults({
+        techStackId,
+        assetsScanned: associatedAssets.length,
+        vulnerabilitiesFound: associatedAssets.reduce((acc, a) => acc + a.cveCount, 0),
+        timestamp: new Date(),
+      });
+      setIsScanning(false);
+    }, 2000);
   };
 
   return (
