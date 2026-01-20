@@ -511,10 +511,45 @@ function DetailsPanel({
                   <p className="text-sm text-blue-800 mb-4">
                     Scan associated assets for known vulnerabilities in this package
                   </p>
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
-                    <span>⚡</span>
-                    Scan {getAssociatedAssets(item.id).length} Associated Assets
+                  <button
+                    onClick={() => handleScanAssets(item.id)}
+                    disabled={isScanning}
+                    className={cn(
+                      'w-full font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2',
+                      isScanning
+                        ? 'bg-blue-400 text-white cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    )}
+                  >
+                    <span>{isScanning ? '⏳' : '⚡'}</span>
+                    {isScanning
+                      ? 'Scanning...'
+                      : `Scan ${getAssociatedAssets(item.id).length} Associated Assets`}
                   </button>
+
+                  {/* Scan Results */}
+                  {scanResults && scanResults.techStackId === item.id && (
+                    <div className="mt-4 p-3 bg-white border border-blue-300 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">✓</span>
+                        <p className="font-semibold text-blue-900 text-sm">Scan Complete</p>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <p className="text-blue-800">
+                          <span className="font-medium">Assets Scanned:</span> {scanResults.assetsScanned}
+                        </p>
+                        <p className="text-blue-800">
+                          <span className="font-medium">Vulnerabilities Found:</span>{' '}
+                          <span className="font-semibold text-red-600">
+                            {scanResults.vulnerabilitiesFound}
+                          </span>
+                        </p>
+                        <p className="text-gray-600 text-xs">
+                          {scanResults.timestamp.toLocaleTimeString()}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Vulnerabilities/Incidents */}
