@@ -487,10 +487,12 @@ const assetDatabase: Asset[] = [
     techStacks: [
       techStackDatabase[0],
       techStackDatabase[1],
+      techStackDatabase[11],
+      techStackDatabase[13],
       techStackDatabase[4],
       techStackDatabase[6],
     ],
-    cveCount: 5,
+    cveCount: 8,
     topCriticalCVE: techStackDatabase[0].cves[0],
     lastUpdated: new Date('2024-02-15'),
     isScanned: true,
