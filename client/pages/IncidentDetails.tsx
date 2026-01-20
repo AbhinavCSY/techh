@@ -69,8 +69,19 @@ export default function IncidentDetails() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      <div className="border-b border-gray-200 bg-white shadow-sm">
+      <div className="border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-6">
+          {/* Branding Bar */}
+          <div className="mb-4 flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-blue-600">BeVigil</span>
+              <span className="text-gray-400">×</span>
+              <span className="text-lg font-bold text-purple-600">CloudSEK</span>
+            </div>
+            <div className="h-4 w-px bg-gray-300"></div>
+            <p className="text-xs text-gray-600 font-medium">CVE Details</p>
+          </div>
+
           <Button
             variant="outline"
             onClick={() => navigate('/')}
