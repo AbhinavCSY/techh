@@ -320,14 +320,38 @@ function DetailsPanel({
     // Simulate scanning delay
     setTimeout(() => {
       const associatedAssets = getAssociatedAssets(techStackId);
+
+      // Newly published CVEs that appear in scan results but not in known vulnerabilities
+      const newCVEs = [
+        {
+          id: 'CVE-2024-0001',
+          severity: 'high',
+          title: 'New Vulnerability in Package',
+          score: 8.5,
+          discovered: true,
+          discoveredDate: new Date(),
+        },
+        {
+          id: 'CVE-2024-0002',
+          severity: 'medium',
+          title: 'Potential Security Issue',
+          score: 6.2,
+          discovered: true,
+          discoveredDate: new Date(),
+        },
+      ];
+
+      setNewlyDiscoveredCVEs(newCVEs);
       setScanResults({
         techStackId,
         assetsScanned: associatedAssets.length,
-        vulnerabilitiesFound: associatedAssets.reduce((acc, a) => acc + a.cveCount, 0),
+        knownVulnerabilities: item.cves.length,
+        newlyDiscovered: newCVEs.length,
+        totalVulnerabilities: item.cves.length + newCVEs.length,
         timestamp: new Date(),
       });
       setIsScanning(false);
-    }, 2000);
+    }, 2500);
   };
 
   const handleScanCVE = async (cveId: string, techStackId: string) => {
