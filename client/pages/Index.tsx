@@ -306,7 +306,8 @@ function DetailsPanel({
 }: DetailsPanelProps) {
   const [isScanning, setIsScanning] = useState(false);
   const [scanResults, setScanResults] = useState<any>(null);
-  const [scannedCVEs, setScannedCVEs] = useState<Record<string, any>>({})
+  const [scannedCVEs, setScannedCVEs] = useState<Record<string, any>>({});
+  const [newlyDiscoveredCVEs, setNewlyDiscoveredCVEs] = useState<any[]>([]);
 
   const getAssociatedAssets = (techStackId: string) => {
     return allAssets.filter((asset) =>
