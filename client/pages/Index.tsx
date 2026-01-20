@@ -577,47 +577,129 @@ function DetailsPanel({
                   )}
                 </div>
 
-                {/* Vulnerabilities/Incidents */}
+                {/* Known Vulnerabilities */}
                 {item.cves.length > 0 && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">
+                    <h4 className="font-semibold text-gray-900 mb-4">
                       Known Vulnerabilities ({item.cves.length})
                     </h4>
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
-                      {item.cves.map((cve: any) => (
-                        <div
-                          key={cve.id}
-                          className="p-3 bg-red-50 rounded-lg border border-red-200 hover:shadow-md transition-shadow"
-                        >
-                          <div className="flex items-start gap-2">
-                            <span className="text-lg">🔴</span>
-                            <div className="flex-1">
-                              <div className="flex items-start justify-between gap-2">
-                                <div className="flex-1">
-                                  <p className="font-semibold text-sm text-red-900">
-                                    {cve.title}
-                                  </p>
-                                  <p className="text-xs text-red-700 mt-1">
-                                    {cve.id} • {cve.severity.toUpperCase()}
-                                  </p>
-                                  <p className="text-xs text-red-600 mt-1">
-                                    CVSS: {cve.score.toFixed(1)}
-                                  </p>
-                                </div>
-                                <button
-                                  onClick={() =>
-                                    onNavigateToIncident(item.id, cve.id)
-                                  }
-                                  className="flex-shrink-0 p-2 rounded-lg bg-white hover:bg-red-100 transition-colors border border-red-200 text-red-600 hover:text-red-700"
-                                  title="View CVE Details"
-                                >
-                                  ℹ️
-                                </button>
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {item.cves.map((cve: any) => {
+                        const cveResults = scannedCVEs[cve.id];
+                        const isScanning = cveResults?.isScanning;
+                        return (
+                          <div
+                            key={cve.id}
+                            className="border border-red-200 rounded-lg p-4 bg-red-50 hover:shadow-md transition-shadow"
+                          >
+                            {/* CVE Header */}
+                            <div className="flex items-start gap-3 mb-3">
+                              <span className="text-2xl flex-shrink-0">
+                                {cve.severity === 'critical'
+                                  ? '🔴'
+                                  : cve.severity === 'high'
+                                  ? '🟠'
+                                  : cve.severity === 'medium'
+                                  ? '🟡'
+                                  : '🟢'}
+                              </span>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-sm text-red-900 break-words">
+                                  {cve.title}
+                                </p>
+                                <p className="text-xs text-red-700 mt-1">
+                                  <span className="font-mono">{cve.id}</span>
+                                </p>
                               </div>
                             </div>
+
+                            {/* CVE Details */}
+                            <div className="grid grid-cols-3 gap-2 mb-3 text-xs">
+                              <div className="bg-white rounded p-2 border border-red-200">
+                                <p className="text-gray-600 font-medium">
+                                  Severity
+                                </p>
+                                <p className="text-red-900 font-bold">
+                                  {cve.severity.toUpperCase()}
+                                </p>
+                              </div>
+                              <div className="bg-white rounded p-2 border border-red-200">
+                                <p className="text-gray-600 font-medium">
+                                  CVSS Score
+                                </p>
+                                <p className="text-red-900 font-bold">
+                                  {cve.score.toFixed(1)}/10
+                                </p>
+                              </div>
+                              <div className="bg-white rounded p-2 border border-red-200">
+                                <p className="text-gray-600 font-medium">
+                                  Status
+                                </p>
+                                <p className="text-red-900 font-bold">
+                                  Active
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex gap-2 mb-3">
+                              <button
+                                onClick={() =>
+                                  handleScanCVE(cve.id, item.id)
+                                }
+                                disabled={isScanning}
+                                className={cn(
+                                  'flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-2',
+                                  isScanning
+                                    ? 'bg-blue-400 text-white cursor-not-allowed'
+                                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                )}
+                              >
+                                <span>{isScanning ? '⏳' : '🔍'}</span>
+                                {isScanning ? 'Scanning...' : 'Scan Assets'}
+                              </button>
+                              <button
+                                onClick={() =>
+                                  onNavigateToIncident(item.id, cve.id)
+                                }
+                                className="flex-1 py-2 px-3 rounded-lg text-xs font-medium bg-white text-red-700 border border-red-200 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                              >
+                                <span>ℹ️</span>
+                                View Details
+                              </button>
+                            </div>
+
+                            {/* Scan Results */}
+                            {cveResults && !isScanning && (
+                              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p className="text-xs font-semibold text-blue-900 mb-2">
+                                  ✓ Scan Results
+                                </p>
+                                <div className="grid grid-cols-2 gap-2 text-xs">
+                                  <div>
+                                    <p className="text-blue-700">
+                                      <span className="font-medium">
+                                        Assets Scanned:
+                                      </span>{' '}
+                                      {cveResults.assetsScanned}
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <p className="text-blue-700">
+                                      <span className="font-medium">
+                                        Affected:
+                                      </span>{' '}
+                                      <span className="text-red-600 font-semibold">
+                                        {cveResults.affectedAssets}
+                                      </span>
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}
