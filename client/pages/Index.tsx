@@ -329,6 +329,30 @@ function DetailsPanel({
     }, 2000);
   };
 
+  const handleScanCVE = async (cveId: string, techStackId: string) => {
+    // Simulate scanning individual CVE
+    setScannedCVEs((prev) => ({
+      ...prev,
+      [cveId]: { isScanning: true },
+    }));
+
+    setTimeout(() => {
+      const associatedAssets = getAssociatedAssets(techStackId);
+      const affectedAssets = associatedAssets.filter(
+        (asset) => asset.cveCount > 0
+      );
+      setScannedCVEs((prev) => ({
+        ...prev,
+        [cveId]: {
+          isScanning: false,
+          assetsScanned: associatedAssets.length,
+          affectedAssets: affectedAssets.length,
+          timestamp: new Date(),
+        },
+      }));
+    }, 1500);
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 overflow-hidden"
