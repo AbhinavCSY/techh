@@ -116,9 +116,6 @@ export function MainNav() {
           ))}
         </nav>
       </aside>
-
-      {/* Main Content Wrapper - adds margin for sidebar */}
-      <div className="lg:ml-60" />
     </>
   );
 }
