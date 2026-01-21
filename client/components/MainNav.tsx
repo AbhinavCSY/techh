@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ChevronDown, Menu, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ChevronDown, Menu, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface NavSection {
   id: string;
@@ -12,12 +12,12 @@ interface NavSection {
 }
 
 const navSections: NavSection[] = [
-  { id: 'home', label: 'Dashboard', icon: '📊', path: '/' },
-  { id: 'events', label: 'Events', icon: '📋', path: '/events', badge: 15 },
-  { id: 'webapps', label: 'Web Applications', icon: '🌐', path: '/web-apps' },
-  { id: 'watchwords', label: 'Watchwords', icon: '👁️', path: '/watchwords' },
-  { id: 'exposure', label: 'Exposure', icon: '⚠️', path: '/exposure' },
-  { id: 'assets', label: 'Asset Configuration', icon: '⚙️', path: '/assets' },
+  { id: "home", label: "Dashboard", icon: "📊", path: "/" },
+  { id: "events", label: "Events", icon: "📋", path: "/events", badge: 15 },
+  { id: "webapps", label: "Web Applications", icon: "🌐", path: "/web-apps" },
+  { id: "watchwords", label: "Watchwords", icon: "👁️", path: "/watchwords" },
+  { id: "exposure", label: "Exposure", icon: "⚠️", path: "/exposure" },
+  { id: "assets", label: "Asset Configuration", icon: "⚙️", path: "/assets" },
 ];
 
 export function MainNav() {
@@ -67,10 +67,10 @@ export function MainNav() {
                   key={section.id}
                   onClick={() => handleNavClick(section.path)}
                   className={cn(
-                    'w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                    "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                     location.pathname === section.path
-                      ? 'bg-blue-100 text-blue-900'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? "bg-blue-100 text-blue-900"
+                      : "text-gray-700 hover:bg-gray-100",
                   )}
                 >
                   <div className="flex items-center gap-2">
@@ -97,10 +97,10 @@ export function MainNav() {
               key={section.id}
               onClick={() => handleNavClick(section.path)}
               className={cn(
-                'w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+                "w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-colors",
                 location.pathname === section.path
-                  ? 'bg-blue-100 text-blue-900'
-                  : 'text-gray-700 hover:bg-gray-100'
+                  ? "bg-blue-100 text-blue-900"
+                  : "text-gray-700 hover:bg-gray-100",
               )}
             >
               <div className="flex items-center gap-3">
