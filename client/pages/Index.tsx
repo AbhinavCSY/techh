@@ -294,6 +294,77 @@ function DetailsPanel({
   const [scanResults, setScanResults] = useState<any>(null);
   const [scannedCVEs, setScannedCVEs] = useState<Record<string, any>>({});
   const [newlyDiscoveredCVEs, setNewlyDiscoveredCVEs] = useState<any[]>([]);
+  const [expandedCVE, setExpandedCVE] = useState<string | null>(null);
+
+  // Market CVEs available for scanning
+  const marketCVEs = [
+    {
+      id: 'CVE-2024-1086',
+      severity: 'critical',
+      title: 'Remote Code Execution in Core Module',
+      score: 9.8,
+      description: 'A critical vulnerability allowing remote code execution through input validation bypass',
+      published: '2024-01-15',
+      affected: 'v2.0.0 - v2.14.0',
+      cwe: 'CWE-94: Improper Control of Generation of Code',
+      references: ['https://nvd.nist.gov/vuln/detail/CVE-2024-1086'],
+    },
+    {
+      id: 'CVE-2024-2156',
+      severity: 'high',
+      title: 'SQL Injection Vulnerability',
+      score: 8.9,
+      description: 'Authentication bypass through SQL injection in user login module',
+      published: '2024-01-10',
+      affected: 'v2.0.0 - v2.13.5',
+      cwe: 'CWE-89: SQL Injection',
+      references: ['https://nvd.nist.gov/vuln/detail/CVE-2024-2156'],
+    },
+    {
+      id: 'CVE-2024-3421',
+      severity: 'high',
+      title: 'Cross-Site Scripting (XSS) in API Response',
+      score: 7.5,
+      description: 'Reflected XSS vulnerability in API response handling allowing session hijacking',
+      published: '2024-01-20',
+      affected: 'v2.0.0 - v2.12.0',
+      cwe: 'CWE-79: Cross-site Scripting (XSS)',
+      references: ['https://nvd.nist.gov/vuln/detail/CVE-2024-3421'],
+    },
+    {
+      id: 'CVE-2024-4567',
+      severity: 'high',
+      title: 'Directory Traversal in File Upload',
+      score: 7.8,
+      description: 'Path traversal vulnerability in file upload functionality allowing arbitrary file write',
+      published: '2024-01-25',
+      affected: 'v2.5.0 - v2.14.0',
+      cwe: 'CWE-22: Improper Limitation of a Pathname',
+      references: ['https://nvd.nist.gov/vuln/detail/CVE-2024-4567'],
+    },
+    {
+      id: 'CVE-2024-5678',
+      severity: 'medium',
+      title: 'Insecure Deserialization',
+      score: 6.8,
+      description: 'Unsafe object deserialization leading to potential code execution',
+      published: '2024-02-01',
+      affected: 'v2.3.0 - v2.14.0',
+      cwe: 'CWE-502: Deserialization of Untrusted Data',
+      references: ['https://nvd.nist.gov/vuln/detail/CVE-2024-5678'],
+    },
+    {
+      id: 'CVE-2024-6789',
+      severity: 'medium',
+      title: 'Denial of Service via Resource Exhaustion',
+      score: 6.5,
+      description: 'DoS vulnerability through uncontrolled resource consumption in request handling',
+      published: '2024-02-05',
+      affected: 'v2.0.0 - v2.13.0',
+      cwe: 'CWE-400: Uncontrolled Resource Consumption',
+      references: ['https://nvd.nist.gov/vuln/detail/CVE-2024-6789'],
+    },
+  ];
 
   const getAssociatedAssets = (techStackId: string) => {
     return allAssets.filter((asset) =>
