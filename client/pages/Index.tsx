@@ -669,6 +669,141 @@ function DetailsPanel({
                     )}
                   </div>
 
+                  {/* Market CVEs Available for Scanning */}
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+                      CVEs Found in Market ({marketCVEs.length})
+                    </h4>
+                    <div className="space-y-2 max-h-96 overflow-y-auto">
+                      {marketCVEs.map((cve) => {
+                        const cveResults = scannedCVEs[cve.id];
+                        const isScanning = cveResults?.isScanning;
+                        const isExpanded = expandedCVE === cve.id;
+
+                        return (
+                          <div
+                            key={cve.id}
+                            className={cn(
+                              'border rounded-lg transition-all',
+                              cve.severity === 'critical'
+                                ? 'bg-red-50 border-red-200'
+                                : cve.severity === 'high'
+                                ? 'bg-orange-50 border-orange-200'
+                                : 'bg-yellow-50 border-yellow-200'
+                            )}
+                          >
+                            {/* CVE Header - Clickable to expand */}
+                            <button
+                              onClick={() => setExpandedCVE(isExpanded ? null : cve.id)}
+                              className="w-full text-left p-3 flex items-start gap-2 hover:opacity-80 transition-opacity"
+                            >
+                              <span className="text-lg flex-shrink-0 mt-0.5">
+                                {cve.severity === 'critical'
+                                  ? '🔴'
+                                  : cve.severity === 'high'
+                                  ? '🟠'
+                                  : '🟡'}
+                              </span>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-xs text-gray-900">
+                                  {cve.id}
+                                </p>
+                                <p className="text-xs text-gray-700 mt-1">
+                                  {cve.title}
+                                </p>
+                                <p className="text-xs text-gray-600 mt-1">
+                                  CVSS: {cve.score.toFixed(1)} • {cve.severity.toUpperCase()}
+                                </p>
+                              </div>
+                              <span className="text-gray-400 flex-shrink-0 text-lg">
+                                {isExpanded ? '▼' : '▶'}
+                              </span>
+                            </button>
+
+                            {/* Expanded Details */}
+                            {isExpanded && (
+                              <div className="border-t border-gray-300 border-opacity-50 p-3 space-y-3 bg-white bg-opacity-50">
+                                {/* Description */}
+                                <div>
+                                  <p className="text-xs font-semibold text-gray-700 mb-1">Description</p>
+                                  <p className="text-xs text-gray-600">{cve.description}</p>
+                                </div>
+
+                                {/* Affected Versions */}
+                                <div>
+                                  <p className="text-xs font-semibold text-gray-700 mb-1">Affected Versions</p>
+                                  <p className="text-xs bg-white bg-opacity-70 rounded px-2 py-1 font-mono text-gray-700">
+                                    {cve.affected}
+                                  </p>
+                                </div>
+
+                                {/* CWE and Published Date */}
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div>
+                                    <p className="text-xs font-semibold text-gray-700 mb-1">CWE</p>
+                                    <p className="text-xs text-gray-600">{cve.cwe}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-xs font-semibold text-gray-700 mb-1">Published</p>
+                                    <p className="text-xs text-gray-600">{cve.published}</p>
+                                  </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex gap-2 pt-2">
+                                  <button
+                                    onClick={() => handleScanCVE(cve.id, item.id)}
+                                    disabled={isScanning}
+                                    className={cn(
+                                      'flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1',
+                                      isScanning
+                                        ? 'bg-blue-400 text-white cursor-not-allowed'
+                                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                    )}
+                                  >
+                                    <span>{isScanning ? '⏳' : '🔍'}</span>
+                                    {isScanning ? 'Scanning Assets' : `Scan ${getAssociatedAssets(item.id).length} Assets`}
+                                  </button>
+                                  <button
+                                    onClick={() => onNavigateToIncident(item.id, cve.id)}
+                                    className="flex-1 py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                                  >
+                                    Full Details
+                                  </button>
+                                </div>
+
+                                {/* Scan Results for this CVE */}
+                                {cveResults && !isScanning && (
+                                  <div className="p-2 bg-blue-100 border border-blue-300 rounded">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <span className="text-lg">✓</span>
+                                      <p className="font-semibold text-blue-900 text-xs">Scan Complete</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2 text-xs">
+                                      <div className="bg-blue-50 rounded p-1.5">
+                                        <p className="text-gray-600 font-medium">Assets Scanned</p>
+                                        <p className="text-blue-900 font-bold">{cveResults.assetsScanned}</p>
+                                      </div>
+                                      <div className="bg-red-50 rounded p-1.5">
+                                        <p className="text-gray-600 font-medium">Affected</p>
+                                        <p className="text-red-900 font-bold">{cveResults.affectedAssets}</p>
+                                      </div>
+                                    </div>
+                                    {cveResults.affectedAssets > 0 && (
+                                      <p className="text-xs text-red-700 mt-2 font-semibold">
+                                        ⚠️ {cveResults.affectedAssets} asset(s) are vulnerable to this CVE
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   {/* Scan Results - Individual CVEs */}
                   {scanResults && scanResults.techStackId === item.id && (
                     <div>
