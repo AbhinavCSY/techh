@@ -141,10 +141,10 @@ export default function Index() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        <div className="flex gap-6">
           {/* Sidebar - Filters */}
-          <aside className="lg:col-span-1 order-2 lg:order-1">
+          <aside className="hidden lg:block w-56">
             <div className="sticky top-24">
               <FilterPanel
                 filters={filters}
@@ -161,7 +161,7 @@ export default function Index() {
           </aside>
 
           {/* Main Content Area */}
-          <div className="lg:col-span-3 order-1 lg:order-2">
+          <div className="flex-1">
             {/* Empty State */}
             {filteredTechStacks.length === 0 && filteredAssets.length === 0 ? (
               <div className="bg-white rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
