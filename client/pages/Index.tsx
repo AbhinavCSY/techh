@@ -77,20 +77,6 @@ export default function Index() {
       <header className="border-b border-gray-200 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="space-y-4">
-            {/* Branding Bar */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl font-bold text-blue-600">BeVigil</span>
-                  <span className="text-gray-400">×</span>
-                  <span className="text-2xl font-bold text-purple-600">CloudSEK</span>
-                </div>
-                <div className="h-6 w-px bg-gray-300"></div>
-                <p className="text-sm text-gray-600 font-medium">Vulnerability Scanner</p>
-              </div>
-              <div className="text-xs text-gray-500">Powered by AI Security Analysis</div>
-            </div>
-
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
