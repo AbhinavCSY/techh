@@ -89,39 +89,36 @@ export function MainNav() {
         )}
       </header>
 
-      {/* Desktop Sidebar + Content Layout */}
-      <div className="flex">
-        {/* Sidebar */}
-        <aside className="hidden lg:block w-60 min-h-[calc(100vh-4rem)] border-r border-gray-200 bg-white">
-          <nav className="p-4 space-y-2">
-            {navSections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => handleNavClick(section.path)}
-                className={cn(
-                  'w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-colors',
-                  location.pathname === section.path
-                    ? 'bg-blue-100 text-blue-900'
-                    : 'text-gray-700 hover:bg-gray-100'
-                )}
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">{section.icon}</span>
-                  <span>{section.label}</span>
-                </div>
-                {section.badge && (
-                  <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
-                    {section.badge}
-                  </span>
-                )}
-              </button>
-            ))}
-          </nav>
-        </aside>
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:block fixed left-0 top-16 w-60 h-[calc(100vh-4rem)] border-r border-gray-200 bg-white overflow-y-auto">
+        <nav className="p-4 space-y-2">
+          {navSections.map((section) => (
+            <button
+              key={section.id}
+              onClick={() => handleNavClick(section.path)}
+              className={cn(
+                'w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+                location.pathname === section.path
+                  ? 'bg-blue-100 text-blue-900'
+                  : 'text-gray-700 hover:bg-gray-100'
+              )}
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-xl">{section.icon}</span>
+                <span>{section.label}</span>
+              </div>
+              {section.badge && (
+                <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                  {section.badge}
+                </span>
+              )}
+            </button>
+          ))}
+        </nav>
+      </aside>
 
-        {/* Main Content */}
-        <main className="flex-1" />
-      </div>
+      {/* Main Content Wrapper - adds margin for sidebar */}
+      <div className="lg:ml-60" />
     </>
   );
 }
