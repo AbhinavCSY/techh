@@ -51,6 +51,10 @@ export function MainNav() {
     setMenuOpen(false);
   };
 
+  // Determine which product is active based on current path
+  const isAssetInventoryActive = location.pathname === "/";
+  const activeProduct = isAssetInventoryActive ? "asset-inv" : "bevigil";
+
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm">
       <div className="flex items-center justify-between h-14 px-4 sm:px-6 lg:px-8">
