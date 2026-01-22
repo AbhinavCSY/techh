@@ -48,99 +48,80 @@ export function MainNav() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-        {/* Logo and Product Navigation */}
-        <div className="flex items-center gap-2 flex-1">
+      <div className="flex items-center justify-between h-14 px-4 sm:px-6 lg:px-8">
+        {/* Left Section: Logo and Products */}
+        <div className="flex items-center gap-6 flex-1">
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden text-gray-600 hover:text-gray-900 mr-2"
+            className="md:hidden text-gray-600 hover:text-gray-900"
           >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
 
           {/* CloudSEK Logo */}
-          <div className="flex items-center gap-1 px-3 py-2 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg">
-            <span className="text-white font-bold text-sm">CloudSEK</span>
+          <div className="flex items-center gap-1">
+            <span className="text-white bg-blue-600 px-2 py-1 rounded text-xs font-bold">CloudSEK</span>
           </div>
 
-          {/* Product Divider */}
-          <span className="text-gray-300 text-lg mx-1">×</span>
-
-          {/* Products */}
-          <nav className="hidden md:flex items-center gap-0">
-            {navProducts.map((product, idx) => (
-              <div key={product.id} className="flex items-center">
-                <button
-                  className={cn(
-                    "flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors whitespace-nowrap",
-                    product.active
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-600 hover:text-gray-900",
-                  )}
-                >
-                  <span>{product.icon}</span>
-                  <span>{product.label}</span>
-                </button>
-                {idx < navProducts.length - 1 && (
-                  <span className="text-gray-300">|</span>
+          {/* Products - Desktop Only */}
+          <nav className="hidden lg:flex items-center gap-6">
+            {navProducts.map((product) => (
+              <button
+                key={product.id}
+                className={cn(
+                  "text-xs font-medium transition-colors whitespace-nowrap",
+                  product.active
+                    ? "text-blue-600 border-b-2 border-blue-600 pb-1"
+                    : "text-gray-600 hover:text-gray-900",
                 )}
-              </div>
+              >
+                <span>{product.label}</span>
+              </button>
             ))}
           </nav>
         </div>
 
-        {/* Menu and Right Actions */}
-        <div className="flex items-center gap-4 ml-auto">
-          {/* Menu Dropdown */}
-          <div className="relative">
+        {/* Center: Menu Items - Desktop Only */}
+        <nav className="hidden lg:flex items-center gap-8 text-sm">
+          {navMenuItems.map((item) => (
             <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="hidden md:flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+              key={item.id}
+              onClick={() => handleNavClick(item.path)}
+              className={cn(
+                "font-medium transition-colors whitespace-nowrap relative",
+                location.pathname === item.path
+                  ? "text-blue-600"
+                  : "text-gray-600 hover:text-gray-900",
+              )}
             >
-              <span>☰ Menu</span>
-              <ChevronDown
-                size={16}
-                className={cn(
-                  "transition-transform",
-                  menuOpen && "rotate-180"
-                )}
-              />
+              {item.label}
+              {item.badge && (
+                <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                  {item.badge}
+                </span>
+              )}
             </button>
+          ))}
+        </nav>
 
-            {/* Dropdown Menu */}
-            {menuOpen && (
-              <div className="absolute top-full right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                {navMenuItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNavClick(item.path)}
-                    className={cn(
-                      "w-full flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b border-gray-100 last:border-0",
-                      location.pathname === item.path
-                        ? "bg-blue-50 text-blue-900"
-                        : "text-gray-700 hover:bg-gray-50",
-                    )}
-                  >
-                    <span>{item.icon}</span>
-                    <span>{item.label}</span>
-                    {item.badge && (
-                      <span className="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Right Actions */}
-          <button className="text-gray-600 hover:text-gray-900 transition-colors">🔍</button>
-          <button className="relative text-gray-600 hover:text-gray-900 transition-colors">
-            🔔
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">15</span>
+        {/* Right Section: Actions */}
+        <div className="flex items-center gap-4 ml-auto">
+          <button className="text-gray-600 hover:text-gray-900 transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
           </button>
-          <button className="text-gray-600 hover:text-gray-900 transition-colors">👤</button>
+          <button className="relative text-gray-600 hover:text-gray-900 transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold text-xs">15</span>
+          </button>
+          <button className="text-gray-600 hover:text-gray-900 transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </button>
         </div>
       </div>
 
