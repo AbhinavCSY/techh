@@ -321,6 +321,18 @@ function DetailsPanel({
   const [expandedCVE, setExpandedCVE] = useState<string | null>(null);
   const [selectedAssetsForScan, setSelectedAssetsForScan] = useState<Record<string, boolean>>({});
 
+  // Initialize selected assets when item changes
+  const initializeSelectedAssets = () => {
+    if (!isAsset) {
+      const assets = getAssociatedAssets(item.id);
+      const selected: Record<string, boolean> = {};
+      assets.forEach(asset => {
+        selected[asset.id] = true;
+      });
+      setSelectedAssetsForScan(selected);
+    }
+  };
+
   // Market CVEs available for scanning
   const marketCVEs = [
     {
