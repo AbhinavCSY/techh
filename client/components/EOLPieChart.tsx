@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { techStackDatabase } from "@/data/mockData";
 
 interface EOLPieChartProps {
@@ -5,6 +6,8 @@ interface EOLPieChartProps {
 }
 
 export function EOLPieChart({ compact = false }: EOLPieChartProps) {
+  const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
+
   // Calculate EOL and upgrade statistics
   const eolTechStacks = techStackDatabase.filter((ts) => ts.isEOL).length;
   const nonEolTechStacks = techStackDatabase.length - eolTechStacks;
@@ -23,11 +26,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
 
   if (compact) {
     return (
-      <div className="flex flex-col items-center space-y-4">
-        <h4 className="font-semibold text-gray-900 text-sm">EOL Status</h4>
-        
-        {/* Pie Chart */}
-        <div className="relative w-40 h-40">
+      <div className="flex items-center gap-4 h-24">
+        {/* Pie Chart - Left Side (Compact) */}
+        <div className="flex-shrink-0 relative w-20 h-20">
           <svg viewBox="0 0 120 120" className="w-full h-full">
             {/* EOL ring */}
             <circle
@@ -36,9 +37,12 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
               r="45"
               fill="none"
               stroke="#ef4444"
-              strokeWidth="14"
+              strokeWidth="10"
               strokeDasharray={`${(eolPercent / 100) * 282.7} 282.7`}
               transform="rotate(-90 60 60)"
+              onMouseEnter={() => setHoveredSegment('eol')}
+              onMouseLeave={() => setHoveredSegment(null)}
+              className="cursor-pointer transition-opacity hover:opacity-70"
             />
             {/* Non-EOL ring */}
             <circle
@@ -47,49 +51,54 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
               r="45"
               fill="none"
               stroke="#22c55e"
-              strokeWidth="14"
+              strokeWidth="10"
               strokeDasharray={`${(nonEolPercent / 100) * 282.7} 282.7`}
               strokeDashoffset={`${-((eolPercent / 100) * 282.7)}`}
               transform="rotate(-90 60 60)"
+              onMouseEnter={() => setHoveredSegment('active')}
+              onMouseLeave={() => setHoveredSegment(null)}
+              className="cursor-pointer transition-opacity hover:opacity-70"
             />
+
+            {/* Center text */}
+            <text
+              x="60"
+              y="60"
+              textAnchor="middle"
+              dy="0.3em"
+              className="text-lg font-bold fill-gray-900"
+              fontSize="18"
+            >
+              {totalTechStacks}
+            </text>
           </svg>
 
-          {/* Center text */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-bold text-gray-900">{totalTechStacks}</span>
-            <span className="text-xs text-gray-600">Total</span>
-          </div>
+          {/* Hover Tooltip */}
+          {hoveredSegment && (
+            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+              {hoveredSegment === 'eol' ? `EOL: ${eolTechStacks}` : `Active: ${nonEolTechStacks}`}
+            </div>
+          )}
         </div>
 
-        {/* Legend */}
-        <div className="w-full space-y-2 text-xs">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <span className="text-gray-700">EOL</span>
-            </div>
-            <span className="font-semibold text-gray-900">{eolTechStacks}</span>
+        {/* Legend - Right Side (Compact) */}
+        <div className="flex-1 space-y-2">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+            <span className="text-xs text-gray-700">EOL</span>
+            <span className="text-xs font-bold text-gray-900 ml-auto">{eolTechStacks}</span>
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <span className="text-gray-700">Active</span>
-            </div>
-            <span className="font-semibold text-gray-900">{nonEolTechStacks}</span>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            <span className="text-xs text-gray-700">Active</span>
+            <span className="text-xs font-bold text-gray-900 ml-auto">{nonEolTechStacks}</span>
           </div>
 
-          {/* Upgrade status */}
-          <div className="border-t border-gray-200 pt-2 mt-2">
-            <p className="text-gray-600 font-medium mb-1">Upgrade Available:</p>
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Yes</span>
-                <span className="font-semibold">{eolUpgradable + nonEolUpgradable}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">No</span>
-                <span className="font-semibold">{eolNotUpgradable + nonEolNotUpgradable}</span>
-              </div>
+          {/* Upgrade legend - inline */}
+          <div className="text-xs text-gray-600 mt-2">
+            <div className="flex gap-3">
+              <span>Upgradable: <span className="font-bold text-gray-900">{eolUpgradable + nonEolUpgradable}</span></span>
+              <span>Not: <span className="font-bold text-gray-900">{eolNotUpgradable + nonEolNotUpgradable}</span></span>
             </div>
           </div>
         </div>
