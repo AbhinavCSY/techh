@@ -139,6 +139,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 9.2,
     createdAt: new Date("2024-01-15"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "2.14.1", releaseDate: new Date("2022-01-15"), isEOL: false },
       { version: "2.17.0", releaseDate: new Date("2021-12-28"), isEOL: false },
@@ -181,6 +182,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 9.0,
     createdAt: new Date("2024-01-10"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "5.3.15", releaseDate: new Date("2022-12-01"), isEOL: true },
       { version: "6.0.0", releaseDate: new Date("2023-09-30"), isEOL: false },
@@ -215,6 +217,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 3.5,
     createdAt: new Date("2024-02-01"),
     license: "MIT",
+    effectiveLicense: "MIT",
     versionHistory: [
       { version: "18.2.0", releaseDate: new Date("2023-09-15"), isEOL: false },
       { version: "18.3.0", releaseDate: new Date("2024-01-10"), isEOL: false },
@@ -249,6 +252,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 7.8,
     createdAt: new Date("2023-12-20"),
     license: "MIT",
+    effectiveLicense: "MIT",
     versionHistory: [
       { version: "18.12.0", releaseDate: new Date("2023-08-15"), isEOL: false },
       { version: "20.10.0", releaseDate: new Date("2024-01-20"), isEOL: false },
@@ -283,6 +287,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 7.5,
     createdAt: new Date("2024-01-05"),
     license: "PostgreSQL License",
+    effectiveLicense: "PostgreSQL License",
     versionHistory: [
       { version: "13.10", releaseDate: new Date("2023-07-01"), isEOL: true },
       { version: "14.8", releaseDate: new Date("2023-11-15"), isEOL: false },
@@ -318,6 +323,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 5.2,
     createdAt: new Date("2024-01-20"),
     license: "BSD License",
+    effectiveLicense: "BSD 3",
     versionHistory: [
       { version: "3.2.18", releaseDate: new Date("2023-12-01"), isEOL: false },
       { version: "4.2.0", releaseDate: new Date("2024-02-03"), isEOL: false },
@@ -352,6 +358,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 7.5,
     createdAt: new Date("2024-01-25"),
     license: "MIT",
+    effectiveLicense: "MIT",
     versionHistory: [
       { version: "4.17.1", releaseDate: new Date("2023-09-01"), isEOL: false },
       { version: "4.18.2", releaseDate: new Date("2024-01-15"), isEOL: false },
@@ -386,6 +393,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 2.1,
     createdAt: new Date("2024-02-05"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       {
         version: "20.10.12",
@@ -423,6 +431,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 1.8,
     createdAt: new Date("2024-02-10"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "1.27.0", releaseDate: new Date("2023-08-23"), isEOL: false },
     ],
@@ -448,6 +457,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 4.2,
     createdAt: new Date("2024-01-30"),
     license: "SSPL/Community",
+    effectiveLicense: "Other",
     versionHistory: [
       { version: "5.0.10", releaseDate: new Date("2023-12-01"), isEOL: false },
       { version: "7.0.0", releaseDate: new Date("2024-02-01"), isEOL: false },
@@ -501,6 +511,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 9.8,
     createdAt: new Date("2024-01-20"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "2.13.0", releaseDate: new Date("2020-11-15"), isEOL: true },
       { version: "2.20.0", releaseDate: new Date("2023-10-20"), isEOL: false },
@@ -549,6 +560,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 8.9,
     createdAt: new Date("2024-01-18"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "2.15.0", releaseDate: new Date("2021-12-10"), isEOL: false },
       { version: "2.20.0", releaseDate: new Date("2023-10-20"), isEOL: false },
@@ -596,6 +608,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 9.2,
     createdAt: new Date("2024-01-12"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "5.2.0", releaseDate: new Date("2019-09-30"), isEOL: true },
       { version: "6.1.0", releaseDate: new Date("2024-01-01"), isEOL: false },
@@ -637,6 +650,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 7.5,
     createdAt: new Date("2024-01-08"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "6.0.0", releaseDate: new Date("2023-09-30"), isEOL: false },
       { version: "6.1.0", releaseDate: new Date("2024-01-01"), isEOL: false },
@@ -684,6 +698,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 6.8,
     createdAt: new Date("2024-01-10"),
     license: "BSD License",
+    effectiveLicense: "BSD 3",
     versionHistory: [
       { version: "1.24.0", releaseDate: new Date("2023-07-01"), isEOL: false },
       { version: "1.26.0", releaseDate: new Date("2024-02-01"), isEOL: false },
@@ -737,6 +752,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 8.9,
     createdAt: new Date("2023-12-15"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "2.4.52", releaseDate: new Date("2022-06-01"), isEOL: false },
       { version: "2.4.58", releaseDate: new Date("2024-01-15"), isEOL: false },
@@ -784,6 +800,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 7.8,
     createdAt: new Date("2023-11-20"),
     license: "GPL",
+    effectiveLicense: "Other",
     versionHistory: [
       { version: "5.7.44", releaseDate: new Date("2023-10-01"), isEOL: true },
       { version: "8.0.36", releaseDate: new Date("2024-01-20"), isEOL: false },
@@ -825,6 +842,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 5.5,
     createdAt: new Date("2024-01-05"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "1.26.0", releaseDate: new Date("2023-09-01"), isEOL: false },
       { version: "1.34.0", releaseDate: new Date("2024-02-10"), isEOL: false },
@@ -872,6 +890,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 7.2,
     createdAt: new Date("2023-10-01"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "1.1.1k", releaseDate: new Date("2021-05-01"), isEOL: true },
       { version: "3.0.13", releaseDate: new Date("2024-01-30"), isEOL: false },
@@ -913,6 +932,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 6.5,
     createdAt: new Date("2024-01-12"),
     license: "BSD License",
+    effectiveLicense: "BSD 3",
     versionHistory: [
       { version: "6.2.11", releaseDate: new Date("2023-08-01"), isEOL: false },
       { version: "7.2.0", releaseDate: new Date("2024-02-05"), isEOL: false },
@@ -954,6 +974,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 7.4,
     createdAt: new Date("2024-01-08"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "1.7.0", releaseDate: new Date("2023-09-15"), isEOL: false },
       { version: "1.7.8", releaseDate: new Date("2024-02-15"), isEOL: false },
@@ -1001,6 +1022,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 9.5,
     createdAt: new Date("2023-12-10"),
     license: "MIT",
+    effectiveLicense: "MIT",
     versionHistory: [
       { version: "7.88.1", releaseDate: new Date("2023-03-01"), isEOL: false },
       { version: "8.5.0", releaseDate: new Date("2024-01-25"), isEOL: false },
@@ -1048,6 +1070,7 @@ const techStackDatabase: TechStack[] = [
     riskScore: 6.8,
     createdAt: new Date("2024-01-15"),
     license: "Apache License 2.0",
+    effectiveLicense: "Apache",
     versionHistory: [
       { version: "9.0.70", releaseDate: new Date("2023-10-01"), isEOL: false },
       { version: "10.1.19", releaseDate: new Date("2024-02-01"), isEOL: false },
