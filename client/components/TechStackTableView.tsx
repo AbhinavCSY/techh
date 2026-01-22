@@ -65,7 +65,7 @@ export function TechStackTableView({
             <TableHead className="font-semibold">Version</TableHead>
             <TableHead className="font-semibold">Associated Assets</TableHead>
             <TableHead className="font-semibold">Risk</TableHead>
-            <TableHead className="font-semibold">Vulnerabilities</TableHead>
+            <TableHead className="font-semibold">Threat</TableHead>
             <TableHead className="font-semibold">Status</TableHead>
           </TableRow>
         </TableHeader>
