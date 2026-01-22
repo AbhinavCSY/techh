@@ -46,19 +46,19 @@ export function PackageReliabilityCard({ indicators, compact = false }: PackageR
         <h4 className="font-semibold text-gray-900 text-sm">Package Reliability</h4>
         <div className="grid grid-cols-3 gap-3">
           <ReliabilityIndicatorCompact
-            label="Contributor Rep"
+            label="Contributor Reputation"
             score={indicators.contributorReputation.score}
             riskLevel={indicators.contributorReputation.riskLevel}
             getRiskColor={getRiskColor}
           />
           <ReliabilityIndicatorCompact
-            label="Package Rel"
+            label="Package Reliability"
             score={indicators.packageReliability.score}
             riskLevel={indicators.packageReliability.riskLevel}
             getRiskColor={getRiskColor}
           />
           <ReliabilityIndicatorCompact
-            label="Behavioral"
+            label="Behavioral Integrity"
             score={indicators.behavioralIntegrity.score}
             riskLevel={indicators.behavioralIntegrity.riskLevel}
             getRiskColor={getRiskColor}
