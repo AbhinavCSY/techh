@@ -1353,6 +1353,7 @@ const assetDatabase: Asset[] = [
     techStacks: [
       techStackDatabase[3],
       techStackDatabase[5],
+      techStackDatabase[9],
       techStackDatabase[19],
       techStackDatabase[17],
     ],
