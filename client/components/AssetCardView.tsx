@@ -86,7 +86,7 @@ export function AssetCardView({ assets, onSelectCard }: AssetCardViewProps) {
           <div className="mb-4 p-3 bg-white rounded border border-gray-200">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700">
-                Vulnerabilities
+                Threat
               </span>
               <span className="text-lg font-bold text-gray-900">
                 {asset.cveCount}
