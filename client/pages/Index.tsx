@@ -37,6 +37,7 @@ export default function Index() {
 
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [showWidgetPanel, setShowWidgetPanel] = useState(true);
 
   // Filter and sort data
   const filteredTechStacks = useMemo(() => {
