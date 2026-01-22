@@ -1,5 +1,6 @@
 import { Asset } from '@/data/mockData';
 import { Badge } from '@/components/ui/badge';
+import { ThreatBar } from '@/components/ThreatBar';
 import { cn } from '@/lib/utils';
 
 interface AssetCardViewProps {
