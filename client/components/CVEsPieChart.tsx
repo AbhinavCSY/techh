@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { techStackDatabase } from "@/data/mockData";
 
 interface CVEsPieChartProps {
@@ -5,10 +6,12 @@ interface CVEsPieChartProps {
 }
 
 export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
+  const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
+
   // Calculate CVE statistics
   const scannedCVEs = techStackDatabase.reduce((acc, ts) => acc + ts.cves.length, 0);
   
-  // Calculate unscanned threats (estimate from unscannedThreatsCount)
+  // Calculate unscanned threats
   const unscannedCVEs = techStackDatabase.reduce((acc, ts) => acc + ts.unscannedThreatsCount, 0);
   
   const totalCVEs = scannedCVEs + unscannedCVEs;
@@ -27,11 +30,9 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
 
   if (compact) {
     return (
-      <div className="flex flex-col items-center space-y-4">
-        <h4 className="font-semibold text-gray-900 text-sm">Critical CVEs</h4>
-        
-        {/* Concentric Pie Chart */}
-        <div className="relative w-40 h-40">
+      <div className="flex items-center gap-4 h-24">
+        {/* Pie Chart - Left Side (Compact) */}
+        <div className="flex-shrink-0 relative w-20 h-20">
           <svg viewBox="0 0 120 120" className="w-full h-full">
             {/* Outer ring - Unscanned */}
             <circle
@@ -40,9 +41,12 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
               r="45"
               fill="none"
               stroke="#fbbf24"
-              strokeWidth="12"
+              strokeWidth="10"
               strokeDasharray={`${(unscannedPercent / 100) * 282.7} 282.7`}
               transform="rotate(-90 60 60)"
+              onMouseEnter={() => setHoveredSegment('unscanned')}
+              onMouseLeave={() => setHoveredSegment(null)}
+              className="cursor-pointer transition-opacity hover:opacity-70"
             />
             {/* Outer ring - Scanned */}
             <circle
@@ -51,114 +55,62 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
               r="45"
               fill="none"
               stroke="#ef4444"
-              strokeWidth="12"
+              strokeWidth="10"
               strokeDasharray={`${(scannedPercent / 100) * 282.7} 282.7`}
               strokeDashoffset={`${-((unscannedPercent / 100) * 282.7)}`}
               transform="rotate(-90 60 60)"
+              onMouseEnter={() => setHoveredSegment('scanned')}
+              onMouseLeave={() => setHoveredSegment(null)}
+              className="cursor-pointer transition-opacity hover:opacity-70"
             />
 
-            {/* Inner ring - Severity breakdown (only for scanned) */}
-            <circle
-              cx="60"
-              cy="60"
-              r="25"
-              fill="none"
-              stroke="#dc2626"
-              strokeWidth="8"
-              strokeDasharray={`${(severityBreakdown.critical / scannedCVEs) * 157} 157`}
-              transform="rotate(-90 60 60)"
-            />
-            <circle
-              cx="60"
-              cy="60"
-              r="25"
-              fill="none"
-              stroke="#f97316"
-              strokeWidth="8"
-              strokeDasharray={`${(severityBreakdown.high / scannedCVEs) * 157} 157`}
-              strokeDashoffset={`${-((severityBreakdown.critical / scannedCVEs) * 157)}`}
-              transform="rotate(-90 60 60)"
-            />
-            <circle
-              cx="60"
-              cy="60"
-              r="25"
-              fill="none"
-              stroke="#eab308"
-              strokeWidth="8"
-              strokeDasharray={`${(severityBreakdown.medium / scannedCVEs) * 157} 157`}
-              strokeDashoffset={`${-(((severityBreakdown.critical + severityBreakdown.high) / scannedCVEs) * 157)}`}
-              transform="rotate(-90 60 60)"
-            />
-            <circle
-              cx="60"
-              cy="60"
-              r="25"
-              fill="none"
-              stroke="#22c55e"
-              strokeWidth="8"
-              strokeDasharray={`${(severityBreakdown.low / scannedCVEs) * 157} 157`}
-              strokeDashoffset={`${-(((severityBreakdown.critical + severityBreakdown.high + severityBreakdown.medium) / scannedCVEs) * 157)}`}
-              transform="rotate(-90 60 60)"
-            />
+            {/* Center text */}
+            <text
+              x="60"
+              y="60"
+              textAnchor="middle"
+              dy="0.3em"
+              className="text-lg font-bold fill-gray-900"
+              fontSize="18"
+            >
+              {totalCVEs}
+            </text>
           </svg>
 
-          {/* Center text */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-bold text-gray-900">{totalCVEs}</span>
-            <span className="text-xs text-gray-600">Total</span>
-          </div>
+          {/* Hover Tooltip */}
+          {hoveredSegment && (
+            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+              {hoveredSegment === 'scanned' ? `Scanned: ${scannedCVEs}` : `Unscanned: ${unscannedCVEs}`}
+            </div>
+          )}
         </div>
 
-        {/* Legend */}
-        <div className="w-full space-y-2 text-xs">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <span className="text-gray-700">Scanned</span>
-            </div>
-            <span className="font-semibold text-gray-900">{scannedCVEs}</span>
+        {/* Legend - Right Side (Compact) */}
+        <div className="flex-1 space-y-2">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+            <span className="text-xs text-gray-700">Scanned</span>
+            <span className="text-xs font-bold text-gray-900 ml-auto">{scannedCVEs}</span>
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-amber-400"></div>
-              <span className="text-gray-700">Unscanned</span>
-            </div>
-            <span className="font-semibold text-gray-900">{unscannedCVEs}</span>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-amber-400"></div>
+            <span className="text-xs text-gray-700">Unscanned</span>
+            <span className="text-xs font-bold text-gray-900 ml-auto">{unscannedCVEs}</span>
           </div>
 
-          {/* Severity legend */}
-          <div className="border-t border-gray-200 pt-2 mt-2">
-            <p className="text-gray-600 font-medium mb-1">Severity (Scanned):</p>
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-red-600"></div>
-                  <span className="text-gray-600">Critical</span>
-                </div>
-                <span className="font-semibold">{severityBreakdown.critical}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-orange-500"></div>
-                  <span className="text-gray-600">High</span>
-                </div>
-                <span className="font-semibold">{severityBreakdown.high}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-                  <span className="text-gray-600">Medium</span>
-                </div>
-                <span className="font-semibold">{severityBreakdown.medium}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                  <span className="text-gray-600">Low</span>
-                </div>
-                <span className="font-semibold">{severityBreakdown.low}</span>
-              </div>
+          {/* Severity legend - inline */}
+          <div className="text-xs text-gray-600 mt-2 space-y-1">
+            <div className="flex gap-2">
+              <div className="w-2 h-2 rounded-full bg-red-600 flex-shrink-0 mt-0.5"></div>
+              <span>C: {severityBreakdown.critical}</span>
+              <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0 mt-0.5"></div>
+              <span>H: {severityBreakdown.high}</span>
+            </div>
+            <div className="flex gap-2">
+              <div className="w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0 mt-0.5"></div>
+              <span>M: {severityBreakdown.medium}</span>
+              <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0 mt-0.5"></div>
+              <span>L: {severityBreakdown.low}</span>
             </div>
           </div>
         </div>
