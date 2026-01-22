@@ -64,6 +64,7 @@ export function TechStackTableView({
           <TableRow>
             <TableHead className="font-semibold">Tech Stack</TableHead>
             <TableHead className="font-semibold">Version</TableHead>
+            <TableHead className="font-semibold">License</TableHead>
             <TableHead className="font-semibold">Associated Assets</TableHead>
             <TableHead className="font-semibold">Risk</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
