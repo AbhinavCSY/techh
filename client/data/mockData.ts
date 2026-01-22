@@ -1148,6 +1148,7 @@ const assetDatabase: Asset[] = [
       techStackDatabase[1],
       techStackDatabase[4],
       techStackDatabase[5],
+      techStackDatabase[12],
     ],
     cveCount: 4,
     topCriticalCVE: techStackDatabase[1].cves[0],
