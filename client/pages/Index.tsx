@@ -602,6 +602,11 @@ function DetailsPanel({
                     isClickable={false}
                   />
                   <DetailRowClickable
+                    label="Effective License"
+                    value={item.effectiveLicense}
+                    isClickable={false}
+                  />
+                  <DetailRowClickable
                     label="EOL Status"
                     value={item.isEOL ? "⚠️ End of Life" : "✓ Active"}
                     isClickable={false}
