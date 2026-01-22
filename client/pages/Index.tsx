@@ -91,54 +91,49 @@ export default function Index() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="border-b border-gray-200 bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                  <span className="text-4xl">🔒</span>
-                  Asset Inventory
-                </h1>
-                <p className="text-gray-600 mt-1">
-                  Manage and monitor your technology dependencies and security
-                  risks
-                </p>
-              </div>
-            </div>
+        <div className="max-w-7xl mx-auto px-6 py-3">
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <span className="text-2xl">🔒</span>
+              Asset Inventory
+            </h1>
+            <p className="text-xs text-gray-500">
+              Manage and monitor your technology dependencies
+            </p>
+          </div>
 
-            {/* Key Metrics */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mt-4">
-              <MetricCard
-                label="Total Tech Stacks"
-                value={metrics.totalTechStacks}
-                color="blue"
-                icon="📦"
-              />
-              <MetricCard
-                label="Assets Monitored"
-                value={metrics.assetsMonitored}
-                color="purple"
-                icon="🎯"
-              />
-              <MetricCard
-                label="Critical CVEs"
-                value={metrics.criticalCVEs}
-                color="red"
-                icon="🔴"
-              />
-              <MetricCard
-                label="EOL Technologies"
-                value={metrics.totalEOL}
-                color="orange"
-                icon="⚠️"
-              />
-              <MetricCard
-                label="Assets Scanned"
-                value={metrics.assetScanned}
-                color="green"
-                icon="✓"
-              />
-            </div>
+          {/* Key Metrics */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <MetricCard
+              label="Total Tech Stacks"
+              value={metrics.totalTechStacks}
+              color="blue"
+              icon="📦"
+            />
+            <MetricCard
+              label="Assets Monitored"
+              value={metrics.assetsMonitored}
+              color="purple"
+              icon="🎯"
+            />
+            <MetricCard
+              label="Critical CVEs"
+              value={metrics.criticalCVEs}
+              color="red"
+              icon="🔴"
+            />
+            <MetricCard
+              label="EOL Technologies"
+              value={metrics.totalEOL}
+              color="orange"
+              icon="⚠️"
+            />
+            <MetricCard
+              label="Assets Scanned"
+              value={metrics.assetScanned}
+              color="green"
+              icon="✓"
+            />
           </div>
         </div>
       </header>
