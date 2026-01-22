@@ -667,7 +667,7 @@ function DetailsPanel({
 
                 {/* Threat Intel Section */}
                 <div className="mb-6">
-                  <div className="mb-6">
+                  <div>
                     <div className="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                       <div className="flex items-center justify-between mb-3">
                         <label className="text-sm font-semibold text-gray-700">
