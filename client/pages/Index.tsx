@@ -177,8 +177,6 @@ export default function Index() {
         hasActiveFilters={hasActiveFilters}
         viewType={viewType}
         onViewTypeChange={setViewType}
-        grouping={grouping}
-        onGroupingChange={setGrouping}
         onExport={handleExport}
       />
 
