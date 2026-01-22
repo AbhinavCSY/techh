@@ -111,34 +111,34 @@ export default function Index() {
             </button>
           </div>
 
-          {/* Key Metrics Panel - Collapsible & Compact */}
+          {/* Key Metrics Panel - Collapsible & Compact - All in One Row */}
           {showWidgetPanel && (
-            <div className="space-y-2">
-              {/* CVEs Pie Chart and Stats Row */}
-              <div className="bg-white rounded-lg border border-gray-200 p-2">
+            <div className="grid grid-cols-4 gap-2">
+              {/* CVEs Pie Chart */}
+              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
                 <CVEsPieChart compact={true} />
               </div>
 
-              {/* EOL Pie Chart and Stats Row */}
-              <div className="bg-white rounded-lg border border-gray-200 p-2">
+              {/* EOL Pie Chart */}
+              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
                 <EOLPieChart compact={true} />
               </div>
 
-              {/* Simple Metric Cards Row */}
-              <div className="grid grid-cols-2 gap-2">
-                <MetricCard
-                  label="Total Tech Stacks"
-                  value={metrics.totalTechStacks}
-                  color="blue"
-                  icon="📦"
-                />
-                <MetricCard
-                  label="Assets Scanned"
-                  value={metrics.assetsScanned}
-                  color="green"
-                  icon="✓"
-                />
-              </div>
+              {/* Total Tech Stacks Card */}
+              <MetricCard
+                label="Total Tech Stacks"
+                value={metrics.totalTechStacks}
+                color="blue"
+                icon="📦"
+              />
+
+              {/* Assets Scanned Card */}
+              <MetricCard
+                label="Assets Scanned"
+                value={metrics.assetsScanned}
+                color="green"
+                icon="✓"
+              />
             </div>
           )}
         </div>
