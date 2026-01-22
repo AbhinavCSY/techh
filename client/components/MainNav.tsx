@@ -182,7 +182,7 @@ export function MainNav() {
                   key={product.id}
                   className={cn(
                     "w-full text-left px-3 py-2 rounded text-sm font-medium transition-colors",
-                    product.active
+                    product.id === activeProduct
                       ? "bg-blue-100 text-blue-900"
                       : "text-gray-700 hover:bg-gray-100",
                   )}
