@@ -619,49 +619,40 @@ function DetailsPanel({
                 {/* Version History */}
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-3">
-                    Version History
+                    Version
                   </h4>
                   <div className="space-y-2">
-                    {item.versionHistory
-                      .sort(
-                        (a: any, b: any) =>
-                          new Date(b.releaseDate).getTime() -
-                          new Date(a.releaseDate).getTime(),
-                      )
-                      .map((version: any, idx: number) => (
-                        <div
-                          key={idx}
-                          className={cn(
-                            "p-3 rounded-lg border text-xs",
-                            version.isEOL
-                              ? "bg-red-50 border-red-200"
-                              : idx === 0
-                                ? "bg-blue-50 border-blue-200 ring-1 ring-blue-200"
-                                : "bg-gray-50 border-gray-200",
-                          )}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-semibold">
-                              v{version.version}
-                            </span>
-                            <span className="text-gray-500">
-                              {new Date(
-                                version.releaseDate,
-                              ).toLocaleDateString()}
-                            </span>
-                          </div>
-                          {idx === 0 && (
-                            <Badge className="mt-2 bg-blue-100 text-blue-800 text-xs">
-                              Current
-                            </Badge>
-                          )}
-                          {version.isEOL && (
-                            <Badge className="mt-2 bg-red-100 text-red-800 text-xs">
-                              EOL
-                            </Badge>
-                          )}
+                    {/* Current Version */}
+                    <div className="p-3 rounded-lg border bg-blue-50 border-blue-200 ring-1 ring-blue-200">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-sm">
+                          v{item.version}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {item.createdAt.toLocaleDateString()}
+                        </span>
+                      </div>
+                      <Badge className="mt-2 bg-blue-100 text-blue-800 text-xs">
+                        Current
+                      </Badge>
+                    </div>
+
+                    {/* Latest Available Version (if different from current) */}
+                    {item.secureVersion && item.secureVersion !== item.version && (
+                      <div className="p-3 rounded-lg border bg-green-50 border-green-200">
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold text-sm">
+                            v{item.secureVersion}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            Latest Available
+                          </span>
                         </div>
-                      ))}
+                        <Badge className="mt-2 bg-green-100 text-green-800 text-xs">
+                          Upgrade Available
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                 </div>
 
