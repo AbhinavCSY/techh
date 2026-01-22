@@ -65,7 +65,7 @@ export function MainNav() {
                 "px-2.5 py-1 rounded text-xs font-medium transition-all whitespace-nowrap",
                 product.id === activeProduct
                   ? "bg-blue-100 text-blue-700"
-                  : "text-gray-600 hover:bg-gray-100"
+                  : "text-gray-600 hover:bg-gray-100",
               )}
             >
               {product.label}
@@ -86,7 +86,7 @@ export function MainNav() {
                 "flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium transition-all whitespace-nowrap",
                 location.pathname === item.path
                   ? "text-blue-600 bg-blue-50"
-                  : "text-gray-600 hover:bg-gray-100"
+                  : "text-gray-600 hover:bg-gray-100",
               )}
             >
               <span>{item.label}</span>
@@ -107,7 +107,12 @@ export function MainNav() {
         <div className="flex items-center gap-1 flex-shrink-0">
           {/* Search Icon */}
           <button className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -119,7 +124,12 @@ export function MainNav() {
 
           {/* Support Icon */}
           <button className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -131,7 +141,12 @@ export function MainNav() {
 
           {/* Notifications */}
           <button className="relative text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -150,7 +165,9 @@ export function MainNav() {
               AR
             </div>
             <div className="hidden xl:block min-w-0">
-              <div className="text-xs font-semibold text-gray-900 leading-tight">Abhinav</div>
+              <div className="text-xs font-semibold text-gray-900 leading-tight">
+                Abhinav
+              </div>
               <div className="text-xs text-gray-500 leading-tight">Admin</div>
             </div>
           </button>
@@ -174,7 +191,7 @@ export function MainNav() {
                       "px-2 py-1 rounded text-xs font-medium transition-colors",
                       product.id === activeProduct
                         ? "bg-blue-100 text-blue-900"
-                        : "text-gray-700 hover:bg-gray-100"
+                        : "text-gray-700 hover:bg-gray-100",
                     )}
                   >
                     {product.label}
@@ -199,7 +216,7 @@ export function MainNav() {
                     "w-full text-left flex items-center justify-between px-2 py-1 rounded text-xs font-medium transition-colors",
                     location.pathname === item.path
                       ? "bg-blue-100 text-blue-900"
-                      : "text-gray-700 hover:bg-gray-100"
+                      : "text-gray-700 hover:bg-gray-100",
                   )}
                 >
                   <span>{item.label}</span>

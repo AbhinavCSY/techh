@@ -97,14 +97,16 @@ export default function Index() {
 
           {/* Widget Panel Header with Toggle */}
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Overview Metrics</h2>
+            <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+              Overview Metrics
+            </h2>
             <button
               onClick={() => setShowWidgetPanel(!showWidgetPanel)}
               className={cn(
                 "px-2 py-0.5 rounded text-xs font-medium transition-colors",
                 showWidgetPanel
                   ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200",
               )}
             >
               {showWidgetPanel ? "▼ Hide" : "▶ Show"}
@@ -292,7 +294,9 @@ function MetricCard({
 
   return (
     <div className={`border rounded p-1.5 ${colorMap[color]}`}>
-      <p className="text-xs font-medium opacity-75 truncate leading-tight">{label}</p>
+      <p className="text-xs font-medium opacity-75 truncate leading-tight">
+        {label}
+      </p>
       <div className="flex items-center justify-between mt-0.5">
         <p className="text-base font-bold">{value}</p>
         <p className="text-sm">{icon}</p>

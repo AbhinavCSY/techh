@@ -9,24 +9,44 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
 
   // Calculate CVE statistics
-  const scannedCVEs = techStackDatabase.reduce((acc, ts) => acc + ts.cves.length, 0);
-  
+  const scannedCVEs = techStackDatabase.reduce(
+    (acc, ts) => acc + ts.cves.length,
+    0,
+  );
+
   // Calculate unscanned threats
-  const unscannedCVEs = techStackDatabase.reduce((acc, ts) => acc + ts.unscannedThreatsCount, 0);
-  
+  const unscannedCVEs = techStackDatabase.reduce(
+    (acc, ts) => acc + ts.unscannedThreatsCount,
+    0,
+  );
+
   const totalCVEs = scannedCVEs + unscannedCVEs;
 
   // Severity breakdown for scanned CVEs
   const severityBreakdown = {
-    critical: techStackDatabase.reduce((acc, ts) => acc + ts.cves.filter(c => c.severity === 'critical').length, 0),
-    high: techStackDatabase.reduce((acc, ts) => acc + ts.cves.filter(c => c.severity === 'high').length, 0),
-    medium: techStackDatabase.reduce((acc, ts) => acc + ts.cves.filter(c => c.severity === 'medium').length, 0),
-    low: techStackDatabase.reduce((acc, ts) => acc + ts.cves.filter(c => c.severity === 'low').length, 0),
+    critical: techStackDatabase.reduce(
+      (acc, ts) =>
+        acc + ts.cves.filter((c) => c.severity === "critical").length,
+      0,
+    ),
+    high: techStackDatabase.reduce(
+      (acc, ts) => acc + ts.cves.filter((c) => c.severity === "high").length,
+      0,
+    ),
+    medium: techStackDatabase.reduce(
+      (acc, ts) => acc + ts.cves.filter((c) => c.severity === "medium").length,
+      0,
+    ),
+    low: techStackDatabase.reduce(
+      (acc, ts) => acc + ts.cves.filter((c) => c.severity === "low").length,
+      0,
+    ),
   };
 
   // Calculate percentages
   const scannedPercent = totalCVEs > 0 ? (scannedCVEs / totalCVEs) * 100 : 0;
-  const unscannedPercent = totalCVEs > 0 ? (unscannedCVEs / totalCVEs) * 100 : 0;
+  const unscannedPercent =
+    totalCVEs > 0 ? (unscannedCVEs / totalCVEs) * 100 : 0;
 
   if (compact) {
     return (
@@ -44,7 +64,7 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
               strokeWidth="10"
               strokeDasharray={`${(unscannedPercent / 100) * 282.7} 282.7`}
               transform="rotate(-90 60 60)"
-              onMouseEnter={() => setHoveredSegment('unscanned')}
+              onMouseEnter={() => setHoveredSegment("unscanned")}
               onMouseLeave={() => setHoveredSegment(null)}
               className="cursor-pointer transition-opacity hover:opacity-70"
             />
@@ -59,7 +79,7 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
               strokeDasharray={`${(scannedPercent / 100) * 282.7} 282.7`}
               strokeDashoffset={`${-((unscannedPercent / 100) * 282.7)}`}
               transform="rotate(-90 60 60)"
-              onMouseEnter={() => setHoveredSegment('scanned')}
+              onMouseEnter={() => setHoveredSegment("scanned")}
               onMouseLeave={() => setHoveredSegment(null)}
               className="cursor-pointer transition-opacity hover:opacity-70"
             />
@@ -80,7 +100,9 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
           {/* Hover Tooltip */}
           {hoveredSegment && (
             <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
-              {hoveredSegment === 'scanned' ? `Scanned: ${scannedCVEs}` : `Unscanned: ${unscannedCVEs}`}
+              {hoveredSegment === "scanned"
+                ? `Scanned: ${scannedCVEs}`
+                : `Unscanned: ${unscannedCVEs}`}
             </div>
           )}
         </div>
@@ -93,7 +115,9 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
           </div>
           <div className="flex items-center gap-1 text-xs">
             <div className="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></div>
-            <span className="text-gray-700 flex-1">Unscanned: {unscannedCVEs}</span>
+            <span className="text-gray-700 flex-1">
+              Unscanned: {unscannedCVEs}
+            </span>
           </div>
 
           {/* Severity legend - very compact */}
@@ -122,8 +146,10 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <h3 className="font-semibold text-gray-900 mb-6">Critical CVEs Analysis</h3>
-      
+      <h3 className="font-semibold text-gray-900 mb-6">
+        Critical CVEs Analysis
+      </h3>
+
       <div className="flex gap-8">
         {/* Chart */}
         <div className="flex-1 flex flex-col items-center">
@@ -201,7 +227,9 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
 
             {/* Center text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-3xl font-bold text-gray-900">{totalCVEs}</span>
+              <span className="text-3xl font-bold text-gray-900">
+                {totalCVEs}
+              </span>
               <span className="text-sm text-gray-600">Total CVEs</span>
             </div>
           </div>
@@ -210,7 +238,9 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
         {/* Legend and Stats */}
         <div className="flex-1 space-y-6">
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3 text-sm">Scan Status</h4>
+            <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+              Scan Status
+            </h4>
             <div className="space-y-2">
               <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
                 <div className="flex items-center gap-2">
@@ -224,41 +254,53 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
                   <div className="w-4 h-4 rounded-full bg-amber-400"></div>
                   <span className="text-sm text-gray-700">Unscanned</span>
                 </div>
-                <span className="font-bold text-amber-900">{unscannedCVEs}</span>
+                <span className="font-bold text-amber-900">
+                  {unscannedCVEs}
+                </span>
               </div>
             </div>
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3 text-sm">Severity Breakdown (Scanned)</h4>
+            <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+              Severity Breakdown (Scanned)
+            </h4>
             <div className="space-y-2">
               <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-red-600"></div>
                   <span className="text-xs text-gray-700">Critical</span>
                 </div>
-                <span className="text-xs font-bold text-gray-900">{severityBreakdown.critical}</span>
+                <span className="text-xs font-bold text-gray-900">
+                  {severityBreakdown.critical}
+                </span>
               </div>
               <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-orange-500"></div>
                   <span className="text-xs text-gray-700">High</span>
                 </div>
-                <span className="text-xs font-bold text-gray-900">{severityBreakdown.high}</span>
+                <span className="text-xs font-bold text-gray-900">
+                  {severityBreakdown.high}
+                </span>
               </div>
               <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                   <span className="text-xs text-gray-700">Medium</span>
                 </div>
-                <span className="text-xs font-bold text-gray-900">{severityBreakdown.medium}</span>
+                <span className="text-xs font-bold text-gray-900">
+                  {severityBreakdown.medium}
+                </span>
               </div>
               <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
                   <span className="text-xs text-gray-700">Low</span>
                 </div>
-                <span className="text-xs font-bold text-gray-900">{severityBreakdown.low}</span>
+                <span className="text-xs font-bold text-gray-900">
+                  {severityBreakdown.low}
+                </span>
               </div>
             </div>
           </div>

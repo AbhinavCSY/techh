@@ -11,13 +11,17 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
   // Calculate EOL and upgrade statistics
   const eolTechStacks = techStackDatabase.filter((ts) => ts.isEOL).length;
   const nonEolTechStacks = techStackDatabase.length - eolTechStacks;
-  
+
   // From EOL tech stacks, how many are upgradable
-  const eolUpgradable = techStackDatabase.filter((ts) => ts.isEOL && ts.isUpgradable).length;
+  const eolUpgradable = techStackDatabase.filter(
+    (ts) => ts.isEOL && ts.isUpgradable,
+  ).length;
   const eolNotUpgradable = eolTechStacks - eolUpgradable;
-  
+
   // From non-EOL tech stacks, how many are upgradable
-  const nonEolUpgradable = techStackDatabase.filter((ts) => !ts.isEOL && ts.isUpgradable).length;
+  const nonEolUpgradable = techStackDatabase.filter(
+    (ts) => !ts.isEOL && ts.isUpgradable,
+  ).length;
   const nonEolNotUpgradable = nonEolTechStacks - nonEolUpgradable;
 
   const totalTechStacks = techStackDatabase.length;
@@ -40,7 +44,7 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
               strokeWidth="10"
               strokeDasharray={`${(eolPercent / 100) * 282.7} 282.7`}
               transform="rotate(-90 60 60)"
-              onMouseEnter={() => setHoveredSegment('eol')}
+              onMouseEnter={() => setHoveredSegment("eol")}
               onMouseLeave={() => setHoveredSegment(null)}
               className="cursor-pointer transition-opacity hover:opacity-70"
             />
@@ -55,7 +59,7 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
               strokeDasharray={`${(nonEolPercent / 100) * 282.7} 282.7`}
               strokeDashoffset={`${-((eolPercent / 100) * 282.7)}`}
               transform="rotate(-90 60 60)"
-              onMouseEnter={() => setHoveredSegment('active')}
+              onMouseEnter={() => setHoveredSegment("active")}
               onMouseLeave={() => setHoveredSegment(null)}
               className="cursor-pointer transition-opacity hover:opacity-70"
             />
@@ -76,7 +80,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
           {/* Hover Tooltip */}
           {hoveredSegment && (
             <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
-              {hoveredSegment === 'eol' ? `EOL: ${eolTechStacks}` : `Active: ${nonEolTechStacks}`}
+              {hoveredSegment === "eol"
+                ? `EOL: ${eolTechStacks}`
+                : `Active: ${nonEolTechStacks}`}
             </div>
           )}
         </div>
@@ -89,7 +95,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
           </div>
           <div className="flex items-center gap-1 text-xs">
             <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
-            <span className="text-gray-700 flex-1">Active: {nonEolTechStacks}</span>
+            <span className="text-gray-700 flex-1">
+              Active: {nonEolTechStacks}
+            </span>
           </div>
 
           {/* Upgrade legend - very compact */}
@@ -111,7 +119,7 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
       <h3 className="font-semibold text-gray-900 mb-6">EOL & Upgrade Status</h3>
-      
+
       <div className="flex gap-8">
         {/* Chart */}
         <div className="flex-1 flex flex-col items-center">
@@ -144,7 +152,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
 
             {/* Center text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-3xl font-bold text-gray-900">{totalTechStacks}</span>
+              <span className="text-3xl font-bold text-gray-900">
+                {totalTechStacks}
+              </span>
               <span className="text-sm text-gray-600">Total</span>
             </div>
           </div>
@@ -153,7 +163,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
         {/* Legend and Stats */}
         <div className="flex-1 space-y-6">
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3 text-sm">EOL Status</h4>
+            <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+              EOL Status
+            </h4>
             <div className="space-y-2">
               <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
                 <div className="flex items-center gap-2">
@@ -167,37 +179,67 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
                   <div className="w-4 h-4 rounded-full bg-green-500"></div>
                   <span className="text-sm text-gray-700">Active</span>
                 </div>
-                <span className="font-bold text-green-900">{nonEolTechStacks}</span>
+                <span className="font-bold text-green-900">
+                  {nonEolTechStacks}
+                </span>
               </div>
             </div>
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3 text-sm">Upgrade Available</h4>
+            <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+              Upgrade Available
+            </h4>
             <div className="space-y-2">
               <div className="flex items-center justify-between p-2 bg-blue-50 rounded border border-blue-200">
                 <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <svg
+                    className="w-4 h-4 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                   <span className="text-sm text-gray-700">Yes</span>
                 </div>
-                <span className="text-sm font-bold text-blue-900">{eolUpgradable + nonEolUpgradable}</span>
+                <span className="text-sm font-bold text-blue-900">
+                  {eolUpgradable + nonEolUpgradable}
+                </span>
               </div>
               <div className="flex items-center justify-between p-2 bg-gray-100 rounded border border-gray-300">
                 <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-4 h-4 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                   <span className="text-sm text-gray-700">No</span>
                 </div>
-                <span className="text-sm font-bold text-gray-900">{eolNotUpgradable + nonEolNotUpgradable}</span>
+                <span className="text-sm font-bold text-gray-900">
+                  {eolNotUpgradable + nonEolNotUpgradable}
+                </span>
               </div>
             </div>
 
             {/* Breakdown */}
             <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-              <p className="text-xs font-semibold text-gray-600 mb-2">Breakdown:</p>
+              <p className="text-xs font-semibold text-gray-600 mb-2">
+                Breakdown:
+              </p>
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span className="text-gray-600">EOL + Upgradable:</span>
@@ -212,7 +254,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
                   <span className="font-semibold">{nonEolUpgradable}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Active + Not Upgradable:</span>
+                  <span className="text-gray-600">
+                    Active + Not Upgradable:
+                  </span>
                   <span className="font-semibold">{nonEolNotUpgradable}</span>
                 </div>
               </div>
