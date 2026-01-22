@@ -40,6 +40,7 @@ export interface TechStack {
   isUpgradable: boolean;
   secureVersion?: string;
   cves: CVE[];
+  unscannedThreatsCount: number;
   riskLevel: 'critical' | 'high' | 'medium' | 'low';
   riskScore: number;
   createdAt: Date;
