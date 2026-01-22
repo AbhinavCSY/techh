@@ -3,7 +3,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface NavSection {
+interface NavProduct {
+  id: string;
+  label: string;
+  icon: string;
+  active?: boolean;
+}
+
+interface NavItem {
   id: string;
   label: string;
   icon: string;
@@ -11,13 +18,20 @@ interface NavSection {
   badge?: number;
 }
 
-const navSections: NavSection[] = [
-  { id: "home", label: "Dashboard", icon: "📊", path: "/" },
+const navProducts: NavProduct[] = [
+  { id: "xvigil", label: "Xvigil", icon: "🎯" },
+  { id: "bevigil", label: "BeVigil", icon: "👁️", active: true },
+  { id: "svigil", label: "SVigil", icon: "🛡️" },
+  { id: "threat-intel", label: "Threat Intel", icon: "⚠️" },
+  { id: "asset-inv", label: "Asset Inventory", icon: "📦" },
+];
+
+const navMenuItems: NavItem[] = [
+  { id: "dashboards", label: "Dashboards", icon: "📊", path: "/" },
   { id: "events", label: "Events", icon: "📋", path: "/events", badge: 15 },
-  { id: "webapps", label: "Web Applications", icon: "🌐", path: "/web-apps" },
-  { id: "watchwords", label: "Watchwords", icon: "👁️", path: "/watchwords" },
-  { id: "exposure", label: "Exposure", icon: "⚠️", path: "/exposure" },
-  { id: "assets", label: "Asset Configuration", icon: "⚙️", path: "/assets" },
+  { id: "incidents", label: "Incidents", icon: "🚨", path: "/incidents" },
+  { id: "capabilities", label: "All Capabilities", icon: "⚡", path: "/capabilities" },
+  { id: "favourites", label: "Favourites", icon: "⭐", path: "/favourites" },
 ];
 
 export function MainNav() {
