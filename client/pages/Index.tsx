@@ -138,31 +138,32 @@ export default function Index() {
         </div>
       </header>
 
-      {/* Inventory Type Tabs */}
+      {/* Group By Switch */}
       <div className="sticky top-16 z-20 border-b border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex gap-1 items-end">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-4">
+          <label className="font-medium text-sm text-gray-700">Group By:</label>
+          <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
             <button
               onClick={() => setGrouping("asset")}
               className={cn(
-                "px-4 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap",
+                "px-4 py-2 rounded font-medium text-sm transition-all whitespace-nowrap",
                 grouping === "asset"
-                  ? "border-blue-600 text-blue-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
               )}
             >
-              🖥️ Asset Inventory
+              🖥️ Asset
             </button>
             <button
               onClick={() => setGrouping("tech-stack")}
               className={cn(
-                "px-4 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap",
+                "px-4 py-2 rounded font-medium text-sm transition-all whitespace-nowrap",
                 grouping === "tech-stack"
-                  ? "border-blue-600 text-blue-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
               )}
             >
-              📦 Tech Stack Inventory
+              📦 Tech Stack
             </button>
           </div>
         </div>
