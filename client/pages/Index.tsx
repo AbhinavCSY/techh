@@ -742,8 +742,77 @@ function DetailsPanel({
 
                   {/* Market CVEs Available for Scanning */}
                   <div className="mb-6">
+                    <div className="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="text-sm font-semibold text-gray-700">
+                          Select Assets to Scan
+                        </label>
+                        <button
+                          onClick={() => {
+                            const allAssets = getAssociatedAssets(item.id);
+                            const currentSelected = Object.keys(selectedAssetsForScan).filter(key => selectedAssetsForScan[key as any]);
+                            if (currentSelected.length === allAssets.length) {
+                              const newSelection = { ...selectedAssetsForScan };
+                              allAssets.forEach(a => newSelection[a.id as any] = false);
+                              setSelectedAssetsForScan(newSelection);
+                            } else {
+                              const newSelection = { ...selectedAssetsForScan };
+                              allAssets.forEach(a => newSelection[a.id as any] = true);
+                              setSelectedAssetsForScan(newSelection);
+                            }
+                          }}
+                          className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                        >
+                          {Object.keys(selectedAssetsForScan).length === getAssociatedAssets(item.id).length && Object.keys(selectedAssetsForScan).length > 0
+                            ? "Deselect All"
+                            : "Select All"}
+                        </button>
+                      </div>
+                      <div className="space-y-2 max-h-32 overflow-y-auto">
+                        {getAssociatedAssets(item.id).map((asset) => (
+                          <label key={asset.id} className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedAssetsForScan[asset.id as any] || false}
+                              onChange={(e) =>
+                                setSelectedAssetsForScan((prev) => ({
+                                  ...prev,
+                                  [asset.id]: e.target.checked,
+                                }))
+                              }
+                              className="w-4 h-4 rounded"
+                            />
+                            <span className="text-xs text-gray-700">{asset.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        const selectedAssetIds = Object.keys(selectedAssetsForScan).filter(
+                          (id) => selectedAssetsForScan[id as any]
+                        );
+                        if (selectedAssetIds.length > 0) {
+                          handleScanAssets(item.id);
+                        }
+                      }}
+                      disabled={isScanning || Object.values(selectedAssetsForScan).every(v => !v)}
+                      className={cn(
+                        "w-full font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 mb-4",
+                        isScanning || Object.values(selectedAssetsForScan).every(v => !v)
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700 text-white",
+                      )}
+                    >
+                      <span>{isScanning ? "⏳" : "🔍"}</span>
+                      {isScanning
+                        ? "Scanning Against Each CVEs..."
+                        : `Scan Against Each CVEs for Threat Intel`}
+                    </button>
+
                     <h4 className="font-semibold text-gray-900 mb-3 text-sm">
-                      CVEs Found in Market ({marketCVEs.length})
+                      🛡️ Threat Intel ({marketCVEs.length})
                     </h4>
                     <div className="space-y-2 max-h-96 overflow-y-auto">
                       {marketCVEs.map((cve) => {
