@@ -94,38 +94,37 @@ export default function Index() {
             </p>
           </div>
 
-          {/* Key Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          {/* Key Metrics - Pie Charts and Simple Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            {/* CVEs Pie Chart - Takes up more space */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-lg border border-gray-200 p-4">
+                <CVEsPieChart compact={true} />
+              </div>
+            </div>
+
+            {/* Total Tech Stacks Card */}
             <MetricCard
               label="Total Tech Stacks"
               value={metrics.totalTechStacks}
               color="blue"
               icon="📦"
             />
-            <MetricCard
-              label="Assets Monitored"
-              value={metrics.assetsMonitored}
-              color="purple"
-              icon="🎯"
-            />
-            <MetricCard
-              label="Critical CVEs"
-              value={metrics.criticalCVEs}
-              color="red"
-              icon="🔴"
-            />
-            <MetricCard
-              label="EOL Technologies"
-              value={metrics.totalEOL}
-              color="orange"
-              icon="⚠️"
-            />
+
+            {/* Assets Scanned Card (renamed from Assets Monitored) */}
             <MetricCard
               label="Assets Scanned"
-              value={metrics.assetScanned}
+              value={metrics.assetsScanned}
               color="green"
               icon="✓"
             />
+          </div>
+
+          {/* EOL Pie Chart Row */}
+          <div className="grid grid-cols-1 mt-4">
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <EOLPieChart compact={true} />
+            </div>
           </div>
         </div>
       </header>
