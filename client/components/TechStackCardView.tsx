@@ -128,43 +128,18 @@ export function TechStackCardView({
               )}
             </div>
 
-            {/* CVE Summary */}
+            {/* Threat Summary */}
             <div className="mb-4 p-3 bg-white rounded border border-gray-200">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">
-                  Threat
-                </span>
-                <span className="text-lg font-bold text-gray-900">
-                  {techStack.cves.length + techStack.unscannedThreatsCount}
-                </span>
-              </div>
-              <div className="text-xs space-y-1 mb-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Scanned:</span>
-                  <span className="font-semibold text-red-700">{techStack.cves.length}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Unscanned:</span>
-                  <span className="font-semibold text-amber-700">{techStack.unscannedThreatsCount}</span>
-                </div>
-              </div>
-              {techStack.cves.length > 0 && (
-                <div className="space-y-2 pt-2 border-t border-gray-200">
-                  {techStack.cves.slice(0, 2).map((cve) => (
-                    <div key={cve.id} className="text-xs">
-                      <Badge className={getCVEColor(cve.severity)}>
-                        {cve.severity.toUpperCase()}
-                      </Badge>
-                      <p className="text-gray-600 mt-1">{cve.title}</p>
-                    </div>
-                  ))}
-                  {techStack.cves.length > 2 && (
-                    <p className="text-xs text-gray-500">
-                      +{techStack.cves.length - 2} more
-                    </p>
-                  )}
-                </div>
-              )}
+              <p className="text-sm font-medium text-gray-700 mb-2">
+                Threat
+              </p>
+              <ThreatBar
+                cves={techStack.cves}
+                unscannedCount={techStack.unscannedThreatsCount}
+              />
+              <p className="text-xs text-gray-600 mt-2">
+                {techStack.cves.length} scanned, {techStack.unscannedThreatsCount} unscanned
+              </p>
             </div>
 
             {/* Associated Assets */}
