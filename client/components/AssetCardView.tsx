@@ -84,16 +84,26 @@ export function AssetCardView({ assets, onSelectCard }: AssetCardViewProps) {
 
           {/* CVE Summary */}
           <div className="mb-4 p-3 bg-white rounded border border-gray-200">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-gray-700">
                 Threat
               </span>
               <span className="text-lg font-bold text-gray-900">
-                {asset.cveCount}
+                {asset.cveCount + asset.techStacks.reduce((sum, ts) => sum + ts.unscannedThreatsCount, 0)}
               </span>
             </div>
+            <div className="text-xs space-y-1 mb-2">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Scanned:</span>
+                <span className="font-semibold text-red-700">{asset.cveCount}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Unscanned:</span>
+                <span className="font-semibold text-amber-700">{asset.techStacks.reduce((sum, ts) => sum + ts.unscannedThreatsCount, 0)}</span>
+              </div>
+            </div>
             {asset.topCriticalCVE && (
-              <div className="mt-2">
+              <div className="pt-2 border-t border-gray-200">
                 <Badge className="bg-red-100 text-red-800 text-xs mb-1">
                   🔴 CRITICAL
                 </Badge>
