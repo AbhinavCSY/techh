@@ -107,6 +107,11 @@ export function TechStackTableView({
                   </div>
                 </TableCell>
                 <TableCell>
+                  <Badge className="bg-blue-100 text-blue-800 text-xs">
+                    {techStack.effectiveLicense}
+                  </Badge>
+                </TableCell>
+                <TableCell>
                   <div className="text-sm">
                     <p className="font-medium">
                       {associatedAssets.length} assets
