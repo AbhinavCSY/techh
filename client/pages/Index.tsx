@@ -1248,20 +1248,42 @@ function DetailsPanel({
                     {getAssociatedAssets(item.id).length !== 1 ? "s" : ""}
                   </h4>
                   <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {getAssociatedAssets(item.id).map((asset) => (
-                      <div
-                        key={asset.id}
-                        className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
-                      >
-                        <p className="font-semibold text-sm">{asset.name}</p>
-                        <p className="text-xs text-gray-600">
-                          {asset.type.replace("-", " ")} • Risk:{" "}
-                          <span className="font-semibold">
-                            {asset.riskLevel}
-                          </span>
-                        </p>
-                      </div>
-                    ))}
+                    {getAssociatedAssets(item.id).map((asset) => {
+                      const getRiskBadgeColor = (level: string) => {
+                        switch (level) {
+                          case "critical":
+                            return "bg-red-100 text-red-800";
+                          case "high":
+                            return "bg-orange-100 text-orange-800";
+                          case "medium":
+                            return "bg-yellow-100 text-yellow-800";
+                          case "low":
+                            return "bg-green-100 text-green-800";
+                          default:
+                            return "bg-gray-100 text-gray-800";
+                        }
+                      };
+
+                      return (
+                        <div
+                          key={asset.id}
+                          className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <p className="font-semibold text-sm text-gray-900">{asset.name}</p>
+                            <Badge className={`${getRiskBadgeColor(asset.riskLevel)} text-xs`}>
+                              {asset.riskLevel}
+                            </Badge>
+                          </div>
+                          <div className="space-y-1 text-xs text-gray-600">
+                            <p>Type: <span className="font-medium text-gray-700">{asset.type.replace("-", " ")}</span></p>
+                            <p>CVEs: <span className="font-medium text-gray-700">{asset.cveCount}</span></p>
+                            <p>Last Updated: <span className="font-medium text-gray-700">{asset.lastUpdated.toLocaleDateString()}</span></p>
+                            {asset.isScanned && <p className="text-green-700">✓ Scanned</p>}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 
