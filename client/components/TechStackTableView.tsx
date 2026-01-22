@@ -126,31 +126,11 @@ export function TechStackTableView({
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <div className="flex flex-col gap-2">
-                    <div className="text-sm">
-                      <p className="font-bold text-gray-900">{techStack.cves.length + techStack.unscannedThreatsCount}</p>
-                      <p className="text-xs text-gray-600">
-                        {techStack.cves.length} scanned, {techStack.unscannedThreatsCount} unscanned
-                      </p>
-                    </div>
-                    {(criticalCVE || highCVE) && (
-                      <div className="flex flex-wrap gap-1">
-                        {criticalCVE && (
-                          <span className={cn('text-xs font-semibold px-2 py-0.5 rounded', getCVEColor('critical'))}>
-                            🔴 {techStack.cves.filter((c) => c.severity === 'critical').length} Critical
-                          </span>
-                        )}
-                        {highCVE && (
-                          <span className={cn('text-xs font-semibold px-2 py-0.5 rounded', getCVEColor('high'))}>
-                            🟠 {techStack.cves.filter((c) => c.severity === 'high').length} High
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    {techStack.cves.length === 0 && techStack.unscannedThreatsCount === 0 && (
-                      <span className="text-xs text-green-600 font-medium">✓ None</span>
-                    )}
-                  </div>
+                  <ThreatBar
+                    cves={techStack.cves}
+                    unscannedCount={techStack.unscannedThreatsCount}
+                    className="w-48"
+                  />
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-wrap gap-1">
