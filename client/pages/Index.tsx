@@ -97,7 +97,7 @@ export default function Index() {
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
                   <span className="text-4xl">🔒</span>
-                  Tech Stack Inventory
+                  Asset Inventory
                 </h1>
                 <p className="text-gray-600 mt-1">
                   Manage and monitor your technology dependencies and security
@@ -143,113 +143,115 @@ export default function Index() {
         </div>
       </header>
 
+      {/* Inventory Type Tabs */}
+      <div className="sticky top-16 z-20 border-b border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex gap-1 items-end">
+            <button
+              onClick={() => setGrouping("asset")}
+              className={cn(
+                "px-4 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap",
+                grouping === "asset"
+                  ? "border-blue-600 text-blue-600"
+                  : "border-transparent text-gray-600 hover:text-gray-900"
+              )}
+            >
+              🖥️ Asset Inventory
+            </button>
+            <button
+              onClick={() => setGrouping("tech-stack")}
+              className={cn(
+                "px-4 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap",
+                grouping === "tech-stack"
+                  ? "border-blue-600 text-blue-600"
+                  : "border-transparent text-gray-600 hover:text-gray-900"
+              )}
+            >
+              📦 Tech Stack Inventory
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter Bar */}
+      <HorizontalFilterBar
+        filters={filters}
+        onFilterChange={updateFilter}
+        onClearFilters={clearFilters}
+        hasActiveFilters={hasActiveFilters}
+        viewType={viewType}
+        onViewTypeChange={setViewType}
+        grouping={grouping}
+        onGroupingChange={setGrouping}
+        onExport={handleExport}
+      />
+
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex gap-6">
-          {/* Sidebar - Filters */}
-          <aside className="hidden lg:block w-56">
-            <div className="sticky top-24">
-              <FilterPanel
-                filters={filters}
-                onFilterChange={updateFilter}
-                onClearFilters={clearFilters}
-                hasActiveFilters={hasActiveFilters}
-                viewType={viewType}
-                onViewTypeChange={setViewType}
-                grouping={grouping}
-                onGroupingChange={setGrouping}
-                onExport={handleExport}
-              />
-            </div>
-          </aside>
-
-          {/* Main Content Area */}
-          <div className="flex-1">
-            {/* Empty State */}
-            {filteredTechStacks.length === 0 && filteredAssets.length === 0 ? (
-              <div className="bg-white rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
-                <AlertTriangle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  No items found
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Try adjusting your filters or search criteria
-                </p>
-                {hasActiveFilters && (
-                  <Button onClick={clearFilters} variant="outline">
-                    Clear All Filters
-                  </Button>
+        {/* Empty State */}
+        {filteredTechStacks.length === 0 && filteredAssets.length === 0 ? (
+          <div className="bg-white rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
+            <AlertTriangle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              No items found
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Try adjusting your filters or search criteria
+            </p>
+            {hasActiveFilters && (
+              <Button onClick={clearFilters} variant="outline">
+                Clear All Filters
+              </Button>
+            )}
+          </div>
+        ) : (
+          <>
+            {/* Content - Card or Table View */}
+            {viewType === "card" ? (
+              <>
+                {grouping === "tech-stack" ? (
+                  <TechStackCardView
+                    techStacks={filteredTechStacks}
+                    allAssets={assetDatabase}
+                    onSelectCard={(ts) => {
+                      setSelectedItem(ts);
+                      setShowDetails(true);
+                    }}
+                  />
+                ) : (
+                  <AssetCardView
+                    assets={filteredAssets}
+                    onSelectCard={(asset) => {
+                      setSelectedItem(asset);
+                      setShowDetails(true);
+                    }}
+                  />
                 )}
-              </div>
+              </>
             ) : (
               <>
-                {/* Results Info */}
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900">
-                      {grouping === "tech-stack"
-                        ? "Tech Stack Inventory"
-                        : "Asset Inventory"}
-                    </h2>
-                    <p className="text-sm text-gray-600">
-                      Showing{" "}
-                      {grouping === "tech-stack"
-                        ? filteredTechStacks.length
-                        : filteredAssets.length}{" "}
-                      {grouping === "tech-stack" ? "tech stacks" : "assets"}
-                      {hasActiveFilters && " (filtered)"}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Content - Card or Table View */}
-                {viewType === "card" ? (
-                  <>
-                    {grouping === "tech-stack" ? (
-                      <TechStackCardView
-                        techStacks={filteredTechStacks}
-                        allAssets={assetDatabase}
-                        onSelectCard={(ts) => {
-                          setSelectedItem(ts);
-                          setShowDetails(true);
-                        }}
-                      />
-                    ) : (
-                      <AssetCardView
-                        assets={filteredAssets}
-                        onSelectCard={(asset) => {
-                          setSelectedItem(asset);
-                          setShowDetails(true);
-                        }}
-                      />
-                    )}
-                  </>
+                {grouping === "tech-stack" ? (
+                  <TechStackTableView
+                    techStacks={filteredTechStacks}
+                    allAssets={assetDatabase}
+                    onSelectRow={(ts) => {
+                      setSelectedItem(ts);
+                      setShowDetails(true);
+                    }}
+                  />
                 ) : (
-                  <>
-                    {grouping === "tech-stack" ? (
-                      <TechStackTableView
-                        techStacks={filteredTechStacks}
-                        allAssets={assetDatabase}
-                        onSelectRow={(ts) => {
-                          setSelectedItem(ts);
-                          setShowDetails(true);
-                        }}
-                      />
-                    ) : (
-                      <AssetTableView
-                        assets={filteredAssets}
-                        onSelectRow={(asset) => {
-                          setSelectedItem(asset);
-                          setShowDetails(true);
-                        }}
-                      />
-                    )}
-                  </>
+                  <AssetTableView
+                    assets={filteredAssets}
+                    onSelectRow={(asset) => {
+                      setSelectedItem(asset);
+                      setShowDetails(true);
+                    }}
+                  />
                 )}
               </>
             )}
-          </div>
-        </div>
+          </>
+        )}
       </main>
 
       {/* Detail Panel */}
