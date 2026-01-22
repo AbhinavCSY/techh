@@ -100,12 +100,17 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
                 </Badge>
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-lg text-gray-900">
-                    {asset.cveCount}
-                  </span>
+                <div className="flex flex-col gap-1">
+                  <div>
+                    <p className="font-bold text-lg text-gray-900">
+                      {asset.cveCount + asset.techStacks.reduce((sum, ts) => sum + ts.unscannedThreatsCount, 0)}
+                    </p>
+                    <p className="text-xs text-gray-600">
+                      {asset.cveCount} scanned, {asset.techStacks.reduce((sum, ts) => sum + ts.unscannedThreatsCount, 0)} unscanned
+                    </p>
+                  </div>
                   {asset.topCriticalCVE && (
-                    <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
+                    <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded w-fit">
                       🔴 Critical
                     </span>
                   )}
