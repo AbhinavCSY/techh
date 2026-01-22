@@ -1078,43 +1078,89 @@ function DetailsPanel({
                   )}
                 </div>
 
-                {/* Known Vulnerabilities */}
-                {item.cves.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">
-                      Known Vulnerabilities ({item.cves.length})
-                    </h4>
-                    <div className="space-y-2 max-h-48 overflow-y-auto">
-                      {item.cves.map((cve: any) => (
-                        <div
-                          key={cve.id}
-                          className="p-3 bg-red-50 rounded-lg border border-red-200 hover:bg-red-100 transition-colors"
-                        >
-                          <div className="flex items-start gap-2">
-                            <span className="text-lg">
-                              {cve.severity === "critical"
-                                ? "🔴"
-                                : cve.severity === "high"
-                                  ? "🟠"
-                                  : cve.severity === "medium"
-                                    ? "🟡"
-                                    : "🟢"}
-                            </span>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm text-red-900">
-                                {cve.title}
-                              </p>
-                              <p className="text-xs text-red-700 mt-1">
-                                {cve.id} • {cve.severity.toUpperCase()} • CVSS:{" "}
-                                {cve.score.toFixed(1)}
-                              </p>
+                {/* Threat Section - Scanned and Unscanned */}
+                <div>
+                  {/* Threat Scanned */}
+                  {item.cves.length > 0 && (
+                    <div className="mb-6">
+                      <h4 className="font-semibold text-gray-900 mb-3">
+                        🎯 Threat Scanned ({item.cves.length})
+                      </h4>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {item.cves.map((cve: any) => (
+                          <div
+                            key={cve.id}
+                            className="p-3 bg-red-50 rounded-lg border border-red-200 hover:bg-red-100 transition-colors"
+                          >
+                            <div className="flex items-start gap-2">
+                              <span className="text-lg">
+                                {cve.severity === "critical"
+                                  ? "🔴"
+                                  : cve.severity === "high"
+                                    ? "🟠"
+                                    : cve.severity === "medium"
+                                      ? "🟡"
+                                      : "🟢"}
+                              </span>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-sm text-red-900">
+                                  {cve.title}
+                                </p>
+                                <p className="text-xs text-red-700 mt-1">
+                                  {cve.id} • {cve.severity.toUpperCase()} • CVSS:{" "}
+                                  {cve.score.toFixed(1)}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+
+                  {/* Threat Unscanned */}
+                  {marketCVEs.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-3">
+                        ⚠️ Threat Unscanned ({marketCVEs.length})
+                      </h4>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {marketCVEs.map((cve: any) => (
+                          <div
+                            key={cve.id}
+                            className={cn(
+                              "p-3 rounded-lg border transition-colors",
+                              cve.severity === "critical"
+                                ? "bg-red-50 border-red-200 hover:bg-red-100"
+                                : cve.severity === "high"
+                                  ? "bg-orange-50 border-orange-200 hover:bg-orange-100"
+                                  : "bg-yellow-50 border-yellow-200 hover:bg-yellow-100"
+                            )}
+                          >
+                            <div className="flex items-start gap-2">
+                              <span className="text-lg">
+                                {cve.severity === "critical"
+                                  ? "🔴"
+                                  : cve.severity === "high"
+                                    ? "🟠"
+                                    : "🟡"}
+                              </span>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-sm text-gray-900">
+                                  {cve.title}
+                                </p>
+                                <p className="text-xs text-gray-700 mt-1">
+                                  {cve.id} • {cve.severity.toUpperCase()} • CVSS:{" "}
+                                  {cve.score.toFixed(1)}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* Associated Assets */}
                 <div>
