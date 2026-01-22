@@ -8,7 +8,7 @@ import {
   sortAssets,
 } from "@/hooks/useFilters";
 import { techStackDatabase, assetDatabase } from "@/data/mockData";
-import { FilterPanel } from "@/components/FilterPanel";
+import { HorizontalFilterBar } from "@/components/HorizontalFilterBar";
 import { TechStackCardView } from "@/components/TechStackCardView";
 import { AssetCardView } from "@/components/AssetCardView";
 import { TechStackTableView } from "@/components/TechStackTableView";
@@ -18,6 +18,7 @@ import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 export default function Index() {
   const navigate = useNavigate();
