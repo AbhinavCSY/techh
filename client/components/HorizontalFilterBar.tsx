@@ -189,25 +189,31 @@ export function HorizontalFilterBar({
             )}
           </div>
 
-          {/* View Type Dropdown */}
-          <select
-            value={viewType}
-            onChange={(e) => onViewTypeChange(e.target.value as ViewType)}
-            className="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-700 hover:border-gray-400 cursor-pointer"
-          >
-            <option value="card">📋 Card View</option>
-            <option value="table">📊 Table View</option>
-          </select>
-
-          {/* Group By Dropdown */}
-          <select
-            value={grouping}
-            onChange={(e) => onGroupingChange(e.target.value as GroupingType)}
-            className="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-700 hover:border-gray-400 cursor-pointer"
-          >
-            <option value="tech-stack">📦 Tech Stack</option>
-            <option value="asset">🖥️ Asset</option>
-          </select>
+          {/* View Type Switch */}
+          <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
+            <button
+              onClick={() => onViewTypeChange('card')}
+              className={cn(
+                "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
+                viewType === 'card'
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              )}
+            >
+              📋 Card
+            </button>
+            <button
+              onClick={() => onViewTypeChange('table')}
+              className={cn(
+                "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
+                viewType === 'table'
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              )}
+            >
+              📊 Table
+            </button>
+          </div>
 
           {/* Sort Dropdown */}
           <select
