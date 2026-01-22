@@ -64,6 +64,7 @@ export function TechStackTableView({
           <TableRow>
             <TableHead className="font-semibold">Tech Stack</TableHead>
             <TableHead className="font-semibold">Version</TableHead>
+            <TableHead className="font-semibold">License</TableHead>
             <TableHead className="font-semibold">Associated Assets</TableHead>
             <TableHead className="font-semibold">Risk</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
@@ -104,6 +105,11 @@ export function TechStackTableView({
                       </p>
                     )}
                   </div>
+                </TableCell>
+                <TableCell>
+                  <Badge className="bg-blue-100 text-blue-800 text-xs">
+                    {techStack.effectiveLicense}
+                  </Badge>
                 </TableCell>
                 <TableCell>
                   <div className="text-sm">

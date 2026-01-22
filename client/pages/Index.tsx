@@ -86,10 +86,7 @@ export default function Index() {
       <header className="border-b border-gray-200 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-2">
           <div className="flex items-center justify-between mb-2">
-            <h1 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <span className="text-xl">🔒</span>
-              Asset Inventory
-            </h1>
+            <h1 className="text-lg font-bold text-gray-900">Asset Inventory</h1>
             <p className="text-xs text-gray-500">
               Manage and monitor your technology dependencies
             </p>
@@ -328,6 +325,12 @@ function DetailsPanel({
   const [selectedAssetsForScan, setSelectedAssetsForScan] = useState<
     Record<string, boolean>
   >({});
+  const [selectedCVEForAssets, setSelectedCVEForAssets] = useState<
+    string | null
+  >(null);
+  const [cveAssetSelections, setCVEAssetSelections] = useState<
+    Record<string, Record<string, boolean>>
+  >({});
 
   // Initialize selected assets when item changes
   const initializeSelectedAssets = () => {
@@ -498,7 +501,7 @@ function DetailsPanel({
 
         {/* Panel */}
         <div
-          className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-xl transform transition-transform overflow-y-auto"
+          className="absolute right-0 top-0 bottom-0 w-full max-w-[702px] bg-white shadow-xl transform transition-transform overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -600,6 +603,11 @@ function DetailsPanel({
                   <DetailRowClickable
                     label="License"
                     value={item.license}
+                    isClickable={false}
+                  />
+                  <DetailRowClickable
+                    label="Effective License"
+                    value={item.effectiveLicense}
                     isClickable={false}
                   />
                   <DetailRowClickable
@@ -850,18 +858,37 @@ function DetailsPanel({
 
                               <div className="flex gap-2 pt-2">
                                 <button
-                                  onClick={() => handleScanCVE(cve.id, item.id)}
-                                  disabled={isScanning}
-                                  className={cn(
-                                    "flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1",
-                                    isScanning
-                                      ? "bg-blue-400 text-white cursor-not-allowed"
-                                      : "bg-blue-600 hover:bg-blue-700 text-white",
-                                  )}
+                                  onClick={() => {
+                                    if (
+                                      selectedCVEForAssets ===
+                                      `scanned-${cve.id}`
+                                    ) {
+                                      setSelectedCVEForAssets(null);
+                                    } else {
+                                      setSelectedCVEForAssets(
+                                        `scanned-${cve.id}`,
+                                      );
+                                      const assets = getAssociatedAssets(
+                                        item.id,
+                                      );
+                                      const selections: Record<
+                                        string,
+                                        boolean
+                                      > = {};
+                                      assets.forEach((a) => {
+                                        selections[a.id] = true;
+                                      });
+                                      setCVEAssetSelections((prev) => ({
+                                        ...prev,
+                                        [`scanned-${cve.id}`]: selections,
+                                      }));
+                                    }
+                                  }}
+                                  className="flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white"
                                 >
-                                  <span>{isScanning ? "⏳" : "🔍"}</span>
-                                  {isScanning
-                                    ? "Scanning Assets"
+                                  <span>🔍</span>
+                                  {selectedCVEForAssets === `scanned-${cve.id}`
+                                    ? "Hide Assets"
                                     : `Scan ${getAssociatedAssets(item.id).length} Assets`}
                                 </button>
                                 <button
@@ -873,6 +900,120 @@ function DetailsPanel({
                                   Full Details
                                 </button>
                               </div>
+
+                              {/* Asset Selection for Scanned CVE */}
+                              {selectedCVEForAssets === `scanned-${cve.id}` && (
+                                <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <label className="text-xs font-semibold text-gray-700">
+                                      Select Assets to Scan
+                                    </label>
+                                    <button
+                                      onClick={() => {
+                                        const allAssets = getAssociatedAssets(
+                                          item.id,
+                                        );
+                                        const currentSelections =
+                                          cveAssetSelections[
+                                            `scanned-${cve.id}`
+                                          ] || {};
+                                        const allSelected = allAssets.every(
+                                          (a) => currentSelections[a.id],
+                                        );
+                                        const newSelections: Record<
+                                          string,
+                                          boolean
+                                        > = {};
+                                        allAssets.forEach((a) => {
+                                          newSelections[a.id] = !allSelected;
+                                        });
+                                        setCVEAssetSelections((prev) => ({
+                                          ...prev,
+                                          [`scanned-${cve.id}`]: newSelections,
+                                        }));
+                                      }}
+                                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                                    >
+                                      {Object.values(
+                                        cveAssetSelections[
+                                          `scanned-${cve.id}`
+                                        ] || {},
+                                      ).every((v) => v)
+                                        ? "Deselect All"
+                                        : "Select All"}
+                                    </button>
+                                  </div>
+                                  <div className="space-y-1 max-h-32 overflow-y-auto">
+                                    {getAssociatedAssets(item.id).map(
+                                      (asset) => (
+                                        <label
+                                          key={asset.id}
+                                          className="flex items-center gap-2 cursor-pointer text-xs"
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            checked={
+                                              cveAssetSelections[
+                                                `scanned-${cve.id}`
+                                              ]?.[asset.id] || false
+                                            }
+                                            onChange={(e) => {
+                                              setCVEAssetSelections((prev) => ({
+                                                ...prev,
+                                                [`scanned-${cve.id}`]: {
+                                                  ...prev[`scanned-${cve.id}`],
+                                                  [asset.id]: e.target.checked,
+                                                },
+                                              }));
+                                            }}
+                                            className="w-4 h-4 rounded"
+                                          />
+                                          <span className="text-gray-700">
+                                            {asset.name}
+                                          </span>
+                                        </label>
+                                      ),
+                                    )}
+                                  </div>
+                                  <button
+                                    onClick={() => {
+                                      const selectedAssetIds = Object.keys(
+                                        cveAssetSelections[
+                                          `scanned-${cve.id}`
+                                        ] || {},
+                                      ).filter(
+                                        (id) =>
+                                          cveAssetSelections[
+                                            `scanned-${cve.id}`
+                                          ][id],
+                                      );
+                                      if (selectedAssetIds.length > 0) {
+                                        handleScanCVE(cve.id, item.id);
+                                        setSelectedCVEForAssets(null);
+                                      }
+                                    }}
+                                    disabled={
+                                      !Object.values(
+                                        cveAssetSelections[
+                                          `scanned-${cve.id}`
+                                        ] || {},
+                                      ).some((v) => v)
+                                    }
+                                    className={cn(
+                                      "w-full py-1.5 px-2 rounded text-xs font-medium transition-colors",
+                                      Object.values(
+                                        cveAssetSelections[
+                                          `scanned-${cve.id}`
+                                        ] || {},
+                                      ).some((v) => v)
+                                        ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                        : "bg-gray-400 text-white cursor-not-allowed",
+                                    )}
+                                  >
+                                    Scan Selected Assets
+                                  </button>
+                                </div>
+                              )}
 
                               {cveResults && !isScanning && (
                                 <div className="p-2 bg-blue-100 border border-blue-300 rounded">
@@ -1014,18 +1155,37 @@ function DetailsPanel({
                               {/* Action Buttons */}
                               <div className="flex gap-2 pt-2">
                                 <button
-                                  onClick={() => handleScanCVE(cve.id, item.id)}
-                                  disabled={isScanning}
-                                  className={cn(
-                                    "flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1",
-                                    isScanning
-                                      ? "bg-blue-400 text-white cursor-not-allowed"
-                                      : "bg-blue-600 hover:bg-blue-700 text-white",
-                                  )}
+                                  onClick={() => {
+                                    if (
+                                      selectedCVEForAssets ===
+                                      `market-${cve.id}`
+                                    ) {
+                                      setSelectedCVEForAssets(null);
+                                    } else {
+                                      setSelectedCVEForAssets(
+                                        `market-${cve.id}`,
+                                      );
+                                      const assets = getAssociatedAssets(
+                                        item.id,
+                                      );
+                                      const selections: Record<
+                                        string,
+                                        boolean
+                                      > = {};
+                                      assets.forEach((a) => {
+                                        selections[a.id] = true;
+                                      });
+                                      setCVEAssetSelections((prev) => ({
+                                        ...prev,
+                                        [`market-${cve.id}`]: selections,
+                                      }));
+                                    }
+                                  }}
+                                  className="flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white"
                                 >
-                                  <span>{isScanning ? "⏳" : "🔍"}</span>
-                                  {isScanning
-                                    ? "Scanning Assets"
+                                  <span>🔍</span>
+                                  {selectedCVEForAssets === `market-${cve.id}`
+                                    ? "Hide Assets"
                                     : `Scan ${getAssociatedAssets(item.id).length} Assets`}
                                 </button>
                                 <button
@@ -1037,6 +1197,120 @@ function DetailsPanel({
                                   Full Details
                                 </button>
                               </div>
+
+                              {/* Asset Selection for Market CVE */}
+                              {selectedCVEForAssets === `market-${cve.id}` && (
+                                <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <label className="text-xs font-semibold text-gray-700">
+                                      Select Assets to Scan
+                                    </label>
+                                    <button
+                                      onClick={() => {
+                                        const allAssets = getAssociatedAssets(
+                                          item.id,
+                                        );
+                                        const currentSelections =
+                                          cveAssetSelections[
+                                            `market-${cve.id}`
+                                          ] || {};
+                                        const allSelected = allAssets.every(
+                                          (a) => currentSelections[a.id],
+                                        );
+                                        const newSelections: Record<
+                                          string,
+                                          boolean
+                                        > = {};
+                                        allAssets.forEach((a) => {
+                                          newSelections[a.id] = !allSelected;
+                                        });
+                                        setCVEAssetSelections((prev) => ({
+                                          ...prev,
+                                          [`market-${cve.id}`]: newSelections,
+                                        }));
+                                      }}
+                                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                                    >
+                                      {Object.values(
+                                        cveAssetSelections[
+                                          `market-${cve.id}`
+                                        ] || {},
+                                      ).every((v) => v)
+                                        ? "Deselect All"
+                                        : "Select All"}
+                                    </button>
+                                  </div>
+                                  <div className="space-y-1 max-h-32 overflow-y-auto">
+                                    {getAssociatedAssets(item.id).map(
+                                      (asset) => (
+                                        <label
+                                          key={asset.id}
+                                          className="flex items-center gap-2 cursor-pointer text-xs"
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            checked={
+                                              cveAssetSelections[
+                                                `market-${cve.id}`
+                                              ]?.[asset.id] || false
+                                            }
+                                            onChange={(e) => {
+                                              setCVEAssetSelections((prev) => ({
+                                                ...prev,
+                                                [`market-${cve.id}`]: {
+                                                  ...prev[`market-${cve.id}`],
+                                                  [asset.id]: e.target.checked,
+                                                },
+                                              }));
+                                            }}
+                                            className="w-4 h-4 rounded"
+                                          />
+                                          <span className="text-gray-700">
+                                            {asset.name}
+                                          </span>
+                                        </label>
+                                      ),
+                                    )}
+                                  </div>
+                                  <button
+                                    onClick={() => {
+                                      const selectedAssetIds = Object.keys(
+                                        cveAssetSelections[
+                                          `market-${cve.id}`
+                                        ] || {},
+                                      ).filter(
+                                        (id) =>
+                                          cveAssetSelections[
+                                            `market-${cve.id}`
+                                          ][id],
+                                      );
+                                      if (selectedAssetIds.length > 0) {
+                                        handleScanCVE(cve.id, item.id);
+                                        setSelectedCVEForAssets(null);
+                                      }
+                                    }}
+                                    disabled={
+                                      !Object.values(
+                                        cveAssetSelections[
+                                          `market-${cve.id}`
+                                        ] || {},
+                                      ).some((v) => v)
+                                    }
+                                    className={cn(
+                                      "w-full py-1.5 px-2 rounded text-xs font-medium transition-colors",
+                                      Object.values(
+                                        cveAssetSelections[
+                                          `market-${cve.id}`
+                                        ] || {},
+                                      ).some((v) => v)
+                                        ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                        : "bg-gray-400 text-white cursor-not-allowed",
+                                    )}
+                                  >
+                                    Scan Selected Assets
+                                  </button>
+                                </div>
+                              )}
 
                               {/* Scan Results for this CVE */}
                               {cveResults && !isScanning && (
@@ -1088,20 +1362,63 @@ function DetailsPanel({
                     {getAssociatedAssets(item.id).length !== 1 ? "s" : ""}
                   </h4>
                   <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {getAssociatedAssets(item.id).map((asset) => (
-                      <div
-                        key={asset.id}
-                        className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
-                      >
-                        <p className="font-semibold text-sm">{asset.name}</p>
-                        <p className="text-xs text-gray-600">
-                          {asset.type.replace("-", " ")} • Risk:{" "}
-                          <span className="font-semibold">
-                            {asset.riskLevel}
-                          </span>
-                        </p>
-                      </div>
-                    ))}
+                    {getAssociatedAssets(item.id).map((asset) => {
+                      const getRiskBadgeColor = (level: string) => {
+                        switch (level) {
+                          case "critical":
+                            return "bg-red-100 text-red-800";
+                          case "high":
+                            return "bg-orange-100 text-orange-800";
+                          case "medium":
+                            return "bg-yellow-100 text-yellow-800";
+                          case "low":
+                            return "bg-green-100 text-green-800";
+                          default:
+                            return "bg-gray-100 text-gray-800";
+                        }
+                      };
+
+                      return (
+                        <div
+                          key={asset.id}
+                          className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <p className="font-semibold text-sm text-gray-900">
+                              {asset.name}
+                            </p>
+                            <Badge
+                              className={`${getRiskBadgeColor(asset.riskLevel)} text-xs`}
+                            >
+                              {asset.riskLevel}
+                            </Badge>
+                          </div>
+                          <div className="space-y-1 text-xs text-gray-600">
+                            <p>
+                              Type:{" "}
+                              <span className="font-medium text-gray-700">
+                                {asset.type.replace("-", " ")}
+                              </span>
+                            </p>
+                            <p>
+                              CVEs:{" "}
+                              <span className="font-medium text-gray-700">
+                                {asset.cveCount}
+                              </span>
+                            </p>
+                            <p>
+                              Last Updated:{" "}
+                              <span className="font-medium text-gray-700">
+                                {asset.lastUpdated.toLocaleDateString()}
+                              </span>
+                            </p>
+                            {asset.isScanned && (
+                              <p className="text-green-700">✓ Scanned</p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 

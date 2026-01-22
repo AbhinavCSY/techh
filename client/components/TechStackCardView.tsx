@@ -100,10 +100,16 @@ export function TechStackCardView({
               </Badge>
             </div>
 
-            {/* Type Badge */}
-            <div className="mb-3">
+            {/* Type and License */}
+            <div className="mb-3 flex items-center gap-2">
               <Badge variant="outline" className="text-xs">
                 {techStack.type}
+              </Badge>
+              <Badge
+                variant="secondary"
+                className="text-xs bg-blue-100 text-blue-800"
+              >
+                {techStack.effectiveLicense}
               </Badge>
             </div>
 
