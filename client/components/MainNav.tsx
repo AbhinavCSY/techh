@@ -127,47 +127,43 @@ export function MainNav() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white">
-          <nav className="px-4 py-2 space-y-1 max-h-96 overflow-y-auto">
+        <div className="lg:hidden border-t border-gray-200 bg-white">
+          <nav className="px-4 py-3 space-y-1 max-h-96 overflow-y-auto">
             {/* Products */}
             <div className="py-2 border-b border-gray-200">
-              <p className="text-xs font-semibold text-gray-600 px-3 py-1 uppercase tracking-wide">Products</p>
+              <p className="text-xs font-semibold text-gray-500 px-3 py-1 uppercase tracking-wide">Products</p>
               {navProducts.map((product) => (
                 <button
                   key={product.id}
                   className={cn(
-                    "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                    "w-full text-left px-3 py-2 rounded text-sm font-medium transition-colors",
                     product.active
                       ? "bg-blue-100 text-blue-900"
                       : "text-gray-700 hover:bg-gray-100",
                   )}
                 >
-                  <span>{product.icon}</span>
-                  <span>{product.label}</span>
+                  {product.label}
                 </button>
               ))}
             </div>
 
             {/* Menu Items */}
             <div className="py-2">
-              <p className="text-xs font-semibold text-gray-600 px-3 py-1 uppercase tracking-wide">Menu</p>
+              <p className="text-xs font-semibold text-gray-500 px-3 py-1 uppercase tracking-wide">Menu</p>
               {navMenuItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.path)}
                   className={cn(
-                    "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                    "w-full text-left flex items-center justify-between px-3 py-2 rounded text-sm font-medium transition-colors",
                     location.pathname === item.path
                       ? "bg-blue-100 text-blue-900"
                       : "text-gray-700 hover:bg-gray-100",
                   )}
                 >
-                  <div className="flex items-center gap-2">
-                    <span>{item.icon}</span>
-                    {item.label}
-                  </div>
+                  {item.label}
                   {item.badge && (
-                    <span className="bg-red-500 text-white text-xs rounded-full px-2">
+                    <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {item.badge}
                     </span>
                   )}
