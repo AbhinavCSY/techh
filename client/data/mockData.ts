@@ -45,7 +45,13 @@ export interface TechStack {
   riskScore: number;
   createdAt: Date;
   license: string;
-  effectiveLicense: "MIT" | "Apache" | "BSD 3" | "LGPL" | "PostgreSQL License" | "Other";
+  effectiveLicense:
+    | "MIT"
+    | "Apache"
+    | "BSD 3"
+    | "LGPL"
+    | "PostgreSQL License"
+    | "Other";
   versionHistory: VersionHistory[];
   remediations: Remediation[];
   reliabilityIndicators: PackageReliabilityIndicators;
