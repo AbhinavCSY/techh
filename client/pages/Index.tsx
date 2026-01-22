@@ -665,8 +665,8 @@ function DetailsPanel({
                   </div>
                 </div>
 
-                {/* CVE Vulnerability Scan Section */}
-                <div>
+                {/* Threat Intel Section */}
+                <div className="mb-6">
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-lg">🔍</span>
