@@ -1,6 +1,6 @@
-import { TechStack, Asset } from '@/data/mockData';
-import { Badge } from '@/components/ui/badge';
-import { ThreatBar } from '@/components/ThreatBar';
+import { TechStack, Asset } from "@/data/mockData";
+import { Badge } from "@/components/ui/badge";
+import { ThreatBar } from "@/components/ThreatBar";
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 
 interface TechStackTableViewProps {
   techStacks: TechStack[];
@@ -23,37 +23,37 @@ export function TechStackTableView({
 }: TechStackTableViewProps) {
   const getRiskColor = (level: string) => {
     switch (level) {
-      case 'critical':
-        return 'bg-red-100 text-red-800';
-      case 'high':
-        return 'bg-orange-100 text-orange-800';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'low':
-        return 'bg-green-100 text-green-800';
+      case "critical":
+        return "bg-red-100 text-red-800";
+      case "high":
+        return "bg-orange-100 text-orange-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getCVEColor = (severity: string) => {
     switch (severity) {
-      case 'critical':
-        return 'text-red-700';
-      case 'high':
-        return 'text-orange-700';
-      case 'medium':
-        return 'text-yellow-700';
-      case 'low':
-        return 'text-green-700';
+      case "critical":
+        return "text-red-700";
+      case "high":
+        return "text-orange-700";
+      case "medium":
+        return "text-yellow-700";
+      case "low":
+        return "text-green-700";
       default:
-        return 'text-gray-700';
+        return "text-gray-700";
     }
   };
 
   const getAssociatedAssets = (techStackId: string) => {
     return allAssets.filter((asset) =>
-      asset.techStacks.some((ts) => ts.id === techStackId)
+      asset.techStacks.some((ts) => ts.id === techStackId),
     );
   };
 
@@ -74,10 +74,10 @@ export function TechStackTableView({
           {techStacks.map((techStack) => {
             const associatedAssets = getAssociatedAssets(techStack.id);
             const criticalCVE = techStack.cves.find(
-              (cve) => cve.severity === 'critical'
+              (cve) => cve.severity === "critical",
             );
             const highCVE = techStack.cves.find(
-              (cve) => cve.severity === 'high'
+              (cve) => cve.severity === "high",
             );
 
             return (
@@ -107,13 +107,15 @@ export function TechStackTableView({
                 </TableCell>
                 <TableCell>
                   <div className="text-sm">
-                    <p className="font-medium">{associatedAssets.length} assets</p>
+                    <p className="font-medium">
+                      {associatedAssets.length} assets
+                    </p>
                     {associatedAssets.length > 0 && (
                       <p className="text-xs text-gray-500">
                         {associatedAssets
                           .slice(0, 2)
                           .map((a) => a.name)
-                          .join(', ')}
+                          .join(", ")}
                         {associatedAssets.length > 2 &&
                           ` +${associatedAssets.length - 2}`}
                       </p>
@@ -161,5 +163,5 @@ export function TechStackTableView({
 }
 
 function cn(...classes: (string | boolean | undefined)[]) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }

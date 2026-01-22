@@ -1,7 +1,7 @@
-import { TechStack, Asset } from '@/data/mockData';
-import { Badge } from '@/components/ui/badge';
-import { ThreatBar } from '@/components/ThreatBar';
-import { cn } from '@/lib/utils';
+import { TechStack, Asset } from "@/data/mockData";
+import { Badge } from "@/components/ui/badge";
+import { ThreatBar } from "@/components/ThreatBar";
+import { cn } from "@/lib/utils";
 
 interface TechStackCardViewProps {
   techStacks: TechStack[];
@@ -16,52 +16,52 @@ export function TechStackCardView({
 }: TechStackCardViewProps) {
   const getRiskColor = (level: string) => {
     switch (level) {
-      case 'critical':
-        return 'bg-red-50 border-red-200';
-      case 'high':
-        return 'bg-orange-50 border-orange-200';
-      case 'medium':
-        return 'bg-yellow-50 border-yellow-200';
-      case 'low':
-        return 'bg-green-50 border-green-200';
+      case "critical":
+        return "bg-red-50 border-red-200";
+      case "high":
+        return "bg-orange-50 border-orange-200";
+      case "medium":
+        return "bg-yellow-50 border-yellow-200";
+      case "low":
+        return "bg-green-50 border-green-200";
       default:
-        return 'bg-gray-50 border-gray-200';
+        return "bg-gray-50 border-gray-200";
     }
   };
 
   const getRiskBadgeColor = (level: string) => {
     switch (level) {
-      case 'critical':
-        return 'bg-red-100 text-red-800';
-      case 'high':
-        return 'bg-orange-100 text-orange-800';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'low':
-        return 'bg-green-100 text-green-800';
+      case "critical":
+        return "bg-red-100 text-red-800";
+      case "high":
+        return "bg-orange-100 text-orange-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getCVEColor = (severity: string) => {
     switch (severity) {
-      case 'critical':
-        return 'bg-red-100 text-red-800';
-      case 'high':
-        return 'bg-orange-100 text-orange-800';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'low':
-        return 'bg-green-100 text-green-800';
+      case "critical":
+        return "bg-red-100 text-red-800";
+      case "high":
+        return "bg-orange-100 text-orange-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getAssociatedAssets = (techStackId: string) => {
     return allAssets.filter((asset) =>
-      asset.techStacks.some((ts) => ts.id === techStackId)
+      asset.techStacks.some((ts) => ts.id === techStackId),
     );
   };
 
@@ -69,12 +69,10 @@ export function TechStackCardView({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {techStacks.map((techStack) => {
         const associatedAssets = getAssociatedAssets(techStack.id);
-        const criticalAsset = associatedAssets.sort(
-          (a, b) => {
-            const riskOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-            return riskOrder[b.riskLevel] - riskOrder[a.riskLevel];
-          }
-        )[0];
+        const criticalAsset = associatedAssets.sort((a, b) => {
+          const riskOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+          return riskOrder[b.riskLevel] - riskOrder[a.riskLevel];
+        })[0];
         const otherCount = Math.max(0, associatedAssets.length - 2);
 
         return (
@@ -82,8 +80,8 @@ export function TechStackCardView({
             key={techStack.id}
             onClick={() => onSelectCard?.(techStack)}
             className={cn(
-              'border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-lg hover:border-opacity-100',
-              getRiskColor(techStack.riskLevel)
+              "border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-lg hover:border-opacity-100",
+              getRiskColor(techStack.riskLevel),
             )}
           >
             {/* Header */}
@@ -130,22 +128,22 @@ export function TechStackCardView({
 
             {/* Threat Summary */}
             <div className="mb-4 p-3 bg-white rounded border border-gray-200">
-              <p className="text-sm font-medium text-gray-700 mb-2">
-                Threat
-              </p>
+              <p className="text-sm font-medium text-gray-700 mb-2">Threat</p>
               <ThreatBar
                 cves={techStack.cves}
                 unscannedCount={techStack.unscannedThreatsCount}
               />
               <p className="text-xs text-gray-600 mt-2">
-                {techStack.cves.length} scanned, {techStack.unscannedThreatsCount} unscanned
+                {techStack.cves.length} scanned,{" "}
+                {techStack.unscannedThreatsCount} unscanned
               </p>
             </div>
 
             {/* Associated Assets */}
             <div className="pt-3 border-t border-gray-200">
               <p className="text-xs font-medium text-gray-700 mb-2">
-                Used by {associatedAssets.length} asset{associatedAssets.length !== 1 ? 's' : ''}
+                Used by {associatedAssets.length} asset
+                {associatedAssets.length !== 1 ? "s" : ""}
               </p>
               {associatedAssets.length > 0 && (
                 <div className="space-y-1">

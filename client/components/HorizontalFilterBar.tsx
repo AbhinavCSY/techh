@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { FilterState, ViewType, GroupingType } from '@/hooks/useFilters';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { X, Filter, Download, ChevronDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { FilterState, ViewType, GroupingType } from "@/hooks/useFilters";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { X, Filter, Download, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface HorizontalFilterBarProps {
   filters: FilterState;
@@ -13,7 +13,7 @@ interface HorizontalFilterBarProps {
   hasActiveFilters: boolean;
   viewType: ViewType;
   onViewTypeChange: (view: ViewType) => void;
-  onExport?: (format: 'csv' | 'json' | 'pdf') => void;
+  onExport?: (format: "csv" | "json" | "pdf") => void;
 }
 
 export function HorizontalFilterBar({
@@ -58,7 +58,7 @@ export function HorizontalFilterBar({
                 </Badge>
               )}
             </Button>
-            
+
             {showFilterPanel && (
               <div className="absolute left-0 mt-0 w-96 bg-white border border-gray-200 rounded-lg shadow-lg p-4 space-y-4 z-50">
                 {/* Risk Level */}
@@ -68,19 +68,22 @@ export function HorizontalFilterBar({
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { value: 'critical', color: 'bg-red-100 text-red-800' },
-                      { value: 'high', color: 'bg-orange-100 text-orange-800' },
-                      { value: 'medium', color: 'bg-yellow-100 text-yellow-800' },
-                      { value: 'low', color: 'bg-green-100 text-green-800' },
+                      { value: "critical", color: "bg-red-100 text-red-800" },
+                      { value: "high", color: "bg-orange-100 text-orange-800" },
+                      {
+                        value: "medium",
+                        color: "bg-yellow-100 text-yellow-800",
+                      },
+                      { value: "low", color: "bg-green-100 text-green-800" },
                     ].map(({ value, color }) => (
                       <button
                         key={value}
-                        onClick={() => toggleArrayFilter('riskLevels', value)}
+                        onClick={() => toggleArrayFilter("riskLevels", value)}
                         className={cn(
-                          'px-3 py-1 rounded-full text-xs font-medium transition-colors',
+                          "px-3 py-1 rounded-full text-xs font-medium transition-colors",
                           filters.riskLevels.includes(value)
                             ? `${color} ring-2 ring-gray-400`
-                            : 'bg-white border border-gray-300 text-gray-700 hover:border-gray-400'
+                            : "bg-white border border-gray-300 text-gray-700 hover:border-gray-400",
                         )}
                       >
                         {value}
@@ -95,15 +98,23 @@ export function HorizontalFilterBar({
                     Tech Stack Type
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {['framework', 'language', 'database', 'devops', 'library'].map((type) => (
+                    {[
+                      "framework",
+                      "language",
+                      "database",
+                      "devops",
+                      "library",
+                    ].map((type) => (
                       <button
                         key={type}
-                        onClick={() => toggleArrayFilter('techStackTypes', type)}
+                        onClick={() =>
+                          toggleArrayFilter("techStackTypes", type)
+                        }
                         className={cn(
-                          'px-3 py-1 rounded-full text-xs font-medium transition-colors',
+                          "px-3 py-1 rounded-full text-xs font-medium transition-colors",
                           filters.techStackTypes.includes(type)
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-white border border-gray-300 text-gray-700 hover:border-blue-500'
+                            ? "bg-blue-500 text-white"
+                            : "bg-white border border-gray-300 text-gray-700 hover:border-blue-500",
                         )}
                       >
                         {type}
@@ -119,18 +130,18 @@ export function HorizontalFilterBar({
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { value: 'eol', label: '⚠️ EOL' },
-                      { value: 'upgradable', label: '🔄 Upgradable' },
-                      { value: 'current', label: '✓ Current' },
+                      { value: "eol", label: "⚠️ EOL" },
+                      { value: "upgradable", label: "🔄 Upgradable" },
+                      { value: "current", label: "✓ Current" },
                     ].map(({ value, label }) => (
                       <button
                         key={value}
-                        onClick={() => toggleArrayFilter('eolStatus', value)}
+                        onClick={() => toggleArrayFilter("eolStatus", value)}
                         className={cn(
-                          'px-3 py-1 rounded-full text-xs font-medium transition-colors',
+                          "px-3 py-1 rounded-full text-xs font-medium transition-colors",
                           filters.eolStatus.includes(value)
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-white border border-gray-300 text-gray-700 hover:border-blue-500'
+                            ? "bg-blue-500 text-white"
+                            : "bg-white border border-gray-300 text-gray-700 hover:border-blue-500",
                         )}
                       >
                         {label}
@@ -146,19 +157,21 @@ export function HorizontalFilterBar({
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { value: 'critical', emoji: '🔴' },
-                      { value: 'high', emoji: '🟠' },
-                      { value: 'medium', emoji: '🟡' },
-                      { value: 'low', emoji: '🟢' },
+                      { value: "critical", emoji: "🔴" },
+                      { value: "high", emoji: "🟠" },
+                      { value: "medium", emoji: "🟡" },
+                      { value: "low", emoji: "🟢" },
                     ].map(({ value, emoji }) => (
                       <button
                         key={value}
-                        onClick={() => toggleArrayFilter('cveSeverities', value)}
+                        onClick={() =>
+                          toggleArrayFilter("cveSeverities", value)
+                        }
                         className={cn(
-                          'px-3 py-1 rounded-full text-xs font-medium transition-colors',
+                          "px-3 py-1 rounded-full text-xs font-medium transition-colors",
                           filters.cveSeverities.includes(value)
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-white border border-gray-300 text-gray-700 hover:border-blue-500'
+                            ? "bg-blue-500 text-white"
+                            : "bg-white border border-gray-300 text-gray-700 hover:border-blue-500",
                         )}
                       >
                         {emoji} {value}
@@ -188,23 +201,23 @@ export function HorizontalFilterBar({
           {/* View Type Switch */}
           <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
             <button
-              onClick={() => onViewTypeChange('card')}
+              onClick={() => onViewTypeChange("card")}
               className={cn(
                 "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
-                viewType === 'card'
+                viewType === "card"
                   ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
+                  : "text-gray-600 hover:text-gray-900",
               )}
             >
               📋 Card
             </button>
             <button
-              onClick={() => onViewTypeChange('table')}
+              onClick={() => onViewTypeChange("table")}
               className={cn(
                 "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
-                viewType === 'table'
+                viewType === "table"
                   ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
+                  : "text-gray-600 hover:text-gray-900",
               )}
             >
               📊 Table
@@ -225,21 +238,17 @@ export function HorizontalFilterBar({
 
           {/* Export Button */}
           <div className="relative group">
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2"
-            >
+            <Button variant="outline" size="sm" className="gap-2">
               <Download className="w-4 h-4" />
               Export
               <ChevronDown className="w-4 h-4" />
             </Button>
-            
+
             <div className="absolute right-0 mt-0 w-40 bg-white border border-gray-200 rounded-lg shadow-lg p-2 hidden group-hover:block z-50">
-              {['csv', 'json', 'pdf'].map((format) => (
+              {["csv", "json", "pdf"].map((format) => (
                 <button
                   key={format}
-                  onClick={() => onExport?.(format as 'csv' | 'json' | 'pdf')}
+                  onClick={() => onExport?.(format as "csv" | "json" | "pdf")}
                   className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition-colors"
                 >
                   Export as {format.toUpperCase()}
@@ -256,7 +265,7 @@ export function HorizontalFilterBar({
           {filters.searchTerm && (
             <FilterChip
               label={`Search: ${filters.searchTerm}`}
-              onRemove={() => onFilterChange({ searchTerm: '' })}
+              onRemove={() => onFilterChange({ searchTerm: "" })}
             />
           )}
           {filters.riskLevels.map((level) => (
@@ -276,7 +285,9 @@ export function HorizontalFilterBar({
               label={type}
               onRemove={() =>
                 onFilterChange({
-                  techStackTypes: filters.techStackTypes.filter((t) => t !== type),
+                  techStackTypes: filters.techStackTypes.filter(
+                    (t) => t !== type,
+                  ),
                 })
               }
             />
@@ -298,7 +309,9 @@ export function HorizontalFilterBar({
               label={severity}
               onRemove={() =>
                 onFilterChange({
-                  cveSeverities: filters.cveSeverities.filter((s) => s !== severity),
+                  cveSeverities: filters.cveSeverities.filter(
+                    (s) => s !== severity,
+                  ),
                 })
               }
             />
@@ -309,8 +322,13 @@ export function HorizontalFilterBar({
   );
 
   function toggleArrayFilter(
-    field: 'techStackTypes' | 'assetTypes' | 'riskLevels' | 'eolStatus' | 'cveSeverities',
-    value: string
+    field:
+      | "techStackTypes"
+      | "assetTypes"
+      | "riskLevels"
+      | "eolStatus"
+      | "cveSeverities",
+    value: string,
   ) {
     const currentArray = filters[field];
     const newArray = currentArray.includes(value)
@@ -348,6 +366,6 @@ function getActiveFilterCount(filters: FilterState) {
   if (filters.riskLevels.length > 0) count += filters.riskLevels.length;
   if (filters.eolStatus.length > 0) count += filters.eolStatus.length;
   if (filters.cveSeverities.length > 0) count += filters.cveSeverities.length;
-  if (filters.timeFilter !== 'month') count++;
+  if (filters.timeFilter !== "month") count++;
   return count;
 }

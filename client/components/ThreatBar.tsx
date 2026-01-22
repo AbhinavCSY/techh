@@ -1,7 +1,7 @@
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 interface ThreatBarProps {
-  cves: Array<{ severity: 'critical' | 'high' | 'medium' | 'low' }>;
+  cves: Array<{ severity: "critical" | "high" | "medium" | "low" }>;
   unscannedCount?: number;
   className?: string;
 }
@@ -11,17 +11,17 @@ export function ThreatBar({
   unscannedCount = 0,
   className,
 }: ThreatBarProps) {
-  const criticalCount = cves.filter((c) => c.severity === 'critical').length;
-  const highCount = cves.filter((c) => c.severity === 'high').length;
-  const mediumCount = cves.filter((c) => c.severity === 'medium').length;
-  const lowCount = cves.filter((c) => c.severity === 'low').length;
-  
+  const criticalCount = cves.filter((c) => c.severity === "critical").length;
+  const highCount = cves.filter((c) => c.severity === "high").length;
+  const mediumCount = cves.filter((c) => c.severity === "medium").length;
+  const lowCount = cves.filter((c) => c.severity === "low").length;
+
   const total = cves.length;
   const totalWithUnscanned = total + unscannedCount;
 
   if (totalWithUnscanned === 0) {
     return (
-      <div className={cn('flex items-center gap-2', className)}>
+      <div className={cn("flex items-center gap-2", className)}>
         <div className="h-2 w-24 bg-green-100 rounded-full"></div>
         <span className="text-xs text-green-700 font-medium">None</span>
       </div>
@@ -35,7 +35,7 @@ export function ThreatBar({
   const unscannedPercent = (unscannedCount / totalWithUnscanned) * 100 || 0;
 
   return (
-    <div className={cn('group relative w-full', className)}>
+    <div className={cn("group relative w-full", className)}>
       {/* Threat Bar */}
       <div className="flex items-center gap-2">
         <div className="h-2 flex-1 rounded-full bg-gray-200 overflow-hidden flex">
@@ -58,10 +58,7 @@ export function ThreatBar({
             />
           )}
           {lowCount > 0 && (
-            <div
-              className="bg-green-500"
-              style={{ width: `${lowPercent}%` }}
-            />
+            <div className="bg-green-500" style={{ width: `${lowPercent}%` }} />
           )}
           {unscannedCount > 0 && (
             <div
