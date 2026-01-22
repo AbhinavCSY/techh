@@ -415,6 +415,10 @@ function DetailsPanel({
     );
   };
 
+  useEffect(() => {
+    initializeSelectedAssets();
+  }, [item.id, isAsset]);
+
   const handleScanAssets = async (techStackId: string) => {
     setIsScanning(true);
     // Simulate scanning delay
