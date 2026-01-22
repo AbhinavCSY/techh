@@ -84,7 +84,7 @@ export function MainNav() {
               onClick={() => navigate(item.path)}
               className={cn(
                 "flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium transition-all whitespace-nowrap",
-                location.pathname === item.path
+                location.pathname === item.path && item.id !== "dashboards" && item.id !== "capabilities"
                   ? "text-blue-600 bg-blue-50"
                   : "text-gray-600 hover:bg-gray-100",
               )}
