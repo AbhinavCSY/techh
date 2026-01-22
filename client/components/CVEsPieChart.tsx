@@ -85,32 +85,34 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
           )}
         </div>
 
-        {/* Legend - Right Side (Compact) */}
-        <div className="flex-1 space-y-2">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <span className="text-xs text-gray-700">Scanned</span>
-            <span className="text-xs font-bold text-gray-900 ml-auto">{scannedCVEs}</span>
+        {/* Legend - Right Side (Very Compact) */}
+        <div className="flex-1 space-y-1">
+          <div className="flex items-center gap-1 text-xs">
+            <div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></div>
+            <span className="text-gray-700 flex-1">Scanned: {scannedCVEs}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-amber-400"></div>
-            <span className="text-xs text-gray-700">Unscanned</span>
-            <span className="text-xs font-bold text-gray-900 ml-auto">{unscannedCVEs}</span>
+          <div className="flex items-center gap-1 text-xs">
+            <div className="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></div>
+            <span className="text-gray-700 flex-1">Unscanned: {unscannedCVEs}</span>
           </div>
 
-          {/* Severity legend - inline */}
-          <div className="text-xs text-gray-600 mt-2 space-y-1">
-            <div className="flex gap-2">
-              <div className="w-2 h-2 rounded-full bg-red-600 flex-shrink-0 mt-0.5"></div>
-              <span>C: {severityBreakdown.critical}</span>
-              <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0 mt-0.5"></div>
-              <span>H: {severityBreakdown.high}</span>
+          {/* Severity legend - very compact */}
+          <div className="text-xs text-gray-600 mt-0.5 grid grid-cols-2 gap-0.5">
+            <div className="flex gap-1 items-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-600 flex-shrink-0"></div>
+              <span>C:{severityBreakdown.critical}</span>
             </div>
-            <div className="flex gap-2">
-              <div className="w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0 mt-0.5"></div>
-              <span>M: {severityBreakdown.medium}</span>
-              <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0 mt-0.5"></div>
-              <span>L: {severityBreakdown.low}</span>
+            <div className="flex gap-1 items-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></div>
+              <span>H:{severityBreakdown.high}</span>
+            </div>
+            <div className="flex gap-1 items-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0"></div>
+              <span>M:{severityBreakdown.medium}</span>
+            </div>
+            <div className="flex gap-1 items-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div>
+              <span>L:{severityBreakdown.low}</span>
             </div>
           </div>
         </div>
