@@ -69,21 +69,11 @@ export default function Index() {
 
   const getMetrics = () => {
     const totalTechStacks = techStackDatabase.length;
-    const assetsMonitored = assetDatabase.length;
-    const criticalCVEs = techStackDatabase.reduce(
-      (acc, ts) =>
-        acc + ts.cves.filter((cve) => cve.severity === "critical").length,
-      0,
-    );
-    const totalEOL = techStackDatabase.filter((ts) => ts.isEOL).length;
-    const assetScanned = assetDatabase.filter((a) => a.isScanned).length;
+    const assetsScanned = assetDatabase.filter((a) => a.isScanned).length;
 
     return {
       totalTechStacks,
-      assetsMonitored,
-      criticalCVEs,
-      totalEOL,
-      assetScanned,
+      assetsScanned,
     };
   };
 
