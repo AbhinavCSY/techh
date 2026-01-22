@@ -98,6 +98,7 @@ const techStackDatabase: TechStack[] = [
     isUpgradable: true,
     secureVersion: '2.20.0',
     cves: commonCVEs['Log4j'],
+    unscannedThreatsCount: 6,
     riskLevel: 'critical',
     riskScore: 9.2,
     createdAt: new Date('2024-01-15'),
