@@ -26,9 +26,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
 
   if (compact) {
     return (
-      <div className="flex items-center gap-4 h-24">
+      <div className="flex items-center gap-2 h-20">
         {/* Pie Chart - Left Side (Compact) */}
-        <div className="flex-shrink-0 relative w-20 h-20">
+        <div className="flex-shrink-0 relative w-16 h-16">
           <svg viewBox="0 0 120 120" className="w-full h-full">
             {/* EOL ring */}
             <circle
