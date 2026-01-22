@@ -1235,6 +1235,7 @@ const assetDatabase: Asset[] = [
     type: "cloud-resource",
     riskLevel: "critical",
     techStacks: [
+      techStackDatabase[7],
       techStackDatabase[8],
       techStackDatabase[20],
       techStackDatabase[17],
