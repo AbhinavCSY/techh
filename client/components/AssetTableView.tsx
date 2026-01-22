@@ -1,5 +1,6 @@
-import { Asset } from '@/data/mockData';
-import { Badge } from '@/components/ui/badge';
+import { Asset } from "@/data/mockData";
+import { Badge } from "@/components/ui/badge";
+import { ThreatBar } from "@/components/ThreatBar";
 import {
   Table,
   TableBody,
@@ -7,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 
 interface AssetTableViewProps {
   assets: Asset[];
@@ -17,31 +18,31 @@ interface AssetTableViewProps {
 export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
   const getRiskColor = (level: string) => {
     switch (level) {
-      case 'critical':
-        return 'bg-red-100 text-red-800';
-      case 'high':
-        return 'bg-orange-100 text-orange-800';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'low':
-        return 'bg-green-100 text-green-800';
+      case "critical":
+        return "bg-red-100 text-red-800";
+      case "high":
+        return "bg-orange-100 text-orange-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getAssetTypeIcon = (type: string) => {
     switch (type) {
-      case 'ip':
-        return '🖥️';
-      case 'domain':
-        return '🌐';
-      case 'app':
-        return '📦';
-      case 'cloud-resource':
-        return '☁️';
+      case "ip":
+        return "🖥️";
+      case "domain":
+        return "🌐";
+      case "app":
+        return "📦";
+      case "cloud-resource":
+        return "☁️";
       default:
-        return '📋';
+        return "📋";
     }
   };
 
@@ -67,13 +68,15 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
             >
               <TableCell className="font-medium">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">{getAssetTypeIcon(asset.type)}</span>
+                  <span className="text-xl">
+                    {getAssetTypeIcon(asset.type)}
+                  </span>
                   <span className="truncate">{asset.name}</span>
                 </div>
               </TableCell>
               <TableCell>
                 <span className="text-sm capitalize">
-                  {asset.type.replace('-', ' ')}
+                  {asset.type.replace("-", " ")}
                 </span>
               </TableCell>
               <TableCell>
@@ -100,16 +103,14 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
                 </Badge>
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-lg text-gray-900">
-                    {asset.cveCount}
-                  </span>
-                  {asset.topCriticalCVE && (
-                    <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
-                      🔴 Critical
-                    </span>
+                <ThreatBar
+                  cves={asset.techStacks.flatMap((ts) => ts.cves)}
+                  unscannedCount={asset.techStacks.reduce(
+                    (sum, ts) => sum + ts.unscannedThreatsCount,
+                    0,
                   )}
-                </div>
+                  className="w-40"
+                />
               </TableCell>
               <TableCell className="text-sm text-gray-600">
                 {asset.lastUpdated.toLocaleDateString()}

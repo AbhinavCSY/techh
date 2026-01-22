@@ -1,64 +1,69 @@
-import { PackageReliabilityIndicators } from '@/data/mockData';
+import { PackageReliabilityIndicators } from "@/data/mockData";
 
 interface PackageReliabilityCardProps {
   indicators: PackageReliabilityIndicators;
   compact?: boolean;
 }
 
-export function PackageReliabilityCard({ indicators, compact = false }: PackageReliabilityCardProps) {
+export function PackageReliabilityCard({
+  indicators,
+  compact = false,
+}: PackageReliabilityCardProps) {
   const getRiskColor = (riskLevel: string) => {
     switch (riskLevel) {
-      case 'critical':
-        return 'text-red-600';
-      case 'high':
-        return 'text-orange-600';
-      case 'medium':
-        return 'text-yellow-600';
-      case 'low':
-        return 'text-blue-600';
-      case 'no risk':
-        return 'text-green-600';
+      case "critical":
+        return "text-red-600";
+      case "high":
+        return "text-orange-600";
+      case "medium":
+        return "text-yellow-600";
+      case "low":
+        return "text-blue-600";
+      case "no risk":
+        return "text-green-600";
       default:
-        return 'text-gray-600';
+        return "text-gray-600";
     }
   };
 
   const getRiskBgColor = (riskLevel: string) => {
     switch (riskLevel) {
-      case 'critical':
-        return 'bg-red-50 border-red-200';
-      case 'high':
-        return 'bg-orange-50 border-orange-200';
-      case 'medium':
-        return 'bg-yellow-50 border-yellow-200';
-      case 'low':
-        return 'bg-blue-50 border-blue-200';
-      case 'no risk':
-        return 'bg-green-50 border-green-200';
+      case "critical":
+        return "bg-red-50 border-red-200";
+      case "high":
+        return "bg-orange-50 border-orange-200";
+      case "medium":
+        return "bg-yellow-50 border-yellow-200";
+      case "low":
+        return "bg-blue-50 border-blue-200";
+      case "no risk":
+        return "bg-green-50 border-green-200";
       default:
-        return 'bg-gray-50 border-gray-200';
+        return "bg-gray-50 border-gray-200";
     }
   };
 
   if (compact) {
     return (
       <div className="space-y-3">
-        <h4 className="font-semibold text-gray-900 text-sm">Package Reliability</h4>
+        <h4 className="font-semibold text-gray-900 text-sm">
+          Package Reliability
+        </h4>
         <div className="grid grid-cols-3 gap-3">
           <ReliabilityIndicatorCompact
-            label="Contributor Rep"
+            label="Contributor Reputation"
             score={indicators.contributorReputation.score}
             riskLevel={indicators.contributorReputation.riskLevel}
             getRiskColor={getRiskColor}
           />
           <ReliabilityIndicatorCompact
-            label="Package Rel"
+            label="Package Reliability"
             score={indicators.packageReliability.score}
             riskLevel={indicators.packageReliability.riskLevel}
             getRiskColor={getRiskColor}
           />
           <ReliabilityIndicatorCompact
-            label="Behavioral"
+            label="Behavioral Integrity"
             score={indicators.behavioralIntegrity.score}
             riskLevel={indicators.behavioralIntegrity.riskLevel}
             getRiskColor={getRiskColor}
@@ -70,8 +75,10 @@ export function PackageReliabilityCard({ indicators, compact = false }: PackageR
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <h3 className="font-semibold text-gray-900 mb-6">Package Reliability Indicators</h3>
-      
+      <h3 className="font-semibold text-gray-900 mb-6">
+        Package Reliability Indicators
+      </h3>
+
       <div className="grid grid-cols-3 gap-6">
         <ReliabilityIndicator
           label="Contributor Reputation"
@@ -131,7 +138,10 @@ function ReliabilityIndicator({
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-32 h-32 mb-4">
-        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+        <svg
+          className="w-full h-full transform -rotate-90"
+          viewBox="0 0 120 120"
+        >
           {/* Background circle */}
           <circle
             cx="60"
@@ -160,10 +170,12 @@ function ReliabilityIndicator({
           <span className="text-3xl font-bold text-gray-900">{score}</span>
         </div>
       </div>
-      <p className="text-sm font-medium text-gray-900 text-center mb-2">{label}</p>
+      <p className="text-sm font-medium text-gray-900 text-center mb-2">
+        {label}
+      </p>
       <span
         className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${getRiskBgColor(
-          riskLevel
+          riskLevel,
         )} ${getRiskColor(riskLevel)}`}
       >
         {riskLevel}
@@ -193,7 +205,14 @@ function ReliabilityIndicatorCompact({
     <div className="flex flex-col items-center">
       <div className="relative w-24 h-24 mb-2">
         <svg className="w-full h-full transform -rotate-90" viewBox="0 0 80 80">
-          <circle cx="40" cy="40" r="30" fill="none" stroke="#e5e7eb" strokeWidth="6" />
+          <circle
+            cx="40"
+            cy="40"
+            r="30"
+            fill="none"
+            stroke="#e5e7eb"
+            strokeWidth="6"
+          />
           <circle
             cx="40"
             cy="40"

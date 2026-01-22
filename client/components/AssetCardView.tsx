@@ -1,6 +1,7 @@
-import { Asset } from '@/data/mockData';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { Asset } from "@/data/mockData";
+import { Badge } from "@/components/ui/badge";
+import { ThreatBar } from "@/components/ThreatBar";
+import { cn } from "@/lib/utils";
 
 interface AssetCardViewProps {
   assets: Asset[];
@@ -10,46 +11,46 @@ interface AssetCardViewProps {
 export function AssetCardView({ assets, onSelectCard }: AssetCardViewProps) {
   const getRiskColor = (level: string) => {
     switch (level) {
-      case 'critical':
-        return 'bg-red-50 border-red-200';
-      case 'high':
-        return 'bg-orange-50 border-orange-200';
-      case 'medium':
-        return 'bg-yellow-50 border-yellow-200';
-      case 'low':
-        return 'bg-green-50 border-green-200';
+      case "critical":
+        return "bg-red-50 border-red-200";
+      case "high":
+        return "bg-orange-50 border-orange-200";
+      case "medium":
+        return "bg-yellow-50 border-yellow-200";
+      case "low":
+        return "bg-green-50 border-green-200";
       default:
-        return 'bg-gray-50 border-gray-200';
+        return "bg-gray-50 border-gray-200";
     }
   };
 
   const getRiskBadgeColor = (level: string) => {
     switch (level) {
-      case 'critical':
-        return 'bg-red-100 text-red-800';
-      case 'high':
-        return 'bg-orange-100 text-orange-800';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'low':
-        return 'bg-green-100 text-green-800';
+      case "critical":
+        return "bg-red-100 text-red-800";
+      case "high":
+        return "bg-orange-100 text-orange-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getAssetTypeIcon = (type: string) => {
     switch (type) {
-      case 'ip':
-        return '🖥️';
-      case 'domain':
-        return '🌐';
-      case 'app':
-        return '📦';
-      case 'cloud-resource':
-        return '☁️';
+      case "ip":
+        return "🖥️";
+      case "domain":
+        return "🌐";
+      case "app":
+        return "📦";
+      case "cloud-resource":
+        return "☁️";
       default:
-        return '📋';
+        return "📋";
     }
   };
 
@@ -60,8 +61,8 @@ export function AssetCardView({ assets, onSelectCard }: AssetCardViewProps) {
           key={asset.id}
           onClick={() => onSelectCard?.(asset)}
           className={cn(
-            'border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-lg hover:border-opacity-100',
-            getRiskColor(asset.riskLevel)
+            "border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-lg hover:border-opacity-100",
+            getRiskColor(asset.riskLevel),
           )}
         >
           {/* Header */}
@@ -73,7 +74,7 @@ export function AssetCardView({ assets, onSelectCard }: AssetCardViewProps) {
                   {asset.name}
                 </h3>
                 <p className="text-xs text-gray-500 capitalize">
-                  {asset.type.replace('-', ' ')}
+                  {asset.type.replace("-", " ")}
                 </p>
               </div>
             </div>
@@ -82,26 +83,31 @@ export function AssetCardView({ assets, onSelectCard }: AssetCardViewProps) {
             </Badge>
           </div>
 
-          {/* CVE Summary */}
+          {/* Threat Summary */}
           <div className="mb-4 p-3 bg-white rounded border border-gray-200">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
-                Vulnerabilities
-              </span>
-              <span className="text-lg font-bold text-gray-900">
-                {asset.cveCount}
-              </span>
-            </div>
-            {asset.topCriticalCVE && (
-              <div className="mt-2">
-                <Badge className="bg-red-100 text-red-800 text-xs mb-1">
-                  🔴 CRITICAL
-                </Badge>
-                <p className="text-xs text-gray-600">
-                  {asset.topCriticalCVE.title}
-                </p>
-              </div>
-            )}
+            <p className="text-sm font-medium text-gray-700 mb-2">Threat</p>
+            <ThreatBar
+              cves={
+                asset.topCriticalCVE
+                  ? [
+                      asset.topCriticalCVE,
+                      ...asset.techStacks.flatMap((ts) => ts.cves),
+                    ]
+                  : asset.techStacks.flatMap((ts) => ts.cves)
+              }
+              unscannedCount={asset.techStacks.reduce(
+                (sum, ts) => sum + ts.unscannedThreatsCount,
+                0,
+              )}
+            />
+            <p className="text-xs text-gray-600 mt-2">
+              {asset.cveCount} scanned,{" "}
+              {asset.techStacks.reduce(
+                (sum, ts) => sum + ts.unscannedThreatsCount,
+                0,
+              )}{" "}
+              unscanned
+            </p>
           </div>
 
           {/* Tech Stacks */}
@@ -120,7 +126,9 @@ export function AssetCardView({ assets, onSelectCard }: AssetCardViewProps) {
                     <p className="text-xs font-medium text-gray-900 truncate">
                       {techStack.name}
                     </p>
-                    <p className="text-xs text-gray-500">v{techStack.version}</p>
+                    <p className="text-xs text-gray-500">
+                      v{techStack.version}
+                    </p>
                   </div>
                   <div className="flex gap-1 flex-shrink-0">
                     {techStack.isEOL && (
