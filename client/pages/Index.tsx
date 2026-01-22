@@ -327,6 +327,8 @@ function DetailsPanel({
   const [selectedAssetsForScan, setSelectedAssetsForScan] = useState<
     Record<string, boolean>
   >({});
+  const [selectedCVEForAssets, setSelectedCVEForAssets] = useState<string | null>(null);
+  const [cveAssetSelections, setCVEAssetSelections] = useState<Record<string, Record<string, boolean>>>({});
 
   // Initialize selected assets when item changes
   const initializeSelectedAssets = () => {
