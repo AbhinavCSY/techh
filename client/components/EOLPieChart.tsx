@@ -1,0 +1,214 @@
+import { techStackDatabase } from "@/data/mockData";
+
+interface EOLPieChartProps {
+  compact?: boolean;
+}
+
+export function EOLPieChart({ compact = false }: EOLPieChartProps) {
+  // Calculate EOL and upgrade statistics
+  const eolTechStacks = techStackDatabase.filter((ts) => ts.isEOL).length;
+  const nonEolTechStacks = techStackDatabase.length - eolTechStacks;
+  
+  // From EOL tech stacks, how many are upgradable
+  const eolUpgradable = techStackDatabase.filter((ts) => ts.isEOL && ts.isUpgradable).length;
+  const eolNotUpgradable = eolTechStacks - eolUpgradable;
+  
+  // From non-EOL tech stacks, how many are upgradable
+  const nonEolUpgradable = techStackDatabase.filter((ts) => !ts.isEOL && ts.isUpgradable).length;
+  const nonEolNotUpgradable = nonEolTechStacks - nonEolUpgradable;
+
+  const totalTechStacks = techStackDatabase.length;
+  const eolPercent = (eolTechStacks / totalTechStacks) * 100;
+  const nonEolPercent = (nonEolTechStacks / totalTechStacks) * 100;
+
+  if (compact) {
+    return (
+      <div className="flex flex-col items-center space-y-4">
+        <h4 className="font-semibold text-gray-900 text-sm">EOL Status</h4>
+        
+        {/* Pie Chart */}
+        <div className="relative w-40 h-40">
+          <svg viewBox="0 0 120 120" className="w-full h-full">
+            {/* EOL ring */}
+            <circle
+              cx="60"
+              cy="60"
+              r="45"
+              fill="none"
+              stroke="#ef4444"
+              strokeWidth="14"
+              strokeDasharray={`${(eolPercent / 100) * 282.7} 282.7`}
+              transform="rotate(-90 60 60)"
+            />
+            {/* Non-EOL ring */}
+            <circle
+              cx="60"
+              cy="60"
+              r="45"
+              fill="none"
+              stroke="#22c55e"
+              strokeWidth="14"
+              strokeDasharray={`${(nonEolPercent / 100) * 282.7} 282.7`}
+              strokeDashoffset={`${-((eolPercent / 100) * 282.7)}`}
+              transform="rotate(-90 60 60)"
+            />
+          </svg>
+
+          {/* Center text */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-2xl font-bold text-gray-900">{totalTechStacks}</span>
+            <span className="text-xs text-gray-600">Total</span>
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div className="w-full space-y-2 text-xs">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-500"></div>
+              <span className="text-gray-700">EOL</span>
+            </div>
+            <span className="font-semibold text-gray-900">{eolTechStacks}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              <span className="text-gray-700">Active</span>
+            </div>
+            <span className="font-semibold text-gray-900">{nonEolTechStacks}</span>
+          </div>
+
+          {/* Upgrade status */}
+          <div className="border-t border-gray-200 pt-2 mt-2">
+            <p className="text-gray-600 font-medium mb-1">Upgrade Available:</p>
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Yes</span>
+                <span className="font-semibold">{eolUpgradable + nonEolUpgradable}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">No</span>
+                <span className="font-semibold">{eolNotUpgradable + nonEolNotUpgradable}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <h3 className="font-semibold text-gray-900 mb-6">EOL & Upgrade Status</h3>
+      
+      <div className="flex gap-8">
+        {/* Chart */}
+        <div className="flex-1 flex flex-col items-center">
+          <div className="relative w-56 h-56">
+            <svg viewBox="0 0 120 120" className="w-full h-full">
+              {/* EOL ring */}
+              <circle
+                cx="60"
+                cy="60"
+                r="45"
+                fill="none"
+                stroke="#ef4444"
+                strokeWidth="14"
+                strokeDasharray={`${(eolPercent / 100) * 282.7} 282.7`}
+                transform="rotate(-90 60 60)"
+              />
+              {/* Non-EOL ring */}
+              <circle
+                cx="60"
+                cy="60"
+                r="45"
+                fill="none"
+                stroke="#22c55e"
+                strokeWidth="14"
+                strokeDasharray={`${(nonEolPercent / 100) * 282.7} 282.7`}
+                strokeDashoffset={`${-((eolPercent / 100) * 282.7)}`}
+                transform="rotate(-90 60 60)"
+              />
+            </svg>
+
+            {/* Center text */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-3xl font-bold text-gray-900">{totalTechStacks}</span>
+              <span className="text-sm text-gray-600">Total</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Legend and Stats */}
+        <div className="flex-1 space-y-6">
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-3 text-sm">EOL Status</h4>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-red-500"></div>
+                  <span className="text-sm text-gray-700">End of Life</span>
+                </div>
+                <span className="font-bold text-red-900">{eolTechStacks}</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                  <span className="text-sm text-gray-700">Active</span>
+                </div>
+                <span className="font-bold text-green-900">{nonEolTechStacks}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-3 text-sm">Upgrade Available</h4>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between p-2 bg-blue-50 rounded border border-blue-200">
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-sm text-gray-700">Yes</span>
+                </div>
+                <span className="text-sm font-bold text-blue-900">{eolUpgradable + nonEolUpgradable}</span>
+              </div>
+              <div className="flex items-center justify-between p-2 bg-gray-100 rounded border border-gray-300">
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span className="text-sm text-gray-700">No</span>
+                </div>
+                <span className="text-sm font-bold text-gray-900">{eolNotUpgradable + nonEolNotUpgradable}</span>
+              </div>
+            </div>
+
+            {/* Breakdown */}
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <p className="text-xs font-semibold text-gray-600 mb-2">Breakdown:</p>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">EOL + Upgradable:</span>
+                  <span className="font-semibold">{eolUpgradable}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">EOL + Not Upgradable:</span>
+                  <span className="font-semibold">{eolNotUpgradable}</span>
+                </div>
+                <div className="flex justify-between border-t border-gray-300 pt-1 mt-1">
+                  <span className="text-gray-600">Active + Upgradable:</span>
+                  <span className="font-semibold">{nonEolUpgradable}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Active + Not Upgradable:</span>
+                  <span className="font-semibold">{nonEolNotUpgradable}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
