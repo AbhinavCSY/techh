@@ -95,38 +95,58 @@ export default function Index() {
             </p>
           </div>
 
-          {/* Key Metrics - Pie Charts and Simple Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            {/* CVEs Pie Chart - Takes up more space */}
-            <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg border border-gray-200 p-4">
-                <CVEsPieChart compact={true} />
+          {/* Widget Panel Header with Toggle */}
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-gray-700">Overview Metrics</h2>
+            <button
+              onClick={() => setShowWidgetPanel(!showWidgetPanel)}
+              className={cn(
+                "px-3 py-1 rounded text-xs font-medium transition-colors",
+                showWidgetPanel
+                  ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              )}
+            >
+              {showWidgetPanel ? "▼ Hide" : "▶ Show"}
+            </button>
+          </div>
+
+          {/* Key Metrics Panel - Collapsible */}
+          {showWidgetPanel && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                {/* CVEs Pie Chart - Takes up more space */}
+                <div className="lg:col-span-2">
+                  <div className="bg-white rounded-lg border border-gray-200 p-4">
+                    <CVEsPieChart compact={true} />
+                  </div>
+                </div>
+
+                {/* Total Tech Stacks Card */}
+                <MetricCard
+                  label="Total Tech Stacks"
+                  value={metrics.totalTechStacks}
+                  color="blue"
+                  icon="📦"
+                />
+
+                {/* Assets Scanned Card (renamed from Assets Monitored) */}
+                <MetricCard
+                  label="Assets Scanned"
+                  value={metrics.assetsScanned}
+                  color="green"
+                  icon="✓"
+                />
+              </div>
+
+              {/* EOL Pie Chart Row */}
+              <div className="grid grid-cols-1">
+                <div className="bg-white rounded-lg border border-gray-200 p-4">
+                  <EOLPieChart compact={true} />
+                </div>
               </div>
             </div>
-
-            {/* Total Tech Stacks Card */}
-            <MetricCard
-              label="Total Tech Stacks"
-              value={metrics.totalTechStacks}
-              color="blue"
-              icon="📦"
-            />
-
-            {/* Assets Scanned Card (renamed from Assets Monitored) */}
-            <MetricCard
-              label="Assets Scanned"
-              value={metrics.assetsScanned}
-              color="green"
-              icon="✓"
-            />
-          </div>
-
-          {/* EOL Pie Chart Row */}
-          <div className="grid grid-cols-1 mt-4">
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <EOLPieChart compact={true} />
-            </div>
-          </div>
+          )}
         </div>
       </header>
 
