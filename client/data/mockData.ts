@@ -128,6 +128,7 @@ const techStackDatabase: TechStack[] = [
     isUpgradable: true,
     secureVersion: '6.1.0',
     cves: commonCVEs['Spring Framework'],
+    unscannedThreatsCount: 5,
     riskLevel: 'critical',
     riskScore: 9.0,
     createdAt: new Date('2024-01-10'),
