@@ -291,11 +291,11 @@ function MetricCard({
   };
 
   return (
-    <div className={`border rounded p-2 ${colorMap[color]}`}>
-      <p className="text-xs font-medium opacity-75 truncate">{label}</p>
-      <div className="flex items-center justify-between mt-1">
-        <p className="text-lg font-bold">{value}</p>
-        <p className="text-lg">{icon}</p>
+    <div className={`border rounded p-1.5 ${colorMap[color]}`}>
+      <p className="text-xs font-medium opacity-75 truncate leading-tight">{label}</p>
+      <div className="flex items-center justify-between mt-0.5">
+        <p className="text-base font-bold">{value}</p>
+        <p className="text-sm">{icon}</p>
       </div>
     </div>
   );
