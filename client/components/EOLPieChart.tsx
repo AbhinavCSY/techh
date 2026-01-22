@@ -81,24 +81,26 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
           )}
         </div>
 
-        {/* Legend - Right Side (Compact) */}
-        <div className="flex-1 space-y-2">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <span className="text-xs text-gray-700">EOL</span>
-            <span className="text-xs font-bold text-gray-900 ml-auto">{eolTechStacks}</span>
+        {/* Legend - Right Side (Very Compact) */}
+        <div className="flex-1 space-y-1">
+          <div className="flex items-center gap-1 text-xs">
+            <div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></div>
+            <span className="text-gray-700 flex-1">EOL: {eolTechStacks}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="text-xs text-gray-700">Active</span>
-            <span className="text-xs font-bold text-gray-900 ml-auto">{nonEolTechStacks}</span>
+          <div className="flex items-center gap-1 text-xs">
+            <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
+            <span className="text-gray-700 flex-1">Active: {nonEolTechStacks}</span>
           </div>
 
-          {/* Upgrade legend - inline */}
-          <div className="text-xs text-gray-600 mt-2">
-            <div className="flex gap-3">
-              <span>Upgradable: <span className="font-bold text-gray-900">{eolUpgradable + nonEolUpgradable}</span></span>
-              <span>Not: <span className="font-bold text-gray-900">{eolNotUpgradable + nonEolNotUpgradable}</span></span>
+          {/* Upgrade legend - very compact */}
+          <div className="text-xs text-gray-600 mt-0.5 grid grid-cols-2 gap-0.5">
+            <div className="flex gap-1">
+              <span>✓</span>
+              <span>{eolUpgradable + nonEolUpgradable}</span>
+            </div>
+            <div className="flex gap-1">
+              <span>✕</span>
+              <span>{eolNotUpgradable + nonEolNotUpgradable}</span>
             </div>
           </div>
         </div>
