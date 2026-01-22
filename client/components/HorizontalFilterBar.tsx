@@ -13,8 +13,6 @@ interface HorizontalFilterBarProps {
   hasActiveFilters: boolean;
   viewType: ViewType;
   onViewTypeChange: (view: ViewType) => void;
-  grouping: GroupingType;
-  onGroupingChange: (grouping: GroupingType) => void;
   onExport?: (format: 'csv' | 'json' | 'pdf') => void;
 }
 
