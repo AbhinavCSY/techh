@@ -319,6 +319,7 @@ function DetailsPanel({
   const [scannedCVEs, setScannedCVEs] = useState<Record<string, any>>({});
   const [newlyDiscoveredCVEs, setNewlyDiscoveredCVEs] = useState<any[]>([]);
   const [expandedCVE, setExpandedCVE] = useState<string | null>(null);
+  const [selectedAssetsForScan, setSelectedAssetsForScan] = useState<Record<string, boolean>>({});
 
   // Market CVEs available for scanning
   const marketCVEs = [
