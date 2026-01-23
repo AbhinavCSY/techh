@@ -427,7 +427,7 @@ function DetailsPanel({
 
   useEffect(() => {
     initializeSelectedAssets();
-  }, [item.id, isAsset]);
+  }, [item.id, isAssetItem]);
 
   const handleScanAssets = async (techStackId: string) => {
     setIsScanning(true);
