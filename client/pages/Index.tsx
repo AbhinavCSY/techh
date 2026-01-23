@@ -16,6 +16,7 @@ import { AssetTableView } from "@/components/AssetTableView";
 import { PackageReliabilityCard } from "@/components/PackageReliabilityCard";
 import { CVEsPieChart } from "@/components/CVEsPieChart";
 import { EOLPieChart } from "@/components/EOLPieChart";
+import { TechStacksAndAssetsChart } from "@/components/TechStacksAndAssetsChart";
 import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from "lucide-react";
@@ -112,7 +113,7 @@ export default function Index() {
 
           {/* Key Metrics Panel - Collapsible & Compact - All in One Row */}
           {showWidgetPanel && (
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {/* CVEs Pie Chart */}
               <div className="bg-white rounded-lg border border-gray-200 p-1.5">
                 <CVEsPieChart compact={true} />
@@ -123,21 +124,10 @@ export default function Index() {
                 <EOLPieChart compact={true} />
               </div>
 
-              {/* Total Tech Stacks Card */}
-              <MetricCard
-                label="Total Tech Stacks"
-                value={metrics.totalTechStacks}
-                color="blue"
-                icon="📦"
-              />
-
-              {/* Assets Scanned Card */}
-              <MetricCard
-                label="Assets Scanned"
-                value={metrics.assetsScanned}
-                color="green"
-                icon="✓"
-              />
+              {/* Tech Stacks & Assets Chart */}
+              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
+                <TechStacksAndAssetsChart compact={true} />
+              </div>
             </div>
           )}
         </div>
