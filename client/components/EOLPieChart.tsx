@@ -240,10 +240,10 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
 
               {/* Hover Tooltip */}
               {hoveredSegment && (
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+                <div className="absolute top-1/2 left-full transform -translate-y-1/2 ml-2 bg-gray-900 text-white text-xs px-3 py-2 rounded shadow-lg z-50 whitespace-nowrap">
                   {hoveredSegment === "eol"
-                    ? `EOL: ${eolTechStacks}`
-                    : `Active: ${nonEolTechStacks}`}
+                    ? `⚠️ EOL: ${eolTechStacks}`
+                    : `✓ Active: ${nonEolTechStacks}`}
                 </div>
               )}
             </div>
