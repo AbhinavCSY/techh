@@ -312,6 +312,10 @@ function DetailsPanel({
   onNavigateToIncident,
   onSelectAsset,
 }: DetailsPanelProps) {
+  // Dynamically determine if the current item is an asset or tech stack
+  // Assets have 'techStacks' property, tech stacks have 'version' property
+  const isAssetItem = item && Array.isArray(item.techStacks) && !item.version;
+
   const [isScanning, setIsScanning] = useState(false);
   const [scanResults, setScanResults] = useState<any>(null);
   const [scannedCVEs, setScannedCVEs] = useState<Record<string, any>>({});
@@ -329,7 +333,7 @@ function DetailsPanel({
 
   // Initialize selected assets when item changes
   const initializeSelectedAssets = () => {
-    if (!isAsset) {
+    if (!isAssetItem) {
       const assets = getAssociatedAssets(item.id);
       const selected: Record<string, boolean> = {};
       assets.forEach((asset) => {
