@@ -253,6 +253,9 @@ export default function Index() {
           onNavigateToIncident={(techStackId, cveId) =>
             navigate(`/incident/${techStackId}/${cveId}`)
           }
+          onSelectAsset={(asset) => {
+            setSelectedItem(asset);
+          }}
         />
       )}
     </div>
@@ -298,6 +301,7 @@ interface DetailsPanelProps {
   allAssets: any[];
   onClose: () => void;
   onNavigateToIncident: (techStackId: string, cveId: string) => void;
+  onSelectAsset: (asset: any) => void;
 }
 
 function DetailsPanel({
@@ -306,7 +310,12 @@ function DetailsPanel({
   allAssets,
   onClose,
   onNavigateToIncident,
+  onSelectAsset,
 }: DetailsPanelProps) {
+  // Dynamically determine if the current item is an asset or tech stack
+  // Assets have 'techStacks' property, tech stacks have 'version' property
+  const isAssetItem = item && Array.isArray(item.techStacks) && !item.version;
+
   const [isScanning, setIsScanning] = useState(false);
   const [scanResults, setScanResults] = useState<any>(null);
   const [scannedCVEs, setScannedCVEs] = useState<Record<string, any>>({});
@@ -324,7 +333,7 @@ function DetailsPanel({
 
   // Initialize selected assets when item changes
   const initializeSelectedAssets = () => {
-    if (!isAsset) {
+    if (!isAssetItem) {
       const assets = getAssociatedAssets(item.id);
       const selected: Record<string, boolean> = {};
       assets.forEach((asset) => {
@@ -418,7 +427,7 @@ function DetailsPanel({
 
   useEffect(() => {
     initializeSelectedAssets();
-  }, [item.id, isAsset]);
+  }, [item.id]);
 
   const handleScanAssets = async (techStackId: string) => {
     setIsScanning(true);
@@ -507,7 +516,7 @@ function DetailsPanel({
 
           {/* Content */}
           <div className="p-6 space-y-6">
-            {isAsset ? (
+            {isAssetItem ? (
               <>
                 {/* Asset Details */}
                 <div>
@@ -666,95 +675,6 @@ function DetailsPanel({
                   <h4 className="font-semibold text-gray-900 mb-3">
                     🛡️ Threat Intel
                   </h4>
-
-                  {/* Asset Selection and Scanning Controls */}
-                  <div className="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                    <div className="flex items-center justify-between mb-3">
-                      <label className="text-sm font-semibold text-gray-700">
-                        Select Assets to Scan
-                      </label>
-                      <button
-                        onClick={() => {
-                          const allAssets = getAssociatedAssets(item.id);
-                          const currentSelected = Object.keys(
-                            selectedAssetsForScan,
-                          ).filter((key) => selectedAssetsForScan[key as any]);
-                          if (currentSelected.length === allAssets.length) {
-                            const newSelection = { ...selectedAssetsForScan };
-                            allAssets.forEach(
-                              (a) => (newSelection[a.id as any] = false),
-                            );
-                            setSelectedAssetsForScan(newSelection);
-                          } else {
-                            const newSelection = { ...selectedAssetsForScan };
-                            allAssets.forEach(
-                              (a) => (newSelection[a.id as any] = true),
-                            );
-                            setSelectedAssetsForScan(newSelection);
-                          }
-                        }}
-                        className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                      >
-                        {Object.keys(selectedAssetsForScan).length ===
-                          getAssociatedAssets(item.id).length &&
-                        Object.keys(selectedAssetsForScan).length > 0
-                          ? "Deselect All"
-                          : "Select All"}
-                      </button>
-                    </div>
-                    <div className="space-y-2 max-h-32 overflow-y-auto mb-3">
-                      {getAssociatedAssets(item.id).map((asset) => (
-                        <label
-                          key={asset.id}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={
-                              selectedAssetsForScan[asset.id as any] || false
-                            }
-                            onChange={(e) =>
-                              setSelectedAssetsForScan((prev) => ({
-                                ...prev,
-                                [asset.id]: e.target.checked,
-                              }))
-                            }
-                            className="w-4 h-4 rounded"
-                          />
-                          <span className="text-xs text-gray-700">
-                            {asset.name}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        const selectedAssetIds = Object.keys(
-                          selectedAssetsForScan,
-                        ).filter((id) => selectedAssetsForScan[id as any]);
-                        if (selectedAssetIds.length > 0) {
-                          handleScanAssets(item.id);
-                        }
-                      }}
-                      disabled={
-                        isScanning ||
-                        Object.values(selectedAssetsForScan).every((v) => !v)
-                      }
-                      className={cn(
-                        "w-full font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2",
-                        isScanning ||
-                          Object.values(selectedAssetsForScan).every((v) => !v)
-                          ? "bg-gray-400 text-white cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-700 text-white",
-                      )}
-                    >
-                      <span>{isScanning ? "⏳" : "🔍"}</span>
-                      {isScanning
-                        ? "Scanning Against Each CVEs..."
-                        : `Scan Against Each CVEs for Threat Intel`}
-                    </button>
-                  </div>
 
                   {/* Summary Stats */}
                   <div className="grid grid-cols-3 gap-2 mb-4">
@@ -1343,6 +1263,95 @@ function DetailsPanel({
                       );
                     })}
                   </div>
+
+                  {/* Asset Selection and Scanning Controls - Moved after CVEs */}
+                  <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-sm font-semibold text-gray-700">
+                        Select Assets to Scan
+                      </label>
+                      <button
+                        onClick={() => {
+                          const allAssets = getAssociatedAssets(item.id);
+                          const currentSelected = Object.keys(
+                            selectedAssetsForScan,
+                          ).filter((key) => selectedAssetsForScan[key as any]);
+                          if (currentSelected.length === allAssets.length) {
+                            const newSelection = { ...selectedAssetsForScan };
+                            allAssets.forEach(
+                              (a) => (newSelection[a.id as any] = false),
+                            );
+                            setSelectedAssetsForScan(newSelection);
+                          } else {
+                            const newSelection = { ...selectedAssetsForScan };
+                            allAssets.forEach(
+                              (a) => (newSelection[a.id as any] = true),
+                            );
+                            setSelectedAssetsForScan(newSelection);
+                          }
+                        }}
+                        className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        {Object.keys(selectedAssetsForScan).length ===
+                          getAssociatedAssets(item.id).length &&
+                        Object.keys(selectedAssetsForScan).length > 0
+                          ? "Deselect All"
+                          : "Select All"}
+                      </button>
+                    </div>
+                    <div className="space-y-2 max-h-32 overflow-y-auto mb-3">
+                      {getAssociatedAssets(item.id).map((asset) => (
+                        <label
+                          key={asset.id}
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={
+                              selectedAssetsForScan[asset.id as any] || false
+                            }
+                            onChange={(e) =>
+                              setSelectedAssetsForScan((prev) => ({
+                                ...prev,
+                                [asset.id]: e.target.checked,
+                              }))
+                            }
+                            className="w-4 h-4 rounded"
+                          />
+                          <span className="text-xs text-gray-700">
+                            {asset.name}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        const selectedAssetIds = Object.keys(
+                          selectedAssetsForScan,
+                        ).filter((id) => selectedAssetsForScan[id as any]);
+                        if (selectedAssetIds.length > 0) {
+                          handleScanAssets(item.id);
+                        }
+                      }}
+                      disabled={
+                        isScanning ||
+                        Object.values(selectedAssetsForScan).every((v) => !v)
+                      }
+                      className={cn(
+                        "w-full font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2",
+                        isScanning ||
+                          Object.values(selectedAssetsForScan).every((v) => !v)
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700 text-white",
+                      )}
+                    >
+                      <span>{isScanning ? "⏳" : "🔍"}</span>
+                      {isScanning
+                        ? "Scanning Against Each CVEs..."
+                        : `Scan Against Each CVEs for Threat Intel`}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Associated Assets */}
@@ -1368,15 +1377,50 @@ function DetailsPanel({
                         }
                       };
 
+                      // Get logos from tech stacks
+                      const techStackLogos = asset.techStacks
+                        .slice(0, 2)
+                        .map((ts) => ts.logo);
+
                       return (
                         <div
                           key={asset.id}
-                          className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+                          className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
+                          onClick={() => {
+                            onSelectAsset(asset);
+                          }}
                         >
                           <div className="flex items-start justify-between mb-2">
-                            <p className="font-semibold text-sm text-gray-900">
-                              {asset.name}
-                            </p>
+                            <div className="flex items-center gap-2 flex-1">
+                              <div className="flex gap-1">
+                                {techStackLogos.map((logo, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="text-lg cursor-pointer hover:scale-110 transition-transform"
+                                    title={
+                                      asset.techStacks[idx]?.name ||
+                                      "Tech Stack"
+                                    }
+                                  >
+                                    {logo}
+                                  </span>
+                                ))}
+                                {asset.techStacks.length > 2 && (
+                                  <span
+                                    className="text-sm font-semibold text-gray-600"
+                                    title={asset.techStacks
+                                      .slice(2)
+                                      .map((ts) => ts.name)
+                                      .join(", ")}
+                                  >
+                                    +{asset.techStacks.length - 2}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="font-semibold text-sm text-gray-900">
+                                {asset.name}
+                              </p>
+                            </div>
                             <Badge
                               className={`${getRiskBadgeColor(asset.riskLevel)} text-xs`}
                             >
