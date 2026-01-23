@@ -1368,15 +1368,49 @@ function DetailsPanel({
                         }
                       };
 
+                      // Get logos from tech stacks
+                      const techStackLogos = asset.techStacks
+                        .slice(0, 2)
+                        .map((ts) => ts.logo);
+
                       return (
                         <div
                           key={asset.id}
-                          className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+                          className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
+                          onClick={() => {
+                            setSelectedItem(asset);
+                          }}
                         >
                           <div className="flex items-start justify-between mb-2">
-                            <p className="font-semibold text-sm text-gray-900">
-                              {asset.name}
-                            </p>
+                            <div className="flex items-center gap-2 flex-1">
+                              <div className="flex gap-1">
+                                {techStackLogos.map((logo, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="text-lg cursor-pointer hover:scale-110 transition-transform"
+                                    title={
+                                      asset.techStacks[idx]?.name || "Tech Stack"
+                                    }
+                                  >
+                                    {logo}
+                                  </span>
+                                ))}
+                                {asset.techStacks.length > 2 && (
+                                  <span
+                                    className="text-sm font-semibold text-gray-600"
+                                    title={asset.techStacks
+                                      .slice(2)
+                                      .map((ts) => ts.name)
+                                      .join(", ")}
+                                  >
+                                    +{asset.techStacks.length - 2}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="font-semibold text-sm text-gray-900">
+                                {asset.name}
+                              </p>
+                            </div>
                             <Badge
                               className={`${getRiskBadgeColor(asset.riskLevel)} text-xs`}
                             >
