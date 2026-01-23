@@ -16,6 +16,7 @@ import { AssetTableView } from "@/components/AssetTableView";
 import { PackageReliabilityCard } from "@/components/PackageReliabilityCard";
 import { CVEsPieChart } from "@/components/CVEsPieChart";
 import { EOLPieChart } from "@/components/EOLPieChart";
+import { TechStacksAndAssetsChart } from "@/components/TechStacksAndAssetsChart";
 import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from "lucide-react";
