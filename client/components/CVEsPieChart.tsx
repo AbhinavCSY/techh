@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { techStackDatabase } from "@/data/mockData";
+import { Maximize2, X } from "lucide-react";
 
 interface CVEsPieChartProps {
   compact?: boolean;
@@ -7,6 +8,7 @@ interface CVEsPieChartProps {
 
 export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Calculate CVE statistics
   const scannedCVEs = techStackDatabase.reduce(
