@@ -103,14 +103,14 @@ export function TechStacksAndAssetsChart({
 
       <ResponsiveContainer
         width="100%"
-        height={fullSize ? 300 : 60}
+        height={fullSize ? 300 : 150}
       >
         <BarChart
           data={chartData}
           margin={
             fullSize
               ? { top: 10, right: 30, left: 0, bottom: 40 }
-              : { top: 0, right: 2, left: 0, bottom: 0 }
+              : { top: 5, right: 5, left: 5, bottom: 5 }
           }
         >
           {fullSize && (
