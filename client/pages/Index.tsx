@@ -164,6 +164,24 @@ export default function Index() {
         </div>
       </div>
 
+      {/* Full Size Charts Section */}
+      <div className="border-b border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Threat Summary Full Chart */}
+            <CVEsPieChart compact={false} />
+
+            {/* Version Summary Full Chart */}
+            <EOLPieChart compact={false} />
+          </div>
+
+          {/* Stacks Summary Full Chart - Full Width */}
+          <div className="mt-6">
+            <TechStacksAndAssetsChart compact={false} />
+          </div>
+        </div>
+      </div>
+
       {/* Filter Bar */}
       <HorizontalFilterBar
         filters={filters}
