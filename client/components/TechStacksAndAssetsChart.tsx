@@ -92,32 +92,14 @@ export function TechStacksAndAssetsChart({
 
   const ChartContent = ({ fullSize = false }: { fullSize?: boolean }) => (
     <>
-      <div className={fullSize ? "mb-6" : "mb-4"}>
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className={fullSize ? "font-semibold text-gray-900 text-lg" : "text-sm font-semibold text-gray-700"}>
-              📦 Stacks Summary
-            </h3>
-            {fullSize && (
-              <p className="text-xs text-gray-600 mt-1">
-                7-day historical overview with daily metrics
-              </p>
-            )}
-          </div>
-          {!fullSize && (
-            <div className="flex items-center gap-3 text-xs">
-              <div className="flex items-center gap-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                <span className="text-gray-700">{currentTechStacks}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                <span className="text-gray-700">{currentAssetsScanned}</span>
-              </div>
-            </div>
-          )}
+      {fullSize && (
+        <div className="mb-6">
+          <h3 className="font-semibold text-gray-900 text-lg">📦 Stacks Summary</h3>
+          <p className="text-xs text-gray-600 mt-1">
+            7-day historical overview with daily metrics
+          </p>
         </div>
-      </div>
+      )}
 
       <ResponsiveContainer
         width="100%"
