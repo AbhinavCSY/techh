@@ -293,25 +293,7 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
                 </span>
               </div>
 
-              {/* Severity legend - very compact */}
-              <div className="text-xs text-gray-600 mt-0.5 grid grid-cols-2 gap-0.5">
-                <div className="flex gap-1 items-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-red-600 flex-shrink-0"></div>
-                  <span>C:{severityBreakdown.critical}</span>
-                </div>
-                <div className="flex gap-1 items-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></div>
-                  <span>H:{severityBreakdown.high}</span>
-                </div>
-                <div className="flex gap-1 items-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0"></div>
-                  <span>M:{severityBreakdown.medium}</span>
-                </div>
-                <div className="flex gap-1 items-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div>
-                  <span>L:{severityBreakdown.low}</span>
-                </div>
-              </div>
+              {/* Severity legend - very compact - hidden to prevent overflow */}
             </div>
           </div>
         </div>
