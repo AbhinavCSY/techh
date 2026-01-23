@@ -253,6 +253,9 @@ export default function Index() {
           onNavigateToIncident={(techStackId, cveId) =>
             navigate(`/incident/${techStackId}/${cveId}`)
           }
+          onSelectAsset={(asset) => {
+            setSelectedItem(asset);
+          }}
         />
       )}
     </div>
