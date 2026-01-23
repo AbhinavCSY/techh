@@ -39,12 +39,12 @@ export function TechStacksAndAssetsChart({
       // Generate realistic data with slight variations
       const baseStacks = Math.max(
         15,
-        techStackDatabase.length - Math.floor(Math.random() * 5)
+        techStackDatabase.length - Math.floor(Math.random() * 5),
       );
       const baseAssets = Math.max(
         12,
         assetDatabase.filter((a) => a.isScanned).length -
-          Math.floor(Math.random() * 4)
+          Math.floor(Math.random() * 4),
       );
 
       // Format date as dd/mm/yyyy
@@ -94,17 +94,16 @@ export function TechStacksAndAssetsChart({
     <>
       {fullSize && (
         <div className="mb-6">
-          <h3 className="font-semibold text-gray-900 text-lg">📦 Stacks Summary</h3>
+          <h3 className="font-semibold text-gray-900 text-lg">
+            📦 Stacks Summary
+          </h3>
           <p className="text-xs text-gray-600 mt-1">
             7-day historical overview with daily metrics
           </p>
         </div>
       )}
 
-      <ResponsiveContainer
-        width="100%"
-        height={fullSize ? 300 : 150}
-      >
+      <ResponsiveContainer width="100%" height={fullSize ? 300 : 150}>
         <BarChart
           data={chartData}
           margin={
@@ -114,7 +113,9 @@ export function TechStacksAndAssetsChart({
           }
         >
           <>
-            {fullSize && <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />}
+            {fullSize && (
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            )}
             <XAxis
               dataKey="date"
               tick={{ fontSize: fullSize ? 12 : 8, fill: "#6b7280" }}
@@ -127,9 +128,21 @@ export function TechStacksAndAssetsChart({
             <YAxis
               tick={{ fontSize: fullSize ? 12 : 8, fill: "#6b7280" }}
               axisLine={{ stroke: "#e5e7eb" }}
-              label={fullSize ? { value: "Count", angle: -90, position: "insideLeft", offset: 10 } : { value: "Count", angle: -90, position: "insideLeft" }}
+              label={
+                fullSize
+                  ? {
+                      value: "Count",
+                      angle: -90,
+                      position: "insideLeft",
+                      offset: 10,
+                    }
+                  : { value: "Count", angle: -90, position: "insideLeft" }
+              }
             />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.05)" }} />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: "rgba(0,0,0,0.05)" }}
+            />
           </>
           {fullSize && (
             <Legend
@@ -139,7 +152,10 @@ export function TechStacksAndAssetsChart({
                 return (
                   <div className="flex items-center justify-center gap-8 text-sm mt-4">
                     {payload?.map((entry) => (
-                      <div key={entry.dataKey} className="flex items-center gap-3">
+                      <div
+                        key={entry.dataKey}
+                        className="flex items-center gap-3"
+                      >
                         <div
                           className="w-3 h-3 rounded"
                           style={{ backgroundColor: entry.color }}
@@ -180,7 +196,9 @@ export function TechStacksAndAssetsChart({
       <>
         <div className="bg-white rounded-lg border border-gray-200 p-3 flex flex-col h-48 overflow-hidden">
           <div className="flex items-center justify-between mb-2 flex-shrink-0">
-            <p className="text-xs font-semibold text-gray-700">📦 Stacks Summary</p>
+            <p className="text-xs font-semibold text-gray-700">
+              📦 Stacks Summary
+            </p>
             <button
               onClick={() => setIsExpanded(true)}
               className="p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
@@ -247,8 +265,9 @@ export function TechStacksAndAssetsChart({
                     </p>
                     <p className="text-xs text-green-700 mt-2">
                       {Math.round(
-                        (currentAssetsScanned / assetDatabase.length) * 100
-                      )}% of total
+                        (currentAssetsScanned / assetDatabase.length) * 100,
+                      )}
+                      % of total
                     </p>
                   </div>
                 </div>
@@ -287,9 +306,8 @@ export function TechStacksAndAssetsChart({
             {currentAssetsScanned}
           </p>
           <p className="text-xs text-green-700 mt-2">
-            {Math.round(
-              (currentAssetsScanned / assetDatabase.length) * 100
-            )}% of total
+            {Math.round((currentAssetsScanned / assetDatabase.length) * 100)}%
+            of total
           </p>
         </div>
       </div>

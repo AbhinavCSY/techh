@@ -155,9 +155,7 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
                 <div className="w-4 h-4 rounded-full bg-amber-400"></div>
                 <span className="text-sm text-gray-700">Unscanned</span>
               </div>
-              <span className="font-bold text-amber-900">
-                {unscannedCVEs}
-              </span>
+              <span className="font-bold text-amber-900">{unscannedCVEs}</span>
             </div>
           </div>
         </div>
@@ -214,7 +212,9 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
       <>
         <div className="bg-white rounded-lg border border-gray-200 p-3 flex flex-col h-48 overflow-hidden">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-semibold text-gray-700">🛡️ Threat Summary</p>
+            <p className="text-xs font-semibold text-gray-700">
+              🛡️ Threat Summary
+            </p>
             <button
               onClick={() => setIsExpanded(true)}
               className="p-1 hover:bg-gray-100 rounded transition-colors"
@@ -284,7 +284,9 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-2 text-sm font-medium">
                 <div className="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></div>
-                <span className="text-gray-700 flex-1">Scanned: {scannedCVEs}</span>
+                <span className="text-gray-700 flex-1">
+                  Scanned: {scannedCVEs}
+                </span>
               </div>
               <div className="flex items-center gap-2 text-sm font-medium">
                 <div className="w-3 h-3 rounded-full bg-amber-400 flex-shrink-0"></div>
@@ -318,15 +320,23 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
 
         {/* Expanded Modal */}
         {isExpanded && (
-          <div className="fixed inset-0 z-50 overflow-hidden" onClick={() => setIsExpanded(false)}>
+          <div
+            className="fixed inset-0 z-50 overflow-hidden"
+            onClick={() => setIsExpanded(false)}
+          >
             <div className="absolute inset-0 bg-black bg-opacity-50" />
             <div
               className="absolute right-0 top-0 bottom-0 w-full max-w-4xl bg-white shadow-xl overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
-                <h2 className="text-lg font-semibold text-gray-900">🛡️ Threat Summary</h2>
-                <button onClick={() => setIsExpanded(false)} className="p-1 hover:bg-gray-100 rounded">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  🛡️ Threat Summary
+                </h2>
+                <button
+                  onClick={() => setIsExpanded(false)}
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
                   <X className="w-5 h-5 text-gray-500" />
                 </button>
               </div>
@@ -342,9 +352,7 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <h3 className="font-semibold text-gray-900 mb-6">
-        🛡️ Threat Summary
-      </h3>
+      <h3 className="font-semibold text-gray-900 mb-6">🛡️ Threat Summary</h3>
 
       <ChartContent />
     </div>
