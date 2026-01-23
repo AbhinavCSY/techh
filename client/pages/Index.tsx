@@ -1398,7 +1398,8 @@ function DetailsPanel({
                                     key={idx}
                                     className="text-lg cursor-pointer hover:scale-110 transition-transform"
                                     title={
-                                      asset.techStacks[idx]?.name || "Tech Stack"
+                                      asset.techStacks[idx]?.name ||
+                                      "Tech Stack"
                                     }
                                   >
                                     {logo}
