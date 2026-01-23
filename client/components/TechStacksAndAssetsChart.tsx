@@ -129,9 +129,9 @@ export function TechStacksAndAssetsChart({
                 axisLine={{ stroke: "#e5e7eb" }}
                 label={{ value: "Count", angle: -90, position: "insideLeft", offset: 10 }}
               />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.05)" }} />
             </>
           )}
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.05)" }} />
           {fullSize && (
             <Legend
               wrapperStyle={{ paddingTop: "20px" }}
