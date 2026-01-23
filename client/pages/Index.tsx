@@ -298,6 +298,7 @@ interface DetailsPanelProps {
   allAssets: any[];
   onClose: () => void;
   onNavigateToIncident: (techStackId: string, cveId: string) => void;
+  onSelectAsset: (asset: any) => void;
 }
 
 function DetailsPanel({
@@ -306,6 +307,7 @@ function DetailsPanel({
   allAssets,
   onClose,
   onNavigateToIncident,
+  onSelectAsset,
 }: DetailsPanelProps) {
   const [isScanning, setIsScanning] = useState(false);
   const [scanResults, setScanResults] = useState<any>(null);
