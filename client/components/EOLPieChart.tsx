@@ -180,18 +180,18 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
   if (compact) {
     return (
       <>
-        <div className="bg-white rounded-lg border border-gray-200 p-1.5 flex flex-col h-20">
-          <div className="flex items-center justify-between mb-1">
+        <div className="bg-white rounded-lg border border-gray-200 p-3 flex flex-col h-48 overflow-hidden">
+          <div className="flex items-center justify-between mb-2">
             <p className="text-xs font-semibold text-gray-700">📦 Version Summary</p>
             <button
               onClick={() => setIsExpanded(true)}
               className="p-1 hover:bg-gray-100 rounded transition-colors"
               title="Expand"
             >
-              <Maximize2 className="w-3.5 h-3.5 text-gray-500 hover:text-gray-700" />
+              <Maximize2 className="w-4 h-4 text-gray-500 hover:text-gray-700" />
             </button>
           </div>
-          <div className="flex items-center gap-2 flex-1">
+          <div className="flex items-center gap-3 flex-1 overflow-hidden">
             {/* Pie Chart - Left Side (Compact) */}
             <div className="flex-shrink-0 relative w-16 h-16">
               <svg viewBox="0 0 120 120" className="w-full h-full">
