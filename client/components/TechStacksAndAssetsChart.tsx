@@ -113,25 +113,24 @@ export function TechStacksAndAssetsChart({
               : { top: 5, right: 5, left: 5, bottom: 5 }
           }
         >
-          {fullSize && (
-            <>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                angle={-45}
-                textAnchor="end"
-                height={80}
-              />
-              <YAxis
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                axisLine={{ stroke: "#e5e7eb" }}
-                label={{ value: "Count", angle: -90, position: "insideLeft", offset: 10 }}
-              />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.05)" }} />
-            </>
-          )}
+          <>
+            {fullSize && <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />}
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: fullSize ? 12 : 8, fill: "#6b7280" }}
+              axisLine={{ stroke: "#e5e7eb" }}
+              angle={fullSize ? -45 : 0}
+              textAnchor={fullSize ? "end" : "middle"}
+              height={fullSize ? 80 : 20}
+              interval={fullSize ? 0 : 2}
+            />
+            <YAxis
+              tick={{ fontSize: fullSize ? 12 : 8, fill: "#6b7280" }}
+              axisLine={{ stroke: "#e5e7eb" }}
+              label={fullSize ? { value: "Count", angle: -90, position: "insideLeft", offset: 10 } : { value: "Count", angle: -90, position: "insideLeft" }}
+            />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.05)" }} />
+          </>
           {fullSize && (
             <Legend
               wrapperStyle={{ paddingTop: "20px" }}
