@@ -60,33 +60,46 @@ export function TechStacksAndAssetsChart({
 
   if (compact) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-1.5 h-20 flex items-center">
-        <div className="flex-1 h-full">
+      <div className="bg-white rounded-lg border border-gray-200 p-1.5 h-20 flex flex-col">
+        <div className="flex-1">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
-              margin={{ top: 4, right: 8, left: 0, bottom: 4 }}
+              margin={{ top: 2, right: 4, left: 0, bottom: 2 }}
             >
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "6px",
+                  padding: "8px",
+                  fontSize: "11px",
+                }}
+                formatter={(value) => value}
+                labelFormatter={(label) => `📅 ${label}`}
+              />
               <Bar
                 dataKey="techStacks"
                 fill="#3b82f6"
-                radius={[2, 2, 0, 0]}
+                radius={[1, 1, 0, 0]}
+                maxBarSize={8}
               />
               <Bar
                 dataKey="assetsScanned"
                 fill="#10b981"
-                radius={[2, 2, 0, 0]}
+                radius={[1, 1, 0, 0]}
+                maxBarSize={8}
               />
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <div className="flex flex-col items-center justify-center ml-2 text-xs">
-          <div className="flex items-center gap-1 mb-1">
-            <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+        <div className="flex items-center justify-center gap-3 text-xs mt-1">
+          <div className="flex items-center gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
             <span className="text-gray-700">{currentTechStacks}</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
             <span className="text-gray-700">{currentAssetsScanned}</span>
           </div>
         </div>
