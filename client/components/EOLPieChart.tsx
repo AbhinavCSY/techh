@@ -121,7 +121,7 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <h3 className="font-semibold text-gray-900 mb-6">EOL & Upgrade Status</h3>
+      <h3 className="font-semibold text-gray-900 mb-6">📦 Version Summary</h3>
 
       <div className="flex gap-8">
         {/* Chart */}
