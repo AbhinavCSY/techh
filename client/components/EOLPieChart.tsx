@@ -261,17 +261,7 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
                 </span>
               </div>
 
-              {/* Upgrade legend - very compact */}
-              <div className="text-xs text-gray-600 mt-0.5 grid grid-cols-2 gap-0.5">
-                <div className="flex gap-1">
-                  <span>✓</span>
-                  <span>{eolUpgradable + nonEolUpgradable}</span>
-                </div>
-                <div className="flex gap-1">
-                  <span>✕</span>
-                  <span>{eolNotUpgradable + nonEolNotUpgradable}</span>
-                </div>
-              </div>
+              {/* Upgrade legend - hidden to prevent overflow */}
             </div>
           </div>
         </div>
