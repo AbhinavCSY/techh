@@ -225,7 +225,7 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
           </div>
           <div className="flex items-center gap-3 flex-1 overflow-hidden">
             {/* Pie Chart - Left Side (Compact) */}
-            <div className="flex-shrink-0 relative w-16 h-16">
+            <div className="flex-shrink-0 relative w-32 h-32">
               <svg viewBox="0 0 120 120" className="w-full h-full">
                 {/* Outer ring - Unscanned */}
                 <circle
