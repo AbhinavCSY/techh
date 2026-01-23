@@ -282,18 +282,36 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
 
             {/* Legend - Right Side */}
             <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm font-medium">
                 <div className="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></div>
                 <span className="text-gray-700 flex-1">Scanned: {scannedCVEs}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm font-medium">
                 <div className="w-3 h-3 rounded-full bg-amber-400 flex-shrink-0"></div>
                 <span className="text-gray-700 flex-1">
                   Unscanned: {unscannedCVEs}
                 </span>
               </div>
 
-              {/* Severity legend - very compact - hidden to prevent overflow */}
+              {/* Severity Breakdown */}
+              <div className="text-xs text-gray-600 mt-2 grid grid-cols-2 gap-1.5 pt-1.5 border-t border-gray-200">
+                <div className="flex gap-1.5 items-center">
+                  <div className="w-2 h-2 rounded-full bg-red-600 flex-shrink-0"></div>
+                  <span>Critical: {severityBreakdown.critical}</span>
+                </div>
+                <div className="flex gap-1.5 items-center">
+                  <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0"></div>
+                  <span>High: {severityBreakdown.high}</span>
+                </div>
+                <div className="flex gap-1.5 items-center">
+                  <div className="w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0"></div>
+                  <span>Medium: {severityBreakdown.medium}</span>
+                </div>
+                <div className="flex gap-1.5 items-center">
+                  <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
+                  <span>Low: {severityBreakdown.low}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
