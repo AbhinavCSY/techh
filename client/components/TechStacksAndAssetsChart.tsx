@@ -39,11 +39,13 @@ export function TechStacksAndAssetsChart({
         assetDatabase.filter((a) => a.isScanned).length - Math.floor(Math.random() * 4)
       );
 
+      // Format date as dd/mm/yyyy
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+
       data.push({
-        date: date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        }),
+        date: `${day}/${month}/${year}`,
         techStacks: baseStacks,
         assetsScanned: baseAssets,
       });
@@ -61,6 +63,7 @@ export function TechStacksAndAssetsChart({
   if (compact) {
     return (
       <div className="bg-white rounded-lg border border-gray-200 p-1.5 h-20 flex flex-col">
+        <p className="text-xs font-semibold text-gray-700">📦 Stacks Summary</p>
         <div className="flex-1">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
@@ -133,7 +136,7 @@ export function TechStacksAndAssetsChart({
     <div className="bg-white rounded-lg border border-gray-200 p-6">
       <div className="mb-6">
         <h3 className="font-semibold text-gray-900 text-lg">
-          📊 Tech Stacks & Assets Trend
+          📦 Stacks Summary
         </h3>
         <p className="text-xs text-gray-600 mt-1">
           7-day historical overview with daily metrics
