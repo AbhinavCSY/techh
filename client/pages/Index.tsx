@@ -1380,7 +1380,7 @@ function DetailsPanel({
                           key={asset.id}
                           className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
                           onClick={() => {
-                            setSelectedItem(asset);
+                            onSelectAsset(asset);
                           }}
                         >
                           <div className="flex items-start justify-between mb-2">
