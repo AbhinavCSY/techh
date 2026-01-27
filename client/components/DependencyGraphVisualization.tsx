@@ -547,6 +547,7 @@ export function DependencyGraphVisualization({
   const [quickInfoNode, setQuickInfoNode] = useState<Technology | null>(null);
   const [quickInfoPos, setQuickInfoPos] = useState({ x: 0, y: 0 });
   const [showLegend, setShowLegend] = useState(false);
+  const graphContainerRef = React.useRef<HTMLDivElement>(null);
 
   const handleTechNodeClick = (
     nodeId: string,
