@@ -191,6 +191,11 @@ function GraphRenderer({
     related_to: "Related To",
     provided_by: "Provided By",
     subsidiary_of: "Subsidiary Of",
+    found_in: "Found In",
+    provides_by: "Provides",
+    implements: "Implements",
+    derived_from: "Derived From",
+    parent_of: "Parent Of",
   };
 
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
