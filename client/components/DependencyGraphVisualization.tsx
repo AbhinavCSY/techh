@@ -309,6 +309,16 @@ function GraphRenderer({
                     return "#A855F7"; // Purple
                   case "subsidiary_of":
                     return "#EAB308"; // Yellow
+                  case "found_in":
+                    return "#EF4444"; // Red - Vulnerability
+                  case "provides_by":
+                    return "#A855F7"; // Purple
+                  case "implements":
+                    return "#06B6D4"; // Cyan
+                  case "derived_from":
+                    return "#8B5CF6"; // Violet
+                  case "parent_of":
+                    return "#EC4899"; // Pink
                   default:
                     return "#6B7280"; // Gray
                 }
