@@ -393,7 +393,7 @@ export function DependencyGraphVisualization({
     nodes: GraphNode[];
     edges: GraphEdge[];
   } | null>(null);
-  const [isFullscreen, setIsFullscreen] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 700 });
 
   const WIDTH = 800;
