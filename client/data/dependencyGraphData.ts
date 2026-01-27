@@ -618,12 +618,13 @@ export const dependencyGraphData: DependencyGraphDataType = {
     },
     {
       id: "issue-swagger-ui-xss",
-      title: "Swagger UI XSS Vulnerability",
+      title: "Improper Access Control in Swagger",
       type: "vuln",
       severity: "medium",
       confidence_score: 0.85,
       discovered_at: "2024-03-15",
-      description: "Cross-Site Scripting (XSS) vulnerability in Swagger UI allowing injection of malicious scripts",
+      description:
+        "CVE-2021-12345: Improper access control leading to exposure of API metadata. Affected versions: 2.0, 3.0. This vulnerability allows unauthorized access to sensitive API documentation and structures.",
       cve_id: "CVE-2021-12345",
     },
     {
