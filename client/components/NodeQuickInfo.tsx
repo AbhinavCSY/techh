@@ -100,7 +100,7 @@ export function NodeQuickInfo({
   return (
     <div
       ref={dropdownRef}
-      className="fixed z-30 bg-white rounded-lg shadow-2xl border border-gray-300 pointer-events-auto"
+      className={`${containerRef ? "absolute" : "fixed"} z-30 bg-white rounded-lg shadow-2xl border border-gray-300 pointer-events-auto`}
       style={{
         left: `${adjustedPos.x}px`,
         top: `${adjustedPos.y}px`,
