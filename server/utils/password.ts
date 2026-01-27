@@ -66,9 +66,29 @@ export function initializePassword(): string | null {
     JSON.stringify({ encrypted, createdAt: new Date().toISOString() }, null, 2)
   );
 
+  // Create a temporary file with the plaintext password for initial setup
+  const setupFile = path.join(DATA_DIR, "SETUP_PASSWORD.txt");
+  const setupMessage = `APP PASSWORD - FIRST RUN SETUP
+=====================================
+Your application has been secured with a password.
+
+PASSWORD: ${newPassword}
+
+⚠️  IMPORTANT:
+1. Save this password in a safe place
+2. After saving, DELETE this file for security
+3. You will need this password to access the app
+
+File location: ${setupFile}
+=====================================
+`;
+
+  fs.writeFileSync(setupFile, setupMessage);
+
   console.log("\n=== APP PASSWORD INITIALIZED ===");
   console.log("Your app is now password protected.");
-  console.log("This message is only shown on first startup.");
+  console.log(`Initial password saved to: ${setupFile}`);
+  console.log("Please save the password and delete the setup file.");
   console.log("=====================================\n");
 
   return newPassword;
