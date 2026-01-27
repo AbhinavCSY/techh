@@ -591,8 +591,8 @@ function GraphRenderer({
 
                   {/* Primary label - Full name */}
                   <text
-                    x={node.x ?? 0}
-                    y={(node.y ?? 0) + (radius + 28)}
+                    x={nodeX}
+                    y={nodeY + (radius + 28)}
                     textAnchor="middle"
                     fontSize="11"
                     fontWeight="600"
