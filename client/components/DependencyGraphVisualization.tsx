@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Package, Building2, Minimize2, X, ZoomIn, ZoomOut, Home, Maximize2 } from "lucide-react";
+import { NodeDetailsPopup } from "./NodeDetailsPopup";
+import { getTechDetails, Technology } from "@/data/dependencyGraphData";
 
 interface GraphNode {
   id: string;
