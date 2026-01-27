@@ -94,7 +94,7 @@ class ForceDirectedGraph {
   }
 
   simulate(iterations: number) {
-    const k = Math.sqrt((this.width * this.height) / this.nodes.size);
+    const k = Math.sqrt((this.width * this.height) / this.nodes.size) * 1.5; // Increased spacing
     const c = 0.05;
 
     for (let iter = 0; iter < iterations; iter++) {
@@ -107,7 +107,8 @@ class ForceDirectedGraph {
             const dx = (node2.x ?? 0) - (node1.x ?? 0);
             const dy = (node2.y ?? 0) - (node1.y ?? 0);
             const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-            const repulsion = (k * k) / distance;
+            // Increased repulsion for better spacing
+            const repulsion = (k * k) / distance * 1.3;
             node1.vx! -= (dx / distance) * repulsion;
             node1.vy! -= (dy / distance) * repulsion;
           }
@@ -121,7 +122,8 @@ class ForceDirectedGraph {
           const dx = (target.x ?? 0) - (source.x ?? 0);
           const dy = (target.y ?? 0) - (source.y ?? 0);
           const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-          const attraction = ((distance * distance) / k) * 0.1;
+          // Reduced attraction strength to allow more repulsion
+          const attraction = ((distance * distance) / k) * 0.08;
           source.vx! += (dx / distance) * attraction;
           source.vy! += (dy / distance) * attraction;
           target.vx! -= (dx / distance) * attraction;
@@ -133,12 +135,12 @@ class ForceDirectedGraph {
         node.vx! *= c;
         node.vy! *= c;
         node.x = Math.max(
-          50,
-          Math.min(this.width - 50, (node.x ?? 0) + node.vx!),
+          80,
+          Math.min(this.width - 80, (node.x ?? 0) + node.vx!),
         );
         node.y = Math.max(
-          50,
-          Math.min(this.height - 50, (node.y ?? 0) + node.vy!),
+          80,
+          Math.min(this.height - 80, (node.y ?? 0) + node.vy!),
         );
       });
     }
