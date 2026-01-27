@@ -304,7 +304,7 @@ function GraphRenderer({
 
         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
           {/* Edges */}
-          <g className="edges">
+          <g className="edges" style={{ pointerEvents: "none" }}>
             {edges.map((edge, idx) => {
               const source = renderedNodes.find((n) => n.id === edge.source);
               const target = renderedNodes.find((n) => n.id === edge.target);
