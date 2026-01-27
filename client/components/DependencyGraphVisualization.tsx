@@ -580,10 +580,17 @@ export function DependencyGraphVisualization({
               edges={graphData.edges}
               width={windowSize.width}
               height={windowSize.height - 80}
+              onTechNodeClick={handleTechNodeClick}
             />
           </div>
         </div>
       )}
+
+      {/* Node Details Popup */}
+      <NodeDetailsPopup
+        tech={selectedTechNode}
+        onClose={() => setSelectedTechNode(null)}
+      />
     </>
   );
 }
