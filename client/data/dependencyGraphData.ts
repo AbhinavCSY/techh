@@ -780,6 +780,9 @@ export function buildGraphForTech(
         relationship: "uses",
       });
       visitedNodes.add(depTechId);
+
+      // Add issues for this dependent tech
+      addIssuesForTech(depTechId);
     }
   });
 
