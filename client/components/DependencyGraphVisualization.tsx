@@ -337,9 +337,18 @@ function GraphRenderer({
 
               if (!source || !target) return null;
 
-              // Use custom positions from nodePositions state if available
-              const sourcePos = nodePositions.get(edge.source) || { x: source.x ?? 0, y: source.y ?? 0 };
-              const targetPos = nodePositions.get(edge.target) || { x: target.x ?? 0, y: target.y ?? 0 };
+              // Always use the latest positions from nodePositions state
+              // This ensures edges always attach to current node positions
+              let sourcePos = nodePositions.get(edge.source);
+              let targetPos = nodePositions.get(edge.target);
+
+              // Fallback to renderedNodes if positions not yet initialized
+              if (!sourcePos) {
+                sourcePos = { x: source.x ?? 0, y: source.y ?? 0 };
+              }
+              if (!targetPos) {
+                targetPos = { x: target.x ?? 0, y: target.y ?? 0 };
+              }
 
               const midX = (sourcePos.x + targetPos.x) / 2;
               const midY = (sourcePos.y + targetPos.y) / 2;
