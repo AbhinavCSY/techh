@@ -261,11 +261,18 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick }: GraphRe
               const isTech = node.type === "technology";
               const isDirectAffected = node.subtype === "direct";
 
+              const handleNodeClick = () => {
+                if (isTech) {
+                  onTechNodeClick?.(node.id);
+                }
+                setSelectedNode(isSelected ? null : node.id);
+              };
+
               return (
                 <g
                   key={node.id}
                   className="cursor-pointer"
-                  onClick={() => setSelectedNode(isSelected ? null : node.id)}
+                  onClick={handleNodeClick}
                 >
                   <circle
                     cx={node.x ?? 0}
