@@ -626,20 +626,8 @@ function GraphRenderer({
         </div>
       </div>
 
-      {/* Tooltip */}
-      {showTooltips && hoveredNode && (
-        <div
-          className="fixed bg-gray-900 text-white text-sm px-3 py-2 rounded shadow-lg pointer-events-none"
-          style={{
-            left: `${tooltipPos.x}px`,
-            top: `${tooltipPos.y}px`,
-            maxWidth: "200px",
-            wordWrap: "break-word",
-          }}
-        >
-          {nodes.find((n) => n.id === hoveredNode)?.label}
-        </div>
-      )}
+      {/* Tooltip - Disabled, using node labels instead */}
+      {/* Node labels now show below nodes with full text */}
     </div>
   );
 }
