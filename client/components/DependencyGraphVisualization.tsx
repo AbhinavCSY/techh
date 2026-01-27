@@ -337,8 +337,12 @@ function GraphRenderer({
 
               if (!source || !target) return null;
 
-              const midX = ((source.x ?? 0) + (target.x ?? 0)) / 2;
-              const midY = ((source.y ?? 0) + (target.y ?? 0)) / 2;
+              // Use custom positions from nodePositions state if available
+              const sourcePos = nodePositions.get(edge.source) || { x: source.x ?? 0, y: source.y ?? 0 };
+              const targetPos = nodePositions.get(edge.target) || { x: target.x ?? 0, y: target.y ?? 0 };
+
+              const midX = (sourcePos.x + targetPos.x) / 2;
+              const midY = (sourcePos.y + targetPos.y) / 2;
               const label =
                 relationshipLabels[edge.relationship] || edge.relationship;
 
