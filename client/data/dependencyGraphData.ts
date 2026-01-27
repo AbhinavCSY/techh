@@ -636,6 +636,16 @@ export const dependencyGraphData: DependencyGraphDataType = {
       discovered_at: "2023-09-10",
       description: "AWS S3 bucket configured for public read access",
     },
+    {
+      id: "ISSUE-S3-FOUND-001",
+      title: "S3 bucket found publicly accessible",
+      type: "exposure",
+      severity: "high",
+      confidence_score: 0.95,
+      discovered_at: "2026-01-27",
+      description:
+        "An accessible S3 bucket was identified, which may expose sensitive data and indicates a potential misconfiguration in the storage service or underlying cloud platform.",
+    },
   ],
 
   relationships: [
