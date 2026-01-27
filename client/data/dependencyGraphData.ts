@@ -731,6 +731,11 @@ export const dependencyGraphData: DependencyGraphDataType = {
     { from: "issue-swagger-ui-xss", to: "tech-swagger", type: "found_in" },
     { from: "issue-s3-1", to: "tech-s3", type: "found_in" },
     { from: "ISSUE-S3-FOUND-001", to: "tech-s3", type: "found_in" },
+    { from: "ISSUE-LOG4J-001", to: "tech-log4j", type: "found_in" },
+
+    // Log4j use case relationships
+    { from: "tech-java-app", to: "tech-log4j", type: "uses" },
+    { from: "tech-log4j", to: "tech-jvm", type: "uses" },
 
     // Vendor relationships
     { from: "vendor-smartbear", to: "vendor-lf", type: "parent_of" },
