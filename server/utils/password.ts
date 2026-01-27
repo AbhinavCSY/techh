@@ -49,6 +49,30 @@ function decryptPassword(encryptedData: string): string {
 export function initializePassword(): string | null {
   ensureDataDir();
 
+  // If APP_PASSWORD env var is set, use it instead of generating
+  if (process.env.APP_PASSWORD) {
+    if (fs.existsSync(PASSWORD_FILE)) {
+      return null; // Already initialized
+    }
+
+    const encrypted = encryptPassword(process.env.APP_PASSWORD);
+    fs.writeFileSync(
+      PASSWORD_FILE,
+      JSON.stringify(
+        { encrypted, createdAt: new Date().toISOString() },
+        null,
+        2,
+      ),
+    );
+
+    console.log("\n=== APP PASSWORD INITIALIZED ===");
+    console.log("App secured with password from APP_PASSWORD env variable.");
+    console.log("=====================================\n");
+
+    return null;
+  }
+
+  // Generate random password on first run if no env var is set
   if (fs.existsSync(PASSWORD_FILE)) {
     return null; // Password already exists
   }
