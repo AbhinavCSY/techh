@@ -616,7 +616,7 @@ export function DependencyGraphVisualization({
           </div>
 
           {/* Graph Container */}
-          <div className="flex-1 overflow-hidden bg-gray-50">
+          <div className="flex-1 overflow-hidden bg-gray-50 relative">
             <GraphRenderer
               nodes={graphData.nodes}
               edges={graphData.edges}
@@ -625,6 +625,16 @@ export function DependencyGraphVisualization({
               onTechNodeClick={handleTechNodeClick}
               showTooltips={true}
             />
+
+            {/* Quick Info Dropdown */}
+            {quickInfoNode && !showFullDetails && (
+              <NodeQuickInfo
+                tech={quickInfoNode}
+                position={quickInfoPos}
+                onExpand={handleExpandClick}
+                onClose={handleCloseQuickInfo}
+              />
+            )}
           </div>
         </div>
       )}
