@@ -559,8 +559,8 @@ function GraphRenderer({
         </g>
       </svg>
 
-      {/* Controls Overlay */}
-      <div className="absolute top-4 right-4 flex flex-col gap-2 bg-white rounded-lg shadow-lg p-2">
+      {/* Controls Overlay - Left Side */}
+      <div className="absolute top-4 left-4 flex flex-col gap-2 bg-white rounded-lg shadow-lg p-2">
         <button
           onClick={zoomIn}
           className="p-2 hover:bg-gray-100 rounded transition-colors"
@@ -585,8 +585,8 @@ function GraphRenderer({
         </button>
       </div>
 
-      {/* Zoom Level Indicator */}
-      <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow px-3 py-1 text-sm text-gray-600">
+      {/* Zoom Level Indicator - Bottom Left */}
+      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow px-3 py-1 text-sm text-gray-600">
         {Math.round(zoom * 100)}%
       </div>
 
