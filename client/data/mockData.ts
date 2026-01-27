@@ -1211,7 +1211,8 @@ const techStackDatabase: TechStack[] = [
       {
         id: "rem-26-s3",
         title: "Enable S3 Bucket Encryption",
-        description: "Enable server-side encryption and configure encryption keys",
+        description:
+          "Enable server-side encryption and configure encryption keys",
         priority: "high",
         estimatedTime: "2-3 hours",
       },

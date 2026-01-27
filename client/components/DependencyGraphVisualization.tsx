@@ -108,7 +108,7 @@ class ForceDirectedGraph {
             const dy = (node2.y ?? 0) - (node1.y ?? 0);
             const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
             // Increased repulsion for better spacing
-            const repulsion = (k * k) / distance * 1.3;
+            const repulsion = ((k * k) / distance) * 1.3;
             node1.vx! -= (dx / distance) * repulsion;
             node1.vy! -= (dy / distance) * repulsion;
           }
@@ -180,7 +180,9 @@ function GraphRenderer({
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const [draggedNodeId, setDraggedNodeId] = useState<string | null>(null);
-  const [nodePositions, setNodePositions] = useState<Map<string, {x: number, y: number}>>(new Map());
+  const [nodePositions, setNodePositions] = useState<
+    Map<string, { x: number; y: number }>
+  >(new Map());
   const svgRef = useRef<SVGSVGElement>(null);
   const spacePressed = useRef(false);
 
@@ -206,7 +208,7 @@ function GraphRenderer({
     const target = e.target as SVGElement;
 
     // Check if click is on a node (circle, text inside node, or node group)
-    const nodeElement = target.closest('.node-group');
+    const nodeElement = target.closest(".node-group");
     const isOnNode = !!nodeElement;
 
     // Allow dragging if:
@@ -229,7 +231,7 @@ function GraphRenderer({
   useEffect(() => {
     // Only initialize if we haven't set positions yet
     if (nodePositions.size === 0 && renderedNodes.length > 0) {
-      const positions = new Map<string, {x: number, y: number}>();
+      const positions = new Map<string, { x: number; y: number }>();
       renderedNodes.forEach((node) => {
         positions.set(node.id, { x: node.x ?? 0, y: node.y ?? 0 });
       });
@@ -445,14 +447,19 @@ function GraphRenderer({
                 }
               };
 
-              const handleNodeMouseDown = (e: React.MouseEvent<SVGGElement>) => {
+              const handleNodeMouseDown = (
+                e: React.MouseEvent<SVGGElement>,
+              ) => {
                 // Start dragging the node
                 setDraggedNodeId(node.id);
                 // Use current position from nodePositions state, not the original node position
-                const currentPos = nodePositions.get(node.id) || { x: node.x ?? 0, y: node.y ?? 0 };
+                const currentPos = nodePositions.get(node.id) || {
+                  x: node.x ?? 0,
+                  y: node.y ?? 0,
+                };
                 setDragStart({
                   x: e.clientX - (pan.x + currentPos.x * zoom),
-                  y: e.clientY - (pan.y + currentPos.y * zoom)
+                  y: e.clientY - (pan.y + currentPos.y * zoom),
                 });
                 e.preventDefault();
               };
@@ -532,7 +539,10 @@ function GraphRenderer({
               const innerRadius = Math.max(radius - 8, 12);
 
               // Get position from nodePositions state if available, otherwise use node position
-              const nodePos = nodePositions.get(node.id) || { x: node.x ?? 0, y: node.y ?? 0 };
+              const nodePos = nodePositions.get(node.id) || {
+                x: node.x ?? 0,
+                y: node.y ?? 0,
+              };
               const nodeX = nodePos.x;
               const nodeY = nodePos.y;
 
@@ -555,7 +565,6 @@ function GraphRenderer({
                     opacity={0.9}
                   />
 
-
                   {/* Inner white circle */}
                   <circle
                     cx={nodeX}
@@ -567,9 +576,7 @@ function GraphRenderer({
 
                   {/* Node icon */}
                   {isIssue ? (
-                    <g
-                      transform={`translate(${nodeX - 8}, ${nodeY - 8})`}
-                    >
+                    <g transform={`translate(${nodeX - 8}, ${nodeY - 8})`}>
                       <text
                         x="8"
                         y="12"
@@ -582,9 +589,7 @@ function GraphRenderer({
                       </text>
                     </g>
                   ) : isTech ? (
-                    <g
-                      transform={`translate(${nodeX - 8}, ${nodeY - 8})`}
-                    >
+                    <g transform={`translate(${nodeX - 8}, ${nodeY - 8})`}>
                       <Package
                         width="16"
                         height="16"
@@ -594,9 +599,7 @@ function GraphRenderer({
                       />
                     </g>
                   ) : (
-                    <g
-                      transform={`translate(${nodeX - 8}, ${nodeY - 8})`}
-                    >
+                    <g transform={`translate(${nodeX - 8}, ${nodeY - 8})`}>
                       <Building2
                         width="16"
                         height="16"
@@ -621,7 +624,9 @@ function GraphRenderer({
                       maxWidth: "150px",
                     }}
                   >
-                    {node.label.length > 20 ? node.label.substring(0, 20) + "..." : node.label}
+                    {node.label.length > 20
+                      ? node.label.substring(0, 20) + "..."
+                      : node.label}
                   </text>
 
                   {/* Secondary label/type */}
@@ -722,7 +727,7 @@ export function DependencyGraphVisualization({
         tech = dependencyGraphData.technologies.find(
           (t) =>
             t.product.toLowerCase() === clickedNode.label.toLowerCase() ||
-            t.id === clickedNode.label.toLowerCase().replace(/\s+/g, "-")
+            t.id === clickedNode.label.toLowerCase().replace(/\s+/g, "-"),
         );
         console.log(`Searched by label "${clickedNode.label}", Found:`, tech);
       }
@@ -730,7 +735,10 @@ export function DependencyGraphVisualization({
 
     if (tech) {
       console.log(`Setting tech node:`, tech.product);
-      console.log(`CVEs:`, tech.versions.flatMap(v => v.cves));
+      console.log(
+        `CVEs:`,
+        tech.versions.flatMap((v) => v.cves),
+      );
     } else {
       console.log(`WARNING: Tech not found for node ${nodeId}`);
     }
