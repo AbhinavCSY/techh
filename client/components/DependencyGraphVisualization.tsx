@@ -276,8 +276,11 @@ function GraphRenderer({
         ref={svgRef}
         width={width}
         height={height}
-        className="w-full h-full cursor-move"
-        style={{ backgroundColor: "#f9fafb" }}
+        className="w-full h-full cursor-grab active:cursor-grabbing"
+        style={{
+          backgroundColor: "#f9fafb",
+          touchAction: "none",
+        }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
