@@ -9,9 +9,14 @@ import {
 interface NodeDetailsPopupProps {
   tech: Technology | null;
   onClose: () => void;
+  containerRef?: React.RefObject<HTMLDivElement>;
 }
 
-export function NodeDetailsPopup({ tech, onClose }: NodeDetailsPopupProps) {
+export function NodeDetailsPopup({
+  tech,
+  onClose,
+  containerRef,
+}: NodeDetailsPopupProps) {
   if (!tech) return null;
 
   // Calculate statistics
