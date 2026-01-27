@@ -614,6 +614,19 @@ export const dependencyGraphData: DependencyGraphDataType = {
       products: ["tech-react"],
       vendor_type: "software_vendor",
     },
+    {
+      id: "vendor-internal-app",
+      name: "Internal App Team",
+      products: ["tech-java-app"],
+      vendor_depth: "Primary",
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-oracle",
+      name: "Oracle / OpenJDK",
+      products: ["tech-jvm"],
+      vendor_type: "software_vendor",
+    },
   ],
 
   issues: [
