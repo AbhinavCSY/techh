@@ -560,32 +560,32 @@ function GraphRenderer({
       </svg>
 
       {/* Controls Overlay - Bottom Left Corner */}
-      <div className="absolute bottom-4 left-4 flex flex-col gap-2 bg-white rounded-lg shadow-lg p-2">
+      <div className="absolute bottom-4 left-4 flex flex-col gap-1 bg-white rounded-lg shadow-lg p-1">
         <button
           onClick={zoomIn}
-          className="p-2 hover:bg-gray-100 rounded transition-colors"
+          className="p-1 hover:bg-gray-100 rounded transition-colors"
           title="Zoom In"
         >
-          <ZoomIn width="20" height="20" className="text-gray-600" />
+          <ZoomIn width="14" height="14" className="text-gray-600" />
         </button>
         <button
           onClick={zoomOut}
-          className="p-2 hover:bg-gray-100 rounded transition-colors"
+          className="p-1 hover:bg-gray-100 rounded transition-colors"
           title="Zoom Out"
         >
-          <ZoomOut width="20" height="20" className="text-gray-600" />
+          <ZoomOut width="14" height="14" className="text-gray-600" />
         </button>
         <div className="h-px bg-gray-200" />
         <button
           onClick={resetView}
-          className="p-2 hover:bg-gray-100 rounded transition-colors"
+          className="p-1 hover:bg-gray-100 rounded transition-colors"
           title="Reset View"
         >
-          <Home width="20" height="20" className="text-gray-600" />
+          <Home width="14" height="14" className="text-gray-600" />
         </button>
 
         {/* Zoom Level Indicator */}
-        <div className="flex justify-center px-2 py-1 text-xs text-gray-600 font-medium">
+        <div className="flex justify-center px-1 py-0.5 text-xs text-gray-600 font-medium">
           {Math.round(zoom * 100)}%
         </div>
       </div>
