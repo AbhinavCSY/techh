@@ -147,7 +147,8 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
   };
 
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (e.button === 1 || (e.button === 0 && e.altKey)) {
+    // Allow dragging with left click (button 0) or middle click (button 1)
+    if (e.button === 0 || e.button === 1) {
       setIsDragging(true);
       setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
     }
