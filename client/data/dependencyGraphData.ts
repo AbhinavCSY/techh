@@ -482,6 +482,34 @@ export const dependencyGraphData: DependencyGraphDataType = {
         },
       ],
     },
+    {
+      id: "tech-java-app",
+      product: "Customer Management Service",
+      vendor: "Internal App Team",
+      abstraction_level: "application",
+      category: "framework",
+      versions: [
+        {
+          version: "1.0.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-jvm",
+      product: "Java Virtual Machine",
+      vendor: "Oracle / OpenJDK",
+      abstraction_level: "runtime",
+      category: "runtime",
+      versions: [
+        {
+          version: "11.0.15",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
   ],
 
   vendors: [
