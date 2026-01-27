@@ -372,7 +372,7 @@ function GraphRenderer({ nodes, edges, width, height }: GraphRendererProps) {
           className="p-2 hover:bg-gray-100 rounded transition-colors"
           title="Reset View"
         >
-          <Move3 width="20" height="20" className="text-gray-600" />
+          <Home width="20" height="20" className="text-gray-600" />
         </button>
       </div>
 
