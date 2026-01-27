@@ -609,8 +609,8 @@ function GraphRenderer({
                   {/* Secondary label/type */}
                   {!isIssue && (
                     <text
-                      x={node.x ?? 0}
-                      y={(node.y ?? 0) + (radius + 42)}
+                      x={nodeX}
+                      y={nodeY + (radius + 42)}
                       textAnchor="middle"
                       fontSize="9"
                       fill="#9CA3AF"
