@@ -763,22 +763,16 @@ export function DependencyGraphVisualization({
       {isFullscreen && (
         <div className="fixed inset-0 z-50 bg-white flex flex-col">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 flex items-center justify-between shadow-lg">
-            <div>
-              <h2 className="text-2xl font-bold">
-                Dependency Graph - {techStack.name}
-              </h2>
-              <p className="text-blue-100 mt-1 text-sm">
-                Middle-click drag to pan • Space+drag to pan • Scroll to zoom •
-                Hover for labels • Click nodes for details
-              </p>
-            </div>
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 flex items-center justify-between shadow-lg">
+            <h2 className="text-lg font-bold">
+              Dependency Graph - {techStack.name}
+            </h2>
             <button
               onClick={() => setIsFullscreen(false)}
               className="p-2 hover:bg-blue-500 rounded-lg transition-colors bg-blue-500 bg-opacity-50"
               title="Exit fullscreen"
             >
-              <X width="28" height="28" className="text-white" />
+              <X width="24" height="24" className="text-white" />
             </button>
           </div>
 
