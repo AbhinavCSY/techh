@@ -143,6 +143,39 @@ export function NodeDetailsPopup({ tech, onClose }: NodeDetailsPopupProps) {
                 ))}
             </div>
           </div>
+
+          {/* Vendor Accountability Section (RFC) */}
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Building2 width="16" height="16" className="text-purple-600" />
+              <h4 className="font-medium text-sm text-gray-900">Vendor Accountability</h4>
+            </div>
+            {(() => {
+              const accountability = getVendorAccountability(tech.id, dependencyGraphData);
+              if (!accountability) return null;
+
+              return (
+                <div className="space-y-2">
+                  {accountability.primary && (
+                    <div className="bg-purple-50 rounded p-2 text-sm">
+                      <div className="font-medium text-purple-900">Primary Vendor (Accountable)</div>
+                      <div className="text-purple-700 text-xs mt-0.5">
+                        {accountability.primary.name}
+                      </div>
+                    </div>
+                  )}
+                  {accountability.parent && (
+                    <div className="bg-violet-50 rounded p-2 text-sm">
+                      <div className="font-medium text-violet-900">Parent Organization</div>
+                      <div className="text-violet-700 text-xs mt-0.5">
+                        {accountability.parent.name}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
         </div>
       </div>
     </div>
