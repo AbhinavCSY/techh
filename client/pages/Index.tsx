@@ -503,7 +503,7 @@ function DetailsPanel({
 
         {/* Panel */}
         <div
-          className="absolute right-0 top-0 bottom-0 w-full max-w-[702px] bg-white shadow-xl transform transition-transform overflow-y-auto"
+          className="absolute right-0 top-0 bottom-0 w-full max-w-[912px] bg-white shadow-xl transform transition-transform overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
