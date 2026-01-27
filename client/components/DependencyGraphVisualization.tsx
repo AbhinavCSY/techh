@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Package, Building2, Maximize2, X } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Package, Building2, Maximize2, X, ZoomIn, ZoomOut, Move3 } from "lucide-react";
 
 interface GraphNode {
   id: string;
@@ -40,7 +40,6 @@ class ForceDirectedGraph {
     this.height = Math.max(height, 500);
     this.edges = edges;
 
-    // Initialize nodes with positions and velocities
     this.nodes = new Map(
       nodes.map((node) => {
         const initializedNode: GraphNode = {
@@ -110,7 +109,7 @@ class ForceDirectedGraph {
   }
 }
 
-// Graph Renderer Component
+// Interactive Graph Renderer with Pan and Zoom
 interface GraphRendererProps {
   nodes: GraphNode[];
   edges: GraphEdge[];
@@ -120,6 +119,11 @@ interface GraphRendererProps {
 
 function GraphRenderer({ nodes, edges, width, height }: GraphRendererProps) {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const svgRef = useRef<SVGSVGElement>(null);
 
   const graph = new ForceDirectedGraph(nodes, edges, width, height);
   const renderedNodes = graph.getNodes();
@@ -131,172 +135,252 @@ function GraphRenderer({ nodes, edges, width, height }: GraphRendererProps) {
     subsidiary_of: "Subsidiary Of",
   };
 
+  const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (e.button === 1 || (e.button === 0 && e.altKey)) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (isDragging) {
+      setPan({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y,
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleWheel = (e: React.WheelEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    const newZoom = Math.min(Math.max(zoom * delta, 0.5), 3);
+    setZoom(newZoom);
+  };
+
+  const zoomIn = () => setZoom((z) => Math.min(z + 0.2, 3));
+  const zoomOut = () => setZoom((z) => Math.max(z - 0.2, 0.5));
+  const resetView = () => {
+    setPan({ x: 0, y: 0 });
+    setZoom(1);
+  };
+
   return (
-    <svg width={width} height={height} className="w-full" style={{ maxWidth: "100%" }}>
-      <defs>
-        <marker
-          id="arrowhead"
-          markerWidth="10"
-          markerHeight="10"
-          refX="20"
-          refY="3"
-          orient="auto"
+    <div className="relative w-full h-full bg-gray-50">
+      <svg
+        ref={svgRef}
+        width={width}
+        height={height}
+        className="w-full h-full cursor-move"
+        style={{ backgroundColor: "#f9fafb" }}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onWheel={handleWheel}
+      >
+        <defs>
+          <marker
+            id="arrowhead"
+            markerWidth="10"
+            markerHeight="10"
+            refX="20"
+            refY="3"
+            orient="auto"
+          >
+            <polygon points="0 0, 10 3, 0 6" fill="#9CA3AF" />
+          </marker>
+        </defs>
+
+        <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+          {/* Edges */}
+          <g className="edges">
+            {edges.map((edge, idx) => {
+              const source = renderedNodes.find((n) => n.id === edge.source);
+              const target = renderedNodes.find((n) => n.id === edge.target);
+
+              if (!source || !target) return null;
+
+              const isActive =
+                selectedNode === null ||
+                selectedNode === edge.source ||
+                selectedNode === edge.target;
+
+              return (
+                <g key={idx}>
+                  <line
+                    x1={source.x ?? 0}
+                    y1={source.y ?? 0}
+                    x2={target.x ?? 0}
+                    y2={target.y ?? 0}
+                    stroke="#D1D5DB"
+                    strokeWidth={isActive ? 2.5 : 1.5}
+                    markerEnd="url(#arrowhead)"
+                    opacity={isActive ? 0.8 : 0.2}
+                    style={{ transition: "all 0.3s ease" }}
+                  />
+
+                  <rect
+                    x={(source.x ?? 0 + (target.x ?? 0)) / 2 - 35}
+                    y={(source.y ?? 0 + (target.y ?? 0)) / 2 - 12}
+                    width="70"
+                    height="20"
+                    fill="white"
+                    opacity={isActive ? 0.9 : 0}
+                    rx="3"
+                  />
+
+                  <text
+                    x={(source.x ?? 0 + (target.x ?? 0)) / 2}
+                    y={(source.y ?? 0 + (target.y ?? 0)) / 2 + 3}
+                    textAnchor="middle"
+                    fontSize="11"
+                    fontWeight="500"
+                    fill="#374151"
+                    opacity={isActive ? 1 : 0}
+                    style={{ transition: "opacity 0.3s ease", pointerEvents: "none" }}
+                  >
+                    {relationshipLabels[edge.relationship] || edge.relationship}
+                  </text>
+                </g>
+              );
+            })}
+          </g>
+
+          {/* Nodes */}
+          <g className="nodes">
+            {renderedNodes.map((node) => {
+              const isSelected = selectedNode === node.id;
+              const isTech = node.type === "technology";
+              const isDirectAffected = node.subtype === "direct";
+
+              return (
+                <g
+                  key={node.id}
+                  className="cursor-pointer"
+                  onClick={() => setSelectedNode(isSelected ? null : node.id)}
+                >
+                  <circle
+                    cx={node.x ?? 0}
+                    cy={node.y ?? 0}
+                    r={isSelected ? 36 : 30}
+                    fill={
+                      isTech
+                        ? isDirectAffected
+                          ? "#3B82F6"
+                          : "#818CF8"
+                        : isSelected
+                          ? "#9333EA"
+                          : "#A78BFA"
+                    }
+                    opacity={selectedNode === null || isSelected ? 0.95 : 0.4}
+                    style={{ transition: "all 0.2s ease" }}
+                    stroke={isSelected ? "#1F2937" : "none"}
+                    strokeWidth={isSelected ? 3 : 0}
+                  />
+
+                  <circle
+                    cx={node.x ?? 0}
+                    cy={node.y ?? 0}
+                    r={22}
+                    fill="white"
+                    opacity={0.95}
+                  />
+
+                  {isTech ? (
+                    <g
+                      transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
+                    >
+                      <Package
+                        width="16"
+                        height="16"
+                        stroke="#3B82F6"
+                        fill="none"
+                        strokeWidth="1.5"
+                      />
+                    </g>
+                  ) : (
+                    <g
+                      transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
+                    >
+                      <Building2
+                        width="16"
+                        height="16"
+                        stroke="#9333EA"
+                        fill="none"
+                        strokeWidth="1.5"
+                      />
+                    </g>
+                  )}
+
+                  <text
+                    x={node.x ?? 0}
+                    y={(node.y ?? 0) + 48}
+                    textAnchor="middle"
+                    fontSize="12"
+                    fontWeight={isSelected ? "700" : "500"}
+                    fill="#1F2937"
+                    style={{
+                      pointerEvents: "none",
+                      userSelect: "none",
+                      transition: "font-weight 0.2s ease",
+                    }}
+                  >
+                    {node.label.split(" ").slice(0, 2).join(" ")}
+                  </text>
+
+                  <text
+                    x={node.x ?? 0}
+                    y={(node.y ?? 0) + 62}
+                    textAnchor="middle"
+                    fontSize="10"
+                    fill="#6B7280"
+                    style={{ pointerEvents: "none", userSelect: "none" }}
+                  >
+                    {node.subtype}
+                  </text>
+                </g>
+              );
+            })}
+          </g>
+        </g>
+      </svg>
+
+      {/* Controls Overlay */}
+      <div className="absolute top-4 right-4 flex flex-col gap-2 bg-white rounded-lg shadow-lg p-2">
+        <button
+          onClick={zoomIn}
+          className="p-2 hover:bg-gray-100 rounded transition-colors"
+          title="Zoom In"
         >
-          <polygon points="0 0, 10 3, 0 6" fill="#9CA3AF" />
-        </marker>
-      </defs>
+          <ZoomIn width="20" height="20" className="text-gray-600" />
+        </button>
+        <button
+          onClick={zoomOut}
+          className="p-2 hover:bg-gray-100 rounded transition-colors"
+          title="Zoom Out"
+        >
+          <ZoomOut width="20" height="20" className="text-gray-600" />
+        </button>
+        <div className="h-px bg-gray-200" />
+        <button
+          onClick={resetView}
+          className="p-2 hover:bg-gray-100 rounded transition-colors"
+          title="Reset View"
+        >
+          <Move3 width="20" height="20" className="text-gray-600" />
+        </button>
+      </div>
 
-      {/* Edges */}
-      <g className="edges">
-        {edges.map((edge, idx) => {
-          const source = renderedNodes.find((n) => n.id === edge.source);
-          const target = renderedNodes.find((n) => n.id === edge.target);
-
-          if (!source || !target) return null;
-
-          const isActive =
-            selectedNode === null ||
-            selectedNode === edge.source ||
-            selectedNode === edge.target;
-
-          return (
-            <g key={idx}>
-              <line
-                x1={source.x ?? 0}
-                y1={source.y ?? 0}
-                x2={target.x ?? 0}
-                y2={target.y ?? 0}
-                stroke="#D1D5DB"
-                strokeWidth={isActive ? 2.5 : 1.5}
-                markerEnd="url(#arrowhead)"
-                opacity={isActive ? 0.8 : 0.2}
-                style={{ transition: "all 0.3s ease" }}
-              />
-
-              <rect
-                x={(source.x ?? 0 + (target.x ?? 0)) / 2 - 35}
-                y={(source.y ?? 0 + (target.y ?? 0)) / 2 - 12}
-                width="70"
-                height="20"
-                fill="white"
-                opacity={isActive ? 0.9 : 0}
-                rx="3"
-              />
-
-              <text
-                x={(source.x ?? 0 + (target.x ?? 0)) / 2}
-                y={(source.y ?? 0 + (target.y ?? 0)) / 2 + 3}
-                textAnchor="middle"
-                fontSize="11"
-                fontWeight="500"
-                fill="#374151"
-                opacity={isActive ? 1 : 0}
-                style={{ transition: "opacity 0.3s ease", pointerEvents: "none" }}
-              >
-                {relationshipLabels[edge.relationship] || edge.relationship}
-              </text>
-            </g>
-          );
-        })}
-      </g>
-
-      {/* Nodes */}
-      <g className="nodes">
-        {renderedNodes.map((node) => {
-          const isSelected = selectedNode === node.id;
-          const isTech = node.type === "technology";
-          const isDirectAffected = node.subtype === "direct";
-
-          return (
-            <g
-              key={node.id}
-              className="cursor-pointer"
-              onClick={() => setSelectedNode(isSelected ? null : node.id)}
-            >
-              <circle
-                cx={node.x ?? 0}
-                cy={node.y ?? 0}
-                r={isSelected ? 36 : 30}
-                fill={
-                  isTech
-                    ? isDirectAffected
-                      ? "#3B82F6"
-                      : "#818CF8"
-                    : isSelected
-                      ? "#9333EA"
-                      : "#A78BFA"
-                }
-                opacity={selectedNode === null || isSelected ? 0.95 : 0.4}
-                style={{ transition: "all 0.2s ease" }}
-                stroke={isSelected ? "#1F2937" : "none"}
-                strokeWidth={isSelected ? 3 : 0}
-              />
-
-              <circle
-                cx={node.x ?? 0}
-                cy={node.y ?? 0}
-                r={22}
-                fill="white"
-                opacity={0.95}
-              />
-
-              {isTech ? (
-                <g
-                  transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
-                >
-                  <Package
-                    width="16"
-                    height="16"
-                    stroke="#3B82F6"
-                    fill="none"
-                    strokeWidth="1.5"
-                  />
-                </g>
-              ) : (
-                <g
-                  transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
-                >
-                  <Building2
-                    width="16"
-                    height="16"
-                    stroke="#9333EA"
-                    fill="none"
-                    strokeWidth="1.5"
-                  />
-                </g>
-              )}
-
-              <text
-                x={node.x ?? 0}
-                y={(node.y ?? 0) + 48}
-                textAnchor="middle"
-                fontSize="12"
-                fontWeight={isSelected ? "700" : "500"}
-                fill="#1F2937"
-                style={{
-                  pointerEvents: "none",
-                  userSelect: "none",
-                  transition: "font-weight 0.2s ease",
-                }}
-              >
-                {node.label.split(" ").slice(0, 2).join(" ")}
-              </text>
-
-              <text
-                x={node.x ?? 0}
-                y={(node.y ?? 0) + 62}
-                textAnchor="middle"
-                fontSize="10"
-                fill="#6B7280"
-                style={{ pointerEvents: "none", userSelect: "none" }}
-              >
-                {node.subtype}
-              </text>
-            </g>
-          );
-        })}
-      </g>
-    </svg>
+      {/* Zoom Level Indicator */}
+      <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow px-3 py-1 text-sm text-gray-600">
+        {Math.round(zoom * 100)}%
+      </div>
+    </div>
   );
 }
 
@@ -309,12 +393,10 @@ export function DependencyGraphVisualization({
     nodes: GraphNode[];
     edges: GraphEdge[];
   } | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const WIDTH = 800;
   const HEIGHT = 500;
-  const MODAL_WIDTH = 1200;
-  const MODAL_HEIGHT = 700;
 
   useEffect(() => {
     if (initialNodes && initialEdges) {
@@ -368,114 +450,99 @@ export function DependencyGraphVisualization({
   if (!graphData) return <div className="h-96 bg-gray-50 rounded-lg animate-pulse" />;
 
   return (
-    <div className="space-y-4">
-      {/* Header with Expand Button */}
-      <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200">
-        <div>
-          <h3 className="font-semibold text-gray-900 mb-1">Dependency Graph</h3>
-          <p className="text-sm text-gray-600">
-            Force-directed visualization of {techStack.name} ecosystem
-          </p>
-        </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
-          title="Expand to fullscreen"
-        >
-          <Maximize2 width="18" height="18" />
-          <span className="text-sm font-medium">Expand</span>
-        </button>
-      </div>
-
-      {/* Graph Container */}
-      <div className="border border-gray-200 rounded-lg bg-white overflow-hidden">
-        <GraphRenderer
-          nodes={graphData.nodes}
-          edges={graphData.edges}
-          width={WIDTH}
-          height={HEIGHT}
-        />
-      </div>
-
-      {/* Legend */}
-      <div className="grid grid-cols-2 gap-3 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-blue-500" />
-          <span>Direct Tech</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-indigo-500" />
-          <span>Related Tech</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-purple-500" />
-          <span>Primary Vendor</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-violet-500" />
-          <span>Parent Company</span>
-        </div>
-      </div>
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4"
-          onClick={() => setIsModalOpen(false)}
-        >
-          <div
-            className="bg-white rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">
-                  Dependency Graph - {techStack.name}
-                </h2>
-                <p className="text-sm text-gray-600 mt-1">
-                  Full view of technology and vendor relationships
-                </p>
-              </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                title="Close"
-              >
-                <X width="24" height="24" className="text-gray-600" />
-              </button>
+    <>
+      {/* Normal View */}
+      {!isFullscreen && (
+        <div className="space-y-4">
+          {/* Header with Expand Button */}
+          <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-1">Dependency Graph</h3>
+              <p className="text-sm text-gray-600">
+                Force-directed visualization of {techStack.name} ecosystem
+              </p>
             </div>
+            <button
+              onClick={() => setIsFullscreen(true)}
+              className="flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+              title="Expand to fullscreen"
+            >
+              <Maximize2 width="18" height="18" />
+              <span className="text-sm font-medium">Fullscreen</span>
+            </button>
+          </div>
 
-            {/* Modal Content */}
-            <div className="flex-1 overflow-auto bg-gray-50 p-6">
-              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                <GraphRenderer
-                  nodes={graphData.nodes}
-                  edges={graphData.edges}
-                  width={MODAL_WIDTH}
-                  height={MODAL_HEIGHT}
-                />
-              </div>
-            </div>
+          {/* Graph Container */}
+          <div className="border border-gray-200 rounded-lg bg-white overflow-hidden h-96">
+            <GraphRenderer
+              nodes={graphData.nodes}
+              edges={graphData.edges}
+              width={WIDTH}
+              height={500}
+            />
+          </div>
 
-            {/* Modal Footer */}
-            <div className="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg transition-colors font-medium"
-              >
-                Close
-              </button>
+          {/* Legend */}
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-blue-500" />
+              <span>Direct Tech</span>
             </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-indigo-500" />
+              <span>Related Tech</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-purple-500" />
+              <span>Primary Vendor</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-violet-500" />
+              <span>Parent Company</span>
+            </div>
+          </div>
+
+          {/* Info */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+            <p className="font-medium mb-1">💡 Interactive Graph</p>
+            <p>Click on any node to highlight connections. Use Fullscreen mode for pan/zoom.</p>
           </div>
         </div>
       )}
 
-      {/* Info */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
-        <p className="font-medium mb-1">💡 Interactive Graph</p>
-        <p>Click on any node to highlight connections. Use the Expand button to view the full graph in a larger window.</p>
-      </div>
-    </div>
+      {/* Fullscreen View */}
+      {isFullscreen && (
+        <div className="fixed inset-0 z-50 bg-black flex flex-col">
+          {/* Header */}
+          <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">
+                Dependency Graph - {techStack.name}
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Drag to pan • Scroll to zoom • Click nodes to highlight
+              </p>
+            </div>
+            <button
+              onClick={() => setIsFullscreen(false)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Exit fullscreen"
+            >
+              <X width="24" height="24" className="text-gray-600" />
+            </button>
+          </div>
+
+          {/* Graph Container */}
+          <div className="flex-1 overflow-hidden">
+            <GraphRenderer
+              nodes={graphData.nodes}
+              edges={graphData.edges}
+              width={window.innerWidth}
+              height={window.innerHeight - 80}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
