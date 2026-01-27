@@ -25,11 +25,13 @@ export function LegendModal({ isOpen, onClose }: LegendModalProps) {
 
         {/* Legend Items */}
         <div className="space-y-3">
+          <p className="text-sm font-semibold text-gray-700 mb-2">Technologies</p>
+
           <div className="flex items-center gap-3">
             <div className="w-5 h-5 rounded-full bg-blue-500 flex-shrink-0" />
             <div>
               <p className="font-medium text-gray-900">Direct Tech</p>
-              <p className="text-sm text-gray-600">The main technology you're viewing</p>
+              <p className="text-sm text-gray-600">Main technology you're viewing</p>
             </div>
           </div>
 
@@ -37,27 +39,59 @@ export function LegendModal({ isOpen, onClose }: LegendModalProps) {
             <div className="w-5 h-5 rounded-full bg-indigo-500 flex-shrink-0" />
             <div>
               <p className="font-medium text-gray-900">Related Tech</p>
-              <p className="text-sm text-gray-600">Technologies that depend on this tech</p>
+              <p className="text-sm text-gray-600">Dependencies or derived tech</p>
             </div>
           </div>
+
+          <hr className="my-3" />
+
+          <p className="text-sm font-semibold text-gray-700 mb-2">Vendors</p>
 
           <div className="flex items-center gap-3">
             <div className="w-5 h-5 rounded-full bg-purple-500 flex-shrink-0" />
             <div>
               <p className="font-medium text-gray-900">Primary Vendor</p>
-              <p className="text-sm text-gray-600">The organization providing the technology</p>
+              <p className="text-sm text-gray-600">Organization providing tech</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="w-5 h-5 rounded-full bg-violet-500 flex-shrink-0" />
             <div>
-              <p className="font-medium text-gray-900">Parent Company</p>
-              <p className="text-sm text-gray-600">Parent organization of the vendor</p>
+              <p className="font-medium text-gray-900">Parent Vendor</p>
+              <p className="text-sm text-gray-600">Parent organization</p>
             </div>
           </div>
 
-          <hr className="my-4" />
+          <hr className="my-3" />
+
+          <p className="text-sm font-semibold text-gray-700 mb-2">Issues</p>
+
+          <div className="flex items-center gap-3">
+            <div className="w-5 h-5 rounded-full bg-red-600 flex-shrink-0" />
+            <div>
+              <p className="font-medium text-gray-900">Critical Issue</p>
+              <p className="text-sm text-gray-600">Highest severity</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="w-5 h-5 rounded-full bg-orange-600 flex-shrink-0" />
+            <div>
+              <p className="font-medium text-gray-900">High Issue</p>
+              <p className="text-sm text-gray-600">High severity</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="w-5 h-5 rounded-full bg-amber-500 flex-shrink-0" />
+            <div>
+              <p className="font-medium text-gray-900">Medium Issue</p>
+              <p className="text-sm text-gray-600">Medium severity</p>
+            </div>
+          </div>
+
+          <hr className="my-3" />
 
           <div className="flex items-start gap-3">
             <div className="w-5 h-5 mt-0.5 flex-shrink-0">
@@ -66,8 +100,8 @@ export function LegendModal({ isOpen, onClose }: LegendModalProps) {
               </svg>
             </div>
             <div>
-              <p className="font-medium text-gray-900">Connections</p>
-              <p className="text-sm text-gray-600">Lines show relationships between technologies</p>
+              <p className="font-medium text-gray-900">Relationships</p>
+              <p className="text-sm text-gray-600">Uses, Implements, DerivedFrom, etc.</p>
             </div>
           </div>
         </div>
