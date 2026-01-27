@@ -605,7 +605,7 @@ export const dependencyGraphData: DependencyGraphDataType = {
       confidence_score: 0.92,
       discovered_at: "2026-01-27",
       description:
-        "Publicly accessible Swagger documentation detected, potentially exposing API structure and endpoints to unauthorized users. Attackers can discover API endpoints, request/response schemas, and security weaknesses.",
+        "Publicly accessible Swagger documentation detected, exposing API structure and endpoints. Attackers can discover API endpoints, request/response schemas, and security weaknesses. This information disclosure can lead to targeted attacks on the API infrastructure.",
     },
     {
       id: "issue-swagger-1",
