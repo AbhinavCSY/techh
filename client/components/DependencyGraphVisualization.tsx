@@ -396,7 +396,7 @@ function GraphRenderer({
               };
 
               // Get CVE criticality for tech nodes
-              const getCriticalityRing = () => {
+              const getCriticalityTint = () => {
                 if (isTech) {
                   const tech = getTechDetails(node.id, dependencyGraphData);
                   if (tech) {
@@ -404,20 +404,13 @@ function GraphRenderer({
                       (sum, v) => sum + v.cves.length,
                       0,
                     );
-                    if (totalCVEs === 0) return "#10B981"; // Green - no CVEs
-
-                    // Check for critical CVEs (mock data - in real scenario check severity)
-                    const hasHighSeverity = tech.versions.some(
-                      (v) => v.cves.length > 0,
-                    );
-
-                    // Simplified severity detection based on count
-                    if (totalCVEs >= 5) return "#DC2626"; // Red - critical
-                    if (totalCVEs >= 3) return "#EA580C"; // Orange - high
-                    if (totalCVEs >= 1) return "#F59E0B"; // Amber - medium
+                    if (totalCVEs === 0) return "#10B98120"; // Green - no CVEs with tint
+                    if (totalCVEs >= 5) return "#DC262620"; // Red - critical with tint
+                    if (totalCVEs >= 3) return "#EA580C20"; // Orange - high with tint
+                    if (totalCVEs >= 1) return "#F59E0B20"; // Amber - medium with tint
                   }
                 }
-                return "#10B981"; // Default green
+                return "transparent"; // Default transparent
               };
 
               return (
@@ -428,19 +421,6 @@ function GraphRenderer({
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
-                  {/* Criticality ring - outer indicator */}
-                  {isTech && (
-                    <circle
-                      cx={node.x ?? 0}
-                      cy={node.y ?? 0}
-                      r={isIssue ? 28 : 35}
-                      fill="none"
-                      stroke={getCriticalityRing()}
-                      strokeWidth={2}
-                      opacity={0.6}
-                    />
-                  )}
-
                   <circle
                     cx={node.x ?? 0}
                     cy={node.y ?? 0}
@@ -448,6 +428,17 @@ function GraphRenderer({
                     fill={getNodeColor()}
                     opacity={0.95}
                   />
+
+                  {/* Severity tint overlay */}
+                  {isTech && (
+                    <circle
+                      cx={node.x ?? 0}
+                      cy={node.y ?? 0}
+                      r={isIssue ? 25 : 30}
+                      fill={getCriticalityTint()}
+                      opacity={1}
+                    />
+                  )}
 
                   <circle
                     cx={node.x ?? 0}
