@@ -480,6 +480,29 @@ function GraphRenderer({
         </g>
       </svg>
 
+      {/* Legend Overlay */}
+      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg p-3 max-w-xs">
+        <p className="text-xs font-semibold text-gray-700 mb-2">Legend</p>
+        <div className="space-y-1.5 text-xs">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-blue-500" />
+            <span className="text-gray-600">Direct Tech</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-indigo-400" />
+            <span className="text-gray-600">Related Tech</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-purple-500" />
+            <span className="text-gray-600">Vendor</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-red-600" />
+            <span className="text-gray-600">Critical Issue</span>
+          </div>
+        </div>
+      </div>
+
       {/* Controls Overlay */}
       <div className="absolute top-4 right-4 flex flex-col gap-2 bg-white rounded-lg shadow-lg p-2">
         <button
