@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Expand, AlertCircle, CalendarX } from "lucide-react";
 import { Technology } from "@/data/dependencyGraphData";
 
@@ -15,6 +15,35 @@ export function NodeQuickInfo({
   onExpand,
   onClose,
 }: NodeQuickInfoProps) {
+  const [adjustedPos, setAdjustedPos] = useState({ x: 0, y: 0 });
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!dropdownRef.current) return;
+
+    const rect = dropdownRef.current.getBoundingClientRect();
+    let x = position.x;
+    let y = position.y;
+
+    // Adjust horizontal position
+    if (x + rect.width > window.innerWidth - 10) {
+      x = window.innerWidth - rect.width - 10;
+    }
+    if (x < 10) {
+      x = 10;
+    }
+
+    // Adjust vertical position
+    if (y + rect.height > window.innerHeight - 10) {
+      y = window.innerHeight - rect.height - 10;
+    }
+    if (y < 10) {
+      y = 10;
+    }
+
+    setAdjustedPos({ x, y });
+  }, [position]);
+
   if (!tech) return null;
 
   // Calculate statistics
@@ -37,10 +66,11 @@ export function NodeQuickInfo({
 
   return (
     <div
-      className="fixed z-30 bg-white rounded-lg shadow-xl border border-gray-200"
+      ref={dropdownRef}
+      className="fixed z-30 bg-white rounded-lg shadow-xl border border-gray-200 pointer-events-auto"
       style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
+        left: `${adjustedPos.x}px`,
+        top: `${adjustedPos.y}px`,
         minWidth: "250px",
         maxWidth: "300px",
       }}
