@@ -99,7 +99,9 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
               <Lock className="w-12 h-12 text-primary" />
             </div>
 
-            <h1 className="text-2xl font-bold text-center mb-2">Access Required</h1>
+            <h1 className="text-2xl font-bold text-center mb-2">
+              Access Required
+            </h1>
             <p className="text-center text-muted-foreground mb-6">
               This application is password protected
             </p>

@@ -18,16 +18,15 @@ function ensureDataDir() {
 }
 
 function generateRandomPassword(length = 16): string {
-  return crypto.randomBytes(Math.ceil(length / 2)).toString("hex").slice(0, length);
+  return crypto
+    .randomBytes(Math.ceil(length / 2))
+    .toString("hex")
+    .slice(0, length);
 }
 
 function encryptPassword(password: string): string {
   const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv(
-    "aes-256-cbc",
-    ENCRYPTION_KEY,
-    iv
-  );
+  const cipher = crypto.createCipheriv("aes-256-cbc", ENCRYPTION_KEY, iv);
 
   let encrypted = cipher.update(password, "utf8", "hex");
   encrypted += cipher.final("hex");
@@ -39,11 +38,7 @@ function decryptPassword(encryptedData: string): string {
   const [ivHex, encrypted] = encryptedData.split(":");
   const iv = Buffer.from(ivHex, "hex");
 
-  const decipher = crypto.createDecipheriv(
-    "aes-256-cbc",
-    ENCRYPTION_KEY,
-    iv
-  );
+  const decipher = crypto.createDecipheriv("aes-256-cbc", ENCRYPTION_KEY, iv);
 
   let decrypted = decipher.update(encrypted, "hex", "utf8");
   decrypted += decipher.final("utf8");
@@ -63,7 +58,7 @@ export function initializePassword(): string | null {
 
   fs.writeFileSync(
     PASSWORD_FILE,
-    JSON.stringify({ encrypted, createdAt: new Date().toISOString() }, null, 2)
+    JSON.stringify({ encrypted, createdAt: new Date().toISOString() }, null, 2),
   );
 
   // Create a temporary file with the plaintext password for initial setup
