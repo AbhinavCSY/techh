@@ -471,16 +471,6 @@ function GraphRenderer({
                     opacity={0.9}
                   />
 
-                  {/* Severity tint for tech nodes */}
-                  {isTech && (
-                    <circle
-                      cx={node.x ?? 0}
-                      cy={node.y ?? 0}
-                      r={radius}
-                      fill={getCriticalityTint()}
-                      opacity={0.3}
-                    />
-                  )}
 
                   {/* Inner white circle */}
                   <circle
