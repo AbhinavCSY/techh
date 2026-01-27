@@ -519,6 +519,7 @@ export function DependencyGraphVisualization({
               edges={graphData.edges}
               width={WIDTH}
               height={500}
+              onTechNodeClick={handleTechNodeClick}
             />
           </div>
 
