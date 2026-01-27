@@ -8,8 +8,9 @@ import { getTechDetails, Technology, dependencyGraphData } from "@/data/dependen
 interface GraphNode {
   id: string;
   label: string;
-  type: "technology" | "vendor";
-  subtype?: "direct" | "underlying" | "related" | "primary" | "parent";
+  type: "technology" | "vendor" | "issue";
+  subtype?: "direct" | "underlying" | "related" | "primary" | "parent" | "critical" | "high" | "medium" | "low";
+  category?: string;
   x?: number;
   y?: number;
   vx?: number;
