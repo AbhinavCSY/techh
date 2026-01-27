@@ -1,7 +1,16 @@
+export interface VersionDetail {
+  version: string;
+  eol: boolean;
+  eol_date?: string;
+  cves: string[];
+}
+
 export interface Technology {
   id: string;
   product: string;
-  versions: string[];
+  vendor: string;
+  master_node?: boolean;
+  versions: VersionDetail[];
 }
 
 export interface Vendor {
@@ -28,97 +37,259 @@ export const dependencyGraphData: DependencyGraphDataType = {
     {
       id: "tech-log4j",
       product: "Log4j",
-      versions: ["2.13.0", "2.14.1", "2.15.0"],
+      vendor: "Apache Software Foundation",
+      versions: [
+        {
+          version: "2.13.0",
+          eol: true,
+          eol_date: "2021-12-10",
+          cves: ["CVE-2021-44228", "CVE-2021-45046"],
+        },
+        {
+          version: "2.14.1",
+          eol: true,
+          eol_date: "2021-12-17",
+          cves: ["CVE-2021-44228", "CVE-2021-45105"],
+        },
+        {
+          version: "2.15.0",
+          eol: true,
+          eol_date: "2021-12-20",
+          cves: ["CVE-2021-45046"],
+        },
+      ],
     },
     {
       id: "tech-spring",
       product: "Spring Framework",
-      versions: ["5.2.0", "5.3.15", "6.0.0"],
-    },
-    {
-      id: "tech-httpd",
-      product: "Apache HTTP Server",
-      versions: ["2.4.52"],
+      vendor: "Apache Software Foundation",
+      versions: [
+        {
+          version: "5.2.0",
+          eol: true,
+          eol_date: "2022-03-31",
+          cves: ["CVE-2022-22965"],
+        },
+        {
+          version: "5.3.15",
+          eol: false,
+          cves: ["CVE-2022-22968"],
+        },
+        {
+          version: "6.0.0",
+          eol: false,
+          cves: [],
+        },
+      ],
     },
     {
       id: "tech-tomcat",
       product: "Apache Tomcat",
-      versions: ["9.0.70"],
+      vendor: "Apache Software Foundation",
+      versions: [
+        {
+          version: "9.0.70",
+          eol: false,
+          cves: ["CVE-2022-42252"],
+        },
+      ],
     },
     {
-      id: "tech-curl",
-      product: "curl",
-      versions: ["7.88.1"],
+      id: "tech-httpd",
+      product: "Apache HTTP Server",
+      vendor: "Apache Software Foundation",
+      versions: [
+        {
+          version: "2.4.52",
+          eol: false,
+          cves: ["CVE-2021-44790"],
+        },
+      ],
     },
     {
       id: "tech-openssl",
       product: "OpenSSL",
-      versions: ["1.1.1k"],
+      vendor: "OpenSSL Software Foundation",
+      versions: [
+        {
+          version: "1.1.1k",
+          eol: true,
+          eol_date: "2023-09-11",
+          cves: ["CVE-2021-3711", "CVE-2022-0778"],
+        },
+      ],
+    },
+    {
+      id: "tech-curl",
+      product: "curl",
+      vendor: "Haxx",
+      versions: [
+        {
+          version: "7.88.1",
+          eol: false,
+          cves: ["CVE-2023-23914"],
+        },
+      ],
     },
     {
       id: "tech-nodejs",
       product: "Node.js",
-      versions: ["18.12.0"],
+      vendor: "OpenJS Foundation",
+      master_node: true,
+      versions: [
+        {
+          version: "18.12.0",
+          eol: false,
+          cves: ["CVE-2023-30581"],
+        },
+      ],
     },
     {
       id: "tech-express",
       product: "Express.js",
-      versions: ["4.17.1"],
-    },
-    {
-      id: "tech-react",
-      product: "React",
-      versions: ["18.2.0"],
-    },
-    {
-      id: "tech-django",
-      product: "Django",
-      versions: ["3.2.18"],
-    },
-    {
-      id: "tech-boto3",
-      product: "AWS SDK for Python (boto3)",
-      versions: ["1.26.0"],
+      vendor: "OpenJS Foundation",
+      versions: [
+        {
+          version: "4.17.1",
+          eol: false,
+          cves: ["CVE-2022-24999"],
+        },
+      ],
     },
     {
       id: "tech-nginx",
       product: "Nginx",
-      versions: ["1.24.0"],
+      vendor: "F5",
+      versions: [
+        {
+          version: "1.24.0",
+          eol: false,
+          cves: ["CVE-2023-44487"],
+        },
+      ],
     },
     {
       id: "tech-postgres",
       product: "PostgreSQL",
-      versions: ["13.10"],
+      vendor: "PostgreSQL Global Development Group",
+      versions: [
+        {
+          version: "13.10",
+          eol: false,
+          cves: ["CVE-2022-2625"],
+        },
+      ],
     },
     {
       id: "tech-mysql",
       product: "MySQL",
-      versions: ["5.7.44"],
+      vendor: "Oracle",
+      versions: [
+        {
+          version: "5.7.44",
+          eol: true,
+          eol_date: "2023-10-21",
+          cves: ["CVE-2022-21426"],
+        },
+      ],
     },
     {
       id: "tech-mongodb",
       product: "MongoDB",
-      versions: ["5.0.10"],
+      vendor: "MongoDB Inc.",
+      versions: [
+        {
+          version: "5.0.10",
+          eol: false,
+          cves: ["CVE-2022-48282"],
+        },
+      ],
     },
     {
       id: "tech-redis",
       product: "Redis",
-      versions: ["6.2.11"],
+      vendor: "Redis Ltd.",
+      versions: [
+        {
+          version: "6.2.11",
+          eol: false,
+          cves: ["CVE-2022-0543"],
+        },
+      ],
     },
     {
       id: "tech-docker",
       product: "Docker",
-      versions: ["20.10.12"],
+      vendor: "Docker Inc.",
+      versions: [
+        {
+          version: "20.10.12",
+          eol: false,
+          cves: ["CVE-2022-24769"],
+        },
+      ],
     },
     {
       id: "tech-containerd",
       product: "containerd",
-      versions: ["1.7.0"],
+      vendor: "CNCF",
+      master_node: true,
+      versions: [
+        {
+          version: "1.7.0",
+          eol: false,
+          cves: ["CVE-2023-25153"],
+        },
+      ],
     },
     {
       id: "tech-kubernetes",
       product: "Kubernetes",
-      versions: ["1.27.0"],
+      vendor: "CNCF",
+      versions: [
+        {
+          version: "1.27.0",
+          eol: false,
+          cves: ["CVE-2023-2728"],
+        },
+      ],
+    },
+    {
+      id: "tech-django",
+      product: "Django",
+      vendor: "Django Software Foundation",
+      versions: [
+        {
+          version: "3.2.18",
+          eol: true,
+          eol_date: "2024-04-01",
+          cves: ["CVE-2023-24580"],
+        },
+      ],
+    },
+    {
+      id: "tech-boto3",
+      product: "AWS SDK for Python (boto3)",
+      vendor: "Amazon Web Services",
+      versions: [
+        {
+          version: "1.26.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-react",
+      product: "React",
+      vendor: "Meta",
+      versions: [
+        {
+          version: "18.2.0",
+          eol: false,
+          cves: ["CVE-2023-26136"],
+        },
+      ],
     },
   ],
 
@@ -134,8 +305,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       products: ["tech-nodejs", "tech-express"],
     },
     {
-      id: "vendor-nginx",
-      name: "F5 (NGINX)",
+      id: "vendor-f5",
+      name: "F5",
       products: ["tech-nginx"],
     },
     {
@@ -165,7 +336,7 @@ export const dependencyGraphData: DependencyGraphDataType = {
     },
     {
       id: "vendor-cncf",
-      name: "Cloud Native Computing Foundation",
+      name: "CNCF",
       products: ["tech-kubernetes", "tech-containerd"],
     },
     {
@@ -184,10 +355,10 @@ export const dependencyGraphData: DependencyGraphDataType = {
   relationships: [
     { from: "tech-spring", to: "tech-log4j", type: "uses" },
     { from: "tech-tomcat", to: "tech-log4j", type: "uses" },
-    { from: "tech-express", to: "tech-nodejs", type: "uses" },
     { from: "tech-nodejs", to: "tech-openssl", type: "uses" },
-    { from: "tech-curl", to: "tech-openssl", type: "uses" },
+    { from: "tech-express", to: "tech-nodejs", type: "uses" },
     { from: "tech-nginx", to: "tech-openssl", type: "uses" },
+    { from: "tech-curl", to: "tech-openssl", type: "uses" },
     { from: "tech-docker", to: "tech-containerd", type: "uses" },
     { from: "tech-kubernetes", to: "tech-containerd", type: "uses" },
   ],
@@ -363,4 +534,11 @@ export function buildGraphForTech(
   });
 
   return { nodes, edges };
+}
+
+/**
+ * Get technology details including version info, CVEs, and EOL status
+ */
+export function getTechDetails(techId: string, data: DependencyGraphDataType) {
+  return data.technologies.find((t) => t.id === techId);
 }
