@@ -40,8 +40,12 @@ export function NodeDetailsPopup({
     return "bg-green-100 text-green-800";
   };
 
+  const wrapperClass = containerRef
+    ? "absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40"
+    : "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40";
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+    <div className={wrapperClass}>
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-md max-h-96 flex flex-col">
         {/* Header */}
         <div className="flex items-start justify-between p-4 border-b border-gray-200">
