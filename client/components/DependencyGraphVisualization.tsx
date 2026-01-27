@@ -406,16 +406,35 @@ function GraphRenderer({
                 return isDirectAffected ? 32 : 28;
               };
 
+              // Get CVE severity color for tech nodes (PRIMARY COLOR)
+              const getSeverityColor = () => {
+                if (isTech) {
+                  const tech = getTechDetails(node.id, dependencyGraphData);
+                  if (tech) {
+                    const totalCVEs = tech.versions.reduce(
+                      (sum, v) => sum + v.cves.length,
+                      0,
+                    );
+                    // Return bright colors based on severity
+                    if (totalCVEs === 0) return "#10B981"; // Green - no CVEs
+                    if (totalCVEs >= 5) return "#DC2626"; // Bright Red - CRITICAL
+                    if (totalCVEs >= 3) return "#EA580C"; // Orange - HIGH
+                    if (totalCVEs >= 1) return "#D97706"; // Amber - MEDIUM
+                  }
+                }
+                return null; // Use default color
+              };
+
               // Determine node color based on type and subtype with better colors
               const getNodeColor = () => {
                 if (isIssue) {
                   switch (node.subtype) {
                     case "critical":
-                      return "#EF4444"; // Bright Red
+                      return "#DC2626"; // Bright Red
                     case "high":
-                      return "#F97316"; // Orange
+                      return "#EA580C"; // Orange
                     case "medium":
-                      return "#EAB308"; // Yellow
+                      return "#D97706"; // Amber
                     case "low":
                       return "#10B981"; // Green
                     default:
@@ -424,27 +443,12 @@ function GraphRenderer({
                 } else if (isVendor) {
                   return isDirectAffected ? "#A855F7" : "#D8B4FE"; // Purple variants
                 } else if (isTech) {
-                  return isDirectAffected ? "#0EA5E9" : "#60A5FA"; // Blue variants
+                  // For tech nodes, use severity color if available, otherwise use blue
+                  const severityColor = getSeverityColor();
+                  if (severityColor) return severityColor;
+                  return isDirectAffected ? "#0EA5E9" : "#60A5FA"; // Blue variants (fallback)
                 }
                 return "#6B7280";
-              };
-
-              // Get CVE criticality tint for tech nodes
-              const getCriticalityTint = () => {
-                if (isTech) {
-                  const tech = getTechDetails(node.id, dependencyGraphData);
-                  if (tech) {
-                    const totalCVEs = tech.versions.reduce(
-                      (sum, v) => sum + v.cves.length,
-                      0,
-                    );
-                    if (totalCVEs === 0) return "#DCFCE7"; // Light green
-                    if (totalCVEs >= 5) return "#FEE2E2"; // Light red
-                    if (totalCVEs >= 3) return "#FED7AA"; // Light orange
-                    if (totalCVEs >= 1) return "#FEF08A"; // Light yellow
-                  }
-                }
-                return "transparent";
               };
 
               const radius = getNodeRadius();
