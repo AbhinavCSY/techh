@@ -617,6 +617,12 @@ export function DependencyGraphVisualization({
         tech={selectedTechNode}
         onClose={() => setSelectedTechNode(null)}
       />
+
+      {/* Legend Modal */}
+      <LegendModal
+        isOpen={showLegend}
+        onClose={() => setShowLegend(false)}
+      />
     </>
   );
 }
