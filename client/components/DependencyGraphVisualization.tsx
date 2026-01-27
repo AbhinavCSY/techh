@@ -117,9 +117,10 @@ interface GraphRendererProps {
   edges: GraphEdge[];
   width: number;
   height: number;
+  onTechNodeClick?: (nodeId: string) => void;
 }
 
-function GraphRenderer({ nodes, edges, width, height }: GraphRendererProps) {
+function GraphRenderer({ nodes, edges, width, height, onTechNodeClick }: GraphRendererProps) {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
