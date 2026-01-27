@@ -281,6 +281,7 @@ function GraphRenderer({
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    setDraggedNodeId(null);
   };
 
   const handleWheel = (e: React.WheelEvent<SVGSVGElement>) => {
