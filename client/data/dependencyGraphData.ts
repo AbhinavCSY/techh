@@ -45,6 +45,7 @@ export interface Vendor {
   name: string;
   products: string[];
   parent_vendor?: string;
+  vendor_depth?: "Primary" | "Parent";
   vendor_type?:
     | "cloud_provider"
     | "software_vendor"
@@ -108,13 +109,13 @@ export const dependencyGraphData: DependencyGraphDataType = {
     // RFC Use Case 2: S3/AWS
     {
       id: "tech-s3",
-      product: "Amazon S3",
+      product: "Amazon S3 Bucket",
       vendor: "Amazon Web Services",
       abstraction_level: "service",
       category: "cloud-service",
       versions: [
         {
-          version: "v4",
+          version: "N/A",
           eol: false,
           cves: [],
         },
@@ -127,9 +128,10 @@ export const dependencyGraphData: DependencyGraphDataType = {
       master_node: true,
       abstraction_level: "service",
       category: "cloud-service",
+      is_derived: false,
       versions: [
         {
-          version: "current",
+          version: "N/A",
           eol: false,
           cves: [],
         },
@@ -145,6 +147,17 @@ export const dependencyGraphData: DependencyGraphDataType = {
       category: "framework",
       versions: [
         {
+          version: "2.0",
+          eol: true,
+          eol_date: "2017-01-01",
+          cves: ["CVE-2021-12345"],
+        },
+        {
+          version: "3.0",
+          eol: false,
+          cves: ["CVE-2021-12345", "CVE-2023-50123"],
+        },
+        {
           version: "3.1.0",
           eol: false,
           cves: ["CVE-2023-50123"],
@@ -159,6 +172,11 @@ export const dependencyGraphData: DependencyGraphDataType = {
       abstraction_level: "standard",
       category: "standard",
       versions: [
+        {
+          version: "3.0.3",
+          eol: false,
+          cves: [],
+        },
         {
           version: "3.1.0",
           eol: false,
@@ -230,7 +248,7 @@ export const dependencyGraphData: DependencyGraphDataType = {
         {
           version: "9.0.70",
           eol: false,
-          cves: ["CVE-2022-42252"],
+          cves: ["CVE-2023-45648", "CVE-2021-50129"],
         },
       ],
     },
@@ -464,6 +482,34 @@ export const dependencyGraphData: DependencyGraphDataType = {
         },
       ],
     },
+    {
+      id: "tech-java-app",
+      product: "Customer Management Service",
+      vendor: "Internal App Team",
+      abstraction_level: "application",
+      category: "framework",
+      versions: [
+        {
+          version: "1.0.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-jvm",
+      product: "Java Virtual Machine",
+      vendor: "Oracle / OpenJDK",
+      abstraction_level: "runtime",
+      category: "runtime",
+      versions: [
+        {
+          version: "11.0.15",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
   ],
 
   vendors: [
@@ -483,25 +529,29 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "vendor-aws",
       name: "Amazon Web Services",
       products: ["tech-s3", "tech-aws", "tech-boto3"],
-      parent_vendor: "Amazon",
+      parent_vendor: "vendor-amazon",
+      vendor_depth: "Primary",
       vendor_type: "cloud_provider",
     },
     {
       id: "vendor-amazon",
       name: "Amazon",
       products: [],
+      vendor_depth: "Parent",
       vendor_type: "parent_company",
     },
     {
       id: "vendor-smartbear",
       name: "SmartBear Software",
       products: ["tech-swagger"],
+      vendor_depth: "Primary",
       vendor_type: "software_vendor",
     },
     {
       id: "vendor-lf",
       name: "Linux Foundation",
       products: ["tech-openapi"],
+      vendor_depth: "Parent",
       vendor_type: "foundation",
     },
     {
@@ -564,6 +614,19 @@ export const dependencyGraphData: DependencyGraphDataType = {
       products: ["tech-react"],
       vendor_type: "software_vendor",
     },
+    {
+      id: "vendor-internal-app",
+      name: "Internal App Team",
+      products: ["tech-java-app"],
+      vendor_depth: "Primary",
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-oracle",
+      name: "Oracle / OpenJDK",
+      products: ["tech-jvm"],
+      vendor_type: "software_vendor",
+    },
   ],
 
   issues: [
@@ -579,6 +642,16 @@ export const dependencyGraphData: DependencyGraphDataType = {
       cve_id: "CVE-2023-45001",
     },
     {
+      id: "issue-swagger-exposure",
+      title: "Swagger documentation exposed",
+      type: "exposure",
+      severity: "medium",
+      confidence_score: 0.92,
+      discovered_at: "2026-01-27",
+      description:
+        "Publicly accessible Swagger documentation detected, exposing API structure and endpoints. Attackers can discover API endpoints, request/response schemas, and security weaknesses. This information disclosure can lead to targeted attacks on the API infrastructure.",
+    },
+    {
       id: "issue-swagger-1",
       title: "Insecure Deserialization in Swagger",
       type: "vuln",
@@ -588,6 +661,17 @@ export const dependencyGraphData: DependencyGraphDataType = {
       cve_id: "CVE-2023-50123",
     },
     {
+      id: "issue-swagger-ui-xss",
+      title: "Improper Access Control in Swagger",
+      type: "vuln",
+      severity: "medium",
+      confidence_score: 0.85,
+      discovered_at: "2024-03-15",
+      description:
+        "CVE-2021-12345: Improper access control leading to exposure of API metadata. Affected versions: 2.0, 3.0. This vulnerability allows unauthorized access to sensitive API documentation and structures.",
+      cve_id: "CVE-2021-12345",
+    },
+    {
       id: "issue-s3-1",
       title: "S3 Bucket Publicly Exposed",
       type: "exposure",
@@ -595,6 +679,27 @@ export const dependencyGraphData: DependencyGraphDataType = {
       confidence_score: 0.92,
       discovered_at: "2023-09-10",
       description: "AWS S3 bucket configured for public read access",
+    },
+    {
+      id: "ISSUE-S3-FOUND-001",
+      title: "S3 bucket found publicly accessible",
+      type: "exposure",
+      severity: "high",
+      confidence_score: 0.95,
+      discovered_at: "2026-01-27",
+      description:
+        "An accessible S3 bucket was identified, which may expose sensitive data and indicates a potential misconfiguration in the storage service or underlying cloud platform.",
+    },
+    {
+      id: "ISSUE-LOG4J-001",
+      title: "Log4Shell RCE Vulnerability",
+      type: "vuln",
+      severity: "critical",
+      confidence_score: 0.98,
+      discovered_at: "2021-12-10",
+      description:
+        "CVE-2021-44228 (Log4Shell): Remote Code Execution in Apache Log4j via JNDI injection. Allows unauthenticated remote attackers to execute arbitrary code by sending specially crafted log messages. CVSS Score: 10.0 (Critical). Affects Log4j versions < 2.17.0. All versions of Java applications using Log4j are at critical risk.",
+      cve_id: "CVE-2021-44228",
     },
   ],
 
@@ -621,8 +726,19 @@ export const dependencyGraphData: DependencyGraphDataType = {
     // Issue relationships
     { from: "issue-cpanel-1", to: "tech-cpanel", type: "found_in" },
     { from: "issue-cpanel-1", to: "tech-hpanel", type: "found_in" },
+    { from: "issue-swagger-exposure", to: "tech-swagger", type: "found_in" },
     { from: "issue-swagger-1", to: "tech-swagger", type: "found_in" },
+    { from: "issue-swagger-ui-xss", to: "tech-swagger", type: "found_in" },
     { from: "issue-s3-1", to: "tech-s3", type: "found_in" },
+    { from: "ISSUE-S3-FOUND-001", to: "tech-s3", type: "found_in" },
+    { from: "ISSUE-LOG4J-001", to: "tech-log4j", type: "found_in" },
+
+    // Log4j use case relationships
+    { from: "tech-java-app", to: "tech-log4j", type: "uses" },
+    { from: "tech-log4j", to: "tech-jvm", type: "uses" },
+
+    // Vendor relationships
+    { from: "vendor-smartbear", to: "vendor-lf", type: "parent_of" },
   ],
 };
 
@@ -669,28 +785,33 @@ export function buildGraphForTech(
   });
   visitedNodes.add(techId);
 
-  // Find issues affecting this technology
-  const affectingIssues = data.relationships
-    .filter((r) => r.type === "found_in" && r.to === techId)
-    .map((r) => r.from);
+  // Helper function to add issues for a tech node
+  const addIssuesForTech = (targetTechId: string) => {
+    const affectingIssues = data.relationships
+      .filter((r) => r.type === "found_in" && r.to === targetTechId)
+      .map((r) => r.from);
 
-  affectingIssues.forEach((issueId) => {
-    const issue = data.issues.find((i) => i.id === issueId);
-    if (issue && !visitedNodes.has(issueId)) {
-      nodes.push({
-        id: issueId,
-        label: `${issue.type.toUpperCase()}: ${issue.title}`,
-        type: "issue",
-        subtype: issue.severity,
-      });
-      edges.push({
-        source: issueId,
-        target: techId,
-        relationship: "found_in",
-      });
-      visitedNodes.add(issueId);
-    }
-  });
+    affectingIssues.forEach((issueId) => {
+      const issue = data.issues.find((i) => i.id === issueId);
+      if (issue && !visitedNodes.has(issueId)) {
+        nodes.push({
+          id: issueId,
+          label: `${issue.type.toUpperCase()}: ${issue.title}`,
+          type: "issue",
+          subtype: issue.severity,
+        });
+        edges.push({
+          source: issueId,
+          target: targetTechId,
+          relationship: "found_in",
+        });
+        visitedNodes.add(issueId);
+      }
+    });
+  };
+
+  // Find issues affecting main technology
+  addIssuesForTech(techId);
 
   // Find technologies that depend on this tech
   const dependentTechs = data.relationships
@@ -716,6 +837,9 @@ export function buildGraphForTech(
         relationship: "uses",
       });
       visitedNodes.add(depTechId);
+
+      // Add issues for this dependent tech
+      addIssuesForTech(depTechId);
     }
   });
 
@@ -743,6 +867,9 @@ export function buildGraphForTech(
         relationship: "uses",
       });
       visitedNodes.add(depOnTechId);
+
+      // Add issues for this underlying tech
+      addIssuesForTech(depOnTechId);
     }
   });
 
@@ -767,6 +894,9 @@ export function buildGraphForTech(
         relationship: "derived_from",
       });
       visitedNodes.add(derivedTechId);
+
+      // Add issues for this derived tech
+      addIssuesForTech(derivedTechId);
     }
   });
 

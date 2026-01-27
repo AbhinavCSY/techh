@@ -90,11 +90,11 @@ class ForceDirectedGraph {
       }),
     );
 
-    this.simulate(30);
+    this.simulate(50);
   }
 
   simulate(iterations: number) {
-    const k = Math.sqrt((this.width * this.height) / this.nodes.size);
+    const k = Math.sqrt((this.width * this.height) / this.nodes.size) * 1.5; // Increased spacing
     const c = 0.05;
 
     for (let iter = 0; iter < iterations; iter++) {
@@ -107,7 +107,8 @@ class ForceDirectedGraph {
             const dx = (node2.x ?? 0) - (node1.x ?? 0);
             const dy = (node2.y ?? 0) - (node1.y ?? 0);
             const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-            const repulsion = (k * k) / distance;
+            // Increased repulsion for better spacing
+            const repulsion = ((k * k) / distance) * 1.3;
             node1.vx! -= (dx / distance) * repulsion;
             node1.vy! -= (dy / distance) * repulsion;
           }
@@ -121,7 +122,8 @@ class ForceDirectedGraph {
           const dx = (target.x ?? 0) - (source.x ?? 0);
           const dy = (target.y ?? 0) - (source.y ?? 0);
           const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-          const attraction = ((distance * distance) / k) * 0.1;
+          // Reduced attraction strength to allow more repulsion
+          const attraction = ((distance * distance) / k) * 0.08;
           source.vx! += (dx / distance) * attraction;
           source.vy! += (dy / distance) * attraction;
           target.vx! -= (dx / distance) * attraction;
@@ -133,12 +135,12 @@ class ForceDirectedGraph {
         node.vx! *= c;
         node.vy! *= c;
         node.x = Math.max(
-          50,
-          Math.min(this.width - 50, (node.x ?? 0) + node.vx!),
+          80,
+          Math.min(this.width - 80, (node.x ?? 0) + node.vx!),
         );
         node.y = Math.max(
-          50,
-          Math.min(this.height - 50, (node.y ?? 0) + node.vy!),
+          80,
+          Math.min(this.height - 80, (node.y ?? 0) + node.vy!),
         );
       });
     }
@@ -177,6 +179,10 @@ function GraphRenderer({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+  const [draggedNodeId, setDraggedNodeId] = useState<string | null>(null);
+  const [nodePositions, setNodePositions] = useState<
+    Map<string, { x: number; y: number }>
+  >(new Map());
   const svgRef = useRef<SVGSVGElement>(null);
   const spacePressed = useRef(false);
 
@@ -191,15 +197,47 @@ function GraphRenderer({
     related_to: "Related To",
     provided_by: "Provided By",
     subsidiary_of: "Subsidiary Of",
+    found_in: "Found In",
+    provides_by: "Provides",
+    implements: "Implements",
+    derived_from: "Derived From",
+    parent_of: "Parent Of",
   };
 
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    // Allow dragging with middle mouse button (button 1) or left click with Space key held
-    if (e.button === 1 || (e.button === 0 && spacePressed.current)) {
+    const target = e.target as SVGElement;
+
+    // Check if click is on a node (circle, text inside node, or node group)
+    const nodeElement = target.closest(".node-group");
+    const isOnNode = !!nodeElement;
+
+    // Allow dragging if:
+    // 1. Middle mouse button (button 1) - always allows drag
+    // 2. Left click (button 0) on empty area (not on a node)
+    // 3. Left click with Space key held - always allows drag
+    const shouldDrag =
+      e.button === 1 ||
+      (e.button === 0 && !isOnNode) ||
+      (e.button === 0 && spacePressed.current);
+
+    if (shouldDrag) {
       setIsDragging(true);
       setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+      e.preventDefault();
     }
   };
+
+  // Initialize node positions - only once when renderedNodes first load
+  useEffect(() => {
+    // Only initialize if we haven't set positions yet
+    if (nodePositions.size === 0 && renderedNodes.length > 0) {
+      const positions = new Map<string, { x: number; y: number }>();
+      renderedNodes.forEach((node) => {
+        positions.set(node.id, { x: node.x ?? 0, y: node.y ?? 0 });
+      });
+      setNodePositions(positions);
+    }
+  }, [renderedNodes, nodePositions.size]);
 
   // Track Space key for dragging
   useEffect(() => {
@@ -226,7 +264,19 @@ function GraphRenderer({
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (isDragging) {
+    // Handle node dragging
+    if (draggedNodeId) {
+      const newX = (e.clientX - dragStart.x - pan.x) / zoom;
+      const newY = (e.clientY - dragStart.y - pan.y) / zoom;
+
+      setNodePositions((prev) => {
+        const updated = new Map(prev);
+        updated.set(draggedNodeId, { x: newX, y: newY });
+        return updated;
+      });
+    }
+    // Handle pan dragging
+    else if (isDragging) {
       setPan({
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y,
@@ -236,6 +286,7 @@ function GraphRenderer({
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    setDraggedNodeId(null);
   };
 
   const handleWheel = (e: React.WheelEvent<SVGSVGElement>) => {
@@ -258,8 +309,11 @@ function GraphRenderer({
         ref={svgRef}
         width={width}
         height={height}
-        className="w-full h-full cursor-move"
-        style={{ backgroundColor: "#f9fafb" }}
+        className="w-full h-full cursor-grab active:cursor-grabbing"
+        style={{
+          backgroundColor: "#f9fafb",
+          touchAction: "none",
+        }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -281,47 +335,95 @@ function GraphRenderer({
 
         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
           {/* Edges */}
-          <g className="edges">
+          <g className="edges" style={{ pointerEvents: "none" }}>
             {edges.map((edge, idx) => {
               const source = renderedNodes.find((n) => n.id === edge.source);
               const target = renderedNodes.find((n) => n.id === edge.target);
 
               if (!source || !target) return null;
 
+              // Always use the latest positions from nodePositions state
+              // This ensures edges always attach to current node positions
+              let sourcePos = nodePositions.get(edge.source);
+              let targetPos = nodePositions.get(edge.target);
+
+              // Fallback to renderedNodes if positions not yet initialized
+              if (!sourcePos) {
+                sourcePos = { x: source.x ?? 0, y: source.y ?? 0 };
+              }
+              if (!targetPos) {
+                targetPos = { x: target.x ?? 0, y: target.y ?? 0 };
+              }
+
+              const midX = (sourcePos.x + targetPos.x) / 2;
+              const midY = (sourcePos.y + targetPos.y) / 2;
+              const label =
+                relationshipLabels[edge.relationship] || edge.relationship;
+
+              // Get label color based on relationship type
+              const getLabelColor = () => {
+                switch (edge.relationship) {
+                  case "uses":
+                    return "#0EA5E9"; // Cyan
+                  case "related_to":
+                    return "#F97316"; // Orange
+                  case "provided_by":
+                    return "#A855F7"; // Purple
+                  case "subsidiary_of":
+                    return "#EAB308"; // Yellow
+                  case "found_in":
+                    return "#EF4444"; // Red - Vulnerability
+                  case "provides_by":
+                    return "#A855F7"; // Purple
+                  case "implements":
+                    return "#06B6D4"; // Cyan
+                  case "derived_from":
+                    return "#8B5CF6"; // Violet
+                  case "parent_of":
+                    return "#EC4899"; // Pink
+                  default:
+                    return "#6B7280"; // Gray
+                }
+              };
+
               return (
                 <g key={idx}>
+                  {/* Edge line with gradient effect */}
                   <line
-                    x1={source.x ?? 0}
-                    y1={source.y ?? 0}
-                    x2={target.x ?? 0}
-                    y2={target.y ?? 0}
-                    stroke="#D1D5DB"
-                    strokeWidth={1.5}
+                    x1={sourcePos.x}
+                    y1={sourcePos.y}
+                    x2={targetPos.x}
+                    y2={targetPos.y}
+                    stroke={getLabelColor()}
+                    strokeWidth={2}
                     markerEnd="url(#arrowhead)"
-                    opacity={0.5}
+                    opacity={0.4}
                   />
 
+                  {/* Shadow for label background */}
                   <rect
-                    x={(source.x ?? 0 + (target.x ?? 0)) / 2 - 35}
-                    y={(source.y ?? 0 + (target.y ?? 0)) / 2 - 12}
-                    width="70"
-                    height="20"
+                    x={midX - 55}
+                    y={midY - 16}
+                    width="110"
+                    height="32"
                     fill="white"
-                    opacity={0.7}
-                    rx="3"
+                    opacity={0.95}
+                    rx="5"
+                    filter="drop-shadow(0 1px 3px rgba(0,0,0,0.1))"
                   />
 
+                  {/* Label text - bold and prominent */}
                   <text
-                    x={(source.x ?? 0 + (target.x ?? 0)) / 2}
-                    y={(source.y ?? 0 + (target.y ?? 0)) / 2 + 3}
+                    x={midX}
+                    y={midY + 5}
                     textAnchor="middle"
-                    fontSize="11"
-                    fontWeight="500"
-                    fill="#374151"
-                    opacity={0.7}
+                    fontSize="13"
+                    fontWeight="700"
+                    fill={getLabelColor()}
+                    opacity={1}
                     style={{ pointerEvents: "none" }}
                   >
-                    {relationshipLabels[edge.relationship] || edge.relationship}
+                    {label}
                   </text>
                 </g>
               );
@@ -345,134 +447,201 @@ function GraphRenderer({
                 }
               };
 
+              const handleNodeMouseDown = (
+                e: React.MouseEvent<SVGGElement>,
+              ) => {
+                // Start dragging the node
+                setDraggedNodeId(node.id);
+                // Use current position from nodePositions state, not the original node position
+                const currentPos = nodePositions.get(node.id) || {
+                  x: node.x ?? 0,
+                  y: node.y ?? 0,
+                };
+                setDragStart({
+                  x: e.clientX - (pan.x + currentPos.x * zoom),
+                  y: e.clientY - (pan.y + currentPos.y * zoom),
+                });
+                e.preventDefault();
+              };
+
               const handleMouseEnter = (e: React.MouseEvent<SVGGElement>) => {
-                if (showTooltips) {
-                  setHoveredNode(node.id);
-                  const svg = svgRef.current;
-                  if (svg) {
-                    const rect = svg.getBoundingClientRect();
-                    setTooltipPos({
-                      x: e.clientX - rect.left + 10,
-                      y: e.clientY - rect.top - 10,
-                    });
-                  }
-                }
+                // Tooltips disabled - node labels show below nodes
               };
 
               const handleMouseLeave = () => {
-                setHoveredNode(null);
+                // Tooltips disabled
               };
 
-              // Determine node color based on type and subtype
+              // Enhanced node sizing based on severity and type
+              const getNodeRadius = () => {
+                if (isIssue) return 20;
+                if (isTech) {
+                  const tech = getTechDetails(node.id, dependencyGraphData);
+                  if (tech) {
+                    const totalCVEs = tech.versions.reduce(
+                      (sum, v) => sum + v.cves.length,
+                      0,
+                    );
+                    // Larger for nodes with more vulnerabilities
+                    if (totalCVEs >= 5) return 36;
+                    if (totalCVEs >= 3) return 33;
+                  }
+                }
+                return isDirectAffected ? 32 : 28;
+              };
+
+              // Get CVE severity color for tech nodes (PRIMARY COLOR)
+              const getSeverityColor = () => {
+                if (isTech) {
+                  const tech = getTechDetails(node.id, dependencyGraphData);
+                  if (tech) {
+                    const totalCVEs = tech.versions.reduce(
+                      (sum, v) => sum + v.cves.length,
+                      0,
+                    );
+                    // Return bright colors based on severity
+                    if (totalCVEs === 0) return "#10B981"; // Green - no CVEs
+                    if (totalCVEs >= 5) return "#DC2626"; // Bright Red - CRITICAL
+                    if (totalCVEs >= 3) return "#EA580C"; // Orange - HIGH
+                    if (totalCVEs >= 1) return "#D97706"; // Amber - MEDIUM
+                  }
+                }
+                return null; // Use default color
+              };
+
+              // Determine node color based on type and subtype with better colors
               const getNodeColor = () => {
                 if (isIssue) {
                   switch (node.subtype) {
                     case "critical":
-                      return "#DC2626"; // Red
+                      return "#DC2626"; // Bright Red
                     case "high":
                       return "#EA580C"; // Orange
                     case "medium":
-                      return "#F59E0B"; // Amber
+                      return "#D97706"; // Amber
                     case "low":
                       return "#10B981"; // Green
                     default:
-                      return "#6B7280"; // Gray
+                      return "#8B5CF6"; // Purple
                   }
                 } else if (isVendor) {
-                  return "#A78BFA"; // Violet for vendors
+                  return isDirectAffected ? "#A855F7" : "#D8B4FE"; // Purple variants
                 } else if (isTech) {
-                  return isDirectAffected ? "#3B82F6" : "#818CF8"; // Blue variants
+                  // For tech nodes, use severity color if available, otherwise use blue
+                  const severityColor = getSeverityColor();
+                  if (severityColor) return severityColor;
+                  return isDirectAffected ? "#0EA5E9" : "#60A5FA"; // Blue variants (fallback)
                 }
                 return "#6B7280";
               };
 
+              const radius = getNodeRadius();
+              const innerRadius = Math.max(radius - 8, 12);
+
+              // Get position from nodePositions state if available, otherwise use node position
+              const nodePos = nodePositions.get(node.id) || {
+                x: node.x ?? 0,
+                y: node.y ?? 0,
+              };
+              const nodeX = nodePos.x;
+              const nodeY = nodePos.y;
+
               return (
                 <g
                   key={node.id}
-                  className="cursor-pointer"
+                  className={`cursor-move node-group ${draggedNodeId === node.id ? "opacity-75" : ""}`}
+                  style={{ pointerEvents: "auto" }}
                   onClick={handleNodeClick}
+                  onMouseDown={handleNodeMouseDown}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
+                  {/* Outer colored circle */}
                   <circle
-                    cx={node.x ?? 0}
-                    cy={node.y ?? 0}
-                    r={isIssue ? 25 : 30}
+                    cx={nodeX}
+                    cy={nodeY}
+                    r={radius}
                     fill={getNodeColor()}
-                    opacity={0.95}
+                    opacity={0.9}
                   />
 
+                  {/* Inner white circle */}
                   <circle
-                    cx={node.x ?? 0}
-                    cy={node.y ?? 0}
-                    r={22}
+                    cx={nodeX}
+                    cy={nodeY}
+                    r={innerRadius}
                     fill="white"
-                    opacity={0.95}
+                    opacity={0.98}
                   />
 
+                  {/* Node icon */}
                   {isIssue ? (
-                    <g
-                      transform={`translate(${(node.x ?? 0) - 7}, ${(node.y ?? 0) - 7})`}
-                    >
-                      <AlertTriangle
-                        width="14"
-                        height="14"
-                        stroke="white"
-                        fill="none"
-                        strokeWidth="1.5"
-                      />
+                    <g transform={`translate(${nodeX - 8}, ${nodeY - 8})`}>
+                      <text
+                        x="8"
+                        y="12"
+                        textAnchor="middle"
+                        fontSize="14"
+                        fontWeight="bold"
+                        fill="#EF4444"
+                      >
+                        !
+                      </text>
                     </g>
                   ) : isTech ? (
-                    <g
-                      transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
-                    >
+                    <g transform={`translate(${nodeX - 8}, ${nodeY - 8})`}>
                       <Package
                         width="16"
                         height="16"
-                        stroke="#3B82F6"
+                        stroke={isDirectAffected ? "#0EA5E9" : "#60A5FA"}
                         fill="none"
-                        strokeWidth="1.5"
+                        strokeWidth="2"
                       />
                     </g>
                   ) : (
-                    <g
-                      transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
-                    >
+                    <g transform={`translate(${nodeX - 8}, ${nodeY - 8})`}>
                       <Building2
                         width="16"
                         height="16"
-                        stroke="#9333EA"
+                        stroke="#A855F7"
                         fill="none"
-                        strokeWidth="1.5"
+                        strokeWidth="2"
                       />
                     </g>
                   )}
 
+                  {/* Primary label - Full name */}
                   <text
-                    x={node.x ?? 0}
-                    y={(node.y ?? 0) + 48}
+                    x={nodeX}
+                    y={nodeY + (radius + 28)}
                     textAnchor="middle"
-                    fontSize="12"
-                    fontWeight="500"
+                    fontSize="11"
+                    fontWeight="600"
                     fill="#1F2937"
                     style={{
                       pointerEvents: "none",
                       userSelect: "none",
+                      maxWidth: "150px",
                     }}
                   >
-                    {node.label.split(" ").slice(0, 2).join(" ")}
+                    {node.label.length > 20
+                      ? node.label.substring(0, 20) + "..."
+                      : node.label}
                   </text>
 
-                  <text
-                    x={node.x ?? 0}
-                    y={(node.y ?? 0) + 62}
-                    textAnchor="middle"
-                    fontSize="10"
-                    fill="#6B7280"
-                    style={{ pointerEvents: "none", userSelect: "none" }}
-                  >
-                    {node.subtype}
-                  </text>
+                  {/* Secondary label/type */}
+                  {!isIssue && (
+                    <text
+                      x={nodeX}
+                      y={nodeY + (radius + 42)}
+                      textAnchor="middle"
+                      fontSize="9"
+                      fill="#9CA3AF"
+                      style={{ pointerEvents: "none", userSelect: "none" }}
+                    >
+                      {node.subtype || "node"}
+                    </text>
+                  )}
                 </g>
               );
             })}
@@ -480,51 +649,40 @@ function GraphRenderer({
         </g>
       </svg>
 
-      {/* Controls Overlay */}
-      <div className="absolute top-4 right-4 flex flex-col gap-2 bg-white rounded-lg shadow-lg p-2">
+      {/* Controls Overlay - Bottom Left Corner */}
+      <div className="absolute bottom-4 left-4 flex flex-row gap-1 bg-white rounded-lg shadow-lg p-1 items-center">
         <button
           onClick={zoomIn}
-          className="p-2 hover:bg-gray-100 rounded transition-colors"
+          className="p-1 hover:bg-gray-100 rounded transition-colors"
           title="Zoom In"
         >
-          <ZoomIn width="20" height="20" className="text-gray-600" />
+          <ZoomIn width="14" height="14" className="text-gray-600" />
         </button>
         <button
           onClick={zoomOut}
-          className="p-2 hover:bg-gray-100 rounded transition-colors"
+          className="p-1 hover:bg-gray-100 rounded transition-colors"
           title="Zoom Out"
         >
-          <ZoomOut width="20" height="20" className="text-gray-600" />
+          <ZoomOut width="14" height="14" className="text-gray-600" />
         </button>
-        <div className="h-px bg-gray-200" />
+        <div className="w-px h-4 bg-gray-200" />
         <button
           onClick={resetView}
-          className="p-2 hover:bg-gray-100 rounded transition-colors"
+          className="p-1 hover:bg-gray-100 rounded transition-colors"
           title="Reset View"
         >
-          <Home width="20" height="20" className="text-gray-600" />
+          <Home width="14" height="14" className="text-gray-600" />
         </button>
-      </div>
 
-      {/* Zoom Level Indicator */}
-      <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow px-3 py-1 text-sm text-gray-600">
-        {Math.round(zoom * 100)}%
-      </div>
-
-      {/* Tooltip */}
-      {showTooltips && hoveredNode && (
-        <div
-          className="fixed bg-gray-900 text-white text-sm px-3 py-2 rounded shadow-lg pointer-events-none"
-          style={{
-            left: `${tooltipPos.x}px`,
-            top: `${tooltipPos.y}px`,
-            maxWidth: "200px",
-            wordWrap: "break-word",
-          }}
-        >
-          {nodes.find((n) => n.id === hoveredNode)?.label}
+        <div className="w-px h-4 bg-gray-200" />
+        {/* Zoom Level Indicator */}
+        <div className="flex justify-center px-1 py-0.5 text-xs text-gray-600 font-medium min-w-[28px]">
+          {Math.round(zoom * 100)}%
         </div>
-      )}
+      </div>
+
+      {/* Tooltip - Disabled, using node labels instead */}
+      {/* Node labels now show below nodes with full text */}
     </div>
   );
 }
@@ -547,14 +705,46 @@ export function DependencyGraphVisualization({
   const [quickInfoNode, setQuickInfoNode] = useState<Technology | null>(null);
   const [quickInfoPos, setQuickInfoPos] = useState({ x: 0, y: 0 });
   const [showLegend, setShowLegend] = useState(false);
+  const graphContainerRef = React.useRef<HTMLDivElement>(null);
 
   const handleTechNodeClick = (
     nodeId: string,
     position: { x: number; y: number },
   ) => {
-    const tech = getTechDetails(nodeId, dependencyGraphData);
+    console.log(`=== Node Click ===`);
+    console.log(`Clicked node ID: ${nodeId}`);
+
+    let tech = getTechDetails(nodeId, dependencyGraphData);
+    console.log(`getTechDetails result:`, tech);
+
+    // If tech is not found, try to find it by matching against the graph data
+    if (!tech && initialNodes) {
+      const clickedNode = initialNodes.find((n) => n.id === nodeId);
+      console.log(`Found node in initialNodes:`, clickedNode);
+
+      if (clickedNode) {
+        // Look for tech by name in the dependencyGraphData
+        tech = dependencyGraphData.technologies.find(
+          (t) =>
+            t.product.toLowerCase() === clickedNode.label.toLowerCase() ||
+            t.id === clickedNode.label.toLowerCase().replace(/\s+/g, "-"),
+        );
+        console.log(`Searched by label "${clickedNode.label}", Found:`, tech);
+      }
+    }
+
+    if (tech) {
+      console.log(`Setting tech node:`, tech.product);
+      console.log(
+        `CVEs:`,
+        tech.versions.flatMap((v) => v.cves),
+      );
+    } else {
+      console.log(`WARNING: Tech not found for node ${nodeId}`);
+    }
+
     setSelectedTechNode(tech);
-    setQuickInfoNode(tech || null);
+    setQuickInfoNode(tech);
     setQuickInfoPos(position);
     setShowFullDetails(false);
   };
@@ -664,38 +854,12 @@ export function DependencyGraphVisualization({
     <>
       {/* Normal View */}
       {!isFullscreen && (
-        <div className="space-y-4">
-          {/* Header with Buttons */}
-          <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-1">
-                Dependency Graph
-              </h3>
-              <p className="text-sm text-gray-600">
-                Force-directed visualization of {techStack.name} ecosystem
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowLegend(true)}
-                className="p-2 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors"
-                title="Show legend"
-              >
-                <Info width="20" height="20" />
-              </button>
-              <button
-                onClick={handleFullscreenClick}
-                className="flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
-                title="Open fullscreen"
-              >
-                <Maximize2 width="18" height="18" />
-                <span className="text-sm font-medium">Fullscreen</span>
-              </button>
-            </div>
-          </div>
-
+        <div>
           {/* Graph Container */}
-          <div className="border border-gray-200 rounded-lg bg-white overflow-hidden h-96 relative">
+          <div
+            ref={graphContainerRef}
+            className="border border-gray-200 rounded-lg bg-white overflow-hidden h-[600px] relative"
+          >
             <GraphRenderer
               nodes={graphData.nodes}
               edges={graphData.edges}
@@ -712,17 +876,27 @@ export function DependencyGraphVisualization({
                 position={quickInfoPos}
                 onExpand={handleExpandClick}
                 onClose={handleCloseQuickInfo}
+                containerRef={graphContainerRef}
               />
             )}
-          </div>
 
-          {/* Info */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
-            <p className="font-medium mb-1">💡 Interactive Graph</p>
-            <p>
-              Middle-click/Space+drag to pan • Scroll to zoom • Hover for names
-              • Click nodes for details
-            </p>
+            {/* Floating Buttons on Graph Frame */}
+            <div className="absolute top-4 right-4 flex items-center gap-2">
+              <button
+                onClick={() => setShowLegend(true)}
+                className="p-2 hover:bg-gray-200 bg-white text-gray-600 rounded-lg transition-colors shadow-md"
+                title="Show legend"
+              >
+                <Info width="20" height="20" />
+              </button>
+              <button
+                onClick={handleFullscreenClick}
+                className="p-2 hover:bg-blue-600 bg-blue-500 text-white rounded-lg transition-colors shadow-md"
+                title="Open fullscreen"
+              >
+                <Maximize2 width="20" height="20" />
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -731,27 +905,24 @@ export function DependencyGraphVisualization({
       {isFullscreen && (
         <div className="fixed inset-0 z-50 bg-white flex flex-col">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 flex items-center justify-between shadow-lg">
-            <div>
-              <h2 className="text-2xl font-bold">
-                Dependency Graph - {techStack.name}
-              </h2>
-              <p className="text-blue-100 mt-1 text-sm">
-                Middle-click drag to pan • Space+drag to pan • Scroll to zoom •
-                Hover for labels • Click nodes for details
-              </p>
-            </div>
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 flex items-center justify-between shadow-lg">
+            <h2 className="text-lg font-bold">
+              Dependency Graph - {techStack.name}
+            </h2>
             <button
               onClick={() => setIsFullscreen(false)}
               className="p-2 hover:bg-blue-500 rounded-lg transition-colors bg-blue-500 bg-opacity-50"
               title="Exit fullscreen"
             >
-              <X width="28" height="28" className="text-white" />
+              <X width="24" height="24" className="text-white" />
             </button>
           </div>
 
           {/* Graph Container */}
-          <div className="flex-1 overflow-hidden bg-gray-50 relative">
+          <div
+            ref={graphContainerRef}
+            className="flex-1 overflow-hidden bg-gray-50 relative"
+          >
             <GraphRenderer
               nodes={graphData.nodes}
               edges={graphData.edges}
@@ -768,6 +939,7 @@ export function DependencyGraphVisualization({
                 position={quickInfoPos}
                 onExpand={handleExpandClick}
                 onClose={handleCloseQuickInfo}
+                containerRef={graphContainerRef}
               />
             )}
           </div>
@@ -783,6 +955,7 @@ export function DependencyGraphVisualization({
             setSelectedTechNode(null);
             setQuickInfoNode(null);
           }}
+          containerRef={graphContainerRef}
         />
       )}
 

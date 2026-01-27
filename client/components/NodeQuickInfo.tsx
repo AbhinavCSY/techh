@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Expand, AlertCircle, CalendarX } from "lucide-react";
+import { Expand, AlertCircle, CalendarX, X } from "lucide-react";
 import { Technology } from "@/data/dependencyGraphData";
 
 interface NodeQuickInfoProps {
@@ -7,6 +7,7 @@ interface NodeQuickInfoProps {
   position: { x: number; y: number };
   onExpand: () => void;
   onClose: () => void;
+  containerRef?: React.RefObject<HTMLDivElement>;
 }
 
 export function NodeQuickInfo({
@@ -14,6 +15,7 @@ export function NodeQuickInfo({
   position,
   onExpand,
   onClose,
+  containerRef,
 }: NodeQuickInfoProps) {
   const [adjustedPos, setAdjustedPos] = useState({ x: 0, y: 0 });
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -31,24 +33,43 @@ export function NodeQuickInfo({
       const offsetY = 12;
       const margin = 10;
 
-      let x = position.x + offsetX;
-      let y = position.y + offsetY;
+      // If containerRef is provided, clamp to container bounds, otherwise clamp to viewport
+      if (containerRef?.current) {
+        const container = containerRef.current;
+        const containerRect = container.getBoundingClientRect();
 
-      // Hard clamps to keep popup in viewport
-      x = Math.max(margin, x);
-      x = Math.min(window.innerWidth - width - margin, x);
+        // Convert viewport-based position to container-relative position
+        let x = position.x - containerRect.left + offsetX;
+        let y = position.y - containerRect.top + offsetY;
 
-      y = Math.max(margin, y);
-      y = Math.min(window.innerHeight - height - margin, y);
+        // Clamp to container bounds
+        x = Math.max(margin, x);
+        x = Math.min(container.offsetWidth - width - margin, x);
 
-      setAdjustedPos({ x, y });
+        y = Math.max(margin, y);
+        y = Math.min(container.offsetHeight - height - margin, y);
+
+        setAdjustedPos({ x, y });
+      } else {
+        // Hard clamps to keep popup in viewport (original behavior)
+        let x = position.x + offsetX;
+        let y = position.y + offsetY;
+
+        x = Math.max(margin, x);
+        x = Math.min(window.innerWidth - width - margin, x);
+
+        y = Math.max(margin, y);
+        y = Math.min(window.innerHeight - height - margin, y);
+
+        setAdjustedPos({ x, y });
+      }
     };
 
     // Try measuring with a small delay first
     const timer = setTimeout(measureAndPosition, 50);
 
     return () => clearTimeout(timer);
-  }, [position]);
+  }, [position, containerRef]);
 
   if (!tech) return null;
 
@@ -73,7 +94,7 @@ export function NodeQuickInfo({
   return (
     <div
       ref={dropdownRef}
-      className="fixed z-30 bg-white rounded-lg shadow-2xl border border-gray-300 pointer-events-auto"
+      className={`${containerRef ? "absolute" : "fixed"} z-30 bg-white rounded-lg shadow-2xl border border-gray-300 pointer-events-auto`}
       style={{
         left: `${adjustedPos.x}px`,
         top: `${adjustedPos.y}px`,
@@ -91,13 +112,22 @@ export function NodeQuickInfo({
           </h4>
           <p className="text-xs text-gray-600 truncate">{tech.vendor}</p>
         </div>
-        <button
-          onClick={onExpand}
-          className="p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
-          title="View details"
-        >
-          <Expand width="16" height="16" className="text-blue-600" />
-        </button>
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <button
+            onClick={onExpand}
+            className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+            title="View details"
+          >
+            <Expand width="16" height="16" className="text-blue-600" />
+          </button>
+          <button
+            onClick={onClose}
+            className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+            title="Close"
+          >
+            <X width="16" height="16" className="text-gray-500" />
+          </button>
+        </div>
       </div>
 
       {/* Quick Stats */}

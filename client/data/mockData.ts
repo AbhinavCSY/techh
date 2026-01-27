@@ -44,6 +44,7 @@ export interface TechStack {
   riskLevel: "critical" | "high" | "medium" | "low";
   riskScore: number;
   createdAt: Date;
+  lastUpdated?: Date;
   license: string;
   effectiveLicense:
     | "MIT"
@@ -144,6 +145,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.2,
     createdAt: new Date("2024-01-15"),
+    lastUpdated: new Date("2024-02-16"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -187,6 +189,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.0,
     createdAt: new Date("2024-01-10"),
+    lastUpdated: new Date("2024-02-15"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -222,6 +225,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 3.5,
     createdAt: new Date("2024-02-01"),
+    lastUpdated: new Date("2024-02-14"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -257,6 +261,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.8,
     createdAt: new Date("2023-12-20"),
+    lastUpdated: new Date("2024-02-12"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -292,6 +297,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.5,
     createdAt: new Date("2024-01-05"),
+    lastUpdated: new Date("2024-02-11"),
     license: "PostgreSQL License",
     effectiveLicense: "PostgreSQL License",
     versionHistory: [
@@ -328,6 +334,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "medium",
     riskScore: 5.2,
     createdAt: new Date("2024-01-20"),
+    lastUpdated: new Date("2024-02-13"),
     license: "BSD License",
     effectiveLicense: "BSD 3",
     versionHistory: [
@@ -363,6 +370,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.5,
     createdAt: new Date("2024-01-25"),
+    lastUpdated: new Date("2024-02-10"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -398,6 +406,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 2.1,
     createdAt: new Date("2024-02-05"),
+    lastUpdated: new Date("2024-02-16"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -436,6 +445,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 1.8,
     createdAt: new Date("2024-02-10"),
+    lastUpdated: new Date("2024-02-15"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -462,6 +472,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "medium",
     riskScore: 4.2,
     createdAt: new Date("2024-01-30"),
+    lastUpdated: new Date("2024-02-09"),
     license: "SSPL/Community",
     effectiveLicense: "Other",
     versionHistory: [
@@ -516,6 +527,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.8,
     createdAt: new Date("2024-01-20"),
+    lastUpdated: new Date("2024-02-08"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -565,6 +577,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 8.9,
     createdAt: new Date("2024-01-18"),
+    lastUpdated: new Date("2024-02-07"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -613,6 +626,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.2,
     createdAt: new Date("2024-01-12"),
+    lastUpdated: new Date("2024-02-06"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -655,6 +669,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.5,
     createdAt: new Date("2024-01-08"),
+    lastUpdated: new Date("2024-02-05"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -703,6 +718,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 6.8,
     createdAt: new Date("2024-01-10"),
+    lastUpdated: new Date("2024-02-12"),
     license: "BSD License",
     effectiveLicense: "BSD 3",
     versionHistory: [
@@ -757,6 +773,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 8.9,
     createdAt: new Date("2023-12-15"),
+    lastUpdated: new Date("2024-02-04"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -805,6 +822,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.8,
     createdAt: new Date("2023-11-20"),
+    lastUpdated: new Date("2024-02-03"),
     license: "GPL",
     effectiveLicense: "Other",
     versionHistory: [
@@ -847,6 +865,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "medium",
     riskScore: 5.5,
     createdAt: new Date("2024-01-05"),
+    lastUpdated: new Date("2024-02-14"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -895,6 +914,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.2,
     createdAt: new Date("2023-10-01"),
+    lastUpdated: new Date("2024-02-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -937,6 +957,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 6.5,
     createdAt: new Date("2024-01-12"),
+    lastUpdated: new Date("2024-02-13"),
     license: "BSD License",
     effectiveLicense: "BSD 3",
     versionHistory: [
@@ -979,6 +1000,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.4,
     createdAt: new Date("2024-01-08"),
+    lastUpdated: new Date("2024-02-11"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -1027,6 +1049,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.5,
     createdAt: new Date("2023-12-10"),
+    lastUpdated: new Date("2024-02-10"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -1075,6 +1098,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 6.8,
     createdAt: new Date("2024-01-15"),
+    lastUpdated: new Date("2024-02-09"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -1094,6 +1118,116 @@ const techStackDatabase: TechStack[] = [
       contributorReputation: { score: 9, riskLevel: "no risk" },
       packageReliability: { score: 8, riskLevel: "low" },
       behavioralIntegrity: { score: 8, riskLevel: "low" },
+    },
+  },
+  {
+    id: "ts-24",
+    name: "Swagger Doc",
+    type: "devops",
+    version: "3.0.3",
+    logo: "📄",
+    isEOL: false,
+    isUpgradable: true,
+    secureVersion: "3.1.0",
+    cves: [
+      {
+        id: "CVE-2023-41081",
+        severity: "medium",
+        title: "Swagger UI XSS Vulnerability",
+        score: 6.1,
+      },
+      {
+        id: "CVE-2022-21705",
+        severity: "low",
+        title: "Swagger Parser DoS",
+        score: 4.3,
+      },
+    ],
+    unscannedThreatsCount: 2,
+    riskLevel: "medium",
+    riskScore: 5.2,
+    createdAt: new Date("2024-01-22"),
+    lastUpdated: new Date("2024-02-12"),
+    license: "Apache License 2.0",
+    effectiveLicense: "Apache",
+    versionHistory: [
+      { version: "3.0.3", releaseDate: new Date("2023-11-01"), isEOL: false },
+      { version: "3.1.0", releaseDate: new Date("2024-02-15"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-24",
+        title: "Update Swagger to 3.1.0",
+        description: "Fix XSS vulnerability in Swagger UI",
+        priority: "medium",
+        estimatedTime: "2-3 hours",
+      },
+      {
+        id: "rem-25",
+        title: "Upgrade OpenAPI specification",
+        description: "Align with latest OpenAPI standards",
+        priority: "medium",
+        estimatedTime: "4-6 hours",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 9, riskLevel: "no risk" },
+      packageReliability: { score: 8, riskLevel: "low" },
+      behavioralIntegrity: { score: 8, riskLevel: "low" },
+    },
+  },
+  {
+    id: "ts-25",
+    name: "Amazon S3 Bucket",
+    type: "devops",
+    version: "N/A",
+    logo: "🪣",
+    isEOL: false,
+    isUpgradable: false,
+    cves: [],
+    unscannedThreatsCount: 1,
+    riskLevel: "high",
+    riskScore: 7.0,
+    createdAt: new Date("2023-08-10"),
+    lastUpdated: new Date("2026-01-27"),
+    license: "AWS Proprietary",
+    effectiveLicense: "Other",
+    versionHistory: [
+      {
+        version: "N/A",
+        releaseDate: new Date("2006-03-14"),
+        isEOL: false,
+      },
+    ],
+    remediations: [
+      {
+        id: "rem-25-s3",
+        title: "Restrict S3 Bucket Access",
+        description:
+          "Configure bucket policies and ACLs to restrict public read access. Enable Block Public Access settings.",
+        priority: "critical",
+        estimatedTime: "1-2 hours",
+      },
+      {
+        id: "rem-26-s3",
+        title: "Enable S3 Bucket Encryption",
+        description:
+          "Enable server-side encryption and configure encryption keys",
+        priority: "high",
+        estimatedTime: "2-3 hours",
+      },
+      {
+        id: "rem-27-s3",
+        title: "Enable S3 Bucket Versioning & MFA Delete",
+        description: "Protect against accidental or malicious deletion",
+        priority: "high",
+        estimatedTime: "1 hour",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 10, riskLevel: "no risk" },
+      behavioralIntegrity: { score: 10, riskLevel: "no risk" },
     },
   },
 ];
@@ -1134,8 +1268,9 @@ const assetDatabase: Asset[] = [
       techStackDatabase[3],
       techStackDatabase[6],
       techStackDatabase[5],
+      techStackDatabase[23], // Swagger Doc added
     ],
-    cveCount: 3,
+    cveCount: 5,
     topCriticalCVE: techStackDatabase[3].cves[0],
     lastUpdated: new Date("2024-02-14"),
     isScanned: true,
@@ -1308,8 +1443,9 @@ const assetDatabase: Asset[] = [
       techStackDatabase[6],
       techStackDatabase[21],
       techStackDatabase[22],
+      techStackDatabase[23], // Swagger Doc added
     ],
-    cveCount: 8,
+    cveCount: 10,
     topCriticalCVE: techStackDatabase[1].cves[0],
     lastUpdated: new Date("2024-02-16"),
     isScanned: true,
@@ -1371,8 +1507,9 @@ const assetDatabase: Asset[] = [
       techStackDatabase[16],
       techStackDatabase[17],
       techStackDatabase[21],
+      techStackDatabase[23], // Swagger Doc added
     ],
-    cveCount: 4,
+    cveCount: 6,
     topCriticalCVE: techStackDatabase[16].cves[0],
     lastUpdated: new Date("2024-02-15"),
     isScanned: true,
@@ -1388,8 +1525,9 @@ const assetDatabase: Asset[] = [
       techStackDatabase[9],
       techStackDatabase[19],
       techStackDatabase[17],
+      techStackDatabase[23], // Swagger Doc added
     ],
-    cveCount: 3,
+    cveCount: 5,
     lastUpdated: new Date("2024-02-15"),
     isScanned: true,
   },

@@ -66,6 +66,7 @@ export function TechStackTableView({
             <TableHead className="font-semibold">Version</TableHead>
             <TableHead className="font-semibold">License</TableHead>
             <TableHead className="font-semibold">Associated Assets</TableHead>
+            <TableHead className="font-semibold">Last Updated</TableHead>
             <TableHead className="font-semibold">Risk</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
             <TableHead className="font-semibold">Status</TableHead>
@@ -112,21 +113,31 @@ export function TechStackTableView({
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <div className="text-sm">
-                    <p className="font-medium">
-                      {associatedAssets.length} assets
-                    </p>
-                    {associatedAssets.length > 0 && (
-                      <p className="text-xs text-gray-500">
-                        {associatedAssets
-                          .slice(0, 2)
-                          .map((a) => a.name)
-                          .join(", ")}
-                        {associatedAssets.length > 2 &&
-                          ` +${associatedAssets.length - 2}`}
-                      </p>
+                  <div className="flex flex-wrap gap-1 items-center">
+                    {associatedAssets.slice(0, 2).map((asset) => (
+                      <Badge
+                        key={asset.id}
+                        className="bg-purple-100 text-purple-800 text-xs py-0.5 px-1.5"
+                        title={asset.name}
+                      >
+                        {asset.name.length > 12
+                          ? `${asset.name.substring(0, 12)}...`
+                          : asset.name}
+                      </Badge>
+                    ))}
+                    {associatedAssets.length > 2 && (
+                      <Badge className="bg-gray-200 text-gray-800 text-xs py-0.5 px-1.5 font-semibold">
+                        +{associatedAssets.length - 2}
+                      </Badge>
                     )}
                   </div>
+                </TableCell>
+                <TableCell>
+                  <p className="text-sm text-gray-600">
+                    {techStack.lastUpdated
+                      ? techStack.lastUpdated.toLocaleDateString()
+                      : "N/A"}
+                  </p>
                 </TableCell>
                 <TableCell>
                   <Badge className={getRiskColor(techStack.riskLevel)}>
