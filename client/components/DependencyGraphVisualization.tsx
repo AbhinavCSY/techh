@@ -416,6 +416,16 @@ function GraphRenderer({
                 }
               };
 
+              const handleNodeMouseDown = (e: React.MouseEvent<SVGGElement>) => {
+                // Start dragging the node
+                setDraggedNodeId(node.id);
+                setDragStart({
+                  x: e.clientX - (pan.x + (node.x ?? 0) * zoom),
+                  y: e.clientY - (pan.y + (node.y ?? 0) * zoom)
+                });
+                e.preventDefault();
+              };
+
               const handleMouseEnter = (e: React.MouseEvent<SVGGElement>) => {
                 // Tooltips disabled - node labels show below nodes
               };
