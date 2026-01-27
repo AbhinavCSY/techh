@@ -675,6 +675,7 @@ export const dependencyGraphData: DependencyGraphDataType = {
     { from: "issue-swagger-1", to: "tech-swagger", type: "found_in" },
     { from: "issue-swagger-ui-xss", to: "tech-swagger", type: "found_in" },
     { from: "issue-s3-1", to: "tech-s3", type: "found_in" },
+    { from: "ISSUE-S3-FOUND-001", to: "tech-s3", type: "found_in" },
 
     // Vendor relationships
     { from: "vendor-smartbear", to: "vendor-lf", type: "parent_of" },
