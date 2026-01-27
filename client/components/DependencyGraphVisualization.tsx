@@ -438,11 +438,25 @@ export function DependencyGraphVisualization({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 700 });
   const [selectedTechNode, setSelectedTechNode] = useState<Technology | null>(null);
+  const [showFullDetails, setShowFullDetails] = useState(false);
+  const [quickInfoNode, setQuickInfoNode] = useState<Technology | null>(null);
+  const [quickInfoPos, setQuickInfoPos] = useState({ x: 0, y: 0 });
   const [showLegend, setShowLegend] = useState(false);
 
-  const handleTechNodeClick = (nodeId: string) => {
+  const handleTechNodeClick = (nodeId: string, position: { x: number; y: number }) => {
     const tech = getTechDetails(nodeId, dependencyGraphData);
-    setSelectedTechNode(tech || null);
+    setSelectedTechNode(tech);
+    setQuickInfoNode(tech || null);
+    setQuickInfoPos(position);
+    setShowFullDetails(false);
+  };
+
+  const handleExpandClick = () => {
+    setShowFullDetails(true);
+  };
+
+  const handleCloseQuickInfo = () => {
+    setQuickInfoNode(null);
   };
 
   const handleFullscreenClick = () => {
