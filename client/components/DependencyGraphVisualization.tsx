@@ -561,8 +561,8 @@ export function DependencyGraphVisualization({
             <GraphRenderer
               nodes={graphData.nodes}
               edges={graphData.edges}
-              width={window.innerWidth}
-              height={window.innerHeight - 80}
+              width={windowSize.width}
+              height={windowSize.height - 80}
             />
           </div>
         </div>
