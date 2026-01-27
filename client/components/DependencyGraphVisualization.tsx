@@ -705,15 +705,8 @@ export function DependencyGraphVisualization({
       {!isFullscreen && (
         <div className="space-y-4">
           {/* Header with Buttons */}
-          <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-1">
-                Dependency Graph
-              </h3>
-              <p className="text-sm text-gray-600">
-                Force-directed visualization of {techStack.name} ecosystem
-              </p>
-            </div>
+          <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200">
+            <h3 className="font-semibold text-gray-900">Dependency Graph</h3>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowLegend(true)}
@@ -736,7 +729,7 @@ export function DependencyGraphVisualization({
           {/* Graph Container */}
           <div
             ref={graphContainerRef}
-            className="border border-gray-200 rounded-lg bg-white overflow-hidden h-96 relative"
+            className="border border-gray-200 rounded-lg bg-white overflow-hidden h-[600px] relative"
           >
             <GraphRenderer
               nodes={graphData.nodes}
