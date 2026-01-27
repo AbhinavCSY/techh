@@ -132,6 +132,7 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
+  const spacePressed = useRef(false);
 
   // Create graph only once and cache it - prevents nodes from jumping
   const renderedNodes = useMemo(() => {
