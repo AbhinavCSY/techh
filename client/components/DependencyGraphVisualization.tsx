@@ -405,6 +405,12 @@ export function DependencyGraphVisualization({
   } | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 700 });
+  const [selectedTechNode, setSelectedTechNode] = useState<Technology | null>(null);
+
+  const handleTechNodeClick = (nodeId: string) => {
+    const tech = getTechDetails(nodeId, dependencyGraphData);
+    setSelectedTechNode(tech || null);
+  };
 
   const WIDTH = 800;
   const HEIGHT = 500;
