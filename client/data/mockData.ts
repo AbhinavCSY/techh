@@ -1176,6 +1176,59 @@ const techStackDatabase: TechStack[] = [
       behavioralIntegrity: { score: 8, riskLevel: "low" },
     },
   },
+  {
+    id: "ts-25",
+    name: "Amazon S3 Bucket",
+    type: "devops",
+    version: "N/A",
+    logo: "🪣",
+    isEOL: false,
+    isUpgradable: false,
+    cves: [],
+    unscannedThreatsCount: 1,
+    riskLevel: "high",
+    riskScore: 7.0,
+    createdAt: new Date("2023-08-10"),
+    lastUpdated: new Date("2026-01-27"),
+    license: "AWS Proprietary",
+    effectiveLicense: "Other",
+    versionHistory: [
+      {
+        version: "N/A",
+        releaseDate: new Date("2006-03-14"),
+        isEOL: false,
+      },
+    ],
+    remediations: [
+      {
+        id: "rem-25-s3",
+        title: "Restrict S3 Bucket Access",
+        description:
+          "Configure bucket policies and ACLs to restrict public read access. Enable Block Public Access settings.",
+        priority: "critical",
+        estimatedTime: "1-2 hours",
+      },
+      {
+        id: "rem-26-s3",
+        title: "Enable S3 Bucket Encryption",
+        description: "Enable server-side encryption and configure encryption keys",
+        priority: "high",
+        estimatedTime: "2-3 hours",
+      },
+      {
+        id: "rem-27-s3",
+        title: "Enable S3 Bucket Versioning & MFA Delete",
+        description: "Protect against accidental or malicious deletion",
+        priority: "high",
+        estimatedTime: "1 hour",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 10, riskLevel: "no risk" },
+      behavioralIntegrity: { score: 10, riskLevel: "no risk" },
+    },
+  },
 ];
 
 // Common CVEs for reference
