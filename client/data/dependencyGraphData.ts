@@ -145,6 +145,17 @@ export const dependencyGraphData: DependencyGraphDataType = {
       category: "framework",
       versions: [
         {
+          version: "2.0",
+          eol: true,
+          eol_date: "2017-01-01",
+          cves: ["CVE-2021-12345"],
+        },
+        {
+          version: "3.0",
+          eol: false,
+          cves: ["CVE-2021-12345", "CVE-2023-50123"],
+        },
+        {
           version: "3.1.0",
           eol: false,
           cves: ["CVE-2023-50123"],
@@ -159,6 +170,11 @@ export const dependencyGraphData: DependencyGraphDataType = {
       abstraction_level: "standard",
       category: "standard",
       versions: [
+        {
+          version: "3.0.3",
+          eol: false,
+          cves: [],
+        },
         {
           version: "3.1.0",
           eol: false,
