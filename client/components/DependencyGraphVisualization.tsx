@@ -453,9 +453,7 @@ export function DependencyGraphVisualization({
   };
 
   const handleFullscreenClick = () => {
-    // Open fullscreen in a new window
-    const fullscreenUrl = `${window.location.origin}${window.location.pathname}?fullscreen=true&tech=${techStack.name}`;
-    window.open(fullscreenUrl, "dependency-graph", "width=1200,height=800,menubar=no,toolbar=no");
+    setIsFullscreen(true);
   };
 
   const WIDTH = 800;
