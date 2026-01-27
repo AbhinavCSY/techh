@@ -293,40 +293,56 @@ function GraphRenderer({
               const label =
                 relationshipLabels[edge.relationship] || edge.relationship;
 
+              // Get label color based on relationship type
+              const getLabelColor = () => {
+                switch (edge.relationship) {
+                  case "uses":
+                    return "#0EA5E9"; // Cyan
+                  case "related_to":
+                    return "#F97316"; // Orange
+                  case "provided_by":
+                    return "#A855F7"; // Purple
+                  case "subsidiary_of":
+                    return "#EAB308"; // Yellow
+                  default:
+                    return "#6B7280"; // Gray
+                }
+              };
+
               return (
                 <g key={idx}>
+                  {/* Edge line with gradient effect */}
                   <line
                     x1={source.x ?? 0}
                     y1={source.y ?? 0}
                     x2={target.x ?? 0}
                     y2={target.y ?? 0}
-                    stroke="#D1D5DB"
-                    strokeWidth={1.5}
+                    stroke={getLabelColor()}
+                    strokeWidth={2}
                     markerEnd="url(#arrowhead)"
-                    opacity={0.5}
+                    opacity={0.4}
                   />
 
-                  {/* Background for label */}
+                  {/* Shadow for label background */}
                   <rect
-                    x={midX - 50}
-                    y={midY - 14}
-                    width="100"
-                    height="28"
+                    x={midX - 55}
+                    y={midY - 16}
+                    width="110"
+                    height="32"
                     fill="white"
-                    opacity={0.9}
-                    rx="4"
-                    stroke="#E5E7EB"
-                    strokeWidth="1"
+                    opacity={0.95}
+                    rx="5"
+                    filter="drop-shadow(0 1px 3px rgba(0,0,0,0.1))"
                   />
 
-                  {/* Label text */}
+                  {/* Label text - bold and prominent */}
                   <text
                     x={midX}
-                    y={midY + 4}
+                    y={midY + 5}
                     textAnchor="middle"
-                    fontSize="12"
-                    fontWeight="600"
-                    fill="#1F2937"
+                    fontSize="13"
+                    fontWeight="700"
+                    fill={getLabelColor()}
                     opacity={1}
                     style={{ pointerEvents: "none" }}
                   >
