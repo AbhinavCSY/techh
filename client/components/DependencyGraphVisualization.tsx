@@ -463,12 +463,21 @@ export function DependencyGraphVisualization({
               </p>
             </div>
             <button
-              onClick={() => setIsFullscreen(true)}
+              onClick={() => setIsFullscreen(!isFullscreen)}
               className="flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
-              title="Expand to fullscreen"
+              title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
             >
-              <Maximize2 width="18" height="18" />
-              <span className="text-sm font-medium">Fullscreen</span>
+              {isFullscreen ? (
+                <>
+                  <Minimize2 width="18" height="18" />
+                  <span className="text-sm font-medium">Exit Fullscreen</span>
+                </>
+              ) : (
+                <>
+                  <Maximize2 width="18" height="18" />
+                  <span className="text-sm font-medium">Fullscreen</span>
+                </>
+              )}
             </button>
           </div>
 
