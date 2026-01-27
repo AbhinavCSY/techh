@@ -703,29 +703,7 @@ export function DependencyGraphVisualization({
     <>
       {/* Normal View */}
       {!isFullscreen && (
-        <div className="space-y-4">
-          {/* Header with Buttons */}
-          <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200">
-            <h3 className="font-semibold text-gray-900">Dependency Graph</h3>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowLegend(true)}
-                className="p-2 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors"
-                title="Show legend"
-              >
-                <Info width="20" height="20" />
-              </button>
-              <button
-                onClick={handleFullscreenClick}
-                className="flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
-                title="Open fullscreen"
-              >
-                <Maximize2 width="18" height="18" />
-                <span className="text-sm font-medium">Fullscreen</span>
-              </button>
-            </div>
-          </div>
-
+        <div>
           {/* Graph Container */}
           <div
             ref={graphContainerRef}
@@ -750,11 +728,24 @@ export function DependencyGraphVisualization({
                 containerRef={graphContainerRef}
               />
             )}
-          </div>
 
-          {/* Info */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 text-xs text-blue-800">
-            <p>💡 Middle-click+drag to pan • Scroll to zoom • Click nodes for details</p>
+            {/* Floating Buttons on Graph Frame */}
+            <div className="absolute top-4 right-4 flex items-center gap-2">
+              <button
+                onClick={() => setShowLegend(true)}
+                className="p-2 hover:bg-gray-200 bg-white text-gray-600 rounded-lg transition-colors shadow-md"
+                title="Show legend"
+              >
+                <Info width="20" height="20" />
+              </button>
+              <button
+                onClick={handleFullscreenClick}
+                className="p-2 hover:bg-blue-600 bg-blue-500 text-white rounded-lg transition-colors shadow-md"
+                title="Open fullscreen"
+              >
+                <Maximize2 width="20" height="20" />
+              </button>
+            </div>
           </div>
         </div>
       )}
