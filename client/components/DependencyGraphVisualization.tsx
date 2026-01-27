@@ -614,7 +614,7 @@ export function DependencyGraphVisualization({
           {/* Info */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
             <p className="font-medium mb-1">💡 Interactive Graph</p>
-            <p>Hover over nodes to see names • Click nodes to see details • Click the info icon to see legend</p>
+            <p>Middle-click/Space+drag to pan • Scroll to zoom • Hover for names • Click nodes for details</p>
           </div>
         </div>
       )}
