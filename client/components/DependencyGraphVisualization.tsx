@@ -42,14 +42,19 @@ class ForceDirectedGraph {
 
     // Initialize nodes with positions and velocities
     this.nodes = new Map(
-      nodes.map((node) => ({
-        ...node,
-        id: node.id,
-        x: node.x ?? Math.random() * this.width,
-        y: node.y ?? Math.random() * this.height,
-        vx: 0,
-        vy: 0,
-      } as GraphNode)),
+      nodes.map((node) => {
+        const initializedNode: GraphNode = {
+          id: node.id,
+          label: node.label,
+          type: node.type,
+          subtype: node.subtype,
+          x: node.x ?? Math.random() * this.width,
+          y: node.y ?? Math.random() * this.height,
+          vx: 0,
+          vy: 0,
+        };
+        return [node.id, initializedNode];
+      }),
     );
 
     this.simulate(30);
