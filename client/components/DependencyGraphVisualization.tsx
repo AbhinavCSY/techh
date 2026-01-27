@@ -199,11 +199,26 @@ function GraphRenderer({
   };
 
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    // Allow dragging with middle mouse button (button 1) or left click (button 0)
-    // If left click on SVG background (not on nodes), enable drag
-    if (e.button === 1 || (e.button === 0 && (e.target === svgRef.current || (e.target as any).closest('g.edges')))) {
+    // Check if click is on a node or edge label (interactive elements)
+    const target = e.target as SVGElement;
+    const isOnNode = target.closest('.nodes');
+    const isOnLabel = target.closest('text');
+    const isOnButton = target.closest('button');
+
+    // Allow dragging with:
+    // 1. Middle mouse button (button 1)
+    // 2. Left click (button 0) on empty space (not on nodes or labels)
+    if (e.button === 1 || (e.button === 0 && !isOnNode && !isOnLabel && !isOnButton && spacePressed.current)) {
       setIsDragging(true);
       setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    }
+    // Also allow left click dragging on empty SVG background without Space key
+    if (e.button === 0 && !isOnNode && !isOnLabel && !isOnButton && !spacePressed.current) {
+      // Only start drag if target is SVG or edges (background)
+      if (target === svgRef.current || target.closest('.edges') || target.closest('defs')) {
+        setIsDragging(true);
+        setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+      }
     }
   };
 
