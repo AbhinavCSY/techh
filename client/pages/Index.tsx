@@ -577,7 +577,14 @@ function DetailsPanel({
               </>
             ) : (
               <>
-                {/* Tech Stack Details */}
+                {/* Tech Stack Tabs */}
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full">
+                  <TabsList className="w-full justify-start border-b rounded-none bg-transparent p-0 h-auto sticky top-16 z-40 bg-white">
+                    <TabsTrigger value="overview" className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-blue-600 data-[state=active]:bg-transparent">Overview</TabsTrigger>
+                    <TabsTrigger value="dependency-graph" className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-blue-600 data-[state=active]:bg-transparent">Dependency Graph</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="overview" className="space-y-6 p-6">
                 <div>
                   <div className="flex items-center gap-3">
                     <span className="text-4xl">{item.logo}</span>
@@ -1503,6 +1510,12 @@ function DetailsPanel({
                     </div>
                   </div>
                 )}
+                  </TabsContent>
+
+                  <TabsContent value="dependency-graph" className="p-6">
+                    <DependencyGraph techStack={item} />
+                  </TabsContent>
+                </Tabs>
               </>
             )}
           </div>
