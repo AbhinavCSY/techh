@@ -119,14 +119,17 @@ interface GraphRendererProps {
   width: number;
   height: number;
   onTechNodeClick?: (nodeId: string) => void;
+  showTooltips?: boolean;
 }
 
-function GraphRenderer({ nodes, edges, width, height, onTechNodeClick }: GraphRendererProps) {
+function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showTooltips = false }: GraphRendererProps) {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
 
   const graph = new ForceDirectedGraph(nodes, edges, width, height);
