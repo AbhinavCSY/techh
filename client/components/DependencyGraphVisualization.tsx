@@ -632,8 +632,23 @@ export function DependencyGraphVisualization({
     nodeId: string,
     position: { x: number; y: number },
   ) => {
-    const tech = getTechDetails(nodeId, dependencyGraphData);
+    let tech = getTechDetails(nodeId, dependencyGraphData);
     console.log(`Clicked node: ${nodeId}, Found tech:`, tech);
+
+    // If tech is not found, try to find it by matching against the graph data
+    if (!tech && initialNodes) {
+      const clickedNode = initialNodes.find((n) => n.id === nodeId);
+      if (clickedNode) {
+        // Look for tech by name in the dependencyGraphData
+        tech = dependencyGraphData.technologies.find(
+          (t) =>
+            t.product.toLowerCase() === clickedNode.label.toLowerCase() ||
+            t.id === clickedNode.label.toLowerCase().replace(/\s+/g, "-")
+        );
+        console.log(`Searched by label: ${clickedNode.label}, Found:`, tech);
+      }
+    }
+
     setSelectedTechNode(tech);
     setQuickInfoNode(tech);
     setQuickInfoPos(position);
