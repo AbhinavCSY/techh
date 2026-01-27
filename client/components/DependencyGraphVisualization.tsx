@@ -272,11 +272,31 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
                 setSelectedNode(isSelected ? null : node.id);
               };
 
+              const handleMouseEnter = (e: React.MouseEvent<SVGGElement>) => {
+                if (showTooltips) {
+                  setHoveredNode(node.id);
+                  const svg = svgRef.current;
+                  if (svg) {
+                    const rect = svg.getBoundingClientRect();
+                    setTooltipPos({
+                      x: e.clientX - rect.left + 10,
+                      y: e.clientY - rect.top - 10,
+                    });
+                  }
+                }
+              };
+
+              const handleMouseLeave = () => {
+                setHoveredNode(null);
+              };
+
               return (
                 <g
                   key={node.id}
                   className="cursor-pointer"
                   onClick={handleNodeClick}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
                 >
                   <circle
                     cx={node.x ?? 0}
