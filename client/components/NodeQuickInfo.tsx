@@ -112,13 +112,22 @@ export function NodeQuickInfo({
           </h4>
           <p className="text-xs text-gray-600 truncate">{tech.vendor}</p>
         </div>
-        <button
-          onClick={onExpand}
-          className="p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
-          title="View details"
-        >
-          <Expand width="16" height="16" className="text-blue-600" />
-        </button>
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <button
+            onClick={onExpand}
+            className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+            title="View details"
+          >
+            <Expand width="16" height="16" className="text-blue-600" />
+          </button>
+          <button
+            onClick={onClose}
+            className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+            title="Close"
+          >
+            <X width="16" height="16" className="text-gray-500" />
+          </button>
+        </div>
       </div>
 
       {/* Quick Stats */}
