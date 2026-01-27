@@ -48,9 +48,16 @@ function decryptPassword(encryptedData: string): string {
 
 export function initializePassword(): string | null {
   ensureDataDir();
+  const isProduction = process.env.NODE_ENV === "production";
 
-  // If APP_PASSWORD env var is set, use it instead of generating
-  if (process.env.APP_PASSWORD) {
+  // In production, APP_PASSWORD must be set
+  if (isProduction) {
+    if (!process.env.APP_PASSWORD) {
+      throw new Error(
+        "APP_PASSWORD environment variable is required in production",
+      );
+    }
+
     const encrypted = encryptPassword(process.env.APP_PASSWORD);
     fs.writeFileSync(
       PASSWORD_FILE,
@@ -61,14 +68,14 @@ export function initializePassword(): string | null {
       ),
     );
 
-    console.log("\n=== APP PASSWORD INITIALIZED ===");
+    console.log("\n=== APP PASSWORD INITIALIZED (PRODUCTION) ===");
     console.log("App secured with password from APP_PASSWORD env variable.");
     console.log("=====================================\n");
 
     return null;
   }
 
-  // Generate a new random password on every server start
+  // In development: generate a new random password on every server start
   const newPassword = generateRandomPassword();
   const encrypted = encryptPassword(newPassword);
 
@@ -94,7 +101,7 @@ File location: ${setupFile}
 
   fs.writeFileSync(setupFile, setupMessage);
 
-  console.log("\n=== LOCAL PASSWORD GENERATED ===");
+  console.log("\n=== LOCAL PASSWORD GENERATED (DEVELOPMENT) ===");
   console.log(`Your local password: ${newPassword}`);
   console.log(`Password saved to: ${setupFile}`);
   console.log("This password will be regenerated on the next server restart.");
