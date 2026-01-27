@@ -500,7 +500,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "vendor-aws",
       name: "Amazon Web Services",
       products: ["tech-s3", "tech-aws", "tech-boto3"],
-      parent_vendor: "Amazon",
+      parent_vendor: "vendor-amazon",
+      vendor_depth: "Primary",
       vendor_type: "cloud_provider",
     },
     {
