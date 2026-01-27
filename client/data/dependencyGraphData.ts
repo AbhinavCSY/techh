@@ -837,6 +837,9 @@ export function buildGraphForTech(
         relationship: "derived_from",
       });
       visitedNodes.add(derivedTechId);
+
+      // Add issues for this derived tech
+      addIssuesForTech(derivedTechId);
     }
   });
 
