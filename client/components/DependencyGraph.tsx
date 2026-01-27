@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { ChevronDown, Package, Building2, Link2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React from "react";
+import { DependencyGraphVisualization } from "./DependencyGraphVisualization";
 
 interface Technology {
   name: string;
