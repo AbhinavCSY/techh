@@ -508,6 +508,7 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "vendor-amazon",
       name: "Amazon",
       products: [],
+      vendor_depth: "Parent",
       vendor_type: "parent_company",
     },
     {
