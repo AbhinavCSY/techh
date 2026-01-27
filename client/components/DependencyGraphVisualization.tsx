@@ -259,7 +259,19 @@ function GraphRenderer({
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (isDragging) {
+    // Handle node dragging
+    if (draggedNodeId) {
+      const newX = (e.clientX - dragStart.x - pan.x) / zoom;
+      const newY = (e.clientY - dragStart.y - pan.y) / zoom;
+
+      setNodePositions((prev) => {
+        const updated = new Map(prev);
+        updated.set(draggedNodeId, { x: newX, y: newY });
+        return updated;
+      });
+    }
+    // Handle pan dragging
+    else if (isDragging) {
       setPan({
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y,
