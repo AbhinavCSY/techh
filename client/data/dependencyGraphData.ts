@@ -595,6 +595,16 @@ export const dependencyGraphData: DependencyGraphDataType = {
       cve_id: "CVE-2023-45001",
     },
     {
+      id: "issue-swagger-exposure",
+      title: "Swagger documentation exposed",
+      type: "exposure",
+      severity: "medium",
+      confidence_score: 0.92,
+      discovered_at: "2026-01-27",
+      description:
+        "Publicly accessible Swagger documentation detected, potentially exposing API structure and endpoints to unauthorized users. Attackers can discover API endpoints, request/response schemas, and security weaknesses.",
+    },
+    {
       id: "issue-swagger-1",
       title: "Insecure Deserialization in Swagger",
       type: "vuln",
@@ -602,6 +612,16 @@ export const dependencyGraphData: DependencyGraphDataType = {
       confidence_score: 0.88,
       discovered_at: "2023-10-20",
       cve_id: "CVE-2023-50123",
+    },
+    {
+      id: "issue-swagger-ui-xss",
+      title: "Swagger UI XSS Vulnerability",
+      type: "vuln",
+      severity: "medium",
+      confidence_score: 0.85,
+      discovered_at: "2024-03-15",
+      description: "Cross-Site Scripting (XSS) vulnerability in Swagger UI allowing injection of malicious scripts",
+      cve_id: "CVE-2021-12345",
     },
     {
       id: "issue-s3-1",
