@@ -90,7 +90,7 @@ class ForceDirectedGraph {
       }),
     );
 
-    this.simulate(30);
+    this.simulate(50);
   }
 
   simulate(iterations: number) {
