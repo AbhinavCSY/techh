@@ -262,9 +262,12 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
               const isTech = node.type === "technology";
               const isDirectAffected = node.subtype === "direct";
 
-              const handleNodeClick = () => {
+              const handleNodeClick = (e: React.MouseEvent<SVGGElement>) => {
                 if (isTech) {
-                  onTechNodeClick?.(node.id);
+                  onTechNodeClick?.(node.id, {
+                    x: e.clientX,
+                    y: e.clientY,
+                  });
                 }
               };
 
