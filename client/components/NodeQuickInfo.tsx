@@ -96,12 +96,13 @@ export function NodeQuickInfo({
   return (
     <div
       ref={dropdownRef}
-      className="fixed z-30 bg-white rounded-lg shadow-xl border border-gray-200 pointer-events-auto"
+      className="fixed z-30 bg-white rounded-lg shadow-2xl border border-gray-300 pointer-events-auto"
       style={{
         left: `${adjustedPos.x}px`,
         top: `${adjustedPos.y}px`,
-        minWidth: "250px",
-        maxWidth: "300px",
+        minWidth: "260px",
+        maxWidth: "320px",
+        transition: "all 150ms ease-out",
       }}
       onClick={(e) => e.stopPropagation()}
     >
