@@ -288,6 +288,11 @@ function GraphRenderer({
 
               if (!source || !target) return null;
 
+              const midX = ((source.x ?? 0) + (target.x ?? 0)) / 2;
+              const midY = ((source.y ?? 0) + (target.y ?? 0)) / 2;
+              const label =
+                relationshipLabels[edge.relationship] || edge.relationship;
+
               return (
                 <g key={idx}>
                   <line
@@ -301,27 +306,31 @@ function GraphRenderer({
                     opacity={0.5}
                   />
 
+                  {/* Background for label */}
                   <rect
-                    x={(source.x ?? 0 + (target.x ?? 0)) / 2 - 35}
-                    y={(source.y ?? 0 + (target.y ?? 0)) / 2 - 12}
-                    width="70"
-                    height="20"
+                    x={midX - 50}
+                    y={midY - 14}
+                    width="100"
+                    height="28"
                     fill="white"
-                    opacity={0.7}
-                    rx="3"
+                    opacity={0.9}
+                    rx="4"
+                    stroke="#E5E7EB"
+                    strokeWidth="1"
                   />
 
+                  {/* Label text */}
                   <text
-                    x={(source.x ?? 0 + (target.x ?? 0)) / 2}
-                    y={(source.y ?? 0 + (target.y ?? 0)) / 2 + 3}
+                    x={midX}
+                    y={midY + 4}
                     textAnchor="middle"
-                    fontSize="11"
-                    fontWeight="500"
-                    fill="#374151"
-                    opacity={0.7}
+                    fontSize="12"
+                    fontWeight="600"
+                    fill="#1F2937"
+                    opacity={1}
                     style={{ pointerEvents: "none" }}
                   >
-                    {relationshipLabels[edge.relationship] || edge.relationship}
+                    {label}
                   </text>
                 </g>
               );
