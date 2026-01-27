@@ -2,9 +2,14 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import { handleVerifyPassword } from "./routes/auth";
+import { initializePassword } from "./utils/password";
 
 export function createServer() {
   const app = express();
+
+  // Initialize password on first run
+  initializePassword();
 
   // Middleware
   app.use(cors());
@@ -18,6 +23,9 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Auth routes
+  app.post("/api/verify-password", handleVerifyPassword);
 
   return app;
 }
