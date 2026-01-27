@@ -201,18 +201,20 @@ function GraphRenderer({
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
     const target = e.target as SVGElement;
 
-    // Check if click is on an interactive element (node or label)
-    const isOnInteractiveElement = target.closest('.nodes') || target.closest('.edges text');
+    // Check if click is on a node (circle, text inside node, or node group)
+    const nodeElement = target.closest('.node-group');
+    const isOnNode = !!nodeElement;
 
     // Allow dragging if:
-    // 1. Middle mouse button (button 1)
-    // 2. Left click (button 0) on empty canvas area (SVG background)
-    // 3. Left click with Space key held
-    if (
+    // 1. Middle mouse button (button 1) - always allows drag
+    // 2. Left click (button 0) on empty area (not on a node)
+    // 3. Left click with Space key held - always allows drag
+    const shouldDrag =
       e.button === 1 ||
-      (e.button === 0 && !isOnInteractiveElement) ||
-      (e.button === 0 && spacePressed.current)
-    ) {
+      (e.button === 0 && !isOnNode) ||
+      (e.button === 0 && spacePressed.current);
+
+    if (shouldDrag) {
       setIsDragging(true);
       setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
       e.preventDefault();
