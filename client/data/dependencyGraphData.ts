@@ -690,6 +690,17 @@ export const dependencyGraphData: DependencyGraphDataType = {
       description:
         "An accessible S3 bucket was identified, which may expose sensitive data and indicates a potential misconfiguration in the storage service or underlying cloud platform.",
     },
+    {
+      id: "ISSUE-LOG4J-001",
+      title: "Log4Shell RCE Vulnerability",
+      type: "vuln",
+      severity: "critical",
+      confidence_score: 0.98,
+      discovered_at: "2021-12-10",
+      description:
+        "CVE-2021-44228 (Log4Shell): Remote Code Execution in Apache Log4j via JNDI injection. Allows unauthenticated remote attackers to execute arbitrary code by sending specially crafted log messages. CVSS Score: 10.0 (Critical). Affects Log4j versions < 2.17.0. All versions of Java applications using Log4j are at critical risk.",
+      cve_id: "CVE-2021-44228",
+    },
   ],
 
   relationships: [
