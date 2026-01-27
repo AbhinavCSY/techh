@@ -1453,8 +1453,9 @@ const assetDatabase: Asset[] = [
       techStackDatabase[16],
       techStackDatabase[17],
       techStackDatabase[21],
+      techStackDatabase[23], // Swagger Doc added
     ],
-    cveCount: 4,
+    cveCount: 6,
     topCriticalCVE: techStackDatabase[16].cves[0],
     lastUpdated: new Date("2024-02-15"),
     isScanned: true,
