@@ -488,7 +488,8 @@ function GraphRenderer({
               return (
                 <g
                   key={node.id}
-                  className="cursor-pointer"
+                  className="cursor-pointer node-group"
+                  style={{ pointerEvents: "auto" }}
                   onClick={handleNodeClick}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
