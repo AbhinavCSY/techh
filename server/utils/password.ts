@@ -51,10 +51,6 @@ export function initializePassword(): string | null {
 
   // If APP_PASSWORD env var is set, use it instead of generating
   if (process.env.APP_PASSWORD) {
-    if (fs.existsSync(PASSWORD_FILE)) {
-      return null; // Already initialized
-    }
-
     const encrypted = encryptPassword(process.env.APP_PASSWORD);
     fs.writeFileSync(
       PASSWORD_FILE,
@@ -72,11 +68,7 @@ export function initializePassword(): string | null {
     return null;
   }
 
-  // Generate random password on first run if no env var is set
-  if (fs.existsSync(PASSWORD_FILE)) {
-    return null; // Password already exists
-  }
-
+  // Generate a new random password on every server start
   const newPassword = generateRandomPassword();
   const encrypted = encryptPassword(newPassword);
 
@@ -85,18 +77,16 @@ export function initializePassword(): string | null {
     JSON.stringify({ encrypted, createdAt: new Date().toISOString() }, null, 2),
   );
 
-  // Create a temporary file with the plaintext password for initial setup
+  // Create a file with the plaintext password for this session
   const setupFile = path.join(DATA_DIR, "SETUP_PASSWORD.txt");
-  const setupMessage = `APP PASSWORD - FIRST RUN SETUP
+  const setupMessage = `LOCAL PASSWORD - GENERATED ON SERVER START
 =====================================
-Your application has been secured with a password.
+Your local development server is secured with a password.
 
 PASSWORD: ${newPassword}
 
-⚠️  IMPORTANT:
-1. Save this password in a safe place
-2. After saving, DELETE this file for security
-3. You will need this password to access the app
+This password is regenerated every time the server restarts.
+Use it to log in to the app locally.
 
 File location: ${setupFile}
 =====================================
@@ -104,10 +94,10 @@ File location: ${setupFile}
 
   fs.writeFileSync(setupFile, setupMessage);
 
-  console.log("\n=== APP PASSWORD INITIALIZED ===");
-  console.log("Your app is now password protected.");
-  console.log(`Initial password saved to: ${setupFile}`);
-  console.log("Please save the password and delete the setup file.");
+  console.log("\n=== LOCAL PASSWORD GENERATED ===");
+  console.log(`Your local password: ${newPassword}`);
+  console.log(`Password saved to: ${setupFile}`);
+  console.log("This password will be regenerated on the next server restart.");
   console.log("=====================================\n");
 
   return newPassword;
