@@ -365,7 +365,19 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
                     opacity={0.95}
                   />
 
-                  {isTech ? (
+                  {isIssue ? (
+                    <g
+                      transform={`translate(${(node.x ?? 0) - 7}, ${(node.y ?? 0) - 7})`}
+                    >
+                      <AlertTriangle
+                        width="14"
+                        height="14"
+                        stroke="white"
+                        fill="none"
+                        strokeWidth="1.5"
+                      />
+                    </g>
+                  ) : isTech ? (
                     <g
                       transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
                     >
