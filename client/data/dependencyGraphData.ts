@@ -810,6 +810,9 @@ export function buildGraphForTech(
         relationship: "uses",
       });
       visitedNodes.add(depOnTechId);
+
+      // Add issues for this underlying tech
+      addIssuesForTech(depOnTechId);
     }
   });
 
