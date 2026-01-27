@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Package, Building2, Maximize2, X, ZoomIn, ZoomOut, Move3 } from "lucide-react";
+import { Package, Building2, Minimize2, X, ZoomIn, ZoomOut, Home } from "lucide-react";
 
 interface GraphNode {
   id: string;
