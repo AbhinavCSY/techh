@@ -24,48 +24,50 @@ export function NodeQuickInfo({
       if (!dropdownRef.current) return;
 
       const rect = dropdownRef.current.getBoundingClientRect();
-      const popupWidth = rect.width || 280; // Default width if not measured
-      const popupHeight = rect.height || 200; // Default height if not measured
-      const offsetX = 20; // Offset from click point
-      const offsetY = 10;
-      const margin = 15; // Margin from screen edges
+      const popupWidth = Math.max(rect.width, 320); // Use actual width or default to 320
+      const popupHeight = Math.max(rect.height, 220); // Use actual height or default to 220
+      const offsetX = 15; // Offset from click point
+      const offsetY = 15;
+      const margin = 20; // Margin from screen edges
 
       let x = position.x + offsetX;
       let y = position.y + offsetY;
 
-      // Smart horizontal positioning
-      // Try right side first
-      if (x + popupWidth > window.innerWidth - margin) {
-        // Not enough space on right, try left
+      // Calculate available space on each side
+      const spaceRight = window.innerWidth - (position.x + offsetX);
+      const spaceLeft = position.x - offsetX;
+      const spaceBelow = window.innerHeight - (position.y + offsetY);
+      const spaceAbove = position.y - offsetY;
+
+      // Horizontal positioning - choose side with more space
+      if (spaceRight >= popupWidth + margin) {
+        // Enough space on right
+        x = position.x + offsetX;
+      } else if (spaceLeft >= popupWidth + margin) {
+        // Enough space on left
         x = position.x - popupWidth - offsetX;
-
-        // If still off screen, just center it
-        if (x < margin) {
-          x = window.innerWidth / 2 - popupWidth / 2;
-        }
+      } else {
+        // Not enough space on either side, center horizontally
+        x = window.innerWidth / 2 - popupWidth / 2;
       }
 
-      // Ensure not beyond left edge
-      x = Math.max(margin, x);
-      // Ensure not beyond right edge
-      x = Math.min(window.innerWidth - popupWidth - margin, x);
+      // Clamp horizontal position to ensure it stays in bounds
+      x = Math.max(margin, Math.min(x, window.innerWidth - popupWidth - margin));
 
-      // Smart vertical positioning
-      // Try below first
-      if (y + popupHeight > window.innerHeight - margin) {
-        // Not enough space below, try above
+      // Vertical positioning - choose side with more space
+      if (spaceBelow >= popupHeight + margin) {
+        // Enough space below
+        y = position.y + offsetY;
+      } else if (spaceAbove >= popupHeight + margin) {
+        // Enough space above
         y = position.y - popupHeight - offsetY;
-
-        // If still off screen, adjust
-        if (y < margin) {
-          y = window.innerHeight / 2 - popupHeight / 2;
-        }
+      } else {
+        // Not enough space on either side, center vertically
+        y = window.innerHeight / 2 - popupHeight / 2;
       }
 
-      // Ensure not beyond top edge
-      y = Math.max(margin, y);
-      // Ensure not beyond bottom edge
-      y = Math.min(window.innerHeight - popupHeight - margin, y);
+      // Clamp vertical position to ensure it stays in bounds
+      y = Math.max(margin, Math.min(y, window.innerHeight - popupHeight - margin));
 
       setAdjustedPos({ x, y });
     }, 0);
