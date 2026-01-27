@@ -756,7 +756,10 @@ export function DependencyGraphVisualization({
           </div>
 
           {/* Graph Container */}
-          <div className="flex-1 overflow-hidden bg-gray-50 relative">
+          <div
+            ref={graphContainerRef}
+            className="flex-1 overflow-hidden bg-gray-50 relative"
+          >
             <GraphRenderer
               nodes={graphData.nodes}
               edges={graphData.edges}
@@ -773,6 +776,7 @@ export function DependencyGraphVisualization({
                 position={quickInfoPos}
                 onExpand={handleExpandClick}
                 onClose={handleCloseQuickInfo}
+                containerRef={graphContainerRef}
               />
             )}
           </div>
