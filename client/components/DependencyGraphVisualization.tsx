@@ -287,6 +287,8 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
           <g className="nodes">
             {renderedNodes.map((node) => {
               const isTech = node.type === "technology";
+              const isVendor = node.type === "vendor";
+              const isIssue = node.type === "issue";
               const isDirectAffected = node.subtype === "direct";
 
               const handleNodeClick = (e: React.MouseEvent<SVGGElement>) => {
@@ -316,6 +318,29 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
                 setHoveredNode(null);
               };
 
+              // Determine node color based on type and subtype
+              const getNodeColor = () => {
+                if (isIssue) {
+                  switch (node.subtype) {
+                    case "critical":
+                      return "#DC2626"; // Red
+                    case "high":
+                      return "#EA580C"; // Orange
+                    case "medium":
+                      return "#F59E0B"; // Amber
+                    case "low":
+                      return "#10B981"; // Green
+                    default:
+                      return "#6B7280"; // Gray
+                  }
+                } else if (isVendor) {
+                  return "#A78BFA"; // Violet for vendors
+                } else if (isTech) {
+                  return isDirectAffected ? "#3B82F6" : "#818CF8"; // Blue variants
+                }
+                return "#6B7280";
+              };
+
               return (
                 <g
                   key={node.id}
@@ -327,14 +352,8 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
                   <circle
                     cx={node.x ?? 0}
                     cy={node.y ?? 0}
-                    r={30}
-                    fill={
-                      isTech
-                        ? isDirectAffected
-                          ? "#3B82F6"
-                          : "#818CF8"
-                        : "#A78BFA"
-                    }
+                    r={isIssue ? 25 : 30}
+                    fill={getNodeColor()}
                     opacity={0.95}
                   />
 
