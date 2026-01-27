@@ -134,7 +134,9 @@ export function TechStackTableView({
                 </TableCell>
                 <TableCell>
                   <p className="text-sm text-gray-600">
-                    {techStack.lastUpdated.toLocaleDateString()}
+                    {techStack.lastUpdated
+                      ? techStack.lastUpdated.toLocaleDateString()
+                      : "N/A"}
                   </p>
                 </TableCell>
                 <TableCell>
