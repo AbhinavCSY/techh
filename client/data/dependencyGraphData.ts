@@ -109,13 +109,13 @@ export const dependencyGraphData: DependencyGraphDataType = {
     // RFC Use Case 2: S3/AWS
     {
       id: "tech-s3",
-      product: "Amazon S3",
+      product: "Amazon S3 Bucket",
       vendor: "Amazon Web Services",
       abstraction_level: "service",
       category: "cloud-service",
       versions: [
         {
-          version: "v4",
+          version: "N/A",
           eol: false,
           cves: [],
         },
