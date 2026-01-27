@@ -44,6 +44,7 @@ export interface TechStack {
   riskLevel: "critical" | "high" | "medium" | "low";
   riskScore: number;
   createdAt: Date;
+  lastUpdated?: Date;
   license: string;
   effectiveLicense:
     | "MIT"
