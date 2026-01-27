@@ -10,7 +10,21 @@ export interface Technology {
   product: string;
   vendor: string;
   master_node?: boolean;
+  abstraction_level?: "application" | "service" | "framework" | "runtime" | "standard" | "panel";
+  category?: "framework" | "panel" | "cloud-service" | "standard" | "runtime" | "database" | "container";
+  is_derived?: boolean;
   versions: VersionDetail[];
+}
+
+export interface Issue {
+  id: string;
+  title: string;
+  type: "vuln" | "misconfig" | "exposure" | "weak-auth" | "cve";
+  severity: "critical" | "high" | "medium" | "low";
+  confidence_score: number;
+  discovered_at: string;
+  description?: string;
+  cve_id?: string;
 }
 
 export interface Vendor {
@@ -18,26 +32,124 @@ export interface Vendor {
   name: string;
   products: string[];
   parent_vendor?: string;
+  vendor_type?: "cloud_provider" | "software_vendor" | "foundation" | "parent_company";
 }
 
 export interface Relationship {
   from: string;
   to: string;
-  type: string;
+  type: "uses" | "provides" | "derived_from" | "implements" | "parent_of" | "found_in" | "provides_by";
 }
 
 export interface DependencyGraphDataType {
   technologies: Technology[];
   vendors: Vendor[];
+  issues: Issue[];
   relationships: Relationship[];
 }
 
 export const dependencyGraphData: DependencyGraphDataType = {
   technologies: [
+    // RFC Use Case 1: hPanel and cPanel
+    {
+      id: "tech-hpanel",
+      product: "hPanel",
+      vendor: "Hostinger",
+      abstraction_level: "panel",
+      category: "panel",
+      is_derived: true,
+      versions: [
+        {
+          version: "1.0.0",
+          eol: false,
+          cves: ["CVE-2023-45001"],
+        },
+      ],
+    },
+    {
+      id: "tech-cpanel",
+      product: "cPanel",
+      vendor: "cPanel, Inc.",
+      abstraction_level: "panel",
+      category: "panel",
+      versions: [
+        {
+          version: "116.0.0",
+          eol: false,
+          cves: ["CVE-2023-45001", "CVE-2023-46789"],
+        },
+      ],
+    },
+
+    // RFC Use Case 2: S3/AWS
+    {
+      id: "tech-s3",
+      product: "Amazon S3",
+      vendor: "Amazon Web Services",
+      abstraction_level: "service",
+      category: "cloud-service",
+      versions: [
+        {
+          version: "v4",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-aws",
+      product: "AWS Cloud Services",
+      vendor: "Amazon Web Services",
+      master_node: true,
+      abstraction_level: "service",
+      category: "cloud-service",
+      versions: [
+        {
+          version: "current",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+
+    // RFC Use Case 3: Swagger/OpenAPI
+    {
+      id: "tech-swagger",
+      product: "Swagger",
+      vendor: "SmartBear Software",
+      abstraction_level: "framework",
+      category: "framework",
+      versions: [
+        {
+          version: "3.1.0",
+          eol: false,
+          cves: ["CVE-2023-50123"],
+        },
+      ],
+    },
+    {
+      id: "tech-openapi",
+      product: "OpenAPI Specification",
+      vendor: "Linux Foundation",
+      master_node: true,
+      abstraction_level: "standard",
+      category: "standard",
+      versions: [
+        {
+          version: "3.1.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+
+    // Original tech stack examples
     {
       id: "tech-log4j",
       product: "Log4j",
       vendor: "Apache Software Foundation",
+      abstraction_level: "framework",
+      category: "framework",
       versions: [
         {
           version: "2.13.0",
@@ -63,6 +175,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-spring",
       product: "Spring Framework",
       vendor: "Apache Software Foundation",
+      abstraction_level: "framework",
+      category: "framework",
       versions: [
         {
           version: "5.2.0",
@@ -86,6 +200,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-tomcat",
       product: "Apache Tomcat",
       vendor: "Apache Software Foundation",
+      abstraction_level: "runtime",
+      category: "framework",
       versions: [
         {
           version: "9.0.70",
@@ -98,6 +214,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-httpd",
       product: "Apache HTTP Server",
       vendor: "Apache Software Foundation",
+      abstraction_level: "service",
+      category: "framework",
       versions: [
         {
           version: "2.4.52",
@@ -110,6 +228,9 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-openssl",
       product: "OpenSSL",
       vendor: "OpenSSL Software Foundation",
+      master_node: true,
+      abstraction_level: "framework",
+      category: "framework",
       versions: [
         {
           version: "1.1.1k",
@@ -123,6 +244,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-curl",
       product: "curl",
       vendor: "Haxx",
+      abstraction_level: "application",
+      category: "framework",
       versions: [
         {
           version: "7.88.1",
@@ -136,6 +259,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       product: "Node.js",
       vendor: "OpenJS Foundation",
       master_node: true,
+      abstraction_level: "runtime",
+      category: "runtime",
       versions: [
         {
           version: "18.12.0",
@@ -148,6 +273,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-express",
       product: "Express.js",
       vendor: "OpenJS Foundation",
+      abstraction_level: "framework",
+      category: "framework",
       versions: [
         {
           version: "4.17.1",
@@ -160,6 +287,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-nginx",
       product: "Nginx",
       vendor: "F5",
+      abstraction_level: "service",
+      category: "framework",
       versions: [
         {
           version: "1.24.0",
@@ -172,6 +301,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-postgres",
       product: "PostgreSQL",
       vendor: "PostgreSQL Global Development Group",
+      abstraction_level: "service",
+      category: "database",
       versions: [
         {
           version: "13.10",
@@ -184,6 +315,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-mysql",
       product: "MySQL",
       vendor: "Oracle",
+      abstraction_level: "service",
+      category: "database",
       versions: [
         {
           version: "5.7.44",
@@ -197,6 +330,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-mongodb",
       product: "MongoDB",
       vendor: "MongoDB Inc.",
+      abstraction_level: "service",
+      category: "database",
       versions: [
         {
           version: "5.0.10",
@@ -209,6 +344,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-redis",
       product: "Redis",
       vendor: "Redis Ltd.",
+      abstraction_level: "service",
+      category: "database",
       versions: [
         {
           version: "6.2.11",
@@ -221,6 +358,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-docker",
       product: "Docker",
       vendor: "Docker Inc.",
+      abstraction_level: "runtime",
+      category: "container",
       versions: [
         {
           version: "20.10.12",
@@ -234,6 +373,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       product: "containerd",
       vendor: "CNCF",
       master_node: true,
+      abstraction_level: "runtime",
+      category: "container",
       versions: [
         {
           version: "1.7.0",
@@ -246,6 +387,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-kubernetes",
       product: "Kubernetes",
       vendor: "CNCF",
+      abstraction_level: "service",
+      category: "container",
       versions: [
         {
           version: "1.27.0",
@@ -258,6 +401,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-django",
       product: "Django",
       vendor: "Django Software Foundation",
+      abstraction_level: "framework",
+      category: "framework",
       versions: [
         {
           version: "3.2.18",
@@ -271,6 +416,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-boto3",
       product: "AWS SDK for Python (boto3)",
       vendor: "Amazon Web Services",
+      abstraction_level: "application",
+      category: "framework",
       versions: [
         {
           version: "1.26.0",
@@ -283,6 +430,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "tech-react",
       product: "React",
       vendor: "Meta",
+      abstraction_level: "framework",
+      category: "framework",
       versions: [
         {
           version: "18.2.0",
@@ -295,64 +444,146 @@ export const dependencyGraphData: DependencyGraphDataType = {
 
   vendors: [
     {
+      id: "vendor-hostinger",
+      name: "Hostinger",
+      products: ["tech-hpanel"],
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-cpanel",
+      name: "cPanel, Inc.",
+      products: ["tech-cpanel"],
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-aws",
+      name: "Amazon Web Services",
+      products: ["tech-s3", "tech-aws", "tech-boto3"],
+      parent_vendor: "Amazon",
+      vendor_type: "cloud_provider",
+    },
+    {
+      id: "vendor-amazon",
+      name: "Amazon",
+      products: [],
+      vendor_type: "parent_company",
+    },
+    {
+      id: "vendor-smartbear",
+      name: "SmartBear Software",
+      products: ["tech-swagger"],
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-lf",
+      name: "Linux Foundation",
+      products: ["tech-openapi"],
+      vendor_type: "foundation",
+    },
+    {
       id: "vendor-apache",
       name: "Apache Software Foundation",
       products: ["tech-log4j", "tech-spring", "tech-httpd", "tech-tomcat"],
+      vendor_type: "foundation",
     },
     {
       id: "vendor-openjs",
       name: "OpenJS Foundation",
       products: ["tech-nodejs", "tech-express"],
+      vendor_type: "foundation",
     },
     {
       id: "vendor-f5",
       name: "F5",
       products: ["tech-nginx"],
+      vendor_type: "software_vendor",
     },
     {
       id: "vendor-haxx",
       name: "Haxx",
       products: ["tech-curl"],
+      vendor_type: "software_vendor",
     },
     {
       id: "vendor-oracle",
       name: "Oracle",
       products: ["tech-mysql"],
+      vendor_type: "software_vendor",
     },
     {
       id: "vendor-redis",
       name: "Redis Ltd.",
       products: ["tech-redis"],
+      vendor_type: "software_vendor",
     },
     {
       id: "vendor-mongodb",
       name: "MongoDB Inc.",
       products: ["tech-mongodb"],
+      vendor_type: "software_vendor",
     },
     {
       id: "vendor-docker",
       name: "Docker Inc.",
       products: ["tech-docker"],
+      vendor_type: "software_vendor",
     },
     {
       id: "vendor-cncf",
       name: "CNCF",
       products: ["tech-kubernetes", "tech-containerd"],
-    },
-    {
-      id: "vendor-aws",
-      name: "Amazon Web Services",
-      parent_vendor: "Amazon",
-      products: ["tech-boto3"],
+      vendor_type: "foundation",
     },
     {
       id: "vendor-meta",
       name: "Meta",
       products: ["tech-react"],
+      vendor_type: "software_vendor",
+    },
+  ],
+
+  issues: [
+    {
+      id: "issue-cpanel-1",
+      title: "Authentication Bypass in cPanel",
+      type: "vuln",
+      severity: "critical",
+      confidence_score: 0.95,
+      discovered_at: "2023-11-15",
+      description: "Critical authentication bypass vulnerability affecting cPanel and derived products",
+      cve_id: "CVE-2023-45001",
+    },
+    {
+      id: "issue-swagger-1",
+      title: "Insecure Deserialization in Swagger",
+      type: "vuln",
+      severity: "high",
+      confidence_score: 0.88,
+      discovered_at: "2023-10-20",
+      cve_id: "CVE-2023-50123",
+    },
+    {
+      id: "issue-s3-1",
+      title: "S3 Bucket Publicly Exposed",
+      type: "exposure",
+      severity: "high",
+      confidence_score: 0.92,
+      discovered_at: "2023-09-10",
+      description: "AWS S3 bucket configured for public read access",
     },
   ],
 
   relationships: [
+    // RFC Use Case 1: hPanel derived from cPanel
+    { from: "tech-hpanel", to: "tech-cpanel", type: "derived_from" },
+
+    // RFC Use Case 2: S3 uses AWS
+    { from: "tech-s3", to: "tech-aws", type: "uses" },
+
+    // RFC Use Case 3: Swagger implements OpenAPI
+    { from: "tech-swagger", to: "tech-openapi", type: "implements" },
+
+    // Original relationships
     { from: "tech-spring", to: "tech-log4j", type: "uses" },
     { from: "tech-tomcat", to: "tech-log4j", type: "uses" },
     { from: "tech-nodejs", to: "tech-openssl", type: "uses" },
@@ -361,21 +592,23 @@ export const dependencyGraphData: DependencyGraphDataType = {
     { from: "tech-curl", to: "tech-openssl", type: "uses" },
     { from: "tech-docker", to: "tech-containerd", type: "uses" },
     { from: "tech-kubernetes", to: "tech-containerd", type: "uses" },
+
+    // Issue relationships
+    { from: "issue-cpanel-1", to: "tech-cpanel", type: "found_in" },
+    { from: "issue-cpanel-1", to: "tech-hpanel", type: "found_in" },
+    { from: "issue-swagger-1", to: "tech-swagger", type: "found_in" },
+    { from: "issue-s3-1", to: "tech-s3", type: "found_in" },
   ],
 };
 
 /**
  * Get graph nodes and edges for a specific technology
- * This builds a graph starting from the main tech and includes:
- * - Related technologies (dependencies)
- * - Vendors that provide the tech
- * - Parent vendors of those vendors
  */
 export function buildGraphForTech(
   techId: string,
   data: DependencyGraphDataType,
 ): {
-  nodes: Array<{ id: string; label: string; type: string; subtype: string }>;
+  nodes: Array<{ id: string; label: string; type: string; subtype: string; category?: string }>;
   edges: Array<{ source: string; target: string; relationship: string }>;
 } {
   const nodes: Array<{
@@ -383,9 +616,9 @@ export function buildGraphForTech(
     label: string;
     type: string;
     subtype: string;
+    category?: string;
   }> = [];
-  const edges: Array<{ source: string; target: string; relationship: string }> =
-    [];
+  const edges: Array<{ source: string; target: string; relationship: string }> = [];
   const visitedNodes = new Set<string>();
 
   // Find the main technology
@@ -400,12 +633,36 @@ export function buildGraphForTech(
     label: mainTech.product,
     type: "technology",
     subtype: "direct",
+    category: mainTech.category,
   });
   visitedNodes.add(techId);
 
+  // Find issues affecting this technology
+  const affectingIssues = data.relationships
+    .filter((r) => r.type === "found_in" && r.to === techId)
+    .map((r) => r.from);
+
+  affectingIssues.forEach((issueId) => {
+    const issue = data.issues.find((i) => i.id === issueId);
+    if (issue && !visitedNodes.has(issueId)) {
+      nodes.push({
+        id: issueId,
+        label: `${issue.type.toUpperCase()}: ${issue.title}`,
+        type: "issue",
+        subtype: issue.severity,
+      });
+      edges.push({
+        source: issueId,
+        target: techId,
+        relationship: "found_in",
+      });
+      visitedNodes.add(issueId);
+    }
+  });
+
   // Find technologies that depend on this tech
   const dependentTechs = data.relationships
-    .filter((r) => r.to === techId)
+    .filter((r) => r.to === techId && (r.type === "uses" || r.type === "derived_from"))
     .map((r) => r.from);
 
   dependentTechs.forEach((depTechId) => {
@@ -416,6 +673,7 @@ export function buildGraphForTech(
         label: depTech.product,
         type: "technology",
         subtype: "related",
+        category: depTech.category,
       });
       edges.push({
         source: depTechId,
@@ -428,7 +686,7 @@ export function buildGraphForTech(
 
   // Find technologies this tech depends on
   const dependsOnTechs = data.relationships
-    .filter((r) => r.from === techId)
+    .filter((r) => r.from === techId && (r.type === "uses" || r.type === "implements"))
     .map((r) => r.to);
 
   dependsOnTechs.forEach((depOnTechId) => {
@@ -439,6 +697,7 @@ export function buildGraphForTech(
         label: depOnTech.product,
         type: "technology",
         subtype: "underlying",
+        category: depOnTech.category,
       });
       edges.push({
         source: techId,
@@ -446,6 +705,30 @@ export function buildGraphForTech(
         relationship: "uses",
       });
       visitedNodes.add(depOnTechId);
+    }
+  });
+
+  // Find derived technologies (for cases like cPanel/hPanel)
+  const derivedTechs = data.relationships
+    .filter((r) => r.to === techId && r.type === "derived_from")
+    .map((r) => r.from);
+
+  derivedTechs.forEach((derivedTechId) => {
+    const derivedTech = data.technologies.find((t) => t.id === derivedTechId);
+    if (derivedTech && !visitedNodes.has(derivedTechId)) {
+      nodes.push({
+        id: derivedTechId,
+        label: derivedTech.product,
+        type: "technology",
+        subtype: "related",
+        category: derivedTech.category,
+      });
+      edges.push({
+        source: derivedTechId,
+        target: techId,
+        relationship: "derived_from",
+      });
+      visitedNodes.add(derivedTechId);
     }
   });
 
@@ -465,7 +748,7 @@ export function buildGraphForTech(
       edges.push({
         source: techId,
         target: vendor.id,
-        relationship: "provided_by",
+        relationship: "provides_by",
       });
       visitedNodes.add(vendor.id);
 
@@ -482,7 +765,7 @@ export function buildGraphForTech(
           edges.push({
             source: vendor.id,
             target: parentVendorId,
-            relationship: "subsidiary_of",
+            relationship: "parent_of",
           });
           visitedNodes.add(parentVendorId);
         }
@@ -507,7 +790,7 @@ export function buildGraphForTech(
         edges.push({
           source: depOnTechId,
           target: vendor.id,
-          relationship: "provided_by",
+          relationship: "provides_by",
         });
         visitedNodes.add(vendor.id);
 
@@ -524,7 +807,7 @@ export function buildGraphForTech(
             edges.push({
               source: vendor.id,
               target: parentVendorId,
-              relationship: "subsidiary_of",
+              relationship: "parent_of",
             });
             visitedNodes.add(parentVendorId);
           }
@@ -537,8 +820,50 @@ export function buildGraphForTech(
 }
 
 /**
- * Get technology details including version info, CVEs, and EOL status
+ * Get technology details
  */
 export function getTechDetails(techId: string, data: DependencyGraphDataType) {
   return data.technologies.find((t) => t.id === techId);
+}
+
+/**
+ * Get all affected technologies for an issue (attribution analysis)
+ */
+export function getAffectedTechnologies(issueId: string, data: DependencyGraphDataType) {
+  const directlyAffected = data.relationships
+    .filter((r) => r.type === "found_in" && r.from === issueId)
+    .map((r) => r.to);
+
+  const indirectlyAffected: string[] = [];
+  
+  // Find dependent technologies that would be impacted
+  directlyAffected.forEach((techId) => {
+    const dependentTechs = data.relationships
+      .filter((r) => r.to === techId && (r.type === "uses" || r.type === "derived_from"))
+      .map((r) => r.from);
+    indirectlyAffected.push(...dependentTechs);
+  });
+
+  return {
+    directly: directlyAffected,
+    indirectly: Array.from(new Set(indirectlyAffected)),
+  };
+}
+
+/**
+ * Get primary vendor accountability for a technology
+ */
+export function getVendorAccountability(techId: string, data: DependencyGraphDataType) {
+  const tech = data.technologies.find((t) => t.id === techId);
+  if (!tech) return null;
+
+  const primaryVendor = data.vendors.find((v) => v.products.includes(techId));
+  
+  return {
+    primary: primaryVendor,
+    parent: primaryVendor?.parent_vendor ? {
+      name: primaryVendor.parent_vendor,
+      id: `vendor-parent-${primaryVendor.id}`
+    } : null,
+  };
 }
