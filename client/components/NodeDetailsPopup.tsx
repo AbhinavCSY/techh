@@ -1,6 +1,6 @@
 import React from "react";
-import { X, AlertCircle, CalendarX, Package } from "lucide-react";
-import { Technology } from "@/data/dependencyGraphData";
+import { X, AlertCircle, CalendarX, Package, Building2 } from "lucide-react";
+import { Technology, getVendorAccountability, dependencyGraphData } from "@/data/dependencyGraphData";
 
 interface NodeDetailsPopupProps {
   tech: Technology | null;
