@@ -376,10 +376,10 @@ function GraphRenderer({
                 <g key={idx}>
                   {/* Edge line with gradient effect */}
                   <line
-                    x1={source.x ?? 0}
-                    y1={source.y ?? 0}
-                    x2={target.x ?? 0}
-                    y2={target.y ?? 0}
+                    x1={sourcePos.x}
+                    y1={sourcePos.y}
+                    x2={targetPos.x}
+                    y2={targetPos.y}
                     stroke={getLabelColor()}
                     strokeWidth={2}
                     markerEnd="url(#arrowhead)"
