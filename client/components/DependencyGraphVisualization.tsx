@@ -62,10 +62,9 @@ class ForceDirectedGraph {
 
   simulate(iterations: number) {
     const k = Math.sqrt((this.width * this.height) / this.nodes.size);
-    const c = 0.05; // Damping
+    const c = 0.05;
 
     for (let iter = 0; iter < iterations; iter++) {
-      // Repulsive forces
       const nodeArray = Array.from(this.nodes.values());
       nodeArray.forEach((node1) => {
         node1.vx = 0;
@@ -82,7 +81,6 @@ class ForceDirectedGraph {
         });
       });
 
-      // Attractive forces
       this.edges.forEach((edge) => {
         const source = this.nodes.get(edge.source);
         const target = this.nodes.get(edge.target);
@@ -98,7 +96,6 @@ class ForceDirectedGraph {
         }
       });
 
-      // Update positions with damping
       nodeArray.forEach((node) => {
         node.vx! *= c;
         node.vy! *= c;
@@ -114,17 +111,14 @@ class ForceDirectedGraph {
 }
 
 // Graph Renderer Component
-function GraphRenderer({
-  nodes,
-  edges,
-  width,
-  height,
-}: {
+interface GraphRendererProps {
   nodes: GraphNode[];
   edges: GraphEdge[];
   width: number;
   height: number;
-}) {
+}
+
+function GraphRenderer({ nodes, edges, width, height }: GraphRendererProps) {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
 
   const graph = new ForceDirectedGraph(nodes, edges, width, height);
@@ -167,7 +161,6 @@ function GraphRenderer({
 
           return (
             <g key={idx}>
-              {/* Edge line */}
               <line
                 x1={source.x ?? 0}
                 y1={source.y ?? 0}
@@ -180,7 +173,6 @@ function GraphRenderer({
                 style={{ transition: "all 0.3s ease" }}
               />
 
-              {/* Edge label background */}
               <rect
                 x={(source.x ?? 0 + (target.x ?? 0)) / 2 - 35}
                 y={(source.y ?? 0 + (target.y ?? 0)) / 2 - 12}
@@ -191,7 +183,6 @@ function GraphRenderer({
                 rx="3"
               />
 
-              {/* Edge label */}
               <text
                 x={(source.x ?? 0 + (target.x ?? 0)) / 2}
                 y={(source.y ?? 0 + (target.y ?? 0)) / 2 + 3}
@@ -222,7 +213,6 @@ function GraphRenderer({
               className="cursor-pointer"
               onClick={() => setSelectedNode(isSelected ? null : node.id)}
             >
-              {/* Node circle background */}
               <circle
                 cx={node.x ?? 0}
                 cy={node.y ?? 0}
@@ -242,7 +232,6 @@ function GraphRenderer({
                 strokeWidth={isSelected ? 3 : 0}
               />
 
-              {/* Node inner circle (white background for icon) */}
               <circle
                 cx={node.x ?? 0}
                 cy={node.y ?? 0}
@@ -251,7 +240,6 @@ function GraphRenderer({
                 opacity={0.95}
               />
 
-              {/* Node icon */}
               {isTech ? (
                 <g
                   transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
@@ -278,7 +266,6 @@ function GraphRenderer({
                 </g>
               )}
 
-              {/* Node label */}
               <text
                 x={node.x ?? 0}
                 y={(node.y ?? 0) + 48}
@@ -295,7 +282,6 @@ function GraphRenderer({
                 {node.label.split(" ").slice(0, 2).join(" ")}
               </text>
 
-              {/* Node type label */}
               <text
                 x={node.x ?? 0}
                 y={(node.y ?? 0) + 62}
@@ -330,7 +316,6 @@ export function DependencyGraphVisualization({
   const MODAL_WIDTH = 1200;
   const MODAL_HEIGHT = 700;
 
-  // Generate default graph if not provided
   useEffect(() => {
     if (initialNodes && initialEdges) {
       setGraphData({ nodes: initialNodes, edges: initialEdges });
@@ -382,207 +367,34 @@ export function DependencyGraphVisualization({
 
   if (!graphData) return <div className="h-96 bg-gray-50 rounded-lg animate-pulse" />;
 
-  const graph = new ForceDirectedGraph(graphData.nodes, graphData.edges, WIDTH, HEIGHT);
-  const nodes = graph.getNodes();
-
-  const relationshipLabels: Record<string, string> = {
-    uses: "Uses",
-    related_to: "Related To",
-    provided_by: "Provided By",
-    subsidiary_of: "Subsidiary Of",
-  };
-
   return (
     <div className="space-y-4">
-      {/* Header */}
-      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-        <h3 className="font-semibold text-gray-900 mb-2">Dependency Graph</h3>
-        <p className="text-sm text-gray-600">
-          Force-directed visualization of {techStack.name} and its technology/vendor ecosystem
-        </p>
+      {/* Header with Expand Button */}
+      <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200">
+        <div>
+          <h3 className="font-semibold text-gray-900 mb-1">Dependency Graph</h3>
+          <p className="text-sm text-gray-600">
+            Force-directed visualization of {techStack.name} ecosystem
+          </p>
+        </div>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+          title="Expand to fullscreen"
+        >
+          <Maximize2 width="18" height="18" />
+          <span className="text-sm font-medium">Expand</span>
+        </button>
       </div>
 
-      {/* SVG Graph Container */}
+      {/* Graph Container */}
       <div className="border border-gray-200 rounded-lg bg-white overflow-hidden">
-        <svg
+        <GraphRenderer
+          nodes={graphData.nodes}
+          edges={graphData.edges}
           width={WIDTH}
           height={HEIGHT}
-          className="w-full"
-          style={{ maxWidth: "100%" }}
-        >
-          <defs>
-            {/* Arrow markers for edges */}
-            <marker
-              id="arrowhead"
-              markerWidth="10"
-              markerHeight="10"
-              refX="20"
-              refY="3"
-              orient="auto"
-            >
-              <polygon points="0 0, 10 3, 0 6" fill="#9CA3AF" />
-            </marker>
-          </defs>
-
-          {/* Edges */}
-          <g className="edges">
-            {graphData.edges.map((edge, idx) => {
-              const source = nodes.find((n) => n.id === edge.source);
-              const target = nodes.find((n) => n.id === edge.target);
-
-              if (!source || !target) return null;
-
-              const isActive =
-                selectedNode === null ||
-                selectedNode === edge.source ||
-                selectedNode === edge.target;
-
-              return (
-                <g key={idx}>
-                  {/* Edge line */}
-                  <line
-                    x1={source.x ?? 0}
-                    y1={source.y ?? 0}
-                    x2={target.x ?? 0}
-                    y2={target.y ?? 0}
-                    stroke="#D1D5DB"
-                    strokeWidth={isActive ? 2.5 : 1.5}
-                    markerEnd="url(#arrowhead)"
-                    opacity={isActive ? 0.8 : 0.2}
-                    style={{ transition: "all 0.3s ease" }}
-                  />
-
-                  {/* Edge label background */}
-                  <rect
-                    x={(source.x ?? 0 + (target.x ?? 0)) / 2 - 35}
-                    y={(source.y ?? 0 + (target.y ?? 0)) / 2 - 12}
-                    width="70"
-                    height="20"
-                    fill="white"
-                    opacity={isActive ? 0.9 : 0}
-                    rx="3"
-                  />
-
-                  {/* Edge label */}
-                  <text
-                    x={(source.x ?? 0 + (target.x ?? 0)) / 2}
-                    y={(source.y ?? 0 + (target.y ?? 0)) / 2 + 3}
-                    textAnchor="middle"
-                    fontSize="11"
-                    fontWeight="500"
-                    fill="#374151"
-                    opacity={isActive ? 1 : 0}
-                    style={{ transition: "opacity 0.3s ease", pointerEvents: "none" }}
-                  >
-                    {relationshipLabels[edge.relationship] || edge.relationship}
-                  </text>
-                </g>
-              );
-            })}
-          </g>
-
-          {/* Nodes */}
-          <g className="nodes">
-            {nodes.map((node) => {
-              const isSelected = selectedNode === node.id;
-              const isTech = node.type === "technology";
-              const isDirectAffected = node.subtype === "direct";
-
-              return (
-                <g
-                  key={node.id}
-                  className="cursor-pointer"
-                  onClick={() => setSelectedNode(isSelected ? null : node.id)}
-                >
-                  {/* Node circle background */}
-                  <circle
-                    cx={node.x ?? 0}
-                    cy={node.y ?? 0}
-                    r={isSelected ? 36 : 30}
-                    fill={
-                      isTech
-                        ? isDirectAffected
-                          ? "#3B82F6"
-                          : "#818CF8"
-                        : isSelected
-                          ? "#9333EA"
-                          : "#A78BFA"
-                    }
-                    opacity={selectedNode === null || isSelected ? 0.95 : 0.4}
-                    style={{ transition: "all 0.2s ease" }}
-                    stroke={isSelected ? "#1F2937" : "none"}
-                    strokeWidth={isSelected ? 3 : 0}
-                  />
-
-                  {/* Node inner circle (white background for icon) */}
-                  <circle
-                    cx={node.x ?? 0}
-                    cy={node.y ?? 0}
-                    r={22}
-                    fill="white"
-                    opacity={0.95}
-                  />
-
-                  {/* Node icon */}
-                  {isTech ? (
-                    <g
-                      transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
-                    >
-                      <Package
-                        width="16"
-                        height="16"
-                        stroke="#3B82F6"
-                        fill="none"
-                        strokeWidth="1.5"
-                      />
-                    </g>
-                  ) : (
-                    <g
-                      transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
-                    >
-                      <Building2
-                        width="16"
-                        height="16"
-                        stroke="#9333EA"
-                        fill="none"
-                        strokeWidth="1.5"
-                      />
-                    </g>
-                  )}
-
-                  {/* Node label */}
-                  <text
-                    x={node.x ?? 0}
-                    y={(node.y ?? 0) + 48}
-                    textAnchor="middle"
-                    fontSize="12"
-                    fontWeight={isSelected ? "700" : "500"}
-                    fill="#1F2937"
-                    style={{
-                      pointerEvents: "none",
-                      userSelect: "none",
-                      transition: "font-weight 0.2s ease",
-                    }}
-                  >
-                    {node.label.split(" ").slice(0, 2).join(" ")}
-                  </text>
-
-                  {/* Node type label */}
-                  <text
-                    x={node.x ?? 0}
-                    y={(node.y ?? 0) + 62}
-                    textAnchor="middle"
-                    fontSize="10"
-                    fill="#6B7280"
-                    style={{ pointerEvents: "none", userSelect: "none" }}
-                  >
-                    {node.subtype}
-                  </text>
-                </g>
-              );
-            })}
-          </g>
-        </svg>
+        />
       </div>
 
       {/* Legend */}
@@ -605,10 +417,64 @@ export function DependencyGraphVisualization({
         </div>
       </div>
 
+      {/* Modal */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Dependency Graph - {techStack.name}
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">
+                  Full view of technology and vendor relationships
+                </p>
+              </div>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                title="Close"
+              >
+                <X width="24" height="24" className="text-gray-600" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="flex-1 overflow-auto bg-gray-50 p-6">
+              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                <GraphRenderer
+                  nodes={graphData.nodes}
+                  edges={graphData.edges}
+                  width={MODAL_WIDTH}
+                  height={MODAL_HEIGHT}
+                />
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg transition-colors font-medium"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Info */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
         <p className="font-medium mb-1">💡 Interactive Graph</p>
-        <p>Click on any node to highlight connections. The layout automatically positions nodes to minimize overlaps.</p>
+        <p>Click on any node to highlight connections. Use the Expand button to view the full graph in a larger window.</p>
       </div>
     </div>
   );
