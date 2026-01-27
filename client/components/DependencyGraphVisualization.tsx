@@ -792,6 +792,7 @@ export function DependencyGraphVisualization({
             setSelectedTechNode(null);
             setQuickInfoNode(null);
           }}
+          containerRef={graphContainerRef}
         />
       )}
 
