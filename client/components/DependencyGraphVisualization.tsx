@@ -404,21 +404,11 @@ function GraphRenderer({
               };
 
               const handleMouseEnter = (e: React.MouseEvent<SVGGElement>) => {
-                if (showTooltips) {
-                  setHoveredNode(node.id);
-                  const svg = svgRef.current;
-                  if (svg) {
-                    const rect = svg.getBoundingClientRect();
-                    setTooltipPos({
-                      x: e.clientX - rect.left + 10,
-                      y: e.clientY - rect.top - 10,
-                    });
-                  }
-                }
+                // Tooltips disabled - node labels show below nodes
               };
 
               const handleMouseLeave = () => {
-                setHoveredNode(null);
+                // Tooltips disabled
               };
 
               // Enhanced node sizing based on severity and type
