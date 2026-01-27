@@ -753,12 +753,8 @@ export function DependencyGraphVisualization({
           </div>
 
           {/* Info */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
-            <p className="font-medium mb-1">💡 Interactive Graph</p>
-            <p>
-              Middle-click/Space+drag to pan • Scroll to zoom • Hover for names
-              • Click nodes for details
-            </p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 text-xs text-blue-800">
+            <p>💡 Middle-click+drag to pan • Scroll to zoom • Click nodes for details</p>
           </div>
         </div>
       )}
