@@ -445,10 +445,17 @@ export function DependencyGraphVisualization({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 700 });
   const [selectedTechNode, setSelectedTechNode] = useState<Technology | null>(null);
+  const [showLegend, setShowLegend] = useState(false);
 
   const handleTechNodeClick = (nodeId: string) => {
     const tech = getTechDetails(nodeId, dependencyGraphData);
     setSelectedTechNode(tech || null);
+  };
+
+  const handleFullscreenClick = () => {
+    // Open fullscreen in a new window
+    const fullscreenUrl = `${window.location.origin}${window.location.pathname}?fullscreen=true&tech=${techStack.name}`;
+    window.open(fullscreenUrl, "dependency-graph", "width=1200,height=800,menubar=no,toolbar=no");
   };
 
   const WIDTH = 800;
