@@ -189,6 +189,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.0,
     createdAt: new Date("2024-01-10"),
+    lastUpdated: new Date("2024-02-15"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
