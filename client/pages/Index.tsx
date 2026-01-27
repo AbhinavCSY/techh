@@ -21,6 +21,8 @@ import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { DependencyGraph } from "@/components/DependencyGraph";
 import { cn } from "@/lib/utils";
 
 export default function Index() {
@@ -316,6 +318,7 @@ function DetailsPanel({
   // Assets have 'techStacks' property, tech stacks have 'version' property
   const isAssetItem = item && Array.isArray(item.techStacks) && !item.version;
 
+  const [activeTab, setActiveTab] = useState("overview");
   const [isScanning, setIsScanning] = useState(false);
   const [scanResults, setScanResults] = useState<any>(null);
   const [scannedCVEs, setScannedCVEs] = useState<Record<string, any>>({});
@@ -500,7 +503,7 @@ function DetailsPanel({
 
         {/* Panel */}
         <div
-          className="absolute right-0 top-0 bottom-0 w-full max-w-[702px] bg-white shadow-xl transform transition-transform overflow-y-auto"
+          className="absolute right-0 top-0 bottom-0 w-full max-w-[912px] bg-white shadow-xl transform transition-transform overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -574,932 +577,994 @@ function DetailsPanel({
               </>
             ) : (
               <>
-                {/* Tech Stack Details */}
-                <div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-4xl">{item.logo}</span>
+                {/* Tech Stack Tabs */}
+                <Tabs
+                  value={activeTab}
+                  onValueChange={setActiveTab}
+                  className="w-full h-full"
+                >
+                  <TabsList className="w-full justify-start border-b rounded-none bg-transparent p-0 h-auto sticky top-16 z-40 bg-white">
+                    <TabsTrigger
+                      value="overview"
+                      className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-blue-600 data-[state=active]:bg-transparent"
+                    >
+                      Overview
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="dependency-graph"
+                      className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-blue-600 data-[state=active]:bg-transparent"
+                    >
+                      Dependency Graph
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="overview" className="space-y-6 p-6">
                     <div>
-                      <h3 className="text-2xl font-bold text-gray-900">
-                        {item.name}
-                      </h3>
-                      <p className="text-sm text-gray-600">v{item.version}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Basic Information */}
-                <div className="space-y-3">
-                  <DetailRowClickable
-                    label="Type"
-                    value={item.type}
-                    isClickable={false}
-                  />
-                  <DetailRowClickable
-                    label="Risk Score"
-                    value={`${item.riskScore}/10 (${item.riskLevel.toUpperCase()})`}
-                    isClickable={false}
-                  />
-                  <DetailRowClickable
-                    label="License"
-                    value={item.license}
-                    isClickable={false}
-                  />
-                  <DetailRowClickable
-                    label="Effective License"
-                    value={item.effectiveLicense}
-                    isClickable={false}
-                  />
-                  <DetailRowClickable
-                    label="EOL Status"
-                    value={item.isEOL ? "⚠️ End of Life" : "✓ Active"}
-                    isClickable={false}
-                  />
-                  {item.secureVersion && (
-                    <DetailRowClickable
-                      label="Secure Version"
-                      value={`v${item.secureVersion}`}
-                      isClickable={false}
-                    />
-                  )}
-                </div>
-
-                {/* Package Reliability Indicators */}
-                {item.reliabilityIndicators && (
-                  <PackageReliabilityCard
-                    indicators={item.reliabilityIndicators}
-                    compact={true}
-                  />
-                )}
-
-                {/* Version History */}
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Version</h4>
-                  <div className="space-y-2">
-                    {/* Current Version */}
-                    <div className="p-3 rounded-lg border bg-blue-50 border-blue-200 ring-1 ring-blue-200">
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-sm">
-                          v{item.version}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {item.createdAt.toLocaleDateString()}
-                        </span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-4xl">{item.logo}</span>
+                        <div>
+                          <h3 className="text-2xl font-bold text-gray-900">
+                            {item.name}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            v{item.version}
+                          </p>
+                        </div>
                       </div>
-                      <Badge className="mt-2 bg-blue-100 text-blue-800 text-xs">
-                        Current
-                      </Badge>
                     </div>
 
-                    {/* Latest Available Version (if different from current) */}
-                    {item.secureVersion &&
-                      item.secureVersion !== item.version && (
-                        <div className="p-3 rounded-lg border bg-green-50 border-green-200">
+                    {/* Basic Information */}
+                    <div className="space-y-3">
+                      <DetailRowClickable
+                        label="Type"
+                        value={item.type}
+                        isClickable={false}
+                      />
+                      <DetailRowClickable
+                        label="Risk Score"
+                        value={`${item.riskScore}/10 (${item.riskLevel.toUpperCase()})`}
+                        isClickable={false}
+                      />
+                      <DetailRowClickable
+                        label="License"
+                        value={item.license}
+                        isClickable={false}
+                      />
+                      <DetailRowClickable
+                        label="Effective License"
+                        value={item.effectiveLicense}
+                        isClickable={false}
+                      />
+                      <DetailRowClickable
+                        label="EOL Status"
+                        value={item.isEOL ? "⚠️ End of Life" : "✓ Active"}
+                        isClickable={false}
+                      />
+                      {item.secureVersion && (
+                        <DetailRowClickable
+                          label="Secure Version"
+                          value={`v${item.secureVersion}`}
+                          isClickable={false}
+                        />
+                      )}
+                    </div>
+
+                    {/* Package Reliability Indicators */}
+                    {item.reliabilityIndicators && (
+                      <PackageReliabilityCard
+                        indicators={item.reliabilityIndicators}
+                        compact={true}
+                      />
+                    )}
+
+                    {/* Version History */}
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-3">
+                        Version
+                      </h4>
+                      <div className="space-y-2">
+                        {/* Current Version */}
+                        <div className="p-3 rounded-lg border bg-blue-50 border-blue-200 ring-1 ring-blue-200">
                           <div className="flex items-center justify-between">
                             <span className="font-semibold text-sm">
-                              v{item.secureVersion}
+                              v{item.version}
                             </span>
                             <span className="text-xs text-gray-500">
-                              Latest Available
+                              {item.createdAt.toLocaleDateString()}
                             </span>
                           </div>
-                          <Badge className="mt-2 bg-green-100 text-green-800 text-xs">
-                            Upgrade Available
+                          <Badge className="mt-2 bg-blue-100 text-blue-800 text-xs">
+                            Current
                           </Badge>
                         </div>
-                      )}
-                  </div>
-                </div>
 
-                {/* Unified Threat Intel Section */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">
-                    🛡️ Threat Intel
-                  </h4>
-
-                  {/* Summary Stats */}
-                  <div className="grid grid-cols-3 gap-2 mb-4">
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-2 text-center">
-                      <p className="text-xs text-gray-600 font-medium">
-                        Scanned
-                      </p>
-                      <p className="text-lg font-bold text-red-900">
-                        {item.cves.length}
-                      </p>
-                    </div>
-                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-2 text-center">
-                      <p className="text-xs text-gray-600 font-medium">
-                        Unscanned
-                      </p>
-                      <p className="text-lg font-bold text-amber-900">
-                        {marketCVEs.length}
-                      </p>
-                    </div>
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-center">
-                      <p className="text-xs text-gray-600 font-medium">Total</p>
-                      <p className="text-lg font-bold text-blue-900">
-                        {item.cves.length + marketCVEs.length}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Threats List - Combined Scanned and Unscanned */}
-                  <div className="space-y-2 max-h-96 overflow-y-auto">
-                    {/* Scanned Threats */}
-                    {item.cves.map((cve: any) => {
-                      const cveResults = scannedCVEs[cve.id];
-                      const isScanning = cveResults?.isScanning;
-                      const isExpanded = expandedCVE === `scanned-${cve.id}`;
-
-                      return (
-                        <div
-                          key={cve.id}
-                          className="border border-red-200 rounded-lg bg-red-50 transition-all"
-                        >
-                          <button
-                            onClick={() =>
-                              setExpandedCVE(
-                                isExpanded ? null : `scanned-${cve.id}`,
-                              )
-                            }
-                            className="w-full text-left p-3 flex items-start gap-2 hover:opacity-80 transition-opacity"
-                          >
-                            <span className="text-lg flex-shrink-0 mt-0.5">
-                              {cve.severity === "critical"
-                                ? "🔴"
-                                : cve.severity === "high"
-                                  ? "🟠"
-                                  : cve.severity === "medium"
-                                    ? "🟡"
-                                    : "🟢"}
-                            </span>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-xs text-red-900">
-                                {cve.id}
-                              </p>
-                              <p className="text-xs text-red-700 mt-1">
-                                {cve.title}
-                              </p>
-                              <div className="flex gap-2 mt-1">
-                                <Badge className="bg-red-200 text-red-800 text-xs">
-                                  ✓ SCANNED
-                                </Badge>
-                                <span className="text-xs text-red-700">
-                                  CVSS: {cve.score.toFixed(1)} •{" "}
-                                  {cve.severity.toUpperCase()}
+                        {/* Latest Available Version (if different from current) */}
+                        {item.secureVersion &&
+                          item.secureVersion !== item.version && (
+                            <div className="p-3 rounded-lg border bg-green-50 border-green-200">
+                              <div className="flex items-center justify-between">
+                                <span className="font-semibold text-sm">
+                                  v{item.secureVersion}
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  Latest Available
                                 </span>
                               </div>
+                              <Badge className="mt-2 bg-green-100 text-green-800 text-xs">
+                                Upgrade Available
+                              </Badge>
                             </div>
-                            <span className="text-gray-400 flex-shrink-0 text-lg">
-                              {isExpanded ? "▼" : "▶"}
-                            </span>
-                          </button>
+                          )}
+                      </div>
+                    </div>
 
-                          {isExpanded && (
-                            <div className="border-t border-red-300 border-opacity-50 p-3 space-y-3 bg-white bg-opacity-50">
-                              <div>
-                                <p className="text-xs font-semibold text-gray-700 mb-1">
-                                  Description
-                                </p>
-                                <p className="text-xs text-gray-600">
-                                  This is a known vulnerability that has been
-                                  scanned and identified in your environment.
-                                </p>
-                              </div>
+                    {/* Unified Threat Intel Section */}
+                    <div className="mb-6">
+                      <h4 className="font-semibold text-gray-900 mb-3">
+                        🛡️ Threat Intel
+                      </h4>
 
-                              <div className="flex gap-2 pt-2">
-                                <button
-                                  onClick={() => {
-                                    if (
-                                      selectedCVEForAssets ===
-                                      `scanned-${cve.id}`
-                                    ) {
-                                      setSelectedCVEForAssets(null);
-                                    } else {
-                                      setSelectedCVEForAssets(
-                                        `scanned-${cve.id}`,
-                                      );
-                                      const assets = getAssociatedAssets(
-                                        item.id,
-                                      );
-                                      const selections: Record<
-                                        string,
-                                        boolean
-                                      > = {};
-                                      assets.forEach((a) => {
-                                        selections[a.id] = true;
-                                      });
-                                      setCVEAssetSelections((prev) => ({
-                                        ...prev,
-                                        [`scanned-${cve.id}`]: selections,
-                                      }));
-                                    }
-                                  }}
-                                  className="flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white"
-                                >
-                                  <span>🔍</span>
-                                  {selectedCVEForAssets === `scanned-${cve.id}`
-                                    ? "Hide Assets"
-                                    : `Scan ${getAssociatedAssets(item.id).length} Assets`}
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    onNavigateToIncident(item.id, cve.id)
-                                  }
-                                  className="flex-1 py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
-                                >
-                                  Full Details
-                                </button>
-                              </div>
+                      {/* Summary Stats */}
+                      <div className="grid grid-cols-3 gap-2 mb-4">
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-2 text-center">
+                          <p className="text-xs text-gray-600 font-medium">
+                            Scanned
+                          </p>
+                          <p className="text-lg font-bold text-red-900">
+                            {item.cves.length}
+                          </p>
+                        </div>
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-2 text-center">
+                          <p className="text-xs text-gray-600 font-medium">
+                            Unscanned
+                          </p>
+                          <p className="text-lg font-bold text-amber-900">
+                            {marketCVEs.length}
+                          </p>
+                        </div>
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-center">
+                          <p className="text-xs text-gray-600 font-medium">
+                            Total
+                          </p>
+                          <p className="text-lg font-bold text-blue-900">
+                            {item.cves.length + marketCVEs.length}
+                          </p>
+                        </div>
+                      </div>
 
-                              {/* Asset Selection for Scanned CVE */}
-                              {selectedCVEForAssets === `scanned-${cve.id}` && (
-                                <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
-                                  <div className="flex items-center justify-between mb-2">
-                                    <label className="text-xs font-semibold text-gray-700">
-                                      Select Assets to Scan
-                                    </label>
+                      {/* Threats List - Combined Scanned and Unscanned */}
+                      <div className="space-y-2 max-h-96 overflow-y-auto">
+                        {/* Scanned Threats */}
+                        {item.cves.map((cve: any) => {
+                          const cveResults = scannedCVEs[cve.id];
+                          const isScanning = cveResults?.isScanning;
+                          const isExpanded =
+                            expandedCVE === `scanned-${cve.id}`;
+
+                          return (
+                            <div
+                              key={cve.id}
+                              className="border border-red-200 rounded-lg bg-red-50 transition-all"
+                            >
+                              <button
+                                onClick={() =>
+                                  setExpandedCVE(
+                                    isExpanded ? null : `scanned-${cve.id}`,
+                                  )
+                                }
+                                className="w-full text-left p-3 flex items-start gap-2 hover:opacity-80 transition-opacity"
+                              >
+                                <span className="text-lg flex-shrink-0 mt-0.5">
+                                  {cve.severity === "critical"
+                                    ? "🔴"
+                                    : cve.severity === "high"
+                                      ? "🟠"
+                                      : cve.severity === "medium"
+                                        ? "🟡"
+                                        : "🟢"}
+                                </span>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-xs text-red-900">
+                                    {cve.id}
+                                  </p>
+                                  <p className="text-xs text-red-700 mt-1">
+                                    {cve.title}
+                                  </p>
+                                  <div className="flex gap-2 mt-1">
+                                    <Badge className="bg-red-200 text-red-800 text-xs">
+                                      ✓ SCANNED
+                                    </Badge>
+                                    <span className="text-xs text-red-700">
+                                      CVSS: {cve.score.toFixed(1)} •{" "}
+                                      {cve.severity.toUpperCase()}
+                                    </span>
+                                  </div>
+                                </div>
+                                <span className="text-gray-400 flex-shrink-0 text-lg">
+                                  {isExpanded ? "▼" : "▶"}
+                                </span>
+                              </button>
+
+                              {isExpanded && (
+                                <div className="border-t border-red-300 border-opacity-50 p-3 space-y-3 bg-white bg-opacity-50">
+                                  <div>
+                                    <p className="text-xs font-semibold text-gray-700 mb-1">
+                                      Description
+                                    </p>
+                                    <p className="text-xs text-gray-600">
+                                      This is a known vulnerability that has
+                                      been scanned and identified in your
+                                      environment.
+                                    </p>
+                                  </div>
+
+                                  <div className="flex gap-2 pt-2">
                                     <button
                                       onClick={() => {
-                                        const allAssets = getAssociatedAssets(
-                                          item.id,
-                                        );
-                                        const currentSelections =
-                                          cveAssetSelections[
-                                            `scanned-${cve.id}`
-                                          ] || {};
-                                        const allSelected = allAssets.every(
-                                          (a) => currentSelections[a.id],
-                                        );
-                                        const newSelections: Record<
-                                          string,
-                                          boolean
-                                        > = {};
-                                        allAssets.forEach((a) => {
-                                          newSelections[a.id] = !allSelected;
-                                        });
-                                        setCVEAssetSelections((prev) => ({
-                                          ...prev,
-                                          [`scanned-${cve.id}`]: newSelections,
-                                        }));
-                                      }}
-                                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                                    >
-                                      {Object.values(
-                                        cveAssetSelections[
+                                        if (
+                                          selectedCVEForAssets ===
                                           `scanned-${cve.id}`
-                                        ] || {},
-                                      ).every((v) => v)
-                                        ? "Deselect All"
-                                        : "Select All"}
+                                        ) {
+                                          setSelectedCVEForAssets(null);
+                                        } else {
+                                          setSelectedCVEForAssets(
+                                            `scanned-${cve.id}`,
+                                          );
+                                          const assets = getAssociatedAssets(
+                                            item.id,
+                                          );
+                                          const selections: Record<
+                                            string,
+                                            boolean
+                                          > = {};
+                                          assets.forEach((a) => {
+                                            selections[a.id] = true;
+                                          });
+                                          setCVEAssetSelections((prev) => ({
+                                            ...prev,
+                                            [`scanned-${cve.id}`]: selections,
+                                          }));
+                                        }
+                                      }}
+                                      className="flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white"
+                                    >
+                                      <span>🔍</span>
+                                      {selectedCVEForAssets ===
+                                      `scanned-${cve.id}`
+                                        ? "Hide Assets"
+                                        : `Scan ${getAssociatedAssets(item.id).length} Assets`}
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        onNavigateToIncident(item.id, cve.id)
+                                      }
+                                      className="flex-1 py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                                    >
+                                      Full Details
                                     </button>
                                   </div>
-                                  <div className="space-y-1 max-h-32 overflow-y-auto">
-                                    {getAssociatedAssets(item.id).map(
-                                      (asset) => (
-                                        <label
-                                          key={asset.id}
-                                          className="flex items-center gap-2 cursor-pointer text-xs"
-                                        >
-                                          <input
-                                            type="checkbox"
-                                            checked={
+
+                                  {/* Asset Selection for Scanned CVE */}
+                                  {selectedCVEForAssets ===
+                                    `scanned-${cve.id}` && (
+                                    <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <label className="text-xs font-semibold text-gray-700">
+                                          Select Assets to Scan
+                                        </label>
+                                        <button
+                                          onClick={() => {
+                                            const allAssets =
+                                              getAssociatedAssets(item.id);
+                                            const currentSelections =
                                               cveAssetSelections[
                                                 `scanned-${cve.id}`
-                                              ]?.[asset.id] || false
-                                            }
-                                            onChange={(e) => {
-                                              setCVEAssetSelections((prev) => ({
-                                                ...prev,
-                                                [`scanned-${cve.id}`]: {
-                                                  ...prev[`scanned-${cve.id}`],
-                                                  [asset.id]: e.target.checked,
-                                                },
-                                              }));
-                                            }}
-                                            className="w-4 h-4 rounded"
-                                          />
-                                          <span className="text-gray-700">
-                                            {asset.name}
-                                          </span>
-                                        </label>
-                                      ),
-                                    )}
-                                  </div>
-                                  <button
-                                    onClick={() => {
-                                      const selectedAssetIds = Object.keys(
-                                        cveAssetSelections[
-                                          `scanned-${cve.id}`
-                                        ] || {},
-                                      ).filter(
-                                        (id) =>
-                                          cveAssetSelections[
-                                            `scanned-${cve.id}`
-                                          ][id],
-                                      );
-                                      if (selectedAssetIds.length > 0) {
-                                        handleScanCVE(cve.id, item.id);
-                                        setSelectedCVEForAssets(null);
-                                      }
-                                    }}
-                                    disabled={
-                                      !Object.values(
-                                        cveAssetSelections[
-                                          `scanned-${cve.id}`
-                                        ] || {},
-                                      ).some((v) => v)
-                                    }
-                                    className={cn(
-                                      "w-full py-1.5 px-2 rounded text-xs font-medium transition-colors",
-                                      Object.values(
-                                        cveAssetSelections[
-                                          `scanned-${cve.id}`
-                                        ] || {},
-                                      ).some((v) => v)
-                                        ? "bg-blue-600 hover:bg-blue-700 text-white"
-                                        : "bg-gray-400 text-white cursor-not-allowed",
-                                    )}
-                                  >
-                                    Scan Selected Assets
-                                  </button>
-                                </div>
-                              )}
+                                              ] || {};
+                                            const allSelected = allAssets.every(
+                                              (a) => currentSelections[a.id],
+                                            );
+                                            const newSelections: Record<
+                                              string,
+                                              boolean
+                                            > = {};
+                                            allAssets.forEach((a) => {
+                                              newSelections[a.id] =
+                                                !allSelected;
+                                            });
+                                            setCVEAssetSelections((prev) => ({
+                                              ...prev,
+                                              [`scanned-${cve.id}`]:
+                                                newSelections,
+                                            }));
+                                          }}
+                                          className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                                        >
+                                          {Object.values(
+                                            cveAssetSelections[
+                                              `scanned-${cve.id}`
+                                            ] || {},
+                                          ).every((v) => v)
+                                            ? "Deselect All"
+                                            : "Select All"}
+                                        </button>
+                                      </div>
+                                      <div className="space-y-1 max-h-32 overflow-y-auto">
+                                        {getAssociatedAssets(item.id).map(
+                                          (asset) => (
+                                            <label
+                                              key={asset.id}
+                                              className="flex items-center gap-2 cursor-pointer text-xs"
+                                            >
+                                              <input
+                                                type="checkbox"
+                                                checked={
+                                                  cveAssetSelections[
+                                                    `scanned-${cve.id}`
+                                                  ]?.[asset.id] || false
+                                                }
+                                                onChange={(e) => {
+                                                  setCVEAssetSelections(
+                                                    (prev) => ({
+                                                      ...prev,
+                                                      [`scanned-${cve.id}`]: {
+                                                        ...prev[
+                                                          `scanned-${cve.id}`
+                                                        ],
+                                                        [asset.id]:
+                                                          e.target.checked,
+                                                      },
+                                                    }),
+                                                  );
+                                                }}
+                                                className="w-4 h-4 rounded"
+                                              />
+                                              <span className="text-gray-700">
+                                                {asset.name}
+                                              </span>
+                                            </label>
+                                          ),
+                                        )}
+                                      </div>
+                                      <button
+                                        onClick={() => {
+                                          const selectedAssetIds = Object.keys(
+                                            cveAssetSelections[
+                                              `scanned-${cve.id}`
+                                            ] || {},
+                                          ).filter(
+                                            (id) =>
+                                              cveAssetSelections[
+                                                `scanned-${cve.id}`
+                                              ][id],
+                                          );
+                                          if (selectedAssetIds.length > 0) {
+                                            handleScanCVE(cve.id, item.id);
+                                            setSelectedCVEForAssets(null);
+                                          }
+                                        }}
+                                        disabled={
+                                          !Object.values(
+                                            cveAssetSelections[
+                                              `scanned-${cve.id}`
+                                            ] || {},
+                                          ).some((v) => v)
+                                        }
+                                        className={cn(
+                                          "w-full py-1.5 px-2 rounded text-xs font-medium transition-colors",
+                                          Object.values(
+                                            cveAssetSelections[
+                                              `scanned-${cve.id}`
+                                            ] || {},
+                                          ).some((v) => v)
+                                            ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                            : "bg-gray-400 text-white cursor-not-allowed",
+                                        )}
+                                      >
+                                        Scan Selected Assets
+                                      </button>
+                                    </div>
+                                  )}
 
-                              {cveResults && !isScanning && (
-                                <div className="p-2 bg-blue-100 border border-blue-300 rounded">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <span className="text-lg">✓</span>
-                                    <p className="font-semibold text-blue-900 text-xs">
-                                      Scan Complete
-                                    </p>
-                                  </div>
-                                  <div className="grid grid-cols-2 gap-2 text-xs">
-                                    <div className="bg-blue-50 rounded p-1.5">
-                                      <p className="text-gray-600 font-medium">
-                                        Assets Scanned
-                                      </p>
-                                      <p className="text-blue-900 font-bold">
-                                        {cveResults.assetsScanned}
-                                      </p>
+                                  {cveResults && !isScanning && (
+                                    <div className="p-2 bg-blue-100 border border-blue-300 rounded">
+                                      <div className="flex items-center gap-2 mb-2">
+                                        <span className="text-lg">✓</span>
+                                        <p className="font-semibold text-blue-900 text-xs">
+                                          Scan Complete
+                                        </p>
+                                      </div>
+                                      <div className="grid grid-cols-2 gap-2 text-xs">
+                                        <div className="bg-blue-50 rounded p-1.5">
+                                          <p className="text-gray-600 font-medium">
+                                            Assets Scanned
+                                          </p>
+                                          <p className="text-blue-900 font-bold">
+                                            {cveResults.assetsScanned}
+                                          </p>
+                                        </div>
+                                        <div className="bg-red-50 rounded p-1.5">
+                                          <p className="text-gray-600 font-medium">
+                                            Affected
+                                          </p>
+                                          <p className="text-red-900 font-bold">
+                                            {cveResults.affectedAssets}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      {cveResults.affectedAssets > 0 && (
+                                        <p className="text-xs text-red-700 mt-2 font-semibold">
+                                          ⚠️ {cveResults.affectedAssets}{" "}
+                                          asset(s) are vulnerable
+                                        </p>
+                                      )}
                                     </div>
-                                    <div className="bg-red-50 rounded p-1.5">
-                                      <p className="text-gray-600 font-medium">
-                                        Affected
-                                      </p>
-                                      <p className="text-red-900 font-bold">
-                                        {cveResults.affectedAssets}
-                                      </p>
-                                    </div>
-                                  </div>
-                                  {cveResults.affectedAssets > 0 && (
-                                    <p className="text-xs text-red-700 mt-2 font-semibold">
-                                      ⚠️ {cveResults.affectedAssets} asset(s)
-                                      are vulnerable
-                                    </p>
                                   )}
                                 </div>
                               )}
                             </div>
-                          )}
+                          );
+                        })}
+
+                        {/* Unscanned Threats from Market */}
+                        {marketCVEs.map((cve: any) => {
+                          const cveResults = scannedCVEs[cve.id];
+                          const isScanning = cveResults?.isScanning;
+                          const isExpanded = expandedCVE === `market-${cve.id}`;
+
+                          return (
+                            <div
+                              key={cve.id}
+                              className={cn(
+                                "border rounded-lg transition-all",
+                                cve.severity === "critical"
+                                  ? "bg-red-50 border-red-200"
+                                  : cve.severity === "high"
+                                    ? "bg-orange-50 border-orange-200"
+                                    : "bg-yellow-50 border-yellow-200",
+                              )}
+                            >
+                              <button
+                                onClick={() =>
+                                  setExpandedCVE(
+                                    isExpanded ? null : `market-${cve.id}`,
+                                  )
+                                }
+                                className="w-full text-left p-3 flex items-start gap-2 hover:opacity-80 transition-opacity"
+                              >
+                                <span className="text-lg flex-shrink-0 mt-0.5">
+                                  {cve.severity === "critical"
+                                    ? "🔴"
+                                    : cve.severity === "high"
+                                      ? "🟠"
+                                      : "🟡"}
+                                </span>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-xs text-gray-900">
+                                    {cve.id}
+                                  </p>
+                                  <p className="text-xs text-gray-700 mt-1">
+                                    {cve.title}
+                                  </p>
+                                  <div className="flex gap-2 mt-1">
+                                    <Badge className="bg-amber-200 text-amber-800 text-xs">
+                                      ⚠️ UNSCANNED
+                                    </Badge>
+                                    <span className="text-xs text-gray-700">
+                                      CVSS: {cve.score.toFixed(1)} •{" "}
+                                      {cve.severity.toUpperCase()}
+                                    </span>
+                                  </div>
+                                </div>
+                                <span className="text-gray-400 flex-shrink-0 text-lg">
+                                  {isExpanded ? "▼" : "▶"}
+                                </span>
+                              </button>
+
+                              {isExpanded && (
+                                <div className="border-t border-gray-300 border-opacity-50 p-3 space-y-3 bg-white bg-opacity-50">
+                                  {/* Description */}
+                                  <div>
+                                    <p className="text-xs font-semibold text-gray-700 mb-1">
+                                      Description
+                                    </p>
+                                    <p className="text-xs text-gray-600">
+                                      {cve.description}
+                                    </p>
+                                  </div>
+
+                                  {/* Affected Versions */}
+                                  <div>
+                                    <p className="text-xs font-semibold text-gray-700 mb-1">
+                                      Affected Versions
+                                    </p>
+                                    <p className="text-xs bg-white bg-opacity-70 rounded px-2 py-1 font-mono text-gray-700">
+                                      {cve.affected}
+                                    </p>
+                                  </div>
+
+                                  {/* CWE and Published Date */}
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div>
+                                      <p className="text-xs font-semibold text-gray-700 mb-1">
+                                        CWE
+                                      </p>
+                                      <p className="text-xs text-gray-600">
+                                        {cve.cwe}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <p className="text-xs font-semibold text-gray-700 mb-1">
+                                        Published
+                                      </p>
+                                      <p className="text-xs text-gray-600">
+                                        {cve.published}
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  {/* Action Buttons */}
+                                  <div className="flex gap-2 pt-2">
+                                    <button
+                                      onClick={() => {
+                                        if (
+                                          selectedCVEForAssets ===
+                                          `market-${cve.id}`
+                                        ) {
+                                          setSelectedCVEForAssets(null);
+                                        } else {
+                                          setSelectedCVEForAssets(
+                                            `market-${cve.id}`,
+                                          );
+                                          const assets = getAssociatedAssets(
+                                            item.id,
+                                          );
+                                          const selections: Record<
+                                            string,
+                                            boolean
+                                          > = {};
+                                          assets.forEach((a) => {
+                                            selections[a.id] = true;
+                                          });
+                                          setCVEAssetSelections((prev) => ({
+                                            ...prev,
+                                            [`market-${cve.id}`]: selections,
+                                          }));
+                                        }
+                                      }}
+                                      className="flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white"
+                                    >
+                                      <span>🔍</span>
+                                      {selectedCVEForAssets ===
+                                      `market-${cve.id}`
+                                        ? "Hide Assets"
+                                        : `Scan ${getAssociatedAssets(item.id).length} Assets`}
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        onNavigateToIncident(item.id, cve.id)
+                                      }
+                                      className="flex-1 py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                                    >
+                                      Full Details
+                                    </button>
+                                  </div>
+
+                                  {/* Asset Selection for Market CVE */}
+                                  {selectedCVEForAssets ===
+                                    `market-${cve.id}` && (
+                                    <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <label className="text-xs font-semibold text-gray-700">
+                                          Select Assets to Scan
+                                        </label>
+                                        <button
+                                          onClick={() => {
+                                            const allAssets =
+                                              getAssociatedAssets(item.id);
+                                            const currentSelections =
+                                              cveAssetSelections[
+                                                `market-${cve.id}`
+                                              ] || {};
+                                            const allSelected = allAssets.every(
+                                              (a) => currentSelections[a.id],
+                                            );
+                                            const newSelections: Record<
+                                              string,
+                                              boolean
+                                            > = {};
+                                            allAssets.forEach((a) => {
+                                              newSelections[a.id] =
+                                                !allSelected;
+                                            });
+                                            setCVEAssetSelections((prev) => ({
+                                              ...prev,
+                                              [`market-${cve.id}`]:
+                                                newSelections,
+                                            }));
+                                          }}
+                                          className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                                        >
+                                          {Object.values(
+                                            cveAssetSelections[
+                                              `market-${cve.id}`
+                                            ] || {},
+                                          ).every((v) => v)
+                                            ? "Deselect All"
+                                            : "Select All"}
+                                        </button>
+                                      </div>
+                                      <div className="space-y-1 max-h-32 overflow-y-auto">
+                                        {getAssociatedAssets(item.id).map(
+                                          (asset) => (
+                                            <label
+                                              key={asset.id}
+                                              className="flex items-center gap-2 cursor-pointer text-xs"
+                                            >
+                                              <input
+                                                type="checkbox"
+                                                checked={
+                                                  cveAssetSelections[
+                                                    `market-${cve.id}`
+                                                  ]?.[asset.id] || false
+                                                }
+                                                onChange={(e) => {
+                                                  setCVEAssetSelections(
+                                                    (prev) => ({
+                                                      ...prev,
+                                                      [`market-${cve.id}`]: {
+                                                        ...prev[
+                                                          `market-${cve.id}`
+                                                        ],
+                                                        [asset.id]:
+                                                          e.target.checked,
+                                                      },
+                                                    }),
+                                                  );
+                                                }}
+                                                className="w-4 h-4 rounded"
+                                              />
+                                              <span className="text-gray-700">
+                                                {asset.name}
+                                              </span>
+                                            </label>
+                                          ),
+                                        )}
+                                      </div>
+                                      <button
+                                        onClick={() => {
+                                          const selectedAssetIds = Object.keys(
+                                            cveAssetSelections[
+                                              `market-${cve.id}`
+                                            ] || {},
+                                          ).filter(
+                                            (id) =>
+                                              cveAssetSelections[
+                                                `market-${cve.id}`
+                                              ][id],
+                                          );
+                                          if (selectedAssetIds.length > 0) {
+                                            handleScanCVE(cve.id, item.id);
+                                            setSelectedCVEForAssets(null);
+                                          }
+                                        }}
+                                        disabled={
+                                          !Object.values(
+                                            cveAssetSelections[
+                                              `market-${cve.id}`
+                                            ] || {},
+                                          ).some((v) => v)
+                                        }
+                                        className={cn(
+                                          "w-full py-1.5 px-2 rounded text-xs font-medium transition-colors",
+                                          Object.values(
+                                            cveAssetSelections[
+                                              `market-${cve.id}`
+                                            ] || {},
+                                          ).some((v) => v)
+                                            ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                            : "bg-gray-400 text-white cursor-not-allowed",
+                                        )}
+                                      >
+                                        Scan Selected Assets
+                                      </button>
+                                    </div>
+                                  )}
+
+                                  {/* Scan Results for this CVE */}
+                                  {cveResults && !isScanning && (
+                                    <div className="p-2 bg-blue-100 border border-blue-300 rounded">
+                                      <div className="flex items-center gap-2 mb-2">
+                                        <span className="text-lg">✓</span>
+                                        <p className="font-semibold text-blue-900 text-xs">
+                                          Scan Complete
+                                        </p>
+                                      </div>
+                                      <div className="grid grid-cols-2 gap-2 text-xs">
+                                        <div className="bg-blue-50 rounded p-1.5">
+                                          <p className="text-gray-600 font-medium">
+                                            Assets Scanned
+                                          </p>
+                                          <p className="text-blue-900 font-bold">
+                                            {cveResults.assetsScanned}
+                                          </p>
+                                        </div>
+                                        <div className="bg-red-50 rounded p-1.5">
+                                          <p className="text-gray-600 font-medium">
+                                            Affected
+                                          </p>
+                                          <p className="text-red-900 font-bold">
+                                            {cveResults.affectedAssets}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      {cveResults.affectedAssets > 0 && (
+                                        <p className="text-xs text-red-700 mt-2 font-semibold">
+                                          ⚠️ {cveResults.affectedAssets}{" "}
+                                          asset(s) are vulnerable
+                                        </p>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Asset Selection and Scanning Controls - Moved after CVEs */}
+                      <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <div className="flex items-center justify-between mb-3">
+                          <label className="text-sm font-semibold text-gray-700">
+                            Select Assets to Scan
+                          </label>
+                          <button
+                            onClick={() => {
+                              const allAssets = getAssociatedAssets(item.id);
+                              const currentSelected = Object.keys(
+                                selectedAssetsForScan,
+                              ).filter(
+                                (key) => selectedAssetsForScan[key as any],
+                              );
+                              if (currentSelected.length === allAssets.length) {
+                                const newSelection = {
+                                  ...selectedAssetsForScan,
+                                };
+                                allAssets.forEach(
+                                  (a) => (newSelection[a.id as any] = false),
+                                );
+                                setSelectedAssetsForScan(newSelection);
+                              } else {
+                                const newSelection = {
+                                  ...selectedAssetsForScan,
+                                };
+                                allAssets.forEach(
+                                  (a) => (newSelection[a.id as any] = true),
+                                );
+                                setSelectedAssetsForScan(newSelection);
+                              }
+                            }}
+                            className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                          >
+                            {Object.keys(selectedAssetsForScan).length ===
+                              getAssociatedAssets(item.id).length &&
+                            Object.keys(selectedAssetsForScan).length > 0
+                              ? "Deselect All"
+                              : "Select All"}
+                          </button>
                         </div>
-                      );
-                    })}
+                        <div className="space-y-2 max-h-32 overflow-y-auto mb-3">
+                          {getAssociatedAssets(item.id).map((asset) => (
+                            <label
+                              key={asset.id}
+                              className="flex items-center gap-2 cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectedAssetsForScan[asset.id as any] ||
+                                  false
+                                }
+                                onChange={(e) =>
+                                  setSelectedAssetsForScan((prev) => ({
+                                    ...prev,
+                                    [asset.id]: e.target.checked,
+                                  }))
+                                }
+                                className="w-4 h-4 rounded"
+                              />
+                              <span className="text-xs text-gray-700">
+                                {asset.name}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
 
-                    {/* Unscanned Threats from Market */}
-                    {marketCVEs.map((cve: any) => {
-                      const cveResults = scannedCVEs[cve.id];
-                      const isScanning = cveResults?.isScanning;
-                      const isExpanded = expandedCVE === `market-${cve.id}`;
-
-                      return (
-                        <div
-                          key={cve.id}
+                        <button
+                          onClick={() => {
+                            const selectedAssetIds = Object.keys(
+                              selectedAssetsForScan,
+                            ).filter((id) => selectedAssetsForScan[id as any]);
+                            if (selectedAssetIds.length > 0) {
+                              handleScanAssets(item.id);
+                            }
+                          }}
+                          disabled={
+                            isScanning ||
+                            Object.values(selectedAssetsForScan).every(
+                              (v) => !v,
+                            )
+                          }
                           className={cn(
-                            "border rounded-lg transition-all",
-                            cve.severity === "critical"
-                              ? "bg-red-50 border-red-200"
-                              : cve.severity === "high"
-                                ? "bg-orange-50 border-orange-200"
-                                : "bg-yellow-50 border-yellow-200",
+                            "w-full font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2",
+                            isScanning ||
+                              Object.values(selectedAssetsForScan).every(
+                                (v) => !v,
+                              )
+                              ? "bg-gray-400 text-white cursor-not-allowed"
+                              : "bg-blue-600 hover:bg-blue-700 text-white",
                           )}
                         >
-                          <button
-                            onClick={() =>
-                              setExpandedCVE(
-                                isExpanded ? null : `market-${cve.id}`,
-                              )
+                          <span>{isScanning ? "⏳" : "🔍"}</span>
+                          {isScanning
+                            ? "Scanning Against Each CVEs..."
+                            : `Scan Against Each CVEs for Threat Intel`}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Associated Assets */}
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-3">
+                        Used by {getAssociatedAssets(item.id).length} Asset
+                        {getAssociatedAssets(item.id).length !== 1 ? "s" : ""}
+                      </h4>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {getAssociatedAssets(item.id).map((asset) => {
+                          const getRiskBadgeColor = (level: string) => {
+                            switch (level) {
+                              case "critical":
+                                return "bg-red-100 text-red-800";
+                              case "high":
+                                return "bg-orange-100 text-orange-800";
+                              case "medium":
+                                return "bg-yellow-100 text-yellow-800";
+                              case "low":
+                                return "bg-green-100 text-green-800";
+                              default:
+                                return "bg-gray-100 text-gray-800";
                             }
-                            className="w-full text-left p-3 flex items-start gap-2 hover:opacity-80 transition-opacity"
-                          >
-                            <span className="text-lg flex-shrink-0 mt-0.5">
-                              {cve.severity === "critical"
-                                ? "🔴"
-                                : cve.severity === "high"
-                                  ? "🟠"
-                                  : "🟡"}
-                            </span>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-xs text-gray-900">
-                                {cve.id}
-                              </p>
-                              <p className="text-xs text-gray-700 mt-1">
-                                {cve.title}
-                              </p>
-                              <div className="flex gap-2 mt-1">
-                                <Badge className="bg-amber-200 text-amber-800 text-xs">
-                                  ⚠️ UNSCANNED
+                          };
+
+                          // Get logos from tech stacks
+                          const techStackLogos = asset.techStacks
+                            .slice(0, 2)
+                            .map((ts) => ts.logo);
+
+                          return (
+                            <div
+                              key={asset.id}
+                              className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
+                              onClick={() => {
+                                onSelectAsset(asset);
+                              }}
+                            >
+                              <div className="flex items-start justify-between mb-2">
+                                <div className="flex items-center gap-2 flex-1">
+                                  <div className="flex gap-1">
+                                    {techStackLogos.map((logo, idx) => (
+                                      <span
+                                        key={idx}
+                                        className="text-lg cursor-pointer hover:scale-110 transition-transform"
+                                        title={
+                                          asset.techStacks[idx]?.name ||
+                                          "Tech Stack"
+                                        }
+                                      >
+                                        {logo}
+                                      </span>
+                                    ))}
+                                    {asset.techStacks.length > 2 && (
+                                      <span
+                                        className="text-sm font-semibold text-gray-600"
+                                        title={asset.techStacks
+                                          .slice(2)
+                                          .map((ts) => ts.name)
+                                          .join(", ")}
+                                      >
+                                        +{asset.techStacks.length - 2}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="font-semibold text-sm text-gray-900">
+                                    {asset.name}
+                                  </p>
+                                </div>
+                                <Badge
+                                  className={`${getRiskBadgeColor(asset.riskLevel)} text-xs`}
+                                >
+                                  {asset.riskLevel}
                                 </Badge>
-                                <span className="text-xs text-gray-700">
-                                  CVSS: {cve.score.toFixed(1)} •{" "}
-                                  {cve.severity.toUpperCase()}
+                              </div>
+                              <div className="space-y-1 text-xs text-gray-600">
+                                <p>
+                                  Type:{" "}
+                                  <span className="font-medium text-gray-700">
+                                    {asset.type.replace("-", " ")}
+                                  </span>
+                                </p>
+                                <p>
+                                  CVEs:{" "}
+                                  <span className="font-medium text-gray-700">
+                                    {asset.cveCount}
+                                  </span>
+                                </p>
+                                <p>
+                                  Last Updated:{" "}
+                                  <span className="font-medium text-gray-700">
+                                    {asset.lastUpdated.toLocaleDateString()}
+                                  </span>
+                                </p>
+                                {asset.isScanned && (
+                                  <p className="text-green-700">✓ Scanned</p>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Remediations */}
+                    {item.remediations && item.remediations.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-3">
+                          Recommended Remediations
+                        </h4>
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {item.remediations.map((rem: any) => (
+                            <div
+                              key={rem.id}
+                              className={cn(
+                                "p-3 rounded-lg border text-xs",
+                                rem.priority === "critical"
+                                  ? "bg-red-50 border-red-200"
+                                  : rem.priority === "high"
+                                    ? "bg-orange-50 border-orange-200"
+                                    : "bg-blue-50 border-blue-200",
+                              )}
+                            >
+                              <p className="font-semibold">{rem.title}</p>
+                              <p className="text-gray-600 mt-1">
+                                {rem.description}
+                              </p>
+                              <div className="flex items-center justify-between mt-2">
+                                <Badge
+                                  className={cn(
+                                    rem.priority === "critical"
+                                      ? "bg-red-100 text-red-800"
+                                      : rem.priority === "high"
+                                        ? "bg-orange-100 text-orange-800"
+                                        : "bg-blue-100 text-blue-800",
+                                  )}
+                                >
+                                  {rem.priority}
+                                </Badge>
+                                <span className="text-xs text-gray-500">
+                                  {rem.estimatedTime}
                                 </span>
                               </div>
                             </div>
-                            <span className="text-gray-400 flex-shrink-0 text-lg">
-                              {isExpanded ? "▼" : "▶"}
-                            </span>
-                          </button>
-
-                          {isExpanded && (
-                            <div className="border-t border-gray-300 border-opacity-50 p-3 space-y-3 bg-white bg-opacity-50">
-                              {/* Description */}
-                              <div>
-                                <p className="text-xs font-semibold text-gray-700 mb-1">
-                                  Description
-                                </p>
-                                <p className="text-xs text-gray-600">
-                                  {cve.description}
-                                </p>
-                              </div>
-
-                              {/* Affected Versions */}
-                              <div>
-                                <p className="text-xs font-semibold text-gray-700 mb-1">
-                                  Affected Versions
-                                </p>
-                                <p className="text-xs bg-white bg-opacity-70 rounded px-2 py-1 font-mono text-gray-700">
-                                  {cve.affected}
-                                </p>
-                              </div>
-
-                              {/* CWE and Published Date */}
-                              <div className="grid grid-cols-2 gap-2">
-                                <div>
-                                  <p className="text-xs font-semibold text-gray-700 mb-1">
-                                    CWE
-                                  </p>
-                                  <p className="text-xs text-gray-600">
-                                    {cve.cwe}
-                                  </p>
-                                </div>
-                                <div>
-                                  <p className="text-xs font-semibold text-gray-700 mb-1">
-                                    Published
-                                  </p>
-                                  <p className="text-xs text-gray-600">
-                                    {cve.published}
-                                  </p>
-                                </div>
-                              </div>
-
-                              {/* Action Buttons */}
-                              <div className="flex gap-2 pt-2">
-                                <button
-                                  onClick={() => {
-                                    if (
-                                      selectedCVEForAssets ===
-                                      `market-${cve.id}`
-                                    ) {
-                                      setSelectedCVEForAssets(null);
-                                    } else {
-                                      setSelectedCVEForAssets(
-                                        `market-${cve.id}`,
-                                      );
-                                      const assets = getAssociatedAssets(
-                                        item.id,
-                                      );
-                                      const selections: Record<
-                                        string,
-                                        boolean
-                                      > = {};
-                                      assets.forEach((a) => {
-                                        selections[a.id] = true;
-                                      });
-                                      setCVEAssetSelections((prev) => ({
-                                        ...prev,
-                                        [`market-${cve.id}`]: selections,
-                                      }));
-                                    }
-                                  }}
-                                  className="flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white"
-                                >
-                                  <span>🔍</span>
-                                  {selectedCVEForAssets === `market-${cve.id}`
-                                    ? "Hide Assets"
-                                    : `Scan ${getAssociatedAssets(item.id).length} Assets`}
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    onNavigateToIncident(item.id, cve.id)
-                                  }
-                                  className="flex-1 py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
-                                >
-                                  Full Details
-                                </button>
-                              </div>
-
-                              {/* Asset Selection for Market CVE */}
-                              {selectedCVEForAssets === `market-${cve.id}` && (
-                                <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
-                                  <div className="flex items-center justify-between mb-2">
-                                    <label className="text-xs font-semibold text-gray-700">
-                                      Select Assets to Scan
-                                    </label>
-                                    <button
-                                      onClick={() => {
-                                        const allAssets = getAssociatedAssets(
-                                          item.id,
-                                        );
-                                        const currentSelections =
-                                          cveAssetSelections[
-                                            `market-${cve.id}`
-                                          ] || {};
-                                        const allSelected = allAssets.every(
-                                          (a) => currentSelections[a.id],
-                                        );
-                                        const newSelections: Record<
-                                          string,
-                                          boolean
-                                        > = {};
-                                        allAssets.forEach((a) => {
-                                          newSelections[a.id] = !allSelected;
-                                        });
-                                        setCVEAssetSelections((prev) => ({
-                                          ...prev,
-                                          [`market-${cve.id}`]: newSelections,
-                                        }));
-                                      }}
-                                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                                    >
-                                      {Object.values(
-                                        cveAssetSelections[
-                                          `market-${cve.id}`
-                                        ] || {},
-                                      ).every((v) => v)
-                                        ? "Deselect All"
-                                        : "Select All"}
-                                    </button>
-                                  </div>
-                                  <div className="space-y-1 max-h-32 overflow-y-auto">
-                                    {getAssociatedAssets(item.id).map(
-                                      (asset) => (
-                                        <label
-                                          key={asset.id}
-                                          className="flex items-center gap-2 cursor-pointer text-xs"
-                                        >
-                                          <input
-                                            type="checkbox"
-                                            checked={
-                                              cveAssetSelections[
-                                                `market-${cve.id}`
-                                              ]?.[asset.id] || false
-                                            }
-                                            onChange={(e) => {
-                                              setCVEAssetSelections((prev) => ({
-                                                ...prev,
-                                                [`market-${cve.id}`]: {
-                                                  ...prev[`market-${cve.id}`],
-                                                  [asset.id]: e.target.checked,
-                                                },
-                                              }));
-                                            }}
-                                            className="w-4 h-4 rounded"
-                                          />
-                                          <span className="text-gray-700">
-                                            {asset.name}
-                                          </span>
-                                        </label>
-                                      ),
-                                    )}
-                                  </div>
-                                  <button
-                                    onClick={() => {
-                                      const selectedAssetIds = Object.keys(
-                                        cveAssetSelections[
-                                          `market-${cve.id}`
-                                        ] || {},
-                                      ).filter(
-                                        (id) =>
-                                          cveAssetSelections[
-                                            `market-${cve.id}`
-                                          ][id],
-                                      );
-                                      if (selectedAssetIds.length > 0) {
-                                        handleScanCVE(cve.id, item.id);
-                                        setSelectedCVEForAssets(null);
-                                      }
-                                    }}
-                                    disabled={
-                                      !Object.values(
-                                        cveAssetSelections[
-                                          `market-${cve.id}`
-                                        ] || {},
-                                      ).some((v) => v)
-                                    }
-                                    className={cn(
-                                      "w-full py-1.5 px-2 rounded text-xs font-medium transition-colors",
-                                      Object.values(
-                                        cveAssetSelections[
-                                          `market-${cve.id}`
-                                        ] || {},
-                                      ).some((v) => v)
-                                        ? "bg-blue-600 hover:bg-blue-700 text-white"
-                                        : "bg-gray-400 text-white cursor-not-allowed",
-                                    )}
-                                  >
-                                    Scan Selected Assets
-                                  </button>
-                                </div>
-                              )}
-
-                              {/* Scan Results for this CVE */}
-                              {cveResults && !isScanning && (
-                                <div className="p-2 bg-blue-100 border border-blue-300 rounded">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <span className="text-lg">✓</span>
-                                    <p className="font-semibold text-blue-900 text-xs">
-                                      Scan Complete
-                                    </p>
-                                  </div>
-                                  <div className="grid grid-cols-2 gap-2 text-xs">
-                                    <div className="bg-blue-50 rounded p-1.5">
-                                      <p className="text-gray-600 font-medium">
-                                        Assets Scanned
-                                      </p>
-                                      <p className="text-blue-900 font-bold">
-                                        {cveResults.assetsScanned}
-                                      </p>
-                                    </div>
-                                    <div className="bg-red-50 rounded p-1.5">
-                                      <p className="text-gray-600 font-medium">
-                                        Affected
-                                      </p>
-                                      <p className="text-red-900 font-bold">
-                                        {cveResults.affectedAssets}
-                                      </p>
-                                    </div>
-                                  </div>
-                                  {cveResults.affectedAssets > 0 && (
-                                    <p className="text-xs text-red-700 mt-2 font-semibold">
-                                      ⚠️ {cveResults.affectedAssets} asset(s)
-                                      are vulnerable
-                                    </p>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          )}
+                          ))}
                         </div>
-                      );
-                    })}
-                  </div>
+                      </div>
+                    )}
+                  </TabsContent>
 
-                  {/* Asset Selection and Scanning Controls - Moved after CVEs */}
-                  <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                    <div className="flex items-center justify-between mb-3">
-                      <label className="text-sm font-semibold text-gray-700">
-                        Select Assets to Scan
-                      </label>
-                      <button
-                        onClick={() => {
-                          const allAssets = getAssociatedAssets(item.id);
-                          const currentSelected = Object.keys(
-                            selectedAssetsForScan,
-                          ).filter((key) => selectedAssetsForScan[key as any]);
-                          if (currentSelected.length === allAssets.length) {
-                            const newSelection = { ...selectedAssetsForScan };
-                            allAssets.forEach(
-                              (a) => (newSelection[a.id as any] = false),
-                            );
-                            setSelectedAssetsForScan(newSelection);
-                          } else {
-                            const newSelection = { ...selectedAssetsForScan };
-                            allAssets.forEach(
-                              (a) => (newSelection[a.id as any] = true),
-                            );
-                            setSelectedAssetsForScan(newSelection);
-                          }
-                        }}
-                        className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                      >
-                        {Object.keys(selectedAssetsForScan).length ===
-                          getAssociatedAssets(item.id).length &&
-                        Object.keys(selectedAssetsForScan).length > 0
-                          ? "Deselect All"
-                          : "Select All"}
-                      </button>
-                    </div>
-                    <div className="space-y-2 max-h-32 overflow-y-auto mb-3">
-                      {getAssociatedAssets(item.id).map((asset) => (
-                        <label
-                          key={asset.id}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={
-                              selectedAssetsForScan[asset.id as any] || false
-                            }
-                            onChange={(e) =>
-                              setSelectedAssetsForScan((prev) => ({
-                                ...prev,
-                                [asset.id]: e.target.checked,
-                              }))
-                            }
-                            className="w-4 h-4 rounded"
-                          />
-                          <span className="text-xs text-gray-700">
-                            {asset.name}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        const selectedAssetIds = Object.keys(
-                          selectedAssetsForScan,
-                        ).filter((id) => selectedAssetsForScan[id as any]);
-                        if (selectedAssetIds.length > 0) {
-                          handleScanAssets(item.id);
-                        }
-                      }}
-                      disabled={
-                        isScanning ||
-                        Object.values(selectedAssetsForScan).every((v) => !v)
-                      }
-                      className={cn(
-                        "w-full font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2",
-                        isScanning ||
-                          Object.values(selectedAssetsForScan).every((v) => !v)
-                          ? "bg-gray-400 text-white cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-700 text-white",
-                      )}
-                    >
-                      <span>{isScanning ? "⏳" : "🔍"}</span>
-                      {isScanning
-                        ? "Scanning Against Each CVEs..."
-                        : `Scan Against Each CVEs for Threat Intel`}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Associated Assets */}
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">
-                    Used by {getAssociatedAssets(item.id).length} Asset
-                    {getAssociatedAssets(item.id).length !== 1 ? "s" : ""}
-                  </h4>
-                  <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {getAssociatedAssets(item.id).map((asset) => {
-                      const getRiskBadgeColor = (level: string) => {
-                        switch (level) {
-                          case "critical":
-                            return "bg-red-100 text-red-800";
-                          case "high":
-                            return "bg-orange-100 text-orange-800";
-                          case "medium":
-                            return "bg-yellow-100 text-yellow-800";
-                          case "low":
-                            return "bg-green-100 text-green-800";
-                          default:
-                            return "bg-gray-100 text-gray-800";
-                        }
-                      };
-
-                      // Get logos from tech stacks
-                      const techStackLogos = asset.techStacks
-                        .slice(0, 2)
-                        .map((ts) => ts.logo);
-
-                      return (
-                        <div
-                          key={asset.id}
-                          className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
-                          onClick={() => {
-                            onSelectAsset(asset);
-                          }}
-                        >
-                          <div className="flex items-start justify-between mb-2">
-                            <div className="flex items-center gap-2 flex-1">
-                              <div className="flex gap-1">
-                                {techStackLogos.map((logo, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="text-lg cursor-pointer hover:scale-110 transition-transform"
-                                    title={
-                                      asset.techStacks[idx]?.name ||
-                                      "Tech Stack"
-                                    }
-                                  >
-                                    {logo}
-                                  </span>
-                                ))}
-                                {asset.techStacks.length > 2 && (
-                                  <span
-                                    className="text-sm font-semibold text-gray-600"
-                                    title={asset.techStacks
-                                      .slice(2)
-                                      .map((ts) => ts.name)
-                                      .join(", ")}
-                                  >
-                                    +{asset.techStacks.length - 2}
-                                  </span>
-                                )}
-                              </div>
-                              <p className="font-semibold text-sm text-gray-900">
-                                {asset.name}
-                              </p>
-                            </div>
-                            <Badge
-                              className={`${getRiskBadgeColor(asset.riskLevel)} text-xs`}
-                            >
-                              {asset.riskLevel}
-                            </Badge>
-                          </div>
-                          <div className="space-y-1 text-xs text-gray-600">
-                            <p>
-                              Type:{" "}
-                              <span className="font-medium text-gray-700">
-                                {asset.type.replace("-", " ")}
-                              </span>
-                            </p>
-                            <p>
-                              CVEs:{" "}
-                              <span className="font-medium text-gray-700">
-                                {asset.cveCount}
-                              </span>
-                            </p>
-                            <p>
-                              Last Updated:{" "}
-                              <span className="font-medium text-gray-700">
-                                {asset.lastUpdated.toLocaleDateString()}
-                              </span>
-                            </p>
-                            {asset.isScanned && (
-                              <p className="text-green-700">✓ Scanned</p>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Remediations */}
-                {item.remediations && item.remediations.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">
-                      Recommended Remediations
-                    </h4>
-                    <div className="space-y-2 max-h-48 overflow-y-auto">
-                      {item.remediations.map((rem: any) => (
-                        <div
-                          key={rem.id}
-                          className={cn(
-                            "p-3 rounded-lg border text-xs",
-                            rem.priority === "critical"
-                              ? "bg-red-50 border-red-200"
-                              : rem.priority === "high"
-                                ? "bg-orange-50 border-orange-200"
-                                : "bg-blue-50 border-blue-200",
-                          )}
-                        >
-                          <p className="font-semibold">{rem.title}</p>
-                          <p className="text-gray-600 mt-1">
-                            {rem.description}
-                          </p>
-                          <div className="flex items-center justify-between mt-2">
-                            <Badge
-                              className={cn(
-                                rem.priority === "critical"
-                                  ? "bg-red-100 text-red-800"
-                                  : rem.priority === "high"
-                                    ? "bg-orange-100 text-orange-800"
-                                    : "bg-blue-100 text-blue-800",
-                              )}
-                            >
-                              {rem.priority}
-                            </Badge>
-                            <span className="text-xs text-gray-500">
-                              {rem.estimatedTime}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                  <TabsContent value="dependency-graph" className="p-6">
+                    <DependencyGraph techStack={item} />
+                  </TabsContent>
+                </Tabs>
               </>
             )}
           </div>
@@ -1548,8 +1613,4 @@ function DetailRowClickable({
       <span className="font-semibold text-gray-900">{value}</span>
     </button>
   );
-}
-
-function cn(...classes: (string | boolean | undefined)[]) {
-  return classes.filter(Boolean).join(" ");
 }
