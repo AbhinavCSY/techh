@@ -318,6 +318,7 @@ function DetailsPanel({
   // Assets have 'techStacks' property, tech stacks have 'version' property
   const isAssetItem = item && Array.isArray(item.techStacks) && !item.version;
 
+  const [activeTab, setActiveTab] = useState("overview");
   const [isScanning, setIsScanning] = useState(false);
   const [scanResults, setScanResults] = useState<any>(null);
   const [scannedCVEs, setScannedCVEs] = useState<Record<string, any>>({});
