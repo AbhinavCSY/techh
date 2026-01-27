@@ -633,8 +633,9 @@ export function DependencyGraphVisualization({
     position: { x: number; y: number },
   ) => {
     const tech = getTechDetails(nodeId, dependencyGraphData);
+    console.log(`Clicked node: ${nodeId}, Found tech:`, tech);
     setSelectedTechNode(tech);
-    setQuickInfoNode(tech || null);
+    setQuickInfoNode(tech);
     setQuickInfoPos(position);
     setShowFullDetails(false);
   };
