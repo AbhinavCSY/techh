@@ -212,11 +212,6 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
 
               if (!source || !target) return null;
 
-              const isActive =
-                selectedNode === null ||
-                selectedNode === edge.source ||
-                selectedNode === edge.target;
-
               return (
                 <g key={idx}>
                   <line
@@ -225,10 +220,9 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
                     x2={target.x ?? 0}
                     y2={target.y ?? 0}
                     stroke="#D1D5DB"
-                    strokeWidth={isActive ? 2.5 : 1.5}
+                    strokeWidth={1.5}
                     markerEnd="url(#arrowhead)"
-                    opacity={isActive ? 0.8 : 0.2}
-                    style={{ transition: "all 0.3s ease" }}
+                    opacity={0.5}
                   />
 
                   <rect
@@ -237,7 +231,7 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
                     width="70"
                     height="20"
                     fill="white"
-                    opacity={isActive ? 0.9 : 0}
+                    opacity={0.7}
                     rx="3"
                   />
 
@@ -248,8 +242,8 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
                     fontSize="11"
                     fontWeight="500"
                     fill="#374151"
-                    opacity={isActive ? 1 : 0}
-                    style={{ transition: "opacity 0.3s ease", pointerEvents: "none" }}
+                    opacity={0.7}
+                    style={{ pointerEvents: "none" }}
                   >
                     {relationshipLabels[edge.relationship] || edge.relationship}
                   </text>
