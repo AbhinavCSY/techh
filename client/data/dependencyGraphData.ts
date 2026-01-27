@@ -657,8 +657,13 @@ export const dependencyGraphData: DependencyGraphDataType = {
     // Issue relationships
     { from: "issue-cpanel-1", to: "tech-cpanel", type: "found_in" },
     { from: "issue-cpanel-1", to: "tech-hpanel", type: "found_in" },
+    { from: "issue-swagger-exposure", to: "tech-swagger", type: "found_in" },
     { from: "issue-swagger-1", to: "tech-swagger", type: "found_in" },
+    { from: "issue-swagger-ui-xss", to: "tech-swagger", type: "found_in" },
     { from: "issue-s3-1", to: "tech-s3", type: "found_in" },
+
+    // Vendor relationships
+    { from: "vendor-smartbear", to: "vendor-lf", type: "parent_of" },
   ],
 };
 
