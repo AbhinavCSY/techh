@@ -113,19 +113,222 @@ class ForceDirectedGraph {
   }
 }
 
+// Graph Renderer Component
+function GraphRenderer({
+  nodes,
+  edges,
+  width,
+  height,
+}: {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  width: number;
+  height: number;
+}) {
+  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+
+  const graph = new ForceDirectedGraph(nodes, edges, width, height);
+  const renderedNodes = graph.getNodes();
+
+  const relationshipLabels: Record<string, string> = {
+    uses: "Uses",
+    related_to: "Related To",
+    provided_by: "Provided By",
+    subsidiary_of: "Subsidiary Of",
+  };
+
+  return (
+    <svg width={width} height={height} className="w-full" style={{ maxWidth: "100%" }}>
+      <defs>
+        <marker
+          id="arrowhead"
+          markerWidth="10"
+          markerHeight="10"
+          refX="20"
+          refY="3"
+          orient="auto"
+        >
+          <polygon points="0 0, 10 3, 0 6" fill="#9CA3AF" />
+        </marker>
+      </defs>
+
+      {/* Edges */}
+      <g className="edges">
+        {edges.map((edge, idx) => {
+          const source = renderedNodes.find((n) => n.id === edge.source);
+          const target = renderedNodes.find((n) => n.id === edge.target);
+
+          if (!source || !target) return null;
+
+          const isActive =
+            selectedNode === null ||
+            selectedNode === edge.source ||
+            selectedNode === edge.target;
+
+          return (
+            <g key={idx}>
+              {/* Edge line */}
+              <line
+                x1={source.x ?? 0}
+                y1={source.y ?? 0}
+                x2={target.x ?? 0}
+                y2={target.y ?? 0}
+                stroke="#D1D5DB"
+                strokeWidth={isActive ? 2.5 : 1.5}
+                markerEnd="url(#arrowhead)"
+                opacity={isActive ? 0.8 : 0.2}
+                style={{ transition: "all 0.3s ease" }}
+              />
+
+              {/* Edge label background */}
+              <rect
+                x={(source.x ?? 0 + (target.x ?? 0)) / 2 - 35}
+                y={(source.y ?? 0 + (target.y ?? 0)) / 2 - 12}
+                width="70"
+                height="20"
+                fill="white"
+                opacity={isActive ? 0.9 : 0}
+                rx="3"
+              />
+
+              {/* Edge label */}
+              <text
+                x={(source.x ?? 0 + (target.x ?? 0)) / 2}
+                y={(source.y ?? 0 + (target.y ?? 0)) / 2 + 3}
+                textAnchor="middle"
+                fontSize="11"
+                fontWeight="500"
+                fill="#374151"
+                opacity={isActive ? 1 : 0}
+                style={{ transition: "opacity 0.3s ease", pointerEvents: "none" }}
+              >
+                {relationshipLabels[edge.relationship] || edge.relationship}
+              </text>
+            </g>
+          );
+        })}
+      </g>
+
+      {/* Nodes */}
+      <g className="nodes">
+        {renderedNodes.map((node) => {
+          const isSelected = selectedNode === node.id;
+          const isTech = node.type === "technology";
+          const isDirectAffected = node.subtype === "direct";
+
+          return (
+            <g
+              key={node.id}
+              className="cursor-pointer"
+              onClick={() => setSelectedNode(isSelected ? null : node.id)}
+            >
+              {/* Node circle background */}
+              <circle
+                cx={node.x ?? 0}
+                cy={node.y ?? 0}
+                r={isSelected ? 36 : 30}
+                fill={
+                  isTech
+                    ? isDirectAffected
+                      ? "#3B82F6"
+                      : "#818CF8"
+                    : isSelected
+                      ? "#9333EA"
+                      : "#A78BFA"
+                }
+                opacity={selectedNode === null || isSelected ? 0.95 : 0.4}
+                style={{ transition: "all 0.2s ease" }}
+                stroke={isSelected ? "#1F2937" : "none"}
+                strokeWidth={isSelected ? 3 : 0}
+              />
+
+              {/* Node inner circle (white background for icon) */}
+              <circle
+                cx={node.x ?? 0}
+                cy={node.y ?? 0}
+                r={22}
+                fill="white"
+                opacity={0.95}
+              />
+
+              {/* Node icon */}
+              {isTech ? (
+                <g
+                  transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
+                >
+                  <Package
+                    width="16"
+                    height="16"
+                    stroke="#3B82F6"
+                    fill="none"
+                    strokeWidth="1.5"
+                  />
+                </g>
+              ) : (
+                <g
+                  transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
+                >
+                  <Building2
+                    width="16"
+                    height="16"
+                    stroke="#9333EA"
+                    fill="none"
+                    strokeWidth="1.5"
+                  />
+                </g>
+              )}
+
+              {/* Node label */}
+              <text
+                x={node.x ?? 0}
+                y={(node.y ?? 0) + 48}
+                textAnchor="middle"
+                fontSize="12"
+                fontWeight={isSelected ? "700" : "500"}
+                fill="#1F2937"
+                style={{
+                  pointerEvents: "none",
+                  userSelect: "none",
+                  transition: "font-weight 0.2s ease",
+                }}
+              >
+                {node.label.split(" ").slice(0, 2).join(" ")}
+              </text>
+
+              {/* Node type label */}
+              <text
+                x={node.x ?? 0}
+                y={(node.y ?? 0) + 62}
+                textAnchor="middle"
+                fontSize="10"
+                fill="#6B7280"
+                style={{ pointerEvents: "none", userSelect: "none" }}
+              >
+                {node.subtype}
+              </text>
+            </g>
+          );
+        })}
+      </g>
+    </svg>
+  );
+}
+
 export function DependencyGraphVisualization({
   techStack,
   nodes: initialNodes,
   edges: initialEdges,
 }: DependencyGraphVisualizationProps) {
-  const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [graphData, setGraphData] = useState<{
     nodes: GraphNode[];
     edges: GraphEdge[];
   } | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const WIDTH = 800;
   const HEIGHT = 500;
+  const MODAL_WIDTH = 1200;
+  const MODAL_HEIGHT = 700;
 
   // Generate default graph if not provided
   useEffect(() => {
