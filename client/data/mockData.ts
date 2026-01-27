@@ -1120,6 +1120,62 @@ const techStackDatabase: TechStack[] = [
       behavioralIntegrity: { score: 8, riskLevel: "low" },
     },
   },
+  {
+    id: "ts-24",
+    name: "Swagger Doc",
+    type: "devops",
+    version: "3.0.3",
+    logo: "📄",
+    isEOL: false,
+    isUpgradable: true,
+    secureVersion: "3.1.0",
+    cves: [
+      {
+        id: "CVE-2023-41081",
+        severity: "medium",
+        title: "Swagger UI XSS Vulnerability",
+        score: 6.1,
+      },
+      {
+        id: "CVE-2022-21705",
+        severity: "low",
+        title: "Swagger Parser DoS",
+        score: 4.3,
+      },
+    ],
+    unscannedThreatsCount: 2,
+    riskLevel: "medium",
+    riskScore: 5.2,
+    createdAt: new Date("2024-01-22"),
+    lastUpdated: new Date("2024-02-12"),
+    license: "Apache License 2.0",
+    effectiveLicense: "Apache",
+    versionHistory: [
+      { version: "3.0.3", releaseDate: new Date("2023-11-01"), isEOL: false },
+      { version: "3.1.0", releaseDate: new Date("2024-02-15"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-24",
+        title: "Update Swagger to 3.1.0",
+        description: "Fix XSS vulnerability in Swagger UI",
+        priority: "medium",
+        estimatedTime: "2-3 hours",
+      },
+      {
+        id: "rem-25",
+        title: "Upgrade OpenAPI specification",
+        description: "Align with latest OpenAPI standards",
+        priority: "medium",
+        estimatedTime: "4-6 hours",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 9, riskLevel: "no risk" },
+      packageReliability: { score: 8, riskLevel: "low" },
+      behavioralIntegrity: { score: 8, riskLevel: "low" },
+    },
+  },
 ];
 
 // Common CVEs for reference
