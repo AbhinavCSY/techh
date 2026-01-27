@@ -552,10 +552,10 @@ function GraphRenderer({
                   {/* Primary label - Full name */}
                   <text
                     x={node.x ?? 0}
-                    y={(node.y ?? 0) + (radius + 20)}
+                    y={(node.y ?? 0) + (radius + 28)}
                     textAnchor="middle"
-                    fontSize="12"
-                    fontWeight="700"
+                    fontSize="11"
+                    fontWeight="600"
                     fill="#1F2937"
                     style={{
                       pointerEvents: "none",
@@ -563,16 +563,16 @@ function GraphRenderer({
                       maxWidth: "150px",
                     }}
                   >
-                    {node.label}
+                    {node.label.length > 20 ? node.label.substring(0, 20) + "..." : node.label}
                   </text>
 
                   {/* Secondary label/type */}
                   {!isIssue && (
                     <text
                       x={node.x ?? 0}
-                      y={(node.y ?? 0) + (radius + 35)}
+                      y={(node.y ?? 0) + (radius + 42)}
                       textAnchor="middle"
-                      fontSize="10"
+                      fontSize="9"
                       fill="#9CA3AF"
                       style={{ pointerEvents: "none", userSelect: "none" }}
                     >
