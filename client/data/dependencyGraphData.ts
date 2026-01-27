@@ -128,9 +128,10 @@ export const dependencyGraphData: DependencyGraphDataType = {
       master_node: true,
       abstraction_level: "service",
       category: "cloud-service",
+      is_derived: false,
       versions: [
         {
-          version: "current",
+          version: "N/A",
           eol: false,
           cves: [],
         },
