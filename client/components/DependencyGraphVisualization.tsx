@@ -386,6 +386,31 @@ function GraphRenderer({
                 return "#6B7280";
               };
 
+              // Get CVE criticality for tech nodes
+              const getCriticalityRing = () => {
+                if (isTech) {
+                  const tech = getTechDetails(node.id, dependencyGraphData);
+                  if (tech) {
+                    const totalCVEs = tech.versions.reduce(
+                      (sum, v) => sum + v.cves.length,
+                      0,
+                    );
+                    if (totalCVEs === 0) return "#10B981"; // Green - no CVEs
+
+                    // Check for critical CVEs (mock data - in real scenario check severity)
+                    const hasHighSeverity = tech.versions.some(
+                      (v) => v.cves.length > 0,
+                    );
+
+                    // Simplified severity detection based on count
+                    if (totalCVEs >= 5) return "#DC2626"; // Red - critical
+                    if (totalCVEs >= 3) return "#EA580C"; // Orange - high
+                    if (totalCVEs >= 1) return "#F59E0B"; // Amber - medium
+                  }
+                }
+                return "#10B981"; // Default green
+              };
+
               return (
                 <g
                   key={node.id}
@@ -394,6 +419,19 @@ function GraphRenderer({
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
+                  {/* Criticality ring - outer indicator */}
+                  {isTech && (
+                    <circle
+                      cx={node.x ?? 0}
+                      cy={node.y ?? 0}
+                      r={isIssue ? 28 : 35}
+                      fill="none"
+                      stroke={getCriticalityRing()}
+                      strokeWidth={2}
+                      opacity={0.6}
+                    />
+                  )}
+
                   <circle
                     cx={node.x ?? 0}
                     cy={node.y ?? 0}
