@@ -19,58 +19,33 @@ export function NodeQuickInfo({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Use a small delay to ensure the DOM has rendered before measuring
-    const timer = setTimeout(() => {
+    // Use requestAnimationFrame to ensure accurate measurements
+    const measureAndPosition = () => {
       if (!dropdownRef.current) return;
 
-      const rect = dropdownRef.current.getBoundingClientRect();
-      const popupWidth = Math.max(rect.width, 320); // Use actual width or default to 320
-      const popupHeight = Math.max(rect.height, 220); // Use actual height or default to 220
-      const offsetX = 15; // Offset from click point
-      const offsetY = 15;
-      const margin = 20; // Margin from screen edges
+      const element = dropdownRef.current;
+      const width = element.offsetWidth || 320;
+      const height = element.offsetHeight || 220;
+
+      const offsetX = 12;
+      const offsetY = 12;
+      const margin = 10;
 
       let x = position.x + offsetX;
       let y = position.y + offsetY;
 
-      // Calculate available space on each side
-      const spaceRight = window.innerWidth - (position.x + offsetX);
-      const spaceLeft = position.x - offsetX;
-      const spaceBelow = window.innerHeight - (position.y + offsetY);
-      const spaceAbove = position.y - offsetY;
+      // Hard clamps to keep popup in viewport
+      x = Math.max(margin, x);
+      x = Math.min(window.innerWidth - width - margin, x);
 
-      // Horizontal positioning - choose side with more space
-      if (spaceRight >= popupWidth + margin) {
-        // Enough space on right
-        x = position.x + offsetX;
-      } else if (spaceLeft >= popupWidth + margin) {
-        // Enough space on left
-        x = position.x - popupWidth - offsetX;
-      } else {
-        // Not enough space on either side, center horizontally
-        x = window.innerWidth / 2 - popupWidth / 2;
-      }
-
-      // Clamp horizontal position to ensure it stays in bounds
-      x = Math.max(margin, Math.min(x, window.innerWidth - popupWidth - margin));
-
-      // Vertical positioning - choose side with more space
-      if (spaceBelow >= popupHeight + margin) {
-        // Enough space below
-        y = position.y + offsetY;
-      } else if (spaceAbove >= popupHeight + margin) {
-        // Enough space above
-        y = position.y - popupHeight - offsetY;
-      } else {
-        // Not enough space on either side, center vertically
-        y = window.innerHeight / 2 - popupHeight / 2;
-      }
-
-      // Clamp vertical position to ensure it stays in bounds
-      y = Math.max(margin, Math.min(y, window.innerHeight - popupHeight - margin));
+      y = Math.max(margin, y);
+      y = Math.min(window.innerHeight - height - margin, y);
 
       setAdjustedPos({ x, y });
-    }, 0);
+    };
+
+    // Try measuring with a small delay first
+    const timer = setTimeout(measureAndPosition, 50);
 
     return () => clearTimeout(timer);
   }, [position]);
