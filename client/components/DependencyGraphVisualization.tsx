@@ -445,9 +445,11 @@ function GraphRenderer({
               const handleNodeMouseDown = (e: React.MouseEvent<SVGGElement>) => {
                 // Start dragging the node
                 setDraggedNodeId(node.id);
+                // Use current position from nodePositions state, not the original node position
+                const currentPos = nodePositions.get(node.id) || { x: node.x ?? 0, y: node.y ?? 0 };
                 setDragStart({
-                  x: e.clientX - (pan.x + (node.x ?? 0) * zoom),
-                  y: e.clientY - (pan.y + (node.y ?? 0) * zoom)
+                  x: e.clientX - (pan.x + currentPos.x * zoom),
+                  y: e.clientY - (pan.y + currentPos.y * zoom)
                 });
                 e.preventDefault();
               };
