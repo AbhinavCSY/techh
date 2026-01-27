@@ -255,7 +255,6 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
           {/* Nodes */}
           <g className="nodes">
             {renderedNodes.map((node) => {
-              const isSelected = selectedNode === node.id;
               const isTech = node.type === "technology";
               const isDirectAffected = node.subtype === "direct";
 
@@ -263,7 +262,6 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
                 if (isTech) {
                   onTechNodeClick?.(node.id);
                 }
-                setSelectedNode(isSelected ? null : node.id);
               };
 
               const handleMouseEnter = (e: React.MouseEvent<SVGGElement>) => {
@@ -295,20 +293,15 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
                   <circle
                     cx={node.x ?? 0}
                     cy={node.y ?? 0}
-                    r={isSelected ? 36 : 30}
+                    r={30}
                     fill={
                       isTech
                         ? isDirectAffected
                           ? "#3B82F6"
                           : "#818CF8"
-                        : isSelected
-                          ? "#9333EA"
-                          : "#A78BFA"
+                        : "#A78BFA"
                     }
-                    opacity={selectedNode === null || isSelected ? 0.95 : 0.4}
-                    style={{ transition: "all 0.2s ease" }}
-                    stroke={isSelected ? "#1F2937" : "none"}
-                    strokeWidth={isSelected ? 3 : 0}
+                    opacity={0.95}
                   />
 
                   <circle
@@ -350,12 +343,11 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
                     y={(node.y ?? 0) + 48}
                     textAnchor="middle"
                     fontSize="12"
-                    fontWeight={isSelected ? "700" : "500"}
+                    fontWeight="500"
                     fill="#1F2937"
                     style={{
                       pointerEvents: "none",
                       userSelect: "none",
-                      transition: "font-weight 0.2s ease",
                     }}
                   >
                     {node.label.split(" ").slice(0, 2).join(" ")}
