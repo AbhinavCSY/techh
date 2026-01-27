@@ -513,12 +513,14 @@ export const dependencyGraphData: DependencyGraphDataType = {
       id: "vendor-smartbear",
       name: "SmartBear Software",
       products: ["tech-swagger"],
+      vendor_depth: "Primary",
       vendor_type: "software_vendor",
     },
     {
       id: "vendor-lf",
       name: "Linux Foundation",
       products: ["tech-openapi"],
+      vendor_depth: "Parent",
       vendor_type: "foundation",
     },
     {
