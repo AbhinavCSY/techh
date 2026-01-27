@@ -36,6 +36,8 @@ const techNameToGraphId: Record<string, string> = {
   "Kubernetes": "tech-kubernetes",
   "Swagger": "tech-swagger",
   "Swagger Doc": "tech-swagger",
+  "Amazon S3 Bucket": "tech-s3",
+  "Amazon S3": "tech-s3",
 };
 
 export function DependencyGraph({ techStack }: DependencyGraphProps) {
