@@ -58,7 +58,11 @@ export function initializePassword(): string | null {
     const encrypted = encryptPassword(process.env.APP_PASSWORD);
     fs.writeFileSync(
       PASSWORD_FILE,
-      JSON.stringify({ encrypted, createdAt: new Date().toISOString() }, null, 2),
+      JSON.stringify(
+        { encrypted, createdAt: new Date().toISOString() },
+        null,
+        2,
+      ),
     );
 
     console.log("\n=== APP PASSWORD INITIALIZED ===");
