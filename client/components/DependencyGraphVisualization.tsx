@@ -513,12 +513,18 @@ function GraphRenderer({
               const radius = getNodeRadius();
               const innerRadius = Math.max(radius - 8, 12);
 
+              // Get position from nodePositions state if available, otherwise use node position
+              const nodePos = nodePositions.get(node.id) || { x: node.x ?? 0, y: node.y ?? 0 };
+              const nodeX = nodePos.x;
+              const nodeY = nodePos.y;
+
               return (
                 <g
                   key={node.id}
-                  className="cursor-pointer node-group"
+                  className={`cursor-move node-group ${draggedNodeId === node.id ? "opacity-75" : ""}`}
                   style={{ pointerEvents: "auto" }}
                   onClick={handleNodeClick}
+                  onMouseDown={handleNodeMouseDown}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
