@@ -578,34 +578,35 @@ export function DependencyGraphVisualization({
 
       {/* Fullscreen View */}
       {isFullscreen && (
-        <div className="fixed inset-0 z-50 bg-black flex flex-col">
+        <div className="fixed inset-0 z-50 bg-white flex flex-col">
           {/* Header */}
-          <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 flex items-center justify-between shadow-lg">
             <div>
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold">
                 Dependency Graph - {techStack.name}
               </h2>
-              <p className="text-sm text-gray-600 mt-1">
-                Drag to pan • Scroll to zoom • Click nodes to highlight
+              <p className="text-blue-100 mt-1 text-sm">
+                Drag to pan • Scroll to zoom • Hover for labels • Click nodes for details
               </p>
             </div>
             <button
               onClick={() => setIsFullscreen(false)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-blue-500 rounded-lg transition-colors bg-blue-500 bg-opacity-50"
               title="Exit fullscreen"
             >
-              <X width="24" height="24" className="text-gray-600" />
+              <X width="28" height="28" className="text-white" />
             </button>
           </div>
 
           {/* Graph Container */}
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden bg-gray-50">
             <GraphRenderer
               nodes={graphData.nodes}
               edges={graphData.edges}
               width={windowSize.width}
-              height={windowSize.height - 80}
+              height={windowSize.height - 100}
               onTechNodeClick={handleTechNodeClick}
+              showTooltips={true}
             />
           </div>
         </div>
