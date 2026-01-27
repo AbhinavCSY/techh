@@ -557,30 +557,31 @@ function GraphRenderer({
                     </g>
                   )}
 
-                  {/* Primary label */}
+                  {/* Primary label - Full name */}
                   <text
                     x={node.x ?? 0}
-                    y={(node.y ?? 0) + (radius + 18)}
+                    y={(node.y ?? 0) + (radius + 20)}
                     textAnchor="middle"
-                    fontSize="13"
+                    fontSize="12"
                     fontWeight="700"
                     fill="#1F2937"
                     style={{
                       pointerEvents: "none",
                       userSelect: "none",
+                      maxWidth: "150px",
                     }}
                   >
-                    {isIssue ? node.label : node.label.split(" ").slice(0, 1).join(" ")}
+                    {node.label}
                   </text>
 
                   {/* Secondary label/type */}
                   {!isIssue && (
                     <text
                       x={node.x ?? 0}
-                      y={(node.y ?? 0) + (radius + 32)}
+                      y={(node.y ?? 0) + (radius + 35)}
                       textAnchor="middle"
-                      fontSize="11"
-                      fill="#6B7280"
+                      fontSize="10"
+                      fill="#9CA3AF"
                       style={{ pointerEvents: "none", userSelect: "none" }}
                     >
                       {node.subtype || "node"}
