@@ -21,6 +21,8 @@ import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { DependencyGraph } from "@/components/DependencyGraph";
 import { cn } from "@/lib/utils";
 
 export default function Index() {
