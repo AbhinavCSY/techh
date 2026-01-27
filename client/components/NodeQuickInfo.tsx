@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Expand, AlertCircle, CalendarX } from "lucide-react";
+import { Expand, AlertCircle, CalendarX, X } from "lucide-react";
 import { Technology } from "@/data/dependencyGraphData";
 
 interface NodeQuickInfoProps {
