@@ -225,6 +225,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 3.5,
     createdAt: new Date("2024-02-01"),
+    lastUpdated: new Date("2024-02-14"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -260,6 +261,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.8,
     createdAt: new Date("2023-12-20"),
+    lastUpdated: new Date("2024-02-12"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -295,6 +297,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.5,
     createdAt: new Date("2024-01-05"),
+    lastUpdated: new Date("2024-02-11"),
     license: "PostgreSQL License",
     effectiveLicense: "PostgreSQL License",
     versionHistory: [
@@ -331,6 +334,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "medium",
     riskScore: 5.2,
     createdAt: new Date("2024-01-20"),
+    lastUpdated: new Date("2024-02-13"),
     license: "BSD License",
     effectiveLicense: "BSD 3",
     versionHistory: [
@@ -366,6 +370,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.5,
     createdAt: new Date("2024-01-25"),
+    lastUpdated: new Date("2024-02-10"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -401,6 +406,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 2.1,
     createdAt: new Date("2024-02-05"),
+    lastUpdated: new Date("2024-02-16"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -439,6 +445,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 1.8,
     createdAt: new Date("2024-02-10"),
+    lastUpdated: new Date("2024-02-15"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -465,6 +472,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "medium",
     riskScore: 4.2,
     createdAt: new Date("2024-01-30"),
+    lastUpdated: new Date("2024-02-09"),
     license: "SSPL/Community",
     effectiveLicense: "Other",
     versionHistory: [
@@ -519,6 +527,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.8,
     createdAt: new Date("2024-01-20"),
+    lastUpdated: new Date("2024-02-08"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -568,6 +577,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 8.9,
     createdAt: new Date("2024-01-18"),
+    lastUpdated: new Date("2024-02-07"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -616,6 +626,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.2,
     createdAt: new Date("2024-01-12"),
+    lastUpdated: new Date("2024-02-06"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -658,6 +669,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.5,
     createdAt: new Date("2024-01-08"),
+    lastUpdated: new Date("2024-02-05"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -706,6 +718,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 6.8,
     createdAt: new Date("2024-01-10"),
+    lastUpdated: new Date("2024-02-12"),
     license: "BSD License",
     effectiveLicense: "BSD 3",
     versionHistory: [
@@ -760,6 +773,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 8.9,
     createdAt: new Date("2023-12-15"),
+    lastUpdated: new Date("2024-02-04"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -808,6 +822,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.8,
     createdAt: new Date("2023-11-20"),
+    lastUpdated: new Date("2024-02-03"),
     license: "GPL",
     effectiveLicense: "Other",
     versionHistory: [
@@ -850,6 +865,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "medium",
     riskScore: 5.5,
     createdAt: new Date("2024-01-05"),
+    lastUpdated: new Date("2024-02-14"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -898,6 +914,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.2,
     createdAt: new Date("2023-10-01"),
+    lastUpdated: new Date("2024-02-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -940,6 +957,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 6.5,
     createdAt: new Date("2024-01-12"),
+    lastUpdated: new Date("2024-02-13"),
     license: "BSD License",
     effectiveLicense: "BSD 3",
     versionHistory: [
@@ -982,6 +1000,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.4,
     createdAt: new Date("2024-01-08"),
+    lastUpdated: new Date("2024-02-11"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -1030,6 +1049,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.5,
     createdAt: new Date("2023-12-10"),
+    lastUpdated: new Date("2024-02-10"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -1078,6 +1098,7 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 6.8,
     createdAt: new Date("2024-01-15"),
+    lastUpdated: new Date("2024-02-09"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
