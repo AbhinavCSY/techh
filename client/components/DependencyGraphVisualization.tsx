@@ -225,6 +225,15 @@ function GraphRenderer({
     }
   };
 
+  // Initialize node positions
+  useEffect(() => {
+    const positions = new Map<string, {x: number, y: number}>();
+    renderedNodes.forEach((node) => {
+      positions.set(node.id, { x: node.x ?? 0, y: node.y ?? 0 });
+    });
+    setNodePositions(positions);
+  }, [renderedNodes]);
+
   // Track Space key for dragging
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
