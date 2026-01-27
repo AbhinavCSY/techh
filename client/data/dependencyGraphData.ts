@@ -45,6 +45,7 @@ export interface Vendor {
   name: string;
   products: string[];
   parent_vendor?: string;
+  vendor_depth?: "Primary" | "Parent";
   vendor_type?:
     | "cloud_provider"
     | "software_vendor"
