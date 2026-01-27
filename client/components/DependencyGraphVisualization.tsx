@@ -629,7 +629,7 @@ export function DependencyGraphVisualization({
                 Dependency Graph - {techStack.name}
               </h2>
               <p className="text-blue-100 mt-1 text-sm">
-                Drag to pan • Scroll to zoom • Hover for labels • Click nodes for details
+                Middle-click drag to pan • Space+drag to pan • Scroll to zoom • Hover for labels • Click nodes for details
               </p>
             </div>
             <button
