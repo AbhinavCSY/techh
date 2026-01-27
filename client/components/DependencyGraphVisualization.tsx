@@ -550,7 +550,7 @@ function GraphRenderer({
                   {/* Node icon */}
                   {isIssue ? (
                     <g
-                      transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
+                      transform={`translate(${nodeX - 8}, ${nodeY - 8})`}
                     >
                       <text
                         x="8"
@@ -565,7 +565,7 @@ function GraphRenderer({
                     </g>
                   ) : isTech ? (
                     <g
-                      transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
+                      transform={`translate(${nodeX - 8}, ${nodeY - 8})`}
                     >
                       <Package
                         width="16"
@@ -577,7 +577,7 @@ function GraphRenderer({
                     </g>
                   ) : (
                     <g
-                      transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
+                      transform={`translate(${nodeX - 8}, ${nodeY - 8})`}
                     >
                       <Building2
                         width="16"
