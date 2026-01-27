@@ -225,14 +225,17 @@ function GraphRenderer({
     }
   };
 
-  // Initialize node positions
+  // Initialize node positions - only once when renderedNodes first load
   useEffect(() => {
-    const positions = new Map<string, {x: number, y: number}>();
-    renderedNodes.forEach((node) => {
-      positions.set(node.id, { x: node.x ?? 0, y: node.y ?? 0 });
-    });
-    setNodePositions(positions);
-  }, [renderedNodes]);
+    // Only initialize if we haven't set positions yet
+    if (nodePositions.size === 0 && renderedNodes.length > 0) {
+      const positions = new Map<string, {x: number, y: number}>();
+      renderedNodes.forEach((node) => {
+        positions.set(node.id, { x: node.x ?? 0, y: node.y ?? 0 });
+      });
+      setNodePositions(positions);
+    }
+  }, [renderedNodes, nodePositions.size]);
 
   // Track Space key for dragging
   useEffect(() => {
