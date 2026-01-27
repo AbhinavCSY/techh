@@ -119,7 +119,7 @@ interface GraphRendererProps {
   edges: GraphEdge[];
   width: number;
   height: number;
-  onTechNodeClick?: (nodeId: string) => void;
+  onTechNodeClick?: (nodeId: string, position: { x: number; y: number }) => void;
   showTooltips?: boolean;
 }
 
