@@ -7,6 +7,7 @@ interface NodeQuickInfoProps {
   position: { x: number; y: number };
   onExpand: () => void;
   onClose: () => void;
+  containerRef?: React.RefObject<HTMLDivElement>;
 }
 
 export function NodeQuickInfo({
@@ -14,6 +15,7 @@ export function NodeQuickInfo({
   position,
   onExpand,
   onClose,
+  containerRef,
 }: NodeQuickInfoProps) {
   const [adjustedPos, setAdjustedPos] = useState({ x: 0, y: 0 });
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -34,21 +36,46 @@ export function NodeQuickInfo({
       let x = position.x + offsetX;
       let y = position.y + offsetY;
 
-      // Hard clamps to keep popup in viewport
-      x = Math.max(margin, x);
-      x = Math.min(window.innerWidth - width - margin, x);
+      // If containerRef is provided, clamp to container bounds, otherwise clamp to viewport
+      if (containerRef?.current) {
+        const container = containerRef.current;
+        const containerRect = container.getBoundingClientRect();
 
-      y = Math.max(margin, y);
-      y = Math.min(window.innerHeight - height - margin, y);
+        // Convert viewport-based position to container-relative position
+        let containerRelativeX = position.x - containerRect.left;
+        let containerRelativeY = position.y - containerRect.top;
 
-      setAdjustedPos({ x, y });
+        // Clamp to container bounds
+        x = Math.max(margin, containerRelativeX + offsetX);
+        x = Math.min(
+          container.offsetWidth - width - margin,
+          containerRelativeX + offsetX,
+        );
+
+        y = Math.max(margin, containerRelativeY + offsetY);
+        y = Math.min(
+          container.offsetHeight - height - margin,
+          containerRelativeY + offsetY,
+        );
+
+        setAdjustedPos({ x, y });
+      } else {
+        // Hard clamps to keep popup in viewport (original behavior)
+        x = Math.max(margin, x);
+        x = Math.min(window.innerWidth - width - margin, x);
+
+        y = Math.max(margin, y);
+        y = Math.min(window.innerHeight - height - margin, y);
+
+        setAdjustedPos({ x, y });
+      }
     };
 
     // Try measuring with a small delay first
     const timer = setTimeout(measureAndPosition, 50);
 
     return () => clearTimeout(timer);
-  }, [position]);
+  }, [position, containerRef]);
 
   if (!tech) return null;
 
