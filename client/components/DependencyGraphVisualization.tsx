@@ -531,7 +531,7 @@ export function DependencyGraphVisualization({
       {/* Normal View */}
       {!isFullscreen && (
         <div className="space-y-4">
-          {/* Header with Expand Button */}
+          {/* Header with Buttons */}
           <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div>
               <h3 className="font-semibold text-gray-900 mb-1">Dependency Graph</h3>
@@ -539,23 +539,23 @@ export function DependencyGraphVisualization({
                 Force-directed visualization of {techStack.name} ecosystem
               </p>
             </div>
-            <button
-              onClick={() => setIsFullscreen(!isFullscreen)}
-              className="flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
-              title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-            >
-              {isFullscreen ? (
-                <>
-                  <Minimize2 width="18" height="18" />
-                  <span className="text-sm font-medium">Exit Fullscreen</span>
-                </>
-              ) : (
-                <>
-                  <Maximize2 width="18" height="18" />
-                  <span className="text-sm font-medium">Fullscreen</span>
-                </>
-              )}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowLegend(true)}
+                className="p-2 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors"
+                title="Show legend"
+              >
+                <Info width="20" height="20" />
+              </button>
+              <button
+                onClick={handleFullscreenClick}
+                className="flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+                title="Open fullscreen"
+              >
+                <Maximize2 width="18" height="18" />
+                <span className="text-sm font-medium">Fullscreen</span>
+              </button>
+            </div>
           </div>
 
           {/* Graph Container */}
@@ -566,33 +566,14 @@ export function DependencyGraphVisualization({
               width={WIDTH}
               height={500}
               onTechNodeClick={handleTechNodeClick}
+              showTooltips={true}
             />
-          </div>
-
-          {/* Legend */}
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-blue-500" />
-              <span>Direct Tech</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-indigo-500" />
-              <span>Related Tech</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-purple-500" />
-              <span>Primary Vendor</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-violet-500" />
-              <span>Parent Company</span>
-            </div>
           </div>
 
           {/* Info */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
             <p className="font-medium mb-1">💡 Interactive Graph</p>
-            <p>Click on any node to highlight connections. Use Fullscreen mode for pan/zoom.</p>
+            <p>Hover over nodes to see names • Click nodes to see details • Click the info icon to see legend</p>
           </div>
         </div>
       )}
