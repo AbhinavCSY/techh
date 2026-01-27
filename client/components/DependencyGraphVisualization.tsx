@@ -148,12 +148,36 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
   };
 
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    // Allow dragging with middle mouse button or left click with Space key
-    if (e.button === 1 || (e.button === 0 && e.spaceKey)) {
+    // Allow dragging with middle mouse button (button 1) or left click with Space key held
+    if (e.button === 1 || (e.button === 0 && spacePressed.current)) {
       setIsDragging(true);
       setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
     }
   };
+
+  // Track Space key for dragging
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        spacePressed.current = true;
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        spacePressed.current = false;
+        setIsDragging(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
     if (isDragging) {
