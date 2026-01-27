@@ -247,7 +247,7 @@ export const dependencyGraphData: DependencyGraphDataType = {
         {
           version: "9.0.70",
           eol: false,
-          cves: ["CVE-2022-42252"],
+          cves: ["CVE-2023-45648", "CVE-2021-50129"],
         },
       ],
     },
