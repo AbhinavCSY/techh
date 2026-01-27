@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Package, Building2, Minimize2, X, ZoomIn, ZoomOut, Home, Maximize2 } from "lucide-react";
+import { Package, Building2, Minimize2, X, ZoomIn, ZoomOut, Home, Maximize2, Info } from "lucide-react";
 import { NodeDetailsPopup } from "./NodeDetailsPopup";
+import { LegendModal } from "./LegendModal";
 import { getTechDetails, Technology, dependencyGraphData } from "@/data/dependencyGraphData";
 
 interface GraphNode {
