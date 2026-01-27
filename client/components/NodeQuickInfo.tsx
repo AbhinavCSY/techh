@@ -33,34 +33,28 @@ export function NodeQuickInfo({
       const offsetY = 12;
       const margin = 10;
 
-      let x = position.x + offsetX;
-      let y = position.y + offsetY;
-
       // If containerRef is provided, clamp to container bounds, otherwise clamp to viewport
       if (containerRef?.current) {
         const container = containerRef.current;
         const containerRect = container.getBoundingClientRect();
 
         // Convert viewport-based position to container-relative position
-        let containerRelativeX = position.x - containerRect.left;
-        let containerRelativeY = position.y - containerRect.top;
+        let x = position.x - containerRect.left + offsetX;
+        let y = position.y - containerRect.top + offsetY;
 
         // Clamp to container bounds
-        x = Math.max(margin, containerRelativeX + offsetX);
-        x = Math.min(
-          container.offsetWidth - width - margin,
-          containerRelativeX + offsetX,
-        );
+        x = Math.max(margin, x);
+        x = Math.min(container.offsetWidth - width - margin, x);
 
-        y = Math.max(margin, containerRelativeY + offsetY);
-        y = Math.min(
-          container.offsetHeight - height - margin,
-          containerRelativeY + offsetY,
-        );
+        y = Math.max(margin, y);
+        y = Math.min(container.offsetHeight - height - margin, y);
 
         setAdjustedPos({ x, y });
       } else {
         // Hard clamps to keep popup in viewport (original behavior)
+        let x = position.x + offsetX;
+        let y = position.y + offsetY;
+
         x = Math.max(margin, x);
         x = Math.min(window.innerWidth - width - margin, x);
 
