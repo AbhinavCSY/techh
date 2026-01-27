@@ -132,8 +132,11 @@ function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showToolt
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const graph = new ForceDirectedGraph(nodes, edges, width, height);
-  const renderedNodes = graph.getNodes();
+  // Create graph only once and cache it - prevents nodes from jumping
+  const renderedNodes = useMemo(() => {
+    const graph = new ForceDirectedGraph(nodes, edges, width, height);
+    return graph.getNodes();
+  }, [nodes, edges, width, height]);
 
   const relationshipLabels: Record<string, string> = {
     uses: "Uses",
