@@ -728,28 +728,33 @@ export function buildGraphForTech(
   });
   visitedNodes.add(techId);
 
-  // Find issues affecting this technology
-  const affectingIssues = data.relationships
-    .filter((r) => r.type === "found_in" && r.to === techId)
-    .map((r) => r.from);
+  // Helper function to add issues for a tech node
+  const addIssuesForTech = (targetTechId: string) => {
+    const affectingIssues = data.relationships
+      .filter((r) => r.type === "found_in" && r.to === targetTechId)
+      .map((r) => r.from);
 
-  affectingIssues.forEach((issueId) => {
-    const issue = data.issues.find((i) => i.id === issueId);
-    if (issue && !visitedNodes.has(issueId)) {
-      nodes.push({
-        id: issueId,
-        label: `${issue.type.toUpperCase()}: ${issue.title}`,
-        type: "issue",
-        subtype: issue.severity,
-      });
-      edges.push({
-        source: issueId,
-        target: techId,
-        relationship: "found_in",
-      });
-      visitedNodes.add(issueId);
-    }
-  });
+    affectingIssues.forEach((issueId) => {
+      const issue = data.issues.find((i) => i.id === issueId);
+      if (issue && !visitedNodes.has(issueId)) {
+        nodes.push({
+          id: issueId,
+          label: `${issue.type.toUpperCase()}: ${issue.title}`,
+          type: "issue",
+          subtype: issue.severity,
+        });
+        edges.push({
+          source: issueId,
+          target: targetTechId,
+          relationship: "found_in",
+        });
+        visitedNodes.add(issueId);
+      }
+    });
+  };
+
+  // Find issues affecting main technology
+  addIssuesForTech(techId);
 
   // Find technologies that depend on this tech
   const dependentTechs = data.relationships
