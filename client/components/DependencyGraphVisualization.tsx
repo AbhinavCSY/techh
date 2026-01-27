@@ -632,12 +632,17 @@ export function DependencyGraphVisualization({
     nodeId: string,
     position: { x: number; y: number },
   ) => {
+    console.log(`=== Node Click ===`);
+    console.log(`Clicked node ID: ${nodeId}`);
+
     let tech = getTechDetails(nodeId, dependencyGraphData);
-    console.log(`Clicked node: ${nodeId}, Found tech:`, tech);
+    console.log(`getTechDetails result:`, tech);
 
     // If tech is not found, try to find it by matching against the graph data
     if (!tech && initialNodes) {
       const clickedNode = initialNodes.find((n) => n.id === nodeId);
+      console.log(`Found node in initialNodes:`, clickedNode);
+
       if (clickedNode) {
         // Look for tech by name in the dependencyGraphData
         tech = dependencyGraphData.technologies.find(
@@ -645,8 +650,15 @@ export function DependencyGraphVisualization({
             t.product.toLowerCase() === clickedNode.label.toLowerCase() ||
             t.id === clickedNode.label.toLowerCase().replace(/\s+/g, "-")
         );
-        console.log(`Searched by label: ${clickedNode.label}, Found:`, tech);
+        console.log(`Searched by label "${clickedNode.label}", Found:`, tech);
       }
+    }
+
+    if (tech) {
+      console.log(`Setting tech node:`, tech.product);
+      console.log(`CVEs:`, tech.versions.flatMap(v => v.cves));
+    } else {
+      console.log(`WARNING: Tech not found for node ${nodeId}`);
     }
 
     setSelectedTechNode(tech);
