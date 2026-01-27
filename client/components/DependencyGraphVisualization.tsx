@@ -530,8 +530,8 @@ function GraphRenderer({
                 >
                   {/* Outer colored circle */}
                   <circle
-                    cx={node.x ?? 0}
-                    cy={node.y ?? 0}
+                    cx={nodeX}
+                    cy={nodeY}
                     r={radius}
                     fill={getNodeColor()}
                     opacity={0.9}
@@ -540,8 +540,8 @@ function GraphRenderer({
 
                   {/* Inner white circle */}
                   <circle
-                    cx={node.x ?? 0}
-                    cy={node.y ?? 0}
+                    cx={nodeX}
+                    cy={nodeY}
                     r={innerRadius}
                     fill="white"
                     opacity={0.98}
