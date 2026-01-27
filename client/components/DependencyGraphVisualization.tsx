@@ -640,10 +640,16 @@ export function DependencyGraphVisualization({
       )}
 
       {/* Node Details Popup */}
-      <NodeDetailsPopup
-        tech={selectedTechNode}
-        onClose={() => setSelectedTechNode(null)}
-      />
+      {showFullDetails && (
+        <NodeDetailsPopup
+          tech={selectedTechNode}
+          onClose={() => {
+            setShowFullDetails(false);
+            setSelectedTechNode(null);
+            setQuickInfoNode(null);
+          }}
+        />
+      )}
 
       {/* Legend Modal */}
       <LegendModal
