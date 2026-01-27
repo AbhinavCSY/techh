@@ -400,6 +400,20 @@ export function DependencyGraphVisualization({
   const HEIGHT = 500;
 
   useEffect(() => {
+    // Update window size on mount and resize
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    handleResize(); // Set initial size
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
     if (initialNodes && initialEdges) {
       setGraphData({ nodes: initialNodes, edges: initialEdges });
     } else {
