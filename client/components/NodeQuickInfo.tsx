@@ -19,29 +19,58 @@ export function NodeQuickInfo({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!dropdownRef.current) return;
+    // Use a small delay to ensure the DOM has rendered before measuring
+    const timer = setTimeout(() => {
+      if (!dropdownRef.current) return;
 
-    const rect = dropdownRef.current.getBoundingClientRect();
-    let x = position.x;
-    let y = position.y;
+      const rect = dropdownRef.current.getBoundingClientRect();
+      const popupWidth = rect.width || 280; // Default width if not measured
+      const popupHeight = rect.height || 200; // Default height if not measured
+      const offsetX = 20; // Offset from click point
+      const offsetY = 10;
+      const margin = 15; // Margin from screen edges
 
-    // Adjust horizontal position
-    if (x + rect.width > window.innerWidth - 10) {
-      x = window.innerWidth - rect.width - 10;
-    }
-    if (x < 10) {
-      x = 10;
-    }
+      let x = position.x + offsetX;
+      let y = position.y + offsetY;
 
-    // Adjust vertical position
-    if (y + rect.height > window.innerHeight - 10) {
-      y = window.innerHeight - rect.height - 10;
-    }
-    if (y < 10) {
-      y = 10;
-    }
+      // Smart horizontal positioning
+      // Try right side first
+      if (x + popupWidth > window.innerWidth - margin) {
+        // Not enough space on right, try left
+        x = position.x - popupWidth - offsetX;
 
-    setAdjustedPos({ x, y });
+        // If still off screen, just center it
+        if (x < margin) {
+          x = window.innerWidth / 2 - popupWidth / 2;
+        }
+      }
+
+      // Ensure not beyond left edge
+      x = Math.max(margin, x);
+      // Ensure not beyond right edge
+      x = Math.min(window.innerWidth - popupWidth - margin, x);
+
+      // Smart vertical positioning
+      // Try below first
+      if (y + popupHeight > window.innerHeight - margin) {
+        // Not enough space below, try above
+        y = position.y - popupHeight - offsetY;
+
+        // If still off screen, adjust
+        if (y < margin) {
+          y = window.innerHeight / 2 - popupHeight / 2;
+        }
+      }
+
+      // Ensure not beyond top edge
+      y = Math.max(margin, y);
+      // Ensure not beyond bottom edge
+      y = Math.min(window.innerHeight - popupHeight - margin, y);
+
+      setAdjustedPos({ x, y });
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [position]);
 
   if (!tech) return null;
