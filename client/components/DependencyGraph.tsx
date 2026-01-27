@@ -38,6 +38,8 @@ const techNameToGraphId: Record<string, string> = {
   "Swagger Doc": "tech-swagger",
   "Amazon S3 Bucket": "tech-s3",
   "Amazon S3": "tech-s3",
+  "Customer Management Service": "tech-java-app",
+  "Java Virtual Machine": "tech-jvm",
 };
 
 export function DependencyGraph({ techStack }: DependencyGraphProps) {
