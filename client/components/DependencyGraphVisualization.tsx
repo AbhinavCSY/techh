@@ -1,15 +1,39 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Package, Building2, Minimize2, X, ZoomIn, ZoomOut, Home, Maximize2, Info, AlertTriangle } from "lucide-react";
+import {
+  Package,
+  Building2,
+  Minimize2,
+  X,
+  ZoomIn,
+  ZoomOut,
+  Home,
+  Maximize2,
+  Info,
+  AlertTriangle,
+} from "lucide-react";
 import { NodeDetailsPopup } from "./NodeDetailsPopup";
 import { NodeQuickInfo } from "./NodeQuickInfo";
 import { LegendModal } from "./LegendModal";
-import { getTechDetails, Technology, dependencyGraphData } from "@/data/dependencyGraphData";
+import {
+  getTechDetails,
+  Technology,
+  dependencyGraphData,
+} from "@/data/dependencyGraphData";
 
 interface GraphNode {
   id: string;
   label: string;
   type: "technology" | "vendor" | "issue";
-  subtype?: "direct" | "underlying" | "related" | "primary" | "parent" | "critical" | "high" | "medium" | "low";
+  subtype?:
+    | "direct"
+    | "underlying"
+    | "related"
+    | "primary"
+    | "parent"
+    | "critical"
+    | "high"
+    | "medium"
+    | "low";
   category?: string;
   x?: number;
   y?: number;
@@ -40,7 +64,12 @@ class ForceDirectedGraph {
   width: number;
   height: number;
 
-  constructor(nodes: GraphNode[], edges: GraphEdge[], width: number, height: number) {
+  constructor(
+    nodes: GraphNode[],
+    edges: GraphEdge[],
+    width: number,
+    height: number,
+  ) {
     this.width = Math.max(width, 400);
     this.height = Math.max(height, 500);
     this.edges = edges;
@@ -92,7 +121,7 @@ class ForceDirectedGraph {
           const dx = (target.x ?? 0) - (source.x ?? 0);
           const dy = (target.y ?? 0) - (source.y ?? 0);
           const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-          const attraction = (distance * distance) / k * 0.1;
+          const attraction = ((distance * distance) / k) * 0.1;
           source.vx! += (dx / distance) * attraction;
           source.vy! += (dy / distance) * attraction;
           target.vx! -= (dx / distance) * attraction;
@@ -103,8 +132,14 @@ class ForceDirectedGraph {
       nodeArray.forEach((node) => {
         node.vx! *= c;
         node.vy! *= c;
-        node.x = Math.max(50, Math.min(this.width - 50, (node.x ?? 0) + node.vx!));
-        node.y = Math.max(50, Math.min(this.height - 50, (node.y ?? 0) + node.vy!));
+        node.x = Math.max(
+          50,
+          Math.min(this.width - 50, (node.x ?? 0) + node.vx!),
+        );
+        node.y = Math.max(
+          50,
+          Math.min(this.height - 50, (node.y ?? 0) + node.vy!),
+        );
       });
     }
   }
@@ -120,11 +155,21 @@ interface GraphRendererProps {
   edges: GraphEdge[];
   width: number;
   height: number;
-  onTechNodeClick?: (nodeId: string, position: { x: number; y: number }) => void;
+  onTechNodeClick?: (
+    nodeId: string,
+    position: { x: number; y: number },
+  ) => void;
   showTooltips?: boolean;
 }
 
-function GraphRenderer({ nodes, edges, width, height, onTechNodeClick, showTooltips = false }: GraphRendererProps) {
+function GraphRenderer({
+  nodes,
+  edges,
+  width,
+  height,
+  onTechNodeClick,
+  showTooltips = false,
+}: GraphRendererProps) {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -495,13 +540,18 @@ export function DependencyGraphVisualization({
   } | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 700 });
-  const [selectedTechNode, setSelectedTechNode] = useState<Technology | null>(null);
+  const [selectedTechNode, setSelectedTechNode] = useState<Technology | null>(
+    null,
+  );
   const [showFullDetails, setShowFullDetails] = useState(false);
   const [quickInfoNode, setQuickInfoNode] = useState<Technology | null>(null);
   const [quickInfoPos, setQuickInfoPos] = useState({ x: 0, y: 0 });
   const [showLegend, setShowLegend] = useState(false);
 
-  const handleTechNodeClick = (nodeId: string, position: { x: number; y: number }) => {
+  const handleTechNodeClick = (
+    nodeId: string,
+    position: { x: number; y: number },
+  ) => {
     const tech = getTechDetails(nodeId, dependencyGraphData);
     setSelectedTechNode(tech);
     setQuickInfoNode(tech || null);
@@ -576,18 +626,39 @@ export function DependencyGraphVisualization({
       ];
 
       const defaultEdges: GraphEdge[] = [
-        { source: "tech-main", target: "tech-underlying", relationship: "uses" },
-        { source: "tech-main", target: "tech-related", relationship: "related_to" },
-        { source: "tech-main", target: "vendor-primary", relationship: "provided_by" },
-        { source: "tech-underlying", target: "vendor-primary", relationship: "provided_by" },
-        { source: "vendor-primary", target: "vendor-parent", relationship: "subsidiary_of" },
+        {
+          source: "tech-main",
+          target: "tech-underlying",
+          relationship: "uses",
+        },
+        {
+          source: "tech-main",
+          target: "tech-related",
+          relationship: "related_to",
+        },
+        {
+          source: "tech-main",
+          target: "vendor-primary",
+          relationship: "provided_by",
+        },
+        {
+          source: "tech-underlying",
+          target: "vendor-primary",
+          relationship: "provided_by",
+        },
+        {
+          source: "vendor-primary",
+          target: "vendor-parent",
+          relationship: "subsidiary_of",
+        },
       ];
 
       setGraphData({ nodes: defaultNodes, edges: defaultEdges });
     }
   }, []);
 
-  if (!graphData) return <div className="h-96 bg-gray-50 rounded-lg animate-pulse" />;
+  if (!graphData)
+    return <div className="h-96 bg-gray-50 rounded-lg animate-pulse" />;
 
   return (
     <>
@@ -597,7 +668,9 @@ export function DependencyGraphVisualization({
           {/* Header with Buttons */}
           <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1">Dependency Graph</h3>
+              <h3 className="font-semibold text-gray-900 mb-1">
+                Dependency Graph
+              </h3>
               <p className="text-sm text-gray-600">
                 Force-directed visualization of {techStack.name} ecosystem
               </p>
@@ -646,7 +719,10 @@ export function DependencyGraphVisualization({
           {/* Info */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
             <p className="font-medium mb-1">💡 Interactive Graph</p>
-            <p>Middle-click/Space+drag to pan • Scroll to zoom • Hover for names • Click nodes for details</p>
+            <p>
+              Middle-click/Space+drag to pan • Scroll to zoom • Hover for names
+              • Click nodes for details
+            </p>
           </div>
         </div>
       )}
@@ -661,7 +737,8 @@ export function DependencyGraphVisualization({
                 Dependency Graph - {techStack.name}
               </h2>
               <p className="text-blue-100 mt-1 text-sm">
-                Middle-click drag to pan • Space+drag to pan • Scroll to zoom • Hover for labels • Click nodes for details
+                Middle-click drag to pan • Space+drag to pan • Scroll to zoom •
+                Hover for labels • Click nodes for details
               </p>
             </div>
             <button
@@ -710,10 +787,7 @@ export function DependencyGraphVisualization({
       )}
 
       {/* Legend Modal */}
-      <LegendModal
-        isOpen={showLegend}
-        onClose={() => setShowLegend(false)}
-      />
+      <LegendModal isOpen={showLegend} onClose={() => setShowLegend(false)} />
     </>
   );
 }

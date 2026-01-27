@@ -25,13 +25,17 @@ export function LegendModal({ isOpen, onClose }: LegendModalProps) {
 
         {/* Legend Items */}
         <div className="space-y-3">
-          <p className="text-sm font-semibold text-gray-700 mb-2">Technologies</p>
+          <p className="text-sm font-semibold text-gray-700 mb-2">
+            Technologies
+          </p>
 
           <div className="flex items-center gap-3">
             <div className="w-5 h-5 rounded-full bg-blue-500 flex-shrink-0" />
             <div>
               <p className="font-medium text-gray-900">Direct Tech</p>
-              <p className="text-sm text-gray-600">Main technology you're viewing</p>
+              <p className="text-sm text-gray-600">
+                Main technology you're viewing
+              </p>
             </div>
           </div>
 
@@ -39,7 +43,9 @@ export function LegendModal({ isOpen, onClose }: LegendModalProps) {
             <div className="w-5 h-5 rounded-full bg-indigo-500 flex-shrink-0" />
             <div>
               <p className="font-medium text-gray-900">Related Tech</p>
-              <p className="text-sm text-gray-600">Dependencies or derived tech</p>
+              <p className="text-sm text-gray-600">
+                Dependencies or derived tech
+              </p>
             </div>
           </div>
 
@@ -51,7 +57,9 @@ export function LegendModal({ isOpen, onClose }: LegendModalProps) {
             <div className="w-5 h-5 rounded-full bg-purple-500 flex-shrink-0" />
             <div>
               <p className="font-medium text-gray-900">Primary Vendor</p>
-              <p className="text-sm text-gray-600">Organization providing tech</p>
+              <p className="text-sm text-gray-600">
+                Organization providing tech
+              </p>
             </div>
           </div>
 
@@ -95,13 +103,20 @@ export function LegendModal({ isOpen, onClose }: LegendModalProps) {
 
           <div className="flex items-start gap-3">
             <div className="w-5 h-5 mt-0.5 flex-shrink-0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.5">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#9CA3AF"
+                strokeWidth="1.5"
+              >
                 <path d="M7 10L12 15L17 10" />
               </svg>
             </div>
             <div>
               <p className="font-medium text-gray-900">Relationships</p>
-              <p className="text-sm text-gray-600">Uses, Implements, DerivedFrom, etc.</p>
+              <p className="text-sm text-gray-600">
+                Uses, Implements, DerivedFrom, etc.
+              </p>
             </div>
           </div>
         </div>

@@ -10,8 +10,21 @@ export interface Technology {
   product: string;
   vendor: string;
   master_node?: boolean;
-  abstraction_level?: "application" | "service" | "framework" | "runtime" | "standard" | "panel";
-  category?: "framework" | "panel" | "cloud-service" | "standard" | "runtime" | "database" | "container";
+  abstraction_level?:
+    | "application"
+    | "service"
+    | "framework"
+    | "runtime"
+    | "standard"
+    | "panel";
+  category?:
+    | "framework"
+    | "panel"
+    | "cloud-service"
+    | "standard"
+    | "runtime"
+    | "database"
+    | "container";
   is_derived?: boolean;
   versions: VersionDetail[];
 }
@@ -32,13 +45,24 @@ export interface Vendor {
   name: string;
   products: string[];
   parent_vendor?: string;
-  vendor_type?: "cloud_provider" | "software_vendor" | "foundation" | "parent_company";
+  vendor_type?:
+    | "cloud_provider"
+    | "software_vendor"
+    | "foundation"
+    | "parent_company";
 }
 
 export interface Relationship {
   from: string;
   to: string;
-  type: "uses" | "provides" | "derived_from" | "implements" | "parent_of" | "found_in" | "provides_by";
+  type:
+    | "uses"
+    | "provides"
+    | "derived_from"
+    | "implements"
+    | "parent_of"
+    | "found_in"
+    | "provides_by";
 }
 
 export interface DependencyGraphDataType {
@@ -550,7 +574,8 @@ export const dependencyGraphData: DependencyGraphDataType = {
       severity: "critical",
       confidence_score: 0.95,
       discovered_at: "2023-11-15",
-      description: "Critical authentication bypass vulnerability affecting cPanel and derived products",
+      description:
+        "Critical authentication bypass vulnerability affecting cPanel and derived products",
       cve_id: "CVE-2023-45001",
     },
     {
@@ -608,7 +633,13 @@ export function buildGraphForTech(
   techId: string,
   data: DependencyGraphDataType,
 ): {
-  nodes: Array<{ id: string; label: string; type: string; subtype: string; category?: string }>;
+  nodes: Array<{
+    id: string;
+    label: string;
+    type: string;
+    subtype: string;
+    category?: string;
+  }>;
   edges: Array<{ source: string; target: string; relationship: string }>;
 } {
   const nodes: Array<{
@@ -618,7 +649,8 @@ export function buildGraphForTech(
     subtype: string;
     category?: string;
   }> = [];
-  const edges: Array<{ source: string; target: string; relationship: string }> = [];
+  const edges: Array<{ source: string; target: string; relationship: string }> =
+    [];
   const visitedNodes = new Set<string>();
 
   // Find the main technology
@@ -662,7 +694,10 @@ export function buildGraphForTech(
 
   // Find technologies that depend on this tech
   const dependentTechs = data.relationships
-    .filter((r) => r.to === techId && (r.type === "uses" || r.type === "derived_from"))
+    .filter(
+      (r) =>
+        r.to === techId && (r.type === "uses" || r.type === "derived_from"),
+    )
     .map((r) => r.from);
 
   dependentTechs.forEach((depTechId) => {
@@ -686,7 +721,10 @@ export function buildGraphForTech(
 
   // Find technologies this tech depends on
   const dependsOnTechs = data.relationships
-    .filter((r) => r.from === techId && (r.type === "uses" || r.type === "implements"))
+    .filter(
+      (r) =>
+        r.from === techId && (r.type === "uses" || r.type === "implements"),
+    )
     .map((r) => r.to);
 
   dependsOnTechs.forEach((depOnTechId) => {
@@ -829,17 +867,23 @@ export function getTechDetails(techId: string, data: DependencyGraphDataType) {
 /**
  * Get all affected technologies for an issue (attribution analysis)
  */
-export function getAffectedTechnologies(issueId: string, data: DependencyGraphDataType) {
+export function getAffectedTechnologies(
+  issueId: string,
+  data: DependencyGraphDataType,
+) {
   const directlyAffected = data.relationships
     .filter((r) => r.type === "found_in" && r.from === issueId)
     .map((r) => r.to);
 
   const indirectlyAffected: string[] = [];
-  
+
   // Find dependent technologies that would be impacted
   directlyAffected.forEach((techId) => {
     const dependentTechs = data.relationships
-      .filter((r) => r.to === techId && (r.type === "uses" || r.type === "derived_from"))
+      .filter(
+        (r) =>
+          r.to === techId && (r.type === "uses" || r.type === "derived_from"),
+      )
       .map((r) => r.from);
     indirectlyAffected.push(...dependentTechs);
   });
@@ -853,17 +897,22 @@ export function getAffectedTechnologies(issueId: string, data: DependencyGraphDa
 /**
  * Get primary vendor accountability for a technology
  */
-export function getVendorAccountability(techId: string, data: DependencyGraphDataType) {
+export function getVendorAccountability(
+  techId: string,
+  data: DependencyGraphDataType,
+) {
   const tech = data.technologies.find((t) => t.id === techId);
   if (!tech) return null;
 
   const primaryVendor = data.vendors.find((v) => v.products.includes(techId));
-  
+
   return {
     primary: primaryVendor,
-    parent: primaryVendor?.parent_vendor ? {
-      name: primaryVendor.parent_vendor,
-      id: `vendor-parent-${primaryVendor.id}`
-    } : null,
+    parent: primaryVendor?.parent_vendor
+      ? {
+          name: primaryVendor.parent_vendor,
+          id: `vendor-parent-${primaryVendor.id}`,
+        }
+      : null,
   };
 }

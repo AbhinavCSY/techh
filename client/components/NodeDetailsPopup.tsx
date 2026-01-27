@@ -1,6 +1,10 @@
 import React from "react";
 import { X, AlertCircle, CalendarX, Package, Building2 } from "lucide-react";
-import { Technology, getVendorAccountability, dependencyGraphData } from "@/data/dependencyGraphData";
+import {
+  Technology,
+  getVendorAccountability,
+  dependencyGraphData,
+} from "@/data/dependencyGraphData";
 
 interface NodeDetailsPopupProps {
   tech: Technology | null;
@@ -15,9 +19,7 @@ export function NodeDetailsPopup({ tech, onClose }: NodeDetailsPopupProps) {
   const eolVersions = tech.versions.filter((v) => v.eol).length;
   const cveVersions = tech.versions.filter((v) => v.cves.length > 0).length;
   const totalCVEs = tech.versions.reduce((sum, v) => sum + v.cves.length, 0);
-  const allCVEs = Array.from(
-    new Set(tech.versions.flatMap((v) => v.cves))
-  );
+  const allCVEs = Array.from(new Set(tech.versions.flatMap((v) => v.cves)));
 
   // Get status
   const getStatus = () => {
@@ -39,9 +41,15 @@ export function NodeDetailsPopup({ tech, onClose }: NodeDetailsPopupProps) {
         {/* Header */}
         <div className="flex items-start justify-between p-4 border-b border-gray-200">
           <div className="flex items-start gap-3 flex-1">
-            <Package width="24" height="24" className="text-blue-600 mt-1 flex-shrink-0" />
+            <Package
+              width="24"
+              height="24"
+              className="text-blue-600 mt-1 flex-shrink-0"
+            />
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900 text-lg break-words">{tech.product}</h3>
+              <h3 className="font-semibold text-gray-900 text-lg break-words">
+                {tech.product}
+              </h3>
               <p className="text-sm text-gray-600 break-words">{tech.vendor}</p>
             </div>
           </div>
@@ -56,14 +64,18 @@ export function NodeDetailsPopup({ tech, onClose }: NodeDetailsPopupProps) {
         {/* Content */}
         <div className="overflow-y-auto flex-1 p-4 space-y-4">
           {/* Status Badge */}
-          <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor()}`}>
+          <div
+            className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor()}`}
+          >
             {getStatus()}
           </div>
 
           {/* Statistics Grid */}
           <div className="grid grid-cols-3 gap-2">
             <div className="bg-blue-50 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-blue-600">{totalVersions}</div>
+              <div className="text-2xl font-bold text-blue-600">
+                {totalVersions}
+              </div>
               <div className="text-xs text-gray-600">Versions</div>
             </div>
             <div className="bg-red-50 rounded-lg p-3 text-center">
@@ -71,7 +83,9 @@ export function NodeDetailsPopup({ tech, onClose }: NodeDetailsPopupProps) {
               <div className="text-xs text-gray-600">CVEs</div>
             </div>
             <div className="bg-orange-50 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-orange-600">{eolVersions}</div>
+              <div className="text-2xl font-bold text-orange-600">
+                {eolVersions}
+              </div>
               <div className="text-xs text-gray-600">EOL</div>
             </div>
           </div>
@@ -81,7 +95,9 @@ export function NodeDetailsPopup({ tech, onClose }: NodeDetailsPopupProps) {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <AlertCircle width="16" height="16" className="text-red-600" />
-                <h4 className="font-medium text-sm text-gray-900">Vulnerabilities</h4>
+                <h4 className="font-medium text-sm text-gray-900">
+                  Vulnerabilities
+                </h4>
               </div>
               <div className="bg-red-50 rounded-lg p-3 max-h-32 overflow-y-auto">
                 <div className="space-y-1">
@@ -100,7 +116,9 @@ export function NodeDetailsPopup({ tech, onClose }: NodeDetailsPopupProps) {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <CalendarX width="16" height="16" className="text-orange-600" />
-                <h4 className="font-medium text-sm text-gray-900">End of Life</h4>
+                <h4 className="font-medium text-sm text-gray-900">
+                  End of Life
+                </h4>
               </div>
               <div className="space-y-1">
                 {tech.versions
@@ -124,7 +142,9 @@ export function NodeDetailsPopup({ tech, onClose }: NodeDetailsPopupProps) {
 
           {/* Active Versions Section */}
           <div>
-            <h4 className="font-medium text-sm text-gray-900 mb-2">Active Versions</h4>
+            <h4 className="font-medium text-sm text-gray-900 mb-2">
+              Active Versions
+            </h4>
             <div className="space-y-1">
               {tech.versions
                 .filter((v) => !v.eol)
@@ -148,17 +168,24 @@ export function NodeDetailsPopup({ tech, onClose }: NodeDetailsPopupProps) {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Building2 width="16" height="16" className="text-purple-600" />
-              <h4 className="font-medium text-sm text-gray-900">Vendor Accountability</h4>
+              <h4 className="font-medium text-sm text-gray-900">
+                Vendor Accountability
+              </h4>
             </div>
             {(() => {
-              const accountability = getVendorAccountability(tech.id, dependencyGraphData);
+              const accountability = getVendorAccountability(
+                tech.id,
+                dependencyGraphData,
+              );
               if (!accountability) return null;
 
               return (
                 <div className="space-y-2">
                   {accountability.primary && (
                     <div className="bg-purple-50 rounded p-2 text-sm">
-                      <div className="font-medium text-purple-900">Primary Vendor (Accountable)</div>
+                      <div className="font-medium text-purple-900">
+                        Primary Vendor (Accountable)
+                      </div>
                       <div className="text-purple-700 text-xs mt-0.5">
                         {accountability.primary.name}
                       </div>
@@ -166,7 +193,9 @@ export function NodeDetailsPopup({ tech, onClose }: NodeDetailsPopupProps) {
                   )}
                   {accountability.parent && (
                     <div className="bg-violet-50 rounded p-2 text-sm">
-                      <div className="font-medium text-violet-900">Parent Organization</div>
+                      <div className="font-medium text-violet-900">
+                        Parent Organization
+                      </div>
                       <div className="text-violet-700 text-xs mt-0.5">
                         {accountability.parent.name}
                       </div>

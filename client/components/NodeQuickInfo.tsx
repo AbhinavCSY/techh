@@ -116,7 +116,11 @@ export function NodeQuickInfo({
 
         {eolVersions > 0 && (
           <div className="flex items-center gap-2 pt-1 border-t border-gray-100">
-            <CalendarX width="14" height="14" className="text-orange-600 flex-shrink-0" />
+            <CalendarX
+              width="14"
+              height="14"
+              className="text-orange-600 flex-shrink-0"
+            />
             <span className="text-xs text-orange-700">
               {eolVersions} version{eolVersions !== 1 ? "s" : ""} EOL
             </span>
@@ -125,7 +129,11 @@ export function NodeQuickInfo({
 
         {totalCVEs > 0 && (
           <div className="flex items-center gap-2 border-t border-gray-100 pt-1">
-            <AlertCircle width="14" height="14" className="text-red-600 flex-shrink-0" />
+            <AlertCircle
+              width="14"
+              height="14"
+              className="text-red-600 flex-shrink-0"
+            />
             <span className="text-xs text-red-700">
               {totalCVEs} CVE{totalCVEs !== 1 ? "s" : ""} found
             </span>
