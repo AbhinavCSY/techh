@@ -372,30 +372,48 @@ function GraphRenderer({
                 setHoveredNode(null);
               };
 
-              // Determine node color based on type and subtype
+              // Enhanced node sizing based on severity and type
+              const getNodeRadius = () => {
+                if (isIssue) return 20;
+                if (isTech) {
+                  const tech = getTechDetails(node.id, dependencyGraphData);
+                  if (tech) {
+                    const totalCVEs = tech.versions.reduce(
+                      (sum, v) => sum + v.cves.length,
+                      0,
+                    );
+                    // Larger for nodes with more vulnerabilities
+                    if (totalCVEs >= 5) return 36;
+                    if (totalCVEs >= 3) return 33;
+                  }
+                }
+                return isDirectAffected ? 32 : 28;
+              };
+
+              // Determine node color based on type and subtype with better colors
               const getNodeColor = () => {
                 if (isIssue) {
                   switch (node.subtype) {
                     case "critical":
-                      return "#DC2626"; // Red
+                      return "#EF4444"; // Bright Red
                     case "high":
-                      return "#EA580C"; // Orange
+                      return "#F97316"; // Orange
                     case "medium":
-                      return "#F59E0B"; // Amber
+                      return "#EAB308"; // Yellow
                     case "low":
                       return "#10B981"; // Green
                     default:
-                      return "#6B7280"; // Gray
+                      return "#8B5CF6"; // Purple
                   }
                 } else if (isVendor) {
-                  return "#A78BFA"; // Violet for vendors
+                  return isDirectAffected ? "#A855F7" : "#D8B4FE"; // Purple variants
                 } else if (isTech) {
-                  return isDirectAffected ? "#3B82F6" : "#818CF8"; // Blue variants
+                  return isDirectAffected ? "#0EA5E9" : "#60A5FA"; // Blue variants
                 }
                 return "#6B7280";
               };
 
-              // Get CVE criticality for tech nodes
+              // Get CVE criticality tint for tech nodes
               const getCriticalityTint = () => {
                 if (isTech) {
                   const tech = getTechDetails(node.id, dependencyGraphData);
@@ -404,14 +422,17 @@ function GraphRenderer({
                       (sum, v) => sum + v.cves.length,
                       0,
                     );
-                    if (totalCVEs === 0) return "#10B98120"; // Green - no CVEs with tint
-                    if (totalCVEs >= 5) return "#DC262620"; // Red - critical with tint
-                    if (totalCVEs >= 3) return "#EA580C20"; // Orange - high with tint
-                    if (totalCVEs >= 1) return "#F59E0B20"; // Amber - medium with tint
+                    if (totalCVEs === 0) return "#DCFCE7"; // Light green
+                    if (totalCVEs >= 5) return "#FEE2E2"; // Light red
+                    if (totalCVEs >= 3) return "#FED7AA"; // Light orange
+                    if (totalCVEs >= 1) return "#FEF08A"; // Light yellow
                   }
                 }
-                return "transparent"; // Default transparent
+                return "transparent";
               };
+
+              const radius = getNodeRadius();
+              const innerRadius = Math.max(radius - 8, 12);
 
               return (
                 <g
@@ -421,44 +442,50 @@ function GraphRenderer({
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
+                  {/* Outer colored circle */}
                   <circle
                     cx={node.x ?? 0}
                     cy={node.y ?? 0}
-                    r={isIssue ? 25 : 30}
+                    r={radius}
                     fill={getNodeColor()}
-                    opacity={0.95}
+                    opacity={0.9}
                   />
 
-                  {/* Severity tint overlay */}
+                  {/* Severity tint for tech nodes */}
                   {isTech && (
                     <circle
                       cx={node.x ?? 0}
                       cy={node.y ?? 0}
-                      r={isIssue ? 25 : 30}
+                      r={radius}
                       fill={getCriticalityTint()}
-                      opacity={1}
+                      opacity={0.3}
                     />
                   )}
 
+                  {/* Inner white circle */}
                   <circle
                     cx={node.x ?? 0}
                     cy={node.y ?? 0}
-                    r={22}
+                    r={innerRadius}
                     fill="white"
-                    opacity={0.95}
+                    opacity={0.98}
                   />
 
+                  {/* Node icon */}
                   {isIssue ? (
                     <g
-                      transform={`translate(${(node.x ?? 0) - 7}, ${(node.y ?? 0) - 7})`}
+                      transform={`translate(${(node.x ?? 0) - 8}, ${(node.y ?? 0) - 8})`}
                     >
-                      <AlertTriangle
-                        width="14"
-                        height="14"
-                        stroke="white"
-                        fill="none"
-                        strokeWidth="1.5"
-                      />
+                      <text
+                        x="8"
+                        y="12"
+                        textAnchor="middle"
+                        fontSize="14"
+                        fontWeight="bold"
+                        fill="#EF4444"
+                      >
+                        !
+                      </text>
                     </g>
                   ) : isTech ? (
                     <g
@@ -467,9 +494,9 @@ function GraphRenderer({
                       <Package
                         width="16"
                         height="16"
-                        stroke="#3B82F6"
+                        stroke={isDirectAffected ? "#0EA5E9" : "#60A5FA"}
                         fill="none"
-                        strokeWidth="1.5"
+                        strokeWidth="2"
                       />
                     </g>
                   ) : (
@@ -479,38 +506,42 @@ function GraphRenderer({
                       <Building2
                         width="16"
                         height="16"
-                        stroke="#9333EA"
+                        stroke="#A855F7"
                         fill="none"
-                        strokeWidth="1.5"
+                        strokeWidth="2"
                       />
                     </g>
                   )}
 
+                  {/* Primary label */}
                   <text
                     x={node.x ?? 0}
-                    y={(node.y ?? 0) + 48}
+                    y={(node.y ?? 0) + (radius + 18)}
                     textAnchor="middle"
-                    fontSize="12"
-                    fontWeight="500"
+                    fontSize="13"
+                    fontWeight="700"
                     fill="#1F2937"
                     style={{
                       pointerEvents: "none",
                       userSelect: "none",
                     }}
                   >
-                    {node.label.split(" ").slice(0, 2).join(" ")}
+                    {isIssue ? node.label : node.label.split(" ").slice(0, 1).join(" ")}
                   </text>
 
-                  <text
-                    x={node.x ?? 0}
-                    y={(node.y ?? 0) + 62}
-                    textAnchor="middle"
-                    fontSize="10"
-                    fill="#6B7280"
-                    style={{ pointerEvents: "none", userSelect: "none" }}
-                  >
-                    {node.subtype}
-                  </text>
+                  {/* Secondary label/type */}
+                  {!isIssue && (
+                    <text
+                      x={node.x ?? 0}
+                      y={(node.y ?? 0) + (radius + 32)}
+                      textAnchor="middle"
+                      fontSize="11"
+                      fill="#6B7280"
+                      style={{ pointerEvents: "none", userSelect: "none" }}
+                    >
+                      {node.subtype || "node"}
+                    </text>
+                  )}
                 </g>
               );
             })}
