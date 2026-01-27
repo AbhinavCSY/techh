@@ -179,6 +179,8 @@ function GraphRenderer({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+  const [draggedNodeId, setDraggedNodeId] = useState<string | null>(null);
+  const [nodePositions, setNodePositions] = useState<Map<string, {x: number, y: number}>>(new Map());
   const svgRef = useRef<SVGSVGElement>(null);
   const spacePressed = useRef(false);
 
