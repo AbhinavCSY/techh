@@ -164,18 +164,6 @@ export const dependencyGraphData: DependencyGraphDataType = {
       ],
     },
     {
-      id: "cve-swagger-001",
-      product: "CVE-2021-12345",
-      vendor: "CVE Database",
-      versions: [
-        {
-          version: "2021",
-          eol: false,
-          cves: [],
-        },
-      ],
-    },
-    {
       id: "tech-openapi",
       product: "OpenAPI Specification",
       vendor: "Linux Foundation",
