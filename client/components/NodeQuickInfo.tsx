@@ -77,9 +77,9 @@ export function NodeQuickInfo({
       style={{
         left: `${adjustedPos.x}px`,
         top: `${adjustedPos.y}px`,
-        minWidth: "260px",
-        maxWidth: "320px",
+        width: "300px",
         transition: "all 150ms ease-out",
+        boxSizing: "border-box",
       }}
       onClick={(e) => e.stopPropagation()}
     >
