@@ -1107,6 +1107,10 @@ export function DependencyGraphVisualization({
           <div
             ref={graphContainerRef}
             className="border border-gray-200 rounded-xl bg-gradient-to-br from-white to-gray-50 overflow-hidden h-[600px] relative shadow-lg hover:shadow-xl transition-shadow duration-300"
+            onClick={() => {
+              // Close popups when clicking on empty area
+              handleCloseQuickInfo();
+            }}
           >
             <GraphRenderer
               nodes={graphData.nodes}
