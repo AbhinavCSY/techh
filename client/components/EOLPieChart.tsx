@@ -74,23 +74,23 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
       {/* Legend and Stats */}
       <div className="flex-1 space-y-6">
         <div>
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+          <h4 className="font-semibold text-gray-900 mb-3 text-xs">
             EOL Status
           </h4>
           <div className="space-y-2">
             <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                <span className="text-sm text-gray-700">End of Life</span>
+                <span className="text-xs text-gray-700">End of Life</span>
               </div>
-              <span className="font-bold text-red-900">{eolTechStacks}</span>
+              <span className="font-bold text-red-900 text-xs">{eolTechStacks}</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                <span className="text-sm text-gray-700">Active</span>
+                <span className="text-xs text-gray-700">Active</span>
               </div>
-              <span className="font-bold text-green-900">
+              <span className="font-bold text-green-900 text-xs">
                 {nonEolTechStacks}
               </span>
             </div>
