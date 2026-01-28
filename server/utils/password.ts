@@ -106,6 +106,13 @@ File location: ${setupFile}
 }
 
 export function verifyPassword(inputPassword: string): boolean {
+  // Check if APP_PASSWORD is set in environment (production)
+  const envPassword = process.env.APP_PASSWORD;
+  if (envPassword) {
+    return inputPassword === envPassword;
+  }
+
+  // Otherwise, check the file (development)
   ensureDataDir();
 
   if (!fs.existsSync(PASSWORD_FILE)) {
