@@ -993,6 +993,7 @@ export function DependencyGraphVisualization({
               edges={graphData.edges}
               width={WIDTH}
               height={500}
+              selectedNodeId={selectedNodeId}
               onTechNodeClick={handleTechNodeClick}
               showTooltips={true}
             />
