@@ -549,7 +549,7 @@ function GraphRenderer({
                 }
 
                 // Double the size if selected
-                if (selectedNode === node.id) {
+                if (effectiveSelectedNode === node.id) {
                   baseRadius *= 2;
                 }
 
