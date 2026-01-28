@@ -158,7 +158,7 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
                 </div>
               )}
 
-              {devPassword && (
+              {devPassword && !import.meta.env.PROD && (
                 <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 text-amber-600" />
                   <div className="text-sm">
