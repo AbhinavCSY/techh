@@ -28,13 +28,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { DependencyGraph } from "@/components/DependencyGraph";
-import { LoginPage } from "@/components/LoginPage";
 import { cn } from "@/lib/utils";
 
 export default function Index() {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   // Call all hooks BEFORE any conditional logic
   const {
