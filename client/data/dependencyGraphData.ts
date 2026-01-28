@@ -1001,6 +1001,37 @@ export const dependencyGraphData: DependencyGraphDataType = {
 
     // Vendor relationships
     { from: "vendor-smartbear", to: "vendor-lf", type: "parent_of" },
+
+    // ===== AI STACK RELATIONSHIPS =====
+    // Hugging Face Transformers relationships
+    { from: "tech-hf-transformers", to: "tech-pytorch", type: "uses" },
+    { from: "tech-hf-transformers", to: "tech-python", type: "uses" },
+    { from: "tech-pytorch", to: "ISSUE-PYTORCH-001", type: "found_in" },
+
+    // LangChain relationships
+    { from: "tech-langchain", to: "tech-python", type: "uses" },
+    { from: "tech-langchain", to: "tech-faiss", type: "uses" },
+
+    // vLLM relationships
+    { from: "tech-vllm", to: "tech-pytorch", type: "uses" },
+    { from: "tech-vllm", to: "tech-python", type: "uses" },
+    { from: "tech-vllm", to: "tech-cuda", type: "uses" },
+
+    // Python relationships
+    { from: "tech-python", to: "ISSUE-PYTHON-001", type: "found_in" },
+
+    // CUDA relationships
+    { from: "tech-cuda", to: "ISSUE-CUDA-001", type: "found_in" },
+
+    // Kubernetes relationships
+    { from: "tech-kubernetes", to: "ISSUE-K8S-001", type: "found_in" },
+
+    // Ubuntu relationships
+    { from: "tech-ubuntu", to: "ISSUE-UBUNTU-001", type: "found_in" },
+
+    // Vendor relationships for AI
+    { from: "vendor-huggingface", to: "vendor-lf", type: "parent_of" },
+    { from: "vendor-meta-ai", to: "vendor-lf", type: "parent_of" },
   ],
 };
 
