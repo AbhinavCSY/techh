@@ -250,13 +250,13 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
 
             {/* Legend - Right Side */}
             <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-xs">
                 <div className="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></div>
                 <span className="text-gray-700 flex-1">
                   EOL: {eolTechStacks}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-xs">
                 <div className="w-3 h-3 rounded-full bg-green-500 flex-shrink-0"></div>
                 <span className="text-gray-700 flex-1">
                   Active: {nonEolTechStacks}
