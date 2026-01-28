@@ -130,11 +130,6 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
                   autoFocus
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter" && !isLoading) {
-                      handleSubmit(e as any);
-                    }
-                  }}
                   className="pr-10"
                 />
                 <button
