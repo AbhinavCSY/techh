@@ -157,6 +157,7 @@ interface GraphRendererProps {
   edges: GraphEdge[];
   width: number;
   height: number;
+  selectedNodeId?: string | null;
   onTechNodeClick?: (
     nodeId: string,
     position: { x: number; y: number },
