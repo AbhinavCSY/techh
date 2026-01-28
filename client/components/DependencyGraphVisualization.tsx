@@ -833,6 +833,9 @@ export function DependencyGraphVisualization({
     console.log(`=== Node Click ===`);
     console.log(`Clicked node ID: ${nodeId}`);
 
+    // Update selected node
+    setSelectedNodeId(nodeId);
+
     let tech = getTechDetails(nodeId, dependencyGraphData);
     console.log(`getTechDetails result:`, tech);
 
