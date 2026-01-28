@@ -900,7 +900,7 @@ export function DependencyGraphVisualization({
         (n) => n.subtype === "direct" || n.type === "technology"
       );
       if (primaryNode) {
-        setSelectedNode(primaryNode.id);
+        setSelectedNodeId(primaryNode.id);
       }
     } else {
       const defaultNodes: GraphNode[] = [
@@ -966,7 +966,7 @@ export function DependencyGraphVisualization({
 
       setGraphData({ nodes: defaultNodes, edges: defaultEdges });
       // Auto-select the main node by default (tech-main)
-      setSelectedNode("tech-main");
+      setSelectedNodeId("tech-main");
     }
   }, []);
 
