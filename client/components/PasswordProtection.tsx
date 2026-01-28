@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AlertCircle, Lock } from "lucide-react";
+import { AlertCircle, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -18,6 +18,7 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [devPassword, setDevPassword] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Check if user is already authenticated and get dev password
   useEffect(() => {
@@ -114,9 +115,9 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
+              <div className="relative">
                 <Input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -127,7 +128,20 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
                       handleSubmit(e as any);
                     }
                   }}
+                  className="pr-10"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={isLoading}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground disabled:opacity-50"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
 
               {error && (
