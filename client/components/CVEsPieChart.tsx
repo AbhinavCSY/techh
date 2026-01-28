@@ -168,9 +168,9 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
             <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-600"></div>
-                <span className="text-xxs text-gray-700">Critical</span>
+                <span className="text-xs text-gray-700">Critical</span>
               </div>
-              <span className="text-xxs font-bold text-gray-900">
+              <span className="text-xs font-bold text-gray-900">
                 {severityBreakdown.critical}
               </span>
             </div>
