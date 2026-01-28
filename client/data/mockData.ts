@@ -30,6 +30,24 @@ export interface PackageReliabilityIndicators {
   behavioralIntegrity: PackageReliabilityIndicator;
 }
 
+export interface AssociatedComponent {
+  component_name: string;
+  component_version: string;
+  component_type: string;
+  directly_vulnerable: boolean;
+  inherited_risk: boolean;
+  risk_reason: string;
+  dependency_depth: number;
+}
+
+export interface ImpactContext {
+  execution_context: string;
+  privilege_level: string;
+  exposure_surface: string;
+  blast_radius: string;
+  lateral_movement_possible: boolean;
+}
+
 export interface TechStack {
   id: string;
   name: string;
@@ -56,6 +74,8 @@ export interface TechStack {
   versionHistory: VersionHistory[];
   remediations: Remediation[];
   reliabilityIndicators: PackageReliabilityIndicators;
+  associatedComponents?: AssociatedComponent[];
+  impactContext?: ImpactContext;
 }
 
 export interface Asset {
