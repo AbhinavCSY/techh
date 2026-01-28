@@ -1181,6 +1181,10 @@ export function DependencyGraphVisualization({
           <div
             ref={graphContainerRef}
             className="flex-1 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 relative"
+            onClick={() => {
+              // Close popups when clicking on empty area
+              handleCloseQuickInfo();
+            }}
           >
             <GraphRenderer
               nodes={graphData.nodes}
