@@ -31,6 +31,22 @@ export default function Index() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
+  // Call all hooks BEFORE any conditional logic
+  const {
+    viewType,
+    setViewType,
+    grouping,
+    setGrouping,
+    filters,
+    updateFilter,
+    clearFilters,
+    hasActiveFilters,
+  } = useFilters();
+
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [showWidgetPanel, setShowWidgetPanel] = useState(true);
+
   // Check authentication on mount
   useEffect(() => {
     const authToken = localStorage.getItem("app_auth_token");
@@ -58,20 +74,6 @@ export default function Index() {
   if (!isAuthenticated) {
     return <LoginPage onAuthenticated={() => setIsAuthenticated(true)} />;
   }
-  const {
-    viewType,
-    setViewType,
-    grouping,
-    setGrouping,
-    filters,
-    updateFilter,
-    clearFilters,
-    hasActiveFilters,
-  } = useFilters();
-
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [showDetails, setShowDetails] = useState(false);
-  const [showWidgetPanel, setShowWidgetPanel] = useState(true);
 
   // Filter and sort data
   const filteredTechStacks = useMemo(() => {
