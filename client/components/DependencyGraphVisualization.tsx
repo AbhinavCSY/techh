@@ -385,7 +385,7 @@ function GraphRenderer({
 
         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
           {/* Edges */}
-          <g className="edges" style={{ pointerEvents: "none" }}>
+          <g className="edges">
             {edges.map((edge, idx) => {
               const source = renderedNodes.find((n) => n.id === edge.source);
               const target = renderedNodes.find((n) => n.id === edge.target);
@@ -409,6 +409,7 @@ function GraphRenderer({
               const midY = (sourcePos.y + targetPos.y) / 2;
               const label =
                 relationshipLabels[edge.relationship] || edge.relationship;
+              const isEdgeHovered = hoveredEdgeIndex === idx;
 
               // Get label color based on relationship type
               const getLabelColor = () => {
@@ -450,37 +451,44 @@ function GraphRenderer({
                     markerEnd="url(#arrowhead)"
                     opacity={0.45}
                     style={{ strokeLinecap: "round" }}
+                    onMouseEnter={() => setHoveredEdgeIndex(idx)}
+                    onMouseLeave={() => setHoveredEdgeIndex(null)}
+                    style={{ strokeLinecap: "round", cursor: "pointer", pointerEvents: "auto" }}
                   />
 
-                  {/* Enhanced label background with shadow */}
-                  <g filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))">
-                    <rect
-                      x={midX - 55}
-                      y={midY - 16}
-                      width="110"
-                      height="32"
-                      fill="white"
-                      opacity={0.97}
-                      rx="6"
-                      strokeWidth="1"
-                      stroke={getLabelColor()}
-                      strokeOpacity="0.15"
-                    />
-                  </g>
+                  {/* Enhanced label background with shadow - Only show on hover */}
+                  {isEdgeHovered && (
+                    <g filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))">
+                      <rect
+                        x={midX - 55}
+                        y={midY - 16}
+                        width="110"
+                        height="32"
+                        fill="white"
+                        opacity={0.97}
+                        rx="6"
+                        strokeWidth="1"
+                        stroke={getLabelColor()}
+                        strokeOpacity="0.15"
+                      />
+                    </g>
+                  )}
 
-                  {/* Label text - professional styling */}
-                  <text
-                    x={midX}
-                    y={midY + 4}
-                    textAnchor="middle"
-                    fontSize="9"
-                    fontWeight="600"
-                    fill={getLabelColor()}
-                    opacity={1}
-                    style={{ pointerEvents: "none", letterSpacing: "0.2px" }}
-                  >
-                    {label}
-                  </text>
+                  {/* Label text - professional styling - Only show on hover */}
+                  {isEdgeHovered && (
+                    <text
+                      x={midX}
+                      y={midY + 4}
+                      textAnchor="middle"
+                      fontSize="9"
+                      fontWeight="600"
+                      fill={getLabelColor()}
+                      opacity={1}
+                      style={{ pointerEvents: "none", letterSpacing: "0.2px" }}
+                    >
+                      {label}
+                    </text>
+                  )}
                 </g>
               );
             })}
