@@ -311,6 +311,11 @@ function GraphRenderer({
           50% { filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4)); }
           100% { filter: drop-shadow(0 0 0 rgba(59, 130, 246, 0)); }
         }
+        @keyframes pulse {
+          0% { stroke-width: 2; opacity: 0.4; }
+          50% { stroke-width: 3; opacity: 0.2; }
+          100% { stroke-width: 2; opacity: 0.4; }
+        }
         .node-group:hover circle:first-child {
           animation: nodeHoverPulse 0.6s ease-in-out;
           filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
