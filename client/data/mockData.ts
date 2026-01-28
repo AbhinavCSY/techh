@@ -1453,16 +1453,17 @@ const assetDatabase: Asset[] = [
     id: "asset-7",
     name: "ec2-prod-web-01",
     type: "cloud-resource",
-    riskLevel: "high",
+    riskLevel: "critical",
     techStacks: [
       techStackDatabase[14],
       techStackDatabase[3],
       techStackDatabase[17],
       techStackDatabase[18],
+      techStackDatabase[25], // Apache Log4j with CVE-2021-44228
     ],
-    cveCount: 5,
-    topCriticalCVE: techStackDatabase[14].cves[0],
-    lastUpdated: new Date("2024-02-16"),
+    cveCount: 6,
+    topCriticalCVE: techStackDatabase[25].cves[0],
+    lastUpdated: new Date("2024-02-18"),
     isScanned: true,
   },
   {
