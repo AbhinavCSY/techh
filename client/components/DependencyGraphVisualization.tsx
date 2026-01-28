@@ -170,6 +170,7 @@ function GraphRenderer({
   edges,
   width,
   height,
+  selectedNodeId: parentSelectedNodeId,
   onTechNodeClick,
   showTooltips = false,
 }: GraphRendererProps) {
@@ -185,6 +186,9 @@ function GraphRenderer({
     Map<string, { x: number; y: number }>
   >(new Map());
   const svgRef = useRef<SVGSVGElement>(null);
+
+  // Use parent's selectedNodeId if provided, otherwise use local state
+  const effectiveSelectedNode = parentSelectedNodeId || selectedNode;
   const spacePressed = useRef(false);
 
   // Create graph only once and cache it - prevents nodes from jumping
