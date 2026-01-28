@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavProduct {
@@ -37,6 +37,11 @@ export function MainNav() {
 
   const isAssetInventoryActive = location.pathname === "/";
   const activeProduct = isAssetInventoryActive ? "asset-inv" : "bevigil";
+
+  const handleLogout = () => {
+    localStorage.removeItem("app_auth_token");
+    window.location.reload();
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-gray-200 py-1">
@@ -172,6 +177,15 @@ export function MainNav() {
               </div>
               <div className="text-xs text-gray-500 leading-tight">Admin</div>
             </div>
+          </button>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="text-gray-600 hover:text-gray-900 hover:bg-red-50 p-1.5 rounded transition-colors flex-shrink-0"
+            title="Logout"
+          >
+            <LogOut size={16} />
           </button>
         </div>
       </div>

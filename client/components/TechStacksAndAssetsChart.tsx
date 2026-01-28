@@ -71,15 +71,17 @@ export function TechStacksAndAssetsChart({
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white border border-gray-300 rounded-lg shadow-lg p-3 text-xs">
-          <p className="font-semibold text-gray-900 mb-2">📅 {label}</p>
+        <div className="bg-white border border-gray-300 rounded-lg shadow-lg p-2 text-xxs">
+          <p className="font-semibold text-gray-900 mb-1 text-xxs">
+            📅 {label}
+          </p>
           {payload.map((entry: any, index: number) => (
             <div key={index} className="flex items-center gap-2">
               <div
-                className="w-2.5 h-2.5 rounded-full"
+                className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: entry.color }}
               ></div>
-              <span className="text-gray-700">
+              <span className="text-gray-700 text-xxs">
                 {entry.name}: <span className="font-bold">{entry.value}</span>
               </span>
             </div>
@@ -118,7 +120,7 @@ export function TechStacksAndAssetsChart({
             )}
             <XAxis
               dataKey="date"
-              tick={{ fontSize: fullSize ? 12 : 8, fill: "#6b7280" }}
+              tick={{ fontSize: fullSize ? 6 : 4, fill: "#6b7280" }}
               axisLine={{ stroke: "#e5e7eb" }}
               angle={fullSize ? -45 : 0}
               textAnchor={fullSize ? "end" : "middle"}
@@ -126,7 +128,7 @@ export function TechStacksAndAssetsChart({
               interval={fullSize ? 0 : 2}
             />
             <YAxis
-              tick={{ fontSize: fullSize ? 12 : 8, fill: "#6b7280" }}
+              tick={{ fontSize: fullSize ? 6 : 4, fill: "#6b7280" }}
               axisLine={{ stroke: "#e5e7eb" }}
               label={
                 fullSize
@@ -135,8 +137,14 @@ export function TechStacksAndAssetsChart({
                       angle: -90,
                       position: "insideLeft",
                       offset: 10,
+                      fontSize: 6,
                     }
-                  : { value: "Count", angle: -90, position: "insideLeft" }
+                  : {
+                      value: "Count",
+                      angle: -90,
+                      position: "insideLeft",
+                      fontSize: 4,
+                    }
               }
             />
             <Tooltip
@@ -150,7 +158,7 @@ export function TechStacksAndAssetsChart({
               content={(props) => {
                 const { payload } = props;
                 return (
-                  <div className="flex items-center justify-center gap-8 text-sm mt-4">
+                  <div className="flex items-center justify-center gap-8 text-xs mt-4">
                     {payload?.map((entry) => (
                       <div
                         key={entry.dataKey}
@@ -160,7 +168,7 @@ export function TechStacksAndAssetsChart({
                           className="w-3 h-3 rounded"
                           style={{ backgroundColor: entry.color }}
                         ></div>
-                        <span className="text-gray-700 font-medium">
+                        <span className="text-gray-700 font-medium text-xs">
                           {entry.dataKey === "techStacks"
                             ? "Tech Stacks"
                             : "Assets Scanned"}

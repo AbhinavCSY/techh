@@ -19,14 +19,24 @@ import { EOLPieChart } from "@/components/EOLPieChart";
 import { TechStacksAndAssetsChart } from "@/components/TechStacksAndAssetsChart";
 import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from "lucide-react";
+import {
+  ChevronDown,
+  AlertTriangle,
+  Badge as BadgeIcon,
+  LogOut,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { DependencyGraph } from "@/components/DependencyGraph";
+import { LoginPage } from "@/components/LoginPage";
 import { cn } from "@/lib/utils";
 
 export default function Index() {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+  // Call all hooks BEFORE any conditional logic
   const {
     viewType,
     setViewType,
@@ -42,7 +52,7 @@ export default function Index() {
   const [showDetails, setShowDetails] = useState(false);
   const [showWidgetPanel, setShowWidgetPanel] = useState(true);
 
-  // Filter and sort data
+  // Filter and sort data - must be called before any early returns
   const filteredTechStacks = useMemo(() => {
     const filtered = filterTechStacks(techStackDatabase, filters);
     return sortTechStacks(filtered, filters.sortBy, filters.sortOrder);
@@ -52,6 +62,34 @@ export default function Index() {
     const filtered = filterAssets(assetDatabase, filters);
     return sortAssets(filtered, filters.sortBy, filters.sortOrder);
   }, [filters]);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const authToken = localStorage.getItem("app_auth_token");
+    if (authToken === "authenticated") {
+      setIsAuthenticated(true);
+    }
+    setIsCheckingAuth(false);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("app_auth_token");
+    setIsAuthenticated(false);
+  };
+
+  // Show loading state
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
+  }
+
+  // Show login if not authenticated
+  if (!isAuthenticated) {
+    return <LoginPage onAuthenticated={() => setIsAuthenticated(true)} />;
+  }
 
   const handleExport = (format: "csv" | "json" | "pdf") => {
     const dataToExport =

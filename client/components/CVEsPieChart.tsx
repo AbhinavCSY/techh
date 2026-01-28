@@ -139,29 +139,33 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
       {/* Legend and Stats */}
       <div className="flex-1 space-y-6">
         <div>
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+          <h4 className="font-semibold text-gray-900 mb-3 text-xs">
             Scan Status
           </h4>
           <div className="space-y-2">
             <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                <span className="text-sm text-gray-700">Scanned</span>
+                <span className="text-xs text-gray-700">Scanned</span>
               </div>
-              <span className="font-bold text-red-900">{scannedCVEs}</span>
+              <span className="font-bold text-red-900 text-xs">
+                {scannedCVEs}
+              </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-amber-50 rounded-lg border border-amber-200">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full bg-amber-400"></div>
-                <span className="text-sm text-gray-700">Unscanned</span>
+                <span className="text-xs text-gray-700">Unscanned</span>
               </div>
-              <span className="font-bold text-amber-900">{unscannedCVEs}</span>
+              <span className="font-bold text-amber-900 text-xs">
+                {unscannedCVEs}
+              </span>
             </div>
           </div>
         </div>
 
         <div>
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+          <h4 className="font-semibold text-gray-900 mb-3 text-xs">
             Severity Breakdown (Scanned)
           </h4>
           <div className="space-y-2">
@@ -282,13 +286,13 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
 
             {/* Legend - Right Side */}
             <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-2 text-sm font-medium">
+              <div className="flex items-center gap-2 text-xs font-medium">
                 <div className="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></div>
                 <span className="text-gray-700 flex-1">
                   Scanned: {scannedCVEs}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-sm font-medium">
+              <div className="flex items-center gap-2 text-xs font-medium">
                 <div className="w-3 h-3 rounded-full bg-amber-400 flex-shrink-0"></div>
                 <span className="text-gray-700 flex-1">
                   Unscanned: {unscannedCVEs}

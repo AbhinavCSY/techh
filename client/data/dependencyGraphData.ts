@@ -510,6 +510,169 @@ export const dependencyGraphData: DependencyGraphDataType = {
         },
       ],
     },
+
+    // ===== AI TECH STACKS =====
+    {
+      id: "tech-hf-transformers",
+      product: "Hugging Face Transformers",
+      vendor: "Hugging Face",
+      master_node: true,
+      abstraction_level: "framework",
+      category: "framework",
+      versions: [
+        {
+          version: "4.36.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-langchain",
+      product: "LangChain",
+      vendor: "LangChain Inc.",
+      master_node: true,
+      abstraction_level: "framework",
+      category: "framework",
+      versions: [
+        {
+          version: "0.1.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-vllm",
+      product: "vLLM",
+      vendor: "UC Berkeley / Open Source",
+      master_node: true,
+      abstraction_level: "framework",
+      category: "framework",
+      versions: [
+        {
+          version: "0.2.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-pytorch",
+      product: "PyTorch",
+      vendor: "Meta / Linux Foundation",
+      abstraction_level: "framework",
+      category: "framework",
+      versions: [
+        {
+          version: "1.13.0",
+          eol: false,
+          cves: ["CVE-2023-43654"],
+        },
+        {
+          version: "2.1.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-python",
+      product: "Python",
+      vendor: "Python Software Foundation",
+      abstraction_level: "runtime",
+      category: "runtime",
+      versions: [
+        {
+          version: "3.8",
+          eol: true,
+          eol_date: "2024-10-07",
+          cves: ["CVE-2023-24329"],
+        },
+        {
+          version: "3.11",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-cuda",
+      product: "NVIDIA CUDA Toolkit",
+      vendor: "NVIDIA",
+      abstraction_level: "runtime",
+      category: "runtime",
+      versions: [
+        {
+          version: "11.0",
+          eol: true,
+          eol_date: "2022-12-31",
+          cves: ["CVE-2024-0050"],
+        },
+        {
+          version: "12.2",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-kubernetes",
+      product: "Kubernetes",
+      vendor: "Cloud Native Computing Foundation",
+      abstraction_level: "runtime",
+      category: "container",
+      versions: [
+        {
+          version: "1.24.0",
+          eol: false,
+          cves: ["CVE-2023-2728"],
+        },
+        {
+          version: "1.29.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-ubuntu",
+      product: "Ubuntu OS",
+      vendor: "Canonical",
+      abstraction_level: "runtime",
+      category: "runtime",
+      versions: [
+        {
+          version: "20.04",
+          eol: false,
+          cves: ["CVE-2023-38408"],
+        },
+        {
+          version: "22.04",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-faiss",
+      product: "FAISS Vector DB",
+      vendor: "Meta / Facebook Research",
+      abstraction_level: "framework",
+      category: "database",
+      versions: [
+        {
+          version: "1.7.4",
+          eol: false,
+          cves: [],
+        },
+        {
+          version: "1.8.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
   ],
 
   vendors: [
@@ -627,6 +790,49 @@ export const dependencyGraphData: DependencyGraphDataType = {
       products: ["tech-jvm"],
       vendor_type: "software_vendor",
     },
+    // AI Vendors
+    {
+      id: "vendor-huggingface",
+      name: "Hugging Face",
+      products: ["tech-hf-transformers"],
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-langchain",
+      name: "LangChain Inc.",
+      products: ["tech-langchain"],
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-berkeley",
+      name: "UC Berkeley / Open Source",
+      products: ["tech-vllm"],
+      vendor_type: "foundation",
+    },
+    {
+      id: "vendor-meta-ai",
+      name: "Meta",
+      products: ["tech-pytorch", "tech-faiss"],
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-psf",
+      name: "Python Software Foundation",
+      products: ["tech-python"],
+      vendor_type: "foundation",
+    },
+    {
+      id: "vendor-nvidia",
+      name: "NVIDIA",
+      products: ["tech-cuda"],
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-canonical",
+      name: "Canonical",
+      products: ["tech-ubuntu"],
+      vendor_type: "software_vendor",
+    },
   ],
 
   issues: [
@@ -701,6 +907,62 @@ export const dependencyGraphData: DependencyGraphDataType = {
         "CVE-2021-44228 (Log4Shell): Remote Code Execution in Apache Log4j via JNDI injection. Allows unauthenticated remote attackers to execute arbitrary code by sending specially crafted log messages. CVSS Score: 10.0 (Critical). Affects Log4j versions < 2.17.0. All versions of Java applications using Log4j are at critical risk.",
       cve_id: "CVE-2021-44228",
     },
+    // AI Stack CVEs
+    {
+      id: "ISSUE-PYTORCH-001",
+      title: "PyTorch Arbitrary Code Execution",
+      type: "vuln",
+      severity: "high",
+      confidence_score: 0.92,
+      discovered_at: "2023-11-15",
+      description:
+        "CVE-2023-43654: Arbitrary Code Execution in PyTorch via specially crafted serialized model files. Affects PyTorch versions < 2.0.0. CVSS Score: 8.6 (High). When deserializing untrusted model files, attackers can execute arbitrary code.",
+      cve_id: "CVE-2023-43654",
+    },
+    {
+      id: "ISSUE-PYTHON-001",
+      title: "Python 3.8 Regex DoS",
+      type: "vuln",
+      severity: "high",
+      confidence_score: 0.88,
+      discovered_at: "2023-02-17",
+      description:
+        "CVE-2023-24329: Regular expression Denial of Service in Python 3.8 and earlier. Can be exploited to cause resource exhaustion. CVSS Score: 7.5 (High). Python 3.8 reached end-of-life on 2024-10-07.",
+      cve_id: "CVE-2023-24329",
+    },
+    {
+      id: "ISSUE-CUDA-001",
+      title: "CUDA Toolkit Privilege Escalation",
+      type: "vuln",
+      severity: "high",
+      confidence_score: 0.85,
+      discovered_at: "2024-01-10",
+      description:
+        "CVE-2024-0050: Local privilege escalation vulnerability in NVIDIA CUDA Toolkit < 12.2. CVSS Score: 8.1 (High). Affects GPU-accelerated AI inference and training workloads.",
+      cve_id: "CVE-2024-0050",
+    },
+    {
+      id: "ISSUE-K8S-001",
+      title: "Kubernetes API Server Bypass",
+      type: "vuln",
+      severity: "high",
+      confidence_score: 0.89,
+      discovered_at: "2023-08-01",
+      description:
+        "CVE-2023-2728: Kubernetes API Server authentication bypass via webhook certificate validation. CVSS Score: 8.8 (High). Affects Kubernetes < 1.27.4. Critical for containerized AI deployments.",
+      cve_id: "CVE-2023-2728",
+    },
+    {
+      id: "ISSUE-UBUNTU-001",
+      title: "SSH Agent RCE",
+      type: "vuln",
+      severity: "high",
+      confidence_score: 0.91,
+      discovered_at: "2023-08-15",
+      description:
+        "CVE-2023-38408: Remote Code Execution in OpenSSH SSH Agent via signal handler race condition. CVSS Score: 8.2 (High). Affects Ubuntu 20.04 and earlier. Impacts AI infrastructure hosting.",
+      cve_id: "CVE-2023-38408",
+    },
   ],
 
   relationships: [
@@ -739,6 +1001,37 @@ export const dependencyGraphData: DependencyGraphDataType = {
 
     // Vendor relationships
     { from: "vendor-smartbear", to: "vendor-lf", type: "parent_of" },
+
+    // ===== AI STACK RELATIONSHIPS =====
+    // Hugging Face Transformers relationships
+    { from: "tech-hf-transformers", to: "tech-pytorch", type: "uses" },
+    { from: "tech-hf-transformers", to: "tech-python", type: "uses" },
+    { from: "tech-pytorch", to: "ISSUE-PYTORCH-001", type: "found_in" },
+
+    // LangChain relationships
+    { from: "tech-langchain", to: "tech-python", type: "uses" },
+    { from: "tech-langchain", to: "tech-faiss", type: "uses" },
+
+    // vLLM relationships
+    { from: "tech-vllm", to: "tech-pytorch", type: "uses" },
+    { from: "tech-vllm", to: "tech-python", type: "uses" },
+    { from: "tech-vllm", to: "tech-cuda", type: "uses" },
+
+    // Python relationships
+    { from: "tech-python", to: "ISSUE-PYTHON-001", type: "found_in" },
+
+    // CUDA relationships
+    { from: "tech-cuda", to: "ISSUE-CUDA-001", type: "found_in" },
+
+    // Kubernetes relationships
+    { from: "tech-kubernetes", to: "ISSUE-K8S-001", type: "found_in" },
+
+    // Ubuntu relationships
+    { from: "tech-ubuntu", to: "ISSUE-UBUNTU-001", type: "found_in" },
+
+    // Vendor relationships for AI
+    { from: "vendor-huggingface", to: "vendor-lf", type: "parent_of" },
+    { from: "vendor-meta-ai", to: "vendor-lf", type: "parent_of" },
   ],
 };
 

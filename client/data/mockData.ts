@@ -30,6 +30,24 @@ export interface PackageReliabilityIndicators {
   behavioralIntegrity: PackageReliabilityIndicator;
 }
 
+export interface AssociatedComponent {
+  component_name: string;
+  component_version: string;
+  component_type: string;
+  directly_vulnerable: boolean;
+  inherited_risk: boolean;
+  risk_reason: string;
+  dependency_depth: number;
+}
+
+export interface ImpactContext {
+  execution_context: string;
+  privilege_level: string;
+  exposure_surface: string;
+  blast_radius: string;
+  lateral_movement_possible: boolean;
+}
+
 export interface TechStack {
   id: string;
   name: string;
@@ -56,6 +74,8 @@ export interface TechStack {
   versionHistory: VersionHistory[];
   remediations: Remediation[];
   reliabilityIndicators: PackageReliabilityIndicators;
+  associatedComponents?: AssociatedComponent[];
+  impactContext?: ImpactContext;
 }
 
 export interface Asset {
@@ -1230,6 +1250,454 @@ const techStackDatabase: TechStack[] = [
       behavioralIntegrity: { score: 10, riskLevel: "no risk" },
     },
   },
+  {
+    id: "ts-26",
+    name: "Apache Log4j",
+    type: "library",
+    version: "2.14.1",
+    logo: "📋",
+    isEOL: true,
+    isUpgradable: true,
+    secureVersion: "2.20.0",
+    cves: [
+      {
+        id: "CVE-2021-44228",
+        severity: "critical",
+        title: "Log4j Remote Code Execution",
+        score: 10.0,
+      },
+    ],
+    unscannedThreatsCount: 0,
+    riskLevel: "critical",
+    riskScore: 10.0,
+    createdAt: new Date("2024-01-20"),
+    lastUpdated: new Date("2024-02-18"),
+    license: "Apache License 2.0",
+    effectiveLicense: "Apache",
+    versionHistory: [
+      { version: "2.14.1", releaseDate: new Date("2021-12-10"), isEOL: true },
+      { version: "2.20.0", releaseDate: new Date("2023-10-20"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-26-log4j",
+        title: "CRITICAL: Immediate Upgrade Required",
+        description:
+          "Upgrade Apache Log4j to version 2.20.0 or later immediately. CVE-2021-44228 is an actively exploited RCE vulnerability.",
+        priority: "critical",
+        estimatedTime: "1-2 hours",
+      },
+      {
+        id: "rem-27-log4j",
+        title: "Disable JNDI in Java Runtime",
+        description:
+          "As a temporary mitigation, disable JNDI lookups by setting com.sun.jndi.ldap.connect.pool=false",
+        priority: "critical",
+        estimatedTime: "15 minutes",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 3, riskLevel: "critical" },
+      behavioralIntegrity: { score: 2, riskLevel: "critical" },
+    },
+    associatedComponents: [
+      {
+        component_name: "Spring Boot",
+        component_version: "2.5.4",
+        component_type: "Framework",
+        directly_vulnerable: false,
+        inherited_risk: true,
+        risk_reason: "Bundles vulnerable Log4j version internally",
+        dependency_depth: 1,
+      },
+      {
+        component_name: "Apache Tomcat",
+        component_version: "9.0.52",
+        component_type: "Runtime",
+        directly_vulnerable: false,
+        inherited_risk: true,
+        risk_reason: "Executes applications using Log4j logging pipeline",
+        dependency_depth: 2,
+      },
+      {
+        component_name: "Java JDK",
+        component_version: "11.0.12",
+        component_type: "Runtime",
+        directly_vulnerable: false,
+        inherited_risk: true,
+        risk_reason: "JNDI LDAP lookups enabled, enabling exploit chain",
+        dependency_depth: 3,
+      },
+      {
+        component_name: "AWS EC2",
+        component_version: "Amazon Linux 2",
+        component_type: "Infrastructure",
+        directly_vulnerable: false,
+        inherited_risk: true,
+        risk_reason: "Hosts exploited Java service allowing attacker OS access",
+        dependency_depth: 4,
+      },
+    ],
+    impactContext: {
+      execution_context: "Docker Container",
+      privilege_level: "Root",
+      exposure_surface: "Internet-facing",
+      blast_radius: "Entire Cloud Account",
+      lateral_movement_possible: true,
+    },
+  },
+  // ===== AI TECH STACKS =====
+  {
+    id: "ts-27",
+    name: "Python",
+    type: "language",
+    version: "3.8",
+    logo: "🐍",
+    isEOL: true,
+    isUpgradable: true,
+    secureVersion: "3.11",
+    cves: [
+      {
+        id: "CVE-2023-24329",
+        severity: "high",
+        title: "Python Regex DoS",
+        score: 7.5,
+      },
+    ],
+    unscannedThreatsCount: 2,
+    riskLevel: "high",
+    riskScore: 7.2,
+    createdAt: new Date("2024-02-01"),
+    lastUpdated: new Date("2024-02-18"),
+    license: "Python Software Foundation",
+    effectiveLicense: "Other",
+    versionHistory: [
+      { version: "3.8", releaseDate: new Date("2019-10-14"), isEOL: true },
+      { version: "3.11", releaseDate: new Date("2022-10-24"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-ai-python",
+        title: "Upgrade to Python 3.11",
+        description:
+          "Python 3.8 has reached end-of-life. Upgrade to 3.11 for security patches.",
+        priority: "high",
+        estimatedTime: "6-12 hours",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 9, riskLevel: "no risk" },
+      behavioralIntegrity: { score: 10, riskLevel: "no risk" },
+    },
+  },
+  {
+    id: "ts-28",
+    name: "PyTorch",
+    type: "library",
+    version: "1.13.0",
+    logo: "🔥",
+    isEOL: false,
+    isUpgradable: true,
+    secureVersion: "2.1.0",
+    cves: [
+      {
+        id: "CVE-2023-43654",
+        severity: "high",
+        title: "PyTorch Arbitrary Code Execution",
+        score: 8.6,
+      },
+    ],
+    unscannedThreatsCount: 1,
+    riskLevel: "high",
+    riskScore: 7.8,
+    createdAt: new Date("2023-12-15"),
+    lastUpdated: new Date("2024-02-18"),
+    license: "BSD",
+    effectiveLicense: "BSD 3",
+    versionHistory: [
+      { version: "1.13.0", releaseDate: new Date("2023-01-10"), isEOL: false },
+      { version: "2.0.0", releaseDate: new Date("2023-03-14"), isEOL: false },
+      { version: "2.1.0", releaseDate: new Date("2023-09-20"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-ai-pytorch",
+        title: "Update to PyTorch 2.1.0",
+        description:
+          "Address CVE-2023-43654 by upgrading to the latest stable version.",
+        priority: "high",
+        estimatedTime: "2-4 hours",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 8, riskLevel: "low" },
+      behavioralIntegrity: { score: 9, riskLevel: "no risk" },
+    },
+  },
+  {
+    id: "ts-29",
+    name: "NVIDIA CUDA Toolkit",
+    type: "devops",
+    version: "11.0",
+    logo: "⚡",
+    isEOL: true,
+    isUpgradable: true,
+    secureVersion: "12.2",
+    cves: [
+      {
+        id: "CVE-2024-0050",
+        severity: "high",
+        title: "CUDA Toolkit Privilege Escalation",
+        score: 8.1,
+      },
+    ],
+    unscannedThreatsCount: 3,
+    riskLevel: "high",
+    riskScore: 7.6,
+    createdAt: new Date("2023-11-20"),
+    lastUpdated: new Date("2024-02-18"),
+    license: "NVIDIA Proprietary",
+    effectiveLicense: "Other",
+    versionHistory: [
+      { version: "11.0", releaseDate: new Date("2021-06-28"), isEOL: true },
+      { version: "12.0", releaseDate: new Date("2023-01-10"), isEOL: false },
+      { version: "12.2", releaseDate: new Date("2023-10-31"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-ai-cuda",
+        title: "Update CUDA Toolkit to 12.2",
+        description:
+          "Migrate from unsupported CUDA 11.0 to 12.2 for security and performance.",
+        priority: "high",
+        estimatedTime: "4-8 hours",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 8, riskLevel: "low" },
+      behavioralIntegrity: { score: 8, riskLevel: "low" },
+    },
+  },
+  {
+    id: "ts-30",
+    name: "Kubernetes",
+    type: "devops",
+    version: "1.24.0",
+    logo: "☸️",
+    isEOL: false,
+    isUpgradable: true,
+    secureVersion: "1.29.0",
+    cves: [
+      {
+        id: "CVE-2023-2728",
+        severity: "high",
+        title: "Kubernetes API Server Bypass",
+        score: 8.8,
+      },
+    ],
+    unscannedThreatsCount: 2,
+    riskLevel: "high",
+    riskScore: 7.5,
+    createdAt: new Date("2024-01-10"),
+    lastUpdated: new Date("2024-02-18"),
+    license: "Apache License 2.0",
+    effectiveLicense: "Apache",
+    versionHistory: [
+      { version: "1.24.0", releaseDate: new Date("2022-05-03"), isEOL: false },
+      { version: "1.28.0", releaseDate: new Date("2023-08-30"), isEOL: false },
+      { version: "1.29.0", releaseDate: new Date("2023-12-13"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-ai-k8s",
+        title: "Update Kubernetes to 1.29.0",
+        description: "Fix CVE-2023-2728 and improve cluster security posture.",
+        priority: "high",
+        estimatedTime: "8-16 hours",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 9, riskLevel: "no risk" },
+      behavioralIntegrity: { score: 9, riskLevel: "no risk" },
+    },
+  },
+  {
+    id: "ts-31",
+    name: "Ubuntu OS",
+    type: "devops",
+    version: "20.04",
+    logo: "🐧",
+    isEOL: false,
+    isUpgradable: true,
+    secureVersion: "22.04",
+    cves: [
+      {
+        id: "CVE-2023-38408",
+        severity: "high",
+        title: "SSH Agent RCE",
+        score: 8.2,
+      },
+    ],
+    unscannedThreatsCount: 4,
+    riskLevel: "high",
+    riskScore: 7.4,
+    createdAt: new Date("2024-01-15"),
+    lastUpdated: new Date("2024-02-18"),
+    license: "LGPL/Ubuntu License",
+    effectiveLicense: "LGPL",
+    versionHistory: [
+      { version: "20.04", releaseDate: new Date("2020-04-23"), isEOL: false },
+      { version: "22.04", releaseDate: new Date("2022-04-21"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-ai-ubuntu",
+        title: "Upgrade to Ubuntu 22.04 LTS",
+        description: "Address SSH and system-level vulnerabilities.",
+        priority: "high",
+        estimatedTime: "2-4 hours",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 9, riskLevel: "no risk" },
+      behavioralIntegrity: { score: 9, riskLevel: "no risk" },
+    },
+  },
+  {
+    id: "ts-32",
+    name: "Hugging Face Transformers",
+    type: "framework",
+    version: "4.36.0",
+    logo: "🤗",
+    isEOL: false,
+    isUpgradable: false,
+    cves: [],
+    unscannedThreatsCount: 0,
+    riskLevel: "low",
+    riskScore: 2.1,
+    createdAt: new Date("2024-02-01"),
+    lastUpdated: new Date("2024-02-18"),
+    license: "Apache License 2.0",
+    effectiveLicense: "Apache",
+    versionHistory: [
+      { version: "4.30.0", releaseDate: new Date("2023-07-01"), isEOL: false },
+      { version: "4.36.0", releaseDate: new Date("2024-01-20"), isEOL: false },
+    ],
+    remediations: [],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 9, riskLevel: "no risk" },
+      behavioralIntegrity: { score: 9, riskLevel: "no risk" },
+    },
+  },
+  {
+    id: "ts-33",
+    name: "LangChain",
+    type: "framework",
+    version: "0.1.0",
+    logo: "⛓️",
+    isEOL: false,
+    isUpgradable: true,
+    secureVersion: "0.1.5",
+    cves: [],
+    unscannedThreatsCount: 1,
+    riskLevel: "medium",
+    riskScore: 4.2,
+    createdAt: new Date("2024-01-25"),
+    lastUpdated: new Date("2024-02-18"),
+    license: "MIT",
+    effectiveLicense: "MIT",
+    versionHistory: [
+      { version: "0.0.200", releaseDate: new Date("2023-06-01"), isEOL: true },
+      { version: "0.1.0", releaseDate: new Date("2024-01-10"), isEOL: false },
+      { version: "0.1.5", releaseDate: new Date("2024-02-15"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-ai-langchain",
+        title: "Update LangChain to latest",
+        description:
+          "Ensure compatibility with latest API changes and security improvements.",
+        priority: "medium",
+        estimatedTime: "1-2 hours",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 7, riskLevel: "low" },
+      behavioralIntegrity: { score: 8, riskLevel: "low" },
+    },
+  },
+  {
+    id: "ts-34",
+    name: "vLLM",
+    type: "framework",
+    version: "0.2.0",
+    logo: "⚙️",
+    isEOL: false,
+    isUpgradable: false,
+    cves: [],
+    unscannedThreatsCount: 0,
+    riskLevel: "low",
+    riskScore: 1.5,
+    createdAt: new Date("2024-02-05"),
+    lastUpdated: new Date("2024-02-18"),
+    license: "Apache License 2.0",
+    effectiveLicense: "Apache",
+    versionHistory: [
+      { version: "0.1.0", releaseDate: new Date("2023-08-01"), isEOL: false },
+      { version: "0.2.0", releaseDate: new Date("2024-01-15"), isEOL: false },
+    ],
+    remediations: [],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 8, riskLevel: "low" },
+      behavioralIntegrity: { score: 8, riskLevel: "low" },
+    },
+  },
+  {
+    id: "ts-35",
+    name: "FAISS Vector DB",
+    type: "database",
+    version: "1.7.4",
+    logo: "📊",
+    isEOL: false,
+    isUpgradable: true,
+    secureVersion: "1.8.0",
+    cves: [],
+    unscannedThreatsCount: 1,
+    riskLevel: "low",
+    riskScore: 1.8,
+    createdAt: new Date("2024-01-20"),
+    lastUpdated: new Date("2024-02-18"),
+    license: "MIT",
+    effectiveLicense: "MIT",
+    versionHistory: [
+      { version: "1.7.0", releaseDate: new Date("2022-10-01"), isEOL: false },
+      { version: "1.7.4", releaseDate: new Date("2023-06-15"), isEOL: false },
+      { version: "1.8.0", releaseDate: new Date("2024-01-10"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-ai-faiss",
+        title: "Update FAISS to 1.8.0",
+        description: "Get latest performance improvements and bug fixes.",
+        priority: "low",
+        estimatedTime: "1-2 hours",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 8, riskLevel: "low" },
+      behavioralIntegrity: { score: 8, riskLevel: "low" },
+    },
+  },
 ];
 
 // Common CVEs for reference
@@ -1240,6 +1708,55 @@ const commonCVEsExpanded: Record<string, CVE[]> = {
 };
 
 const assetDatabase: Asset[] = [
+  {
+    id: "asset-ai-1",
+    name: "AI Model Inference API",
+    type: "app",
+    riskLevel: "high",
+    techStacks: [
+      techStackDatabase[31], // Hugging Face Transformers (ts-32)
+      techStackDatabase[27], // PyTorch (ts-28)
+      techStackDatabase[26], // Python (ts-27)
+      techStackDatabase[28], // CUDA (ts-29)
+    ],
+    cveCount: 3,
+    topCriticalCVE: techStackDatabase[27].cves[0],
+    lastUpdated: new Date("2024-02-18"),
+    isScanned: true,
+  },
+  {
+    id: "asset-ai-2",
+    name: "AI-powered Chat Application",
+    type: "app",
+    riskLevel: "medium",
+    techStacks: [
+      techStackDatabase[32], // LangChain (ts-33)
+      techStackDatabase[34], // FAISS (ts-35)
+      techStackDatabase[26], // Python (ts-27)
+      techStackDatabase[29], // Kubernetes (ts-30)
+    ],
+    cveCount: 3,
+    topCriticalCVE: techStackDatabase[29].cves[0],
+    lastUpdated: new Date("2024-02-18"),
+    isScanned: true,
+  },
+  {
+    id: "asset-ai-3",
+    name: "Internal LLM Service",
+    type: "app",
+    riskLevel: "high",
+    techStacks: [
+      techStackDatabase[33], // vLLM (ts-34)
+      techStackDatabase[27], // PyTorch (ts-28)
+      techStackDatabase[26], // Python (ts-27)
+      techStackDatabase[29], // Kubernetes (ts-30)
+      techStackDatabase[30], // Ubuntu OS (ts-31)
+    ],
+    cveCount: 5,
+    topCriticalCVE: techStackDatabase[29].cves[0],
+    lastUpdated: new Date("2024-02-18"),
+    isScanned: true,
+  },
   {
     id: "asset-1",
     name: "prod-web-server-01",
@@ -1336,16 +1853,17 @@ const assetDatabase: Asset[] = [
     id: "asset-7",
     name: "ec2-prod-web-01",
     type: "cloud-resource",
-    riskLevel: "high",
+    riskLevel: "critical",
     techStacks: [
       techStackDatabase[14],
       techStackDatabase[3],
       techStackDatabase[17],
       techStackDatabase[18],
+      techStackDatabase[25], // Apache Log4j with CVE-2021-44228
     ],
-    cveCount: 5,
-    topCriticalCVE: techStackDatabase[14].cves[0],
-    lastUpdated: new Date("2024-02-16"),
+    cveCount: 6,
+    topCriticalCVE: techStackDatabase[25].cves[0],
+    lastUpdated: new Date("2024-02-18"),
     isScanned: true,
   },
   {

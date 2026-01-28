@@ -57,12 +57,13 @@ interface DependencyGraphVisualizationProps {
   edges?: GraphEdge[];
 }
 
-// Force-directed graph simulation
-class ForceDirectedGraph {
+// Hierarchical graph layout
+class HierarchicalGraph {
   nodes: Map<string, GraphNode>;
   edges: GraphEdge[];
   width: number;
   height: number;
+  levels: Map<string, number>;
 
   constructor(
     nodes: GraphNode[],
@@ -73,16 +74,21 @@ class ForceDirectedGraph {
     this.width = Math.max(width, 400);
     this.height = Math.max(height, 500);
     this.edges = edges;
+    this.levels = new Map();
+
+    // Calculate hierarchy levels using breadth-first search
+    this.calculateLevels(nodes);
 
     this.nodes = new Map(
       nodes.map((node) => {
+        const level = this.levels.get(node.id) ?? 0;
         const initializedNode: GraphNode = {
           id: node.id,
           label: node.label,
           type: node.type,
           subtype: node.subtype,
-          x: node.x ?? Math.random() * this.width,
-          y: node.y ?? Math.random() * this.height,
+          x: 0,
+          y: 0,
           vx: 0,
           vy: 0,
         };
@@ -90,58 +96,152 @@ class ForceDirectedGraph {
       }),
     );
 
-    this.simulate(50);
+    this.layoutHierarchical();
   }
 
-  simulate(iterations: number) {
-    const k = Math.sqrt((this.width * this.height) / this.nodes.size) * 1.5; // Increased spacing
-    const c = 0.05;
+  calculateLevels(nodes: GraphNode[]) {
+    const visited = new Set<string>();
+    const queue: { id: string; level: number }[] = [];
+
+    // Find root nodes (nodes with no incoming edges or "direct" subtype)
+    const hasIncoming = new Set<string>();
+    this.edges.forEach((edge) => {
+      hasIncoming.add(edge.target);
+    });
+
+    nodes.forEach((node) => {
+      if (!hasIncoming.has(node.id) || node.subtype === "direct") {
+        queue.push({ id: node.id, level: 0 });
+        this.levels.set(node.id, 0);
+        visited.add(node.id);
+      }
+    });
+
+    // BFS to assign levels
+    while (queue.length > 0) {
+      const { id, level } = queue.shift()!;
+
+      // Find all children (targets of this node's edges)
+      this.edges.forEach((edge) => {
+        if (edge.source === id && !visited.has(edge.target)) {
+          this.levels.set(edge.target, level + 1);
+          visited.add(edge.target);
+          queue.push({ id: edge.target, level: level + 1 });
+        }
+      });
+
+      // Also handle reverse relationships
+      this.edges.forEach((edge) => {
+        if (edge.target === id && !visited.has(edge.source)) {
+          // Nodes that point to this node go to higher level
+          const sourceLevel = this.levels.get(edge.source);
+          if (sourceLevel === undefined || sourceLevel >= level) {
+            this.levels.set(edge.source, level - 1);
+            visited.add(edge.source);
+            queue.push({ id: edge.source, level: level - 1 });
+          }
+        }
+      });
+    }
+
+    // Assign unvisited nodes to appropriate levels
+    nodes.forEach((node) => {
+      if (!this.levels.has(node.id)) {
+        this.levels.set(node.id, Math.floor(Math.random() * 3));
+      }
+    });
+  }
+
+  layoutHierarchical() {
+    // Group nodes by level
+    const levelGroups = new Map<number, string[]>();
+    this.nodes.forEach((node) => {
+      const level = this.levels.get(node.id) ?? 0;
+      if (!levelGroups.has(level)) {
+        levelGroups.set(level, []);
+      }
+      levelGroups.get(level)!.push(node.id);
+    });
+
+    // Calculate y positions based on levels
+    const minLevel = Math.min(...Array.from(this.levels.values()));
+    const maxLevel = Math.max(...Array.from(this.levels.values()));
+    const levelRange = maxLevel - minLevel || 1;
+
+    // Position nodes
+    levelGroups.forEach((nodeIds, level) => {
+      const adjustedLevel = level - minLevel;
+      const y = (adjustedLevel / (levelRange || 1)) * (this.height - 160) + 80;
+
+      // Distribute nodes horizontally at this level
+      const spacing = this.width / (nodeIds.length + 1);
+      nodeIds.forEach((nodeId, index) => {
+        const node = this.nodes.get(nodeId)!;
+        node.x = spacing * (index + 1);
+        node.y = y;
+      });
+    });
+
+    // Light force simulation to avoid overlaps while maintaining hierarchy
+    this.refineLayout(30);
+  }
+
+  refineLayout(iterations: number) {
+    const nodeArray = Array.from(this.nodes.values());
+    const k = Math.sqrt((this.width * this.height) / nodeArray.length) * 0.8;
 
     for (let iter = 0; iter < iterations; iter++) {
-      const nodeArray = Array.from(this.nodes.values());
       nodeArray.forEach((node1) => {
         node1.vx = 0;
         node1.vy = 0;
+
         nodeArray.forEach((node2) => {
           if (node1.id !== node2.id) {
             const dx = (node2.x ?? 0) - (node1.x ?? 0);
             const dy = (node2.y ?? 0) - (node1.y ?? 0);
             const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-            // Increased repulsion for better spacing
-            const repulsion = ((k * k) / distance) * 1.3;
+
+            // Repulsion for spacing
+            const repulsion = (k / distance) * 0.5;
             node1.vx! -= (dx / distance) * repulsion;
-            node1.vy! -= (dy / distance) * repulsion;
+            // Much weaker vertical repulsion to preserve hierarchy
+            node1.vy! -= (dy / distance) * repulsion * 0.1;
+          }
+        });
+
+        // Weak attraction to edges while preserving hierarchy
+        this.edges.forEach((edge) => {
+          if (edge.source === node1.id) {
+            const target = this.nodes.get(edge.target);
+            if (target) {
+              const dx = (target.x ?? 0) - (node1.x ?? 0);
+              const dy = (target.y ?? 0) - (node1.y ?? 0);
+              const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
+              const attraction = (distance / k) * 0.02;
+              node1.vx! += (dx / distance) * attraction;
+              node1.vy! += (dy / distance) * attraction * 0.1;
+            }
           }
         });
       });
 
-      this.edges.forEach((edge) => {
-        const source = this.nodes.get(edge.source);
-        const target = this.nodes.get(edge.target);
-        if (source && target) {
-          const dx = (target.x ?? 0) - (source.x ?? 0);
-          const dy = (target.y ?? 0) - (source.y ?? 0);
-          const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-          // Reduced attraction strength to allow more repulsion
-          const attraction = ((distance * distance) / k) * 0.08;
-          source.vx! += (dx / distance) * attraction;
-          source.vy! += (dy / distance) * attraction;
-          target.vx! -= (dx / distance) * attraction;
-          target.vy! -= (dy / distance) * attraction;
-        }
-      });
-
+      // Apply velocity damping and position updates
       nodeArray.forEach((node) => {
-        node.vx! *= c;
-        node.vy! *= c;
+        node.vx! *= 0.7;
+        node.vy! *= 0.7;
         node.x = Math.max(
-          80,
-          Math.min(this.width - 80, (node.x ?? 0) + node.vx!),
+          50,
+          Math.min(this.width - 50, (node.x ?? 0) + node.vx!),
         );
-        node.y = Math.max(
-          80,
-          Math.min(this.height - 80, (node.y ?? 0) + node.vy!),
-        );
+        // Keep y from original level assignment
+        const level = this.levels.get(node.id) ?? 0;
+        const minLevel = Math.min(...Array.from(this.levels.values()));
+        const maxLevel = Math.max(...Array.from(this.levels.values()));
+        const levelRange = maxLevel - minLevel || 1;
+        const adjustedLevel = level - minLevel;
+        const targetY =
+          (adjustedLevel / (levelRange || 1)) * (this.height - 160) + 80;
+        node.y = targetY + (node.y! - targetY) * 0.95;
       });
     }
   }
@@ -157,6 +257,7 @@ interface GraphRendererProps {
   edges: GraphEdge[];
   width: number;
   height: number;
+  selectedNodeId?: string | null;
   onTechNodeClick?: (
     nodeId: string,
     position: { x: number; y: number },
@@ -169,6 +270,7 @@ function GraphRenderer({
   edges,
   width,
   height,
+  selectedNodeId: parentSelectedNodeId,
   onTechNodeClick,
   showTooltips = false,
 }: GraphRendererProps) {
@@ -180,15 +282,19 @@ function GraphRenderer({
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const [draggedNodeId, setDraggedNodeId] = useState<string | null>(null);
+  const [hoveredEdgeIndex, setHoveredEdgeIndex] = useState<number | null>(null);
   const [nodePositions, setNodePositions] = useState<
     Map<string, { x: number; y: number }>
   >(new Map());
   const svgRef = useRef<SVGSVGElement>(null);
+
+  // Use parent's selectedNodeId if provided, otherwise use local state
+  const effectiveSelectedNode = parentSelectedNodeId || selectedNode;
   const spacePressed = useRef(false);
 
   // Create graph only once and cache it - prevents nodes from jumping
   const renderedNodes = useMemo(() => {
-    const graph = new ForceDirectedGraph(nodes, edges, width, height);
+    const graph = new HierarchicalGraph(nodes, edges, width, height);
     return graph.getNodes();
   }, [nodes, edges, width, height]);
 
@@ -304,14 +410,40 @@ function GraphRenderer({
   };
 
   return (
-    <div className="relative w-full h-full bg-gray-50">
+    <div className="relative w-full h-full bg-gradient-to-br from-gray-50 to-gray-100">
+      <style>{`
+        @keyframes nodeHoverPulse {
+          0% { filter: drop-shadow(0 0 0 rgba(59, 130, 246, 0)); }
+          50% { filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4)); }
+          100% { filter: drop-shadow(0 0 0 rgba(59, 130, 246, 0)); }
+        }
+        @keyframes pulse {
+          0% { stroke-width: 2; opacity: 0.4; }
+          50% { stroke-width: 3; opacity: 0.2; }
+          100% { stroke-width: 2; opacity: 0.4; }
+        }
+        .node-group:hover circle:first-child {
+          animation: nodeHoverPulse 0.6s ease-in-out;
+          filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+        }
+        .node-group:hover {
+          filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+        }
+        .edge-line {
+          transition: stroke-width 0.2s ease, opacity 0.2s ease;
+        }
+        .edge-line:hover {
+          stroke-width: 3;
+          opacity: 0.7;
+        }
+      `}</style>
       <svg
         ref={svgRef}
         width={width}
         height={height}
         className="w-full h-full cursor-grab active:cursor-grabbing"
         style={{
-          backgroundColor: "#f9fafb",
+          backgroundColor: "transparent",
           touchAction: "none",
         }}
         onMouseDown={handleMouseDown}
@@ -321,6 +453,60 @@ function GraphRenderer({
         onWheel={handleWheel}
       >
         <defs>
+          {/* Gradient backgrounds for nodes */}
+          <linearGradient
+            id="criticalGradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop
+              offset="0%"
+              style={{ stopColor: "#DC2626", stopOpacity: 1 }}
+            />
+            <stop
+              offset="100%"
+              style={{ stopColor: "#991B1B", stopOpacity: 1 }}
+            />
+          </linearGradient>
+          <linearGradient id="highGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop
+              offset="0%"
+              style={{ stopColor: "#EA580C", stopOpacity: 1 }}
+            />
+            <stop
+              offset="100%"
+              style={{ stopColor: "#C2410C", stopOpacity: 1 }}
+            />
+          </linearGradient>
+          <linearGradient
+            id="mediumGradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop
+              offset="0%"
+              style={{ stopColor: "#D97706", stopOpacity: 1 }}
+            />
+            <stop
+              offset="100%"
+              style={{ stopColor: "#92400E", stopOpacity: 1 }}
+            />
+          </linearGradient>
+          <linearGradient id="lowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop
+              offset="0%"
+              style={{ stopColor: "#10B981", stopOpacity: 1 }}
+            />
+            <stop
+              offset="100%"
+              style={{ stopColor: "#065F46", stopOpacity: 1 }}
+            />
+          </linearGradient>
+
           <marker
             id="arrowhead"
             markerWidth="10"
@@ -329,13 +515,13 @@ function GraphRenderer({
             refY="3"
             orient="auto"
           >
-            <polygon points="0 0, 10 3, 0 6" fill="#9CA3AF" />
+            <polygon points="0 0, 10 3, 0 6" fill="#9CA3AF" opacity="0.5" />
           </marker>
         </defs>
 
         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
           {/* Edges */}
-          <g className="edges" style={{ pointerEvents: "none" }}>
+          <g className="edges">
             {edges.map((edge, idx) => {
               const source = renderedNodes.find((n) => n.id === edge.source);
               const target = renderedNodes.find((n) => n.id === edge.target);
@@ -359,6 +545,7 @@ function GraphRenderer({
               const midY = (sourcePos.y + targetPos.y) / 2;
               const label =
                 relationshipLabels[edge.relationship] || edge.relationship;
+              const isEdgeHovered = hoveredEdgeIndex === idx;
 
               // Get label color based on relationship type
               const getLabelColor = () => {
@@ -388,8 +575,22 @@ function GraphRenderer({
 
               return (
                 <g key={idx}>
-                  {/* Edge line with gradient effect */}
+                  {/* Invisible larger hitbox for easier hover detection */}
                   <line
+                    x1={sourcePos.x}
+                    y1={sourcePos.y}
+                    x2={targetPos.x}
+                    y2={targetPos.y}
+                    stroke="transparent"
+                    strokeWidth={20}
+                    style={{ cursor: "pointer", pointerEvents: "auto" }}
+                    onMouseEnter={() => setHoveredEdgeIndex(idx)}
+                    onMouseLeave={() => setHoveredEdgeIndex(null)}
+                  />
+
+                  {/* Edge line with smooth styling */}
+                  <line
+                    className="edge-line"
                     x1={sourcePos.x}
                     y1={sourcePos.y}
                     x2={targetPos.x}
@@ -397,34 +598,43 @@ function GraphRenderer({
                     stroke={getLabelColor()}
                     strokeWidth={2}
                     markerEnd="url(#arrowhead)"
-                    opacity={0.4}
+                    opacity={0.45}
+                    style={{ strokeLinecap: "round", pointerEvents: "none" }}
                   />
 
-                  {/* Shadow for label background */}
-                  <rect
-                    x={midX - 55}
-                    y={midY - 16}
-                    width="110"
-                    height="32"
-                    fill="white"
-                    opacity={0.95}
-                    rx="5"
-                    filter="drop-shadow(0 1px 3px rgba(0,0,0,0.1))"
-                  />
+                  {/* Enhanced label background with shadow - Only show on hover */}
+                  {isEdgeHovered && (
+                    <g filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))">
+                      <rect
+                        x={midX - 55}
+                        y={midY - 16}
+                        width="110"
+                        height="32"
+                        fill="white"
+                        opacity={0.97}
+                        rx="6"
+                        strokeWidth="1"
+                        stroke={getLabelColor()}
+                        strokeOpacity="0.15"
+                      />
+                    </g>
+                  )}
 
-                  {/* Label text - bold and prominent */}
-                  <text
-                    x={midX}
-                    y={midY + 5}
-                    textAnchor="middle"
-                    fontSize="13"
-                    fontWeight="700"
-                    fill={getLabelColor()}
-                    opacity={1}
-                    style={{ pointerEvents: "none" }}
-                  >
-                    {label}
-                  </text>
+                  {/* Label text - professional styling - Only show on hover */}
+                  {isEdgeHovered && (
+                    <text
+                      x={midX}
+                      y={midY + 4}
+                      textAnchor="middle"
+                      fontSize="9"
+                      fontWeight="600"
+                      fill={getLabelColor()}
+                      opacity={1}
+                      style={{ pointerEvents: "none", letterSpacing: "0.2px" }}
+                    >
+                      {label}
+                    </text>
+                  )}
                 </g>
               );
             })}
@@ -474,8 +684,9 @@ function GraphRenderer({
 
               // Enhanced node sizing based on severity and type
               const getNodeRadius = () => {
-                if (isIssue) return 20;
-                if (isTech) {
+                let baseRadius = 28;
+                if (isIssue) baseRadius = 20;
+                else if (isTech) {
                   const tech = getTechDetails(node.id, dependencyGraphData);
                   if (tech) {
                     const totalCVEs = tech.versions.reduce(
@@ -483,15 +694,25 @@ function GraphRenderer({
                       0,
                     );
                     // Larger for nodes with more vulnerabilities
-                    if (totalCVEs >= 5) return 36;
-                    if (totalCVEs >= 3) return 33;
+                    if (totalCVEs >= 5) baseRadius = 36;
+                    else if (totalCVEs >= 3) baseRadius = 33;
+                  } else if (isDirectAffected) {
+                    baseRadius = 32;
                   }
+                } else if (isDirectAffected) {
+                  baseRadius = 32;
                 }
-                return isDirectAffected ? 32 : 28;
+
+                // Double the size if selected
+                if (effectiveSelectedNode === node.id) {
+                  baseRadius *= 2;
+                }
+
+                return baseRadius;
               };
 
-              // Get CVE severity color for tech nodes (PRIMARY COLOR)
-              const getSeverityColor = () => {
+              // Get CVE severity color and gradient for tech nodes
+              const getSeverityInfo = () => {
                 if (isTech) {
                   const tech = getTechDetails(node.id, dependencyGraphData);
                   if (tech) {
@@ -499,44 +720,81 @@ function GraphRenderer({
                       (sum, v) => sum + v.cves.length,
                       0,
                     );
-                    // Return bright colors based on severity
-                    if (totalCVEs === 0) return "#10B981"; // Green - no CVEs
-                    if (totalCVEs >= 5) return "#DC2626"; // Bright Red - CRITICAL
-                    if (totalCVEs >= 3) return "#EA580C"; // Orange - HIGH
-                    if (totalCVEs >= 1) return "#D97706"; // Amber - MEDIUM
+                    // Return color and gradient ID based on severity
+                    if (totalCVEs === 0)
+                      return {
+                        color: "#10B981",
+                        gradient: "url(#lowGradient)",
+                        severity: "low",
+                      };
+                    if (totalCVEs >= 5)
+                      return {
+                        color: "#DC2626",
+                        gradient: "url(#criticalGradient)",
+                        severity: "critical",
+                      };
+                    if (totalCVEs >= 3)
+                      return {
+                        color: "#EA580C",
+                        gradient: "url(#highGradient)",
+                        severity: "high",
+                      };
+                    if (totalCVEs >= 1)
+                      return {
+                        color: "#D97706",
+                        gradient: "url(#mediumGradient)",
+                        severity: "medium",
+                      };
                   }
                 }
-                return null; // Use default color
+                return { color: "#0EA5E9", gradient: "none", severity: "none" }; // Use default blue
               };
 
-              // Determine node color based on type and subtype with better colors
-              const getNodeColor = () => {
+              // Determine node color and gradient based on type and subtype
+              const getNodeColorInfo = () => {
                 if (isIssue) {
                   switch (node.subtype) {
                     case "critical":
-                      return "#DC2626"; // Bright Red
+                      return {
+                        color: "#DC2626",
+                        gradient: "url(#criticalGradient)",
+                      };
                     case "high":
-                      return "#EA580C"; // Orange
+                      return {
+                        color: "#EA580C",
+                        gradient: "url(#highGradient)",
+                      };
                     case "medium":
-                      return "#D97706"; // Amber
+                      return {
+                        color: "#D97706",
+                        gradient: "url(#mediumGradient)",
+                      };
                     case "low":
-                      return "#10B981"; // Green
+                      return {
+                        color: "#10B981",
+                        gradient: "url(#lowGradient)",
+                      };
                     default:
-                      return "#8B5CF6"; // Purple
+                      return { color: "#8B5CF6", gradient: "none" };
                   }
                 } else if (isVendor) {
-                  return isDirectAffected ? "#A855F7" : "#D8B4FE"; // Purple variants
+                  return {
+                    color: isDirectAffected ? "#A855F7" : "#D8B4FE",
+                    gradient: "none",
+                  };
                 } else if (isTech) {
                   // For tech nodes, use severity color if available, otherwise use blue
-                  const severityColor = getSeverityColor();
-                  if (severityColor) return severityColor;
-                  return isDirectAffected ? "#0EA5E9" : "#60A5FA"; // Blue variants (fallback)
+                  const severityInfo = getSeverityInfo();
+                  return severityInfo;
                 }
-                return "#6B7280";
+                return { color: "#6B7280", gradient: "none" };
               };
+
+              const colorInfo = getNodeColorInfo();
 
               const radius = getNodeRadius();
               const innerRadius = Math.max(radius - 8, 12);
+              const isSelected = effectiveSelectedNode === node.id;
 
               // Get position from nodePositions state if available, otherwise use node position
               const nodePos = nodePositions.get(node.id) || {
@@ -549,20 +807,68 @@ function GraphRenderer({
               return (
                 <g
                   key={node.id}
-                  className={`cursor-move node-group ${draggedNodeId === node.id ? "opacity-75" : ""}`}
+                  className={`cursor-move node-group transition-all duration-200 ${draggedNodeId === node.id ? "opacity-75" : ""}`}
                   style={{ pointerEvents: "auto" }}
                   onClick={handleNodeClick}
                   onMouseDown={handleNodeMouseDown}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
-                  {/* Outer colored circle */}
+                  {/* Enhanced shadow effect for selected nodes */}
+                  <circle
+                    cx={nodeX + 1}
+                    cy={nodeY + 2}
+                    r={radius + (isSelected ? 4 : 2)}
+                    fill="black"
+                    opacity={isSelected ? "0.15" : "0.08"}
+                    filter="blur(2px)"
+                  />
+
+                  {/* Glow effect for selected node */}
+                  {isSelected && (
+                    <circle
+                      cx={nodeX}
+                      cy={nodeY}
+                      r={radius + 4}
+                      fill="none"
+                      stroke={colorInfo.color}
+                      strokeWidth="2"
+                      opacity="0.4"
+                      style={{
+                        animation: "pulse 2s ease-in-out infinite",
+                      }}
+                    />
+                  )}
+
+                  {/* Outer colored circle with gradient */}
                   <circle
                     cx={nodeX}
                     cy={nodeY}
                     r={radius}
-                    fill={getNodeColor()}
-                    opacity={0.9}
+                    fill={
+                      colorInfo.gradient !== "none"
+                        ? colorInfo.gradient
+                        : colorInfo.color
+                    }
+                    opacity={isSelected ? 1 : 0.95}
+                    style={{ transition: "all 0.2s ease" }}
+                    filter={
+                      isSelected
+                        ? "drop-shadow(0 0 8px rgba(0,0,0,0.2))"
+                        : "none"
+                    }
+                  />
+
+                  {/* Prominent border ring for selected node */}
+                  <circle
+                    cx={nodeX}
+                    cy={nodeY}
+                    r={radius}
+                    fill="none"
+                    stroke={colorInfo.color}
+                    strokeWidth={isSelected ? "2.5" : "0.5"}
+                    opacity={isSelected ? "0.8" : "0.3"}
+                    style={{ transition: "all 0.2s ease" }}
                   />
 
                   {/* Inner white circle */}
@@ -571,7 +877,8 @@ function GraphRenderer({
                     cy={nodeY}
                     r={innerRadius}
                     fill="white"
-                    opacity={0.98}
+                    opacity={0.99}
+                    style={{ transition: "all 0.2s ease" }}
                   />
 
                   {/* Node icon */}
@@ -649,36 +956,48 @@ function GraphRenderer({
         </g>
       </svg>
 
-      {/* Controls Overlay - Bottom Left Corner */}
-      <div className="absolute bottom-4 left-4 flex flex-row gap-1 bg-white rounded-lg shadow-lg p-1 items-center">
+      {/* Professional Control Sidebar - Bottom Left */}
+      <div
+        className="absolute left-4 bottom-6 flex flex-col gap-1.5 bg-white rounded-lg shadow-lg p-1.5 backdrop-blur-sm border border-gray-200"
+        style={{ transform: "scale(0.75)", transformOrigin: "bottom left" }}
+      >
+        {/* Zoom In Button */}
         <button
           onClick={zoomIn}
-          className="p-1 hover:bg-gray-100 rounded transition-colors"
-          title="Zoom In"
+          className="p-2 hover:bg-blue-50 rounded-md transition-all duration-200 text-gray-600 hover:text-blue-600 hover:shadow-sm"
+          title="Zoom In (Scroll)"
         >
-          <ZoomIn width="14" height="14" className="text-gray-600" />
-        </button>
-        <button
-          onClick={zoomOut}
-          className="p-1 hover:bg-gray-100 rounded transition-colors"
-          title="Zoom Out"
-        >
-          <ZoomOut width="14" height="14" className="text-gray-600" />
-        </button>
-        <div className="w-px h-4 bg-gray-200" />
-        <button
-          onClick={resetView}
-          className="p-1 hover:bg-gray-100 rounded transition-colors"
-          title="Reset View"
-        >
-          <Home width="14" height="14" className="text-gray-600" />
+          <ZoomIn width="14" height="14" />
         </button>
 
-        <div className="w-px h-4 bg-gray-200" />
         {/* Zoom Level Indicator */}
-        <div className="flex justify-center px-1 py-0.5 text-xs text-gray-600 font-medium min-w-[28px]">
-          {Math.round(zoom * 100)}%
+        <div className="flex flex-col items-center justify-center px-1.5 py-0.5 bg-gray-50 rounded-md border border-gray-200">
+          <span className="text-xs font-bold text-gray-700">
+            {Math.round(zoom * 100)}
+          </span>
+          <span className="text-xxs text-gray-500">%</span>
         </div>
+
+        {/* Zoom Out Button */}
+        <button
+          onClick={zoomOut}
+          className="p-2 hover:bg-blue-50 rounded-md transition-all duration-200 text-gray-600 hover:text-blue-600 hover:shadow-sm"
+          title="Zoom Out (Scroll)"
+        >
+          <ZoomOut width="14" height="14" />
+        </button>
+
+        {/* Divider */}
+        <div className="w-6 h-px bg-gray-200 mx-auto" />
+
+        {/* Reset View Button */}
+        <button
+          onClick={resetView}
+          className="p-2 hover:bg-green-50 rounded-md transition-all duration-200 text-gray-600 hover:text-green-600 hover:shadow-sm"
+          title="Reset View"
+        >
+          <Home width="14" height="14" />
+        </button>
       </div>
 
       {/* Tooltip - Disabled, using node labels instead */}
@@ -701,6 +1020,7 @@ export function DependencyGraphVisualization({
   const [selectedTechNode, setSelectedTechNode] = useState<Technology | null>(
     null,
   );
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [showFullDetails, setShowFullDetails] = useState(false);
   const [quickInfoNode, setQuickInfoNode] = useState<Technology | null>(null);
   const [quickInfoPos, setQuickInfoPos] = useState({ x: 0, y: 0 });
@@ -713,6 +1033,9 @@ export function DependencyGraphVisualization({
   ) => {
     console.log(`=== Node Click ===`);
     console.log(`Clicked node ID: ${nodeId}`);
+
+    // Update selected node
+    setSelectedNodeId(nodeId);
 
     let tech = getTechDetails(nodeId, dependencyGraphData);
     console.log(`getTechDetails result:`, tech);
@@ -781,6 +1104,13 @@ export function DependencyGraphVisualization({
   useEffect(() => {
     if (initialNodes && initialEdges) {
       setGraphData({ nodes: initialNodes, edges: initialEdges });
+      // Auto-select the first direct/primary node
+      const primaryNode = initialNodes.find(
+        (n) => n.subtype === "direct" || n.type === "technology",
+      );
+      if (primaryNode) {
+        setSelectedNodeId(primaryNode.id);
+      }
     } else {
       const defaultNodes: GraphNode[] = [
         {
@@ -844,6 +1174,8 @@ export function DependencyGraphVisualization({
       ];
 
       setGraphData({ nodes: defaultNodes, edges: defaultEdges });
+      // Auto-select the main node by default (tech-main)
+      setSelectedNodeId("tech-main");
     }
   }, []);
 
@@ -855,16 +1187,21 @@ export function DependencyGraphVisualization({
       {/* Normal View */}
       {!isFullscreen && (
         <div>
-          {/* Graph Container */}
+          {/* Graph Container with Professional Styling */}
           <div
             ref={graphContainerRef}
-            className="border border-gray-200 rounded-lg bg-white overflow-hidden h-[600px] relative"
+            className="border border-gray-200 rounded-xl bg-gradient-to-br from-white to-gray-50 overflow-hidden h-[600px] relative shadow-lg hover:shadow-xl transition-shadow duration-300"
+            onClick={() => {
+              // Close popups when clicking on empty area
+              handleCloseQuickInfo();
+            }}
           >
             <GraphRenderer
               nodes={graphData.nodes}
               edges={graphData.edges}
               width={WIDTH}
               height={500}
+              selectedNodeId={selectedNodeId}
               onTechNodeClick={handleTechNodeClick}
               showTooltips={true}
             />
@@ -880,18 +1217,18 @@ export function DependencyGraphVisualization({
               />
             )}
 
-            {/* Floating Buttons on Graph Frame */}
-            <div className="absolute top-4 right-4 flex items-center gap-2">
+            {/* Top Right Control Buttons */}
+            <div className="absolute top-4 right-4 flex items-center gap-3">
               <button
                 onClick={() => setShowLegend(true)}
-                className="p-2 hover:bg-gray-200 bg-white text-gray-600 rounded-lg transition-colors shadow-md"
+                className="p-2.5 hover:bg-gray-100 bg-white text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg border border-gray-200"
                 title="Show legend"
               >
                 <Info width="20" height="20" />
               </button>
               <button
                 onClick={handleFullscreenClick}
-                className="p-2 hover:bg-blue-600 bg-blue-500 text-white rounded-lg transition-colors shadow-md"
+                className="p-2.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
                 title="Open fullscreen"
               >
                 <Maximize2 width="20" height="20" />
@@ -903,31 +1240,42 @@ export function DependencyGraphVisualization({
 
       {/* Fullscreen View */}
       {isFullscreen && (
-        <div className="fixed inset-0 z-50 bg-white flex flex-col">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 flex items-center justify-between shadow-lg">
-            <h2 className="text-lg font-bold">
-              Dependency Graph - {techStack.name}
-            </h2>
+        <div className="fixed inset-0 z-50 bg-gradient-to-br from-white to-gray-50 flex flex-col">
+          {/* Professional Header */}
+          <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white px-6 py-4 flex items-center justify-between shadow-2xl border-b border-slate-700">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white bg-opacity-10 rounded-lg">
+                <Package width="20" height="20" className="text-blue-400" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">Dependency Graph</h2>
+                <p className="text-sm text-slate-400">{techStack.name}</p>
+              </div>
+            </div>
             <button
               onClick={() => setIsFullscreen(false)}
-              className="p-2 hover:bg-blue-500 rounded-lg transition-colors bg-blue-500 bg-opacity-50"
+              className="p-2 hover:bg-slate-700 rounded-lg transition-all duration-200 text-slate-300 hover:text-white"
               title="Exit fullscreen"
             >
-              <X width="24" height="24" className="text-white" />
+              <X width="24" height="24" />
             </button>
           </div>
 
           {/* Graph Container */}
           <div
             ref={graphContainerRef}
-            className="flex-1 overflow-hidden bg-gray-50 relative"
+            className="flex-1 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 relative"
+            onClick={() => {
+              // Close popups when clicking on empty area
+              handleCloseQuickInfo();
+            }}
           >
             <GraphRenderer
               nodes={graphData.nodes}
               edges={graphData.edges}
               width={windowSize.width}
               height={windowSize.height - 100}
+              selectedNodeId={selectedNodeId}
               onTechNodeClick={handleTechNodeClick}
               showTooltips={true}
             />

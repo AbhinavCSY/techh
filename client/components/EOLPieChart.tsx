@@ -74,23 +74,25 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
       {/* Legend and Stats */}
       <div className="flex-1 space-y-6">
         <div>
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+          <h4 className="font-semibold text-gray-900 mb-3 text-xs">
             EOL Status
           </h4>
           <div className="space-y-2">
             <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                <span className="text-sm text-gray-700">End of Life</span>
+                <span className="text-xs text-gray-700">End of Life</span>
               </div>
-              <span className="font-bold text-red-900">{eolTechStacks}</span>
+              <span className="font-bold text-red-900 text-xs">
+                {eolTechStacks}
+              </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                <span className="text-sm text-gray-700">Active</span>
+                <span className="text-xs text-gray-700">Active</span>
               </div>
-              <span className="font-bold text-green-900">
+              <span className="font-bold text-green-900 text-xs">
                 {nonEolTechStacks}
               </span>
             </div>
@@ -98,7 +100,7 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
         </div>
 
         <div>
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+          <h4 className="font-semibold text-gray-900 mb-3 text-xs">
             Upgrade Available
           </h4>
           <div className="space-y-2">
@@ -117,9 +119,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="text-sm text-gray-700">Yes</span>
+                <span className="text-xs text-gray-700">Yes</span>
               </div>
-              <span className="text-sm font-bold text-blue-900">
+              <span className="text-xs font-bold text-blue-900">
                 {eolUpgradable + nonEolUpgradable}
               </span>
             </div>
@@ -138,9 +140,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-                <span className="text-sm text-gray-700">No</span>
+                <span className="text-xs text-gray-700">No</span>
               </div>
-              <span className="text-sm font-bold text-gray-900">
+              <span className="text-xs font-bold text-gray-900">
                 {eolNotUpgradable + nonEolNotUpgradable}
               </span>
             </div>
@@ -151,22 +153,36 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
             <p className="text-xs font-semibold text-gray-600 mb-2">
               Breakdown:
             </p>
-            <div className="space-y-1 text-xs">
+            <div className="space-y-1 text-xxs">
               <div className="flex justify-between">
-                <span className="text-gray-600">EOL + Upgradable:</span>
-                <span className="font-semibold">{eolUpgradable}</span>
+                <span className="text-gray-600 text-xxs">
+                  EOL + Upgradable:
+                </span>
+                <span className="font-semibold text-xxs">{eolUpgradable}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">EOL + Not Upgradable:</span>
-                <span className="font-semibold">{eolNotUpgradable}</span>
+                <span className="text-gray-600 text-xxs">
+                  EOL + Not Upgradable:
+                </span>
+                <span className="font-semibold text-xxs">
+                  {eolNotUpgradable}
+                </span>
               </div>
               <div className="flex justify-between border-t border-gray-300 pt-1 mt-1">
-                <span className="text-gray-600">Active + Upgradable:</span>
-                <span className="font-semibold">{nonEolUpgradable}</span>
+                <span className="text-gray-600 text-xxs">
+                  Active + Upgradable:
+                </span>
+                <span className="font-semibold text-xxs">
+                  {nonEolUpgradable}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Active + Not Upgradable:</span>
-                <span className="font-semibold">{nonEolNotUpgradable}</span>
+                <span className="text-gray-600 text-xxs">
+                  Active + Not Upgradable:
+                </span>
+                <span className="font-semibold text-xxs">
+                  {nonEolNotUpgradable}
+                </span>
               </div>
             </div>
           </div>
@@ -250,13 +266,13 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
 
             {/* Legend - Right Side */}
             <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-xs">
                 <div className="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></div>
                 <span className="text-gray-700 flex-1">
                   EOL: {eolTechStacks}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-xs">
                 <div className="w-3 h-3 rounded-full bg-green-500 flex-shrink-0"></div>
                 <span className="text-gray-700 flex-1">
                   Active: {nonEolTechStacks}
