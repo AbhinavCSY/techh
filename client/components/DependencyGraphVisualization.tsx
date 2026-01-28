@@ -614,15 +614,31 @@ function GraphRenderer({
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
-                  {/* Shadow effect for depth */}
+                  {/* Enhanced shadow effect for selected nodes */}
                   <circle
                     cx={nodeX + 1}
                     cy={nodeY + 2}
-                    r={radius + 2}
+                    r={radius + (isSelected ? 4 : 2)}
                     fill="black"
-                    opacity="0.08"
+                    opacity={isSelected ? "0.15" : "0.08"}
                     filter="blur(2px)"
                   />
+
+                  {/* Glow effect for selected node */}
+                  {isSelected && (
+                    <circle
+                      cx={nodeX}
+                      cy={nodeY}
+                      r={radius + 4}
+                      fill="none"
+                      stroke={colorInfo.color}
+                      strokeWidth="2"
+                      opacity="0.4"
+                      style={{
+                        animation: "pulse 2s ease-in-out infinite",
+                      }}
+                    />
+                  )}
 
                   {/* Outer colored circle with gradient */}
                   <circle
@@ -630,19 +646,21 @@ function GraphRenderer({
                     cy={nodeY}
                     r={radius}
                     fill={colorInfo.gradient !== "none" ? colorInfo.gradient : colorInfo.color}
-                    opacity={0.95}
+                    opacity={isSelected ? 1 : 0.95}
                     style={{ transition: "all 0.2s ease" }}
+                    filter={isSelected ? "drop-shadow(0 0 8px rgba(0,0,0,0.2))" : "none"}
                   />
 
-                  {/* Subtle border ring */}
+                  {/* Prominent border ring for selected node */}
                   <circle
                     cx={nodeX}
                     cy={nodeY}
                     r={radius}
                     fill="none"
                     stroke={colorInfo.color}
-                    strokeWidth="0.5"
-                    opacity="0.3"
+                    strokeWidth={isSelected ? "2.5" : "0.5"}
+                    opacity={isSelected ? "0.8" : "0.3"}
+                    style={{ transition: "all 0.2s ease" }}
                   />
 
                   {/* Inner white circle */}
