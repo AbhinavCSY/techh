@@ -131,3 +131,25 @@ export function verifyPassword(inputPassword: string): boolean {
     return false;
   }
 }
+
+export function getDevPassword(): string | null {
+  // Only return password in development mode
+  if (process.env.NODE_ENV === "production") {
+    return null;
+  }
+
+  ensureDataDir();
+
+  if (!fs.existsSync(PASSWORD_FILE)) {
+    return null;
+  }
+
+  try {
+    const data = JSON.parse(fs.readFileSync(PASSWORD_FILE, "utf-8"));
+    const storedPassword = decryptPassword(data.encrypted);
+    return storedPassword;
+  } catch (error) {
+    console.error("Error retrieving dev password:", error);
+    return null;
+  }
+}
