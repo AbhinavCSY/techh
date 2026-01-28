@@ -907,6 +907,62 @@ export const dependencyGraphData: DependencyGraphDataType = {
         "CVE-2021-44228 (Log4Shell): Remote Code Execution in Apache Log4j via JNDI injection. Allows unauthenticated remote attackers to execute arbitrary code by sending specially crafted log messages. CVSS Score: 10.0 (Critical). Affects Log4j versions < 2.17.0. All versions of Java applications using Log4j are at critical risk.",
       cve_id: "CVE-2021-44228",
     },
+    // AI Stack CVEs
+    {
+      id: "ISSUE-PYTORCH-001",
+      title: "PyTorch Arbitrary Code Execution",
+      type: "vuln",
+      severity: "high",
+      confidence_score: 0.92,
+      discovered_at: "2023-11-15",
+      description:
+        "CVE-2023-43654: Arbitrary Code Execution in PyTorch via specially crafted serialized model files. Affects PyTorch versions < 2.0.0. CVSS Score: 8.6 (High). When deserializing untrusted model files, attackers can execute arbitrary code.",
+      cve_id: "CVE-2023-43654",
+    },
+    {
+      id: "ISSUE-PYTHON-001",
+      title: "Python 3.8 Regex DoS",
+      type: "vuln",
+      severity: "high",
+      confidence_score: 0.88,
+      discovered_at: "2023-02-17",
+      description:
+        "CVE-2023-24329: Regular expression Denial of Service in Python 3.8 and earlier. Can be exploited to cause resource exhaustion. CVSS Score: 7.5 (High). Python 3.8 reached end-of-life on 2024-10-07.",
+      cve_id: "CVE-2023-24329",
+    },
+    {
+      id: "ISSUE-CUDA-001",
+      title: "CUDA Toolkit Privilege Escalation",
+      type: "vuln",
+      severity: "high",
+      confidence_score: 0.85,
+      discovered_at: "2024-01-10",
+      description:
+        "CVE-2024-0050: Local privilege escalation vulnerability in NVIDIA CUDA Toolkit < 12.2. CVSS Score: 8.1 (High). Affects GPU-accelerated AI inference and training workloads.",
+      cve_id: "CVE-2024-0050",
+    },
+    {
+      id: "ISSUE-K8S-001",
+      title: "Kubernetes API Server Bypass",
+      type: "vuln",
+      severity: "high",
+      confidence_score: 0.89,
+      discovered_at: "2023-08-01",
+      description:
+        "CVE-2023-2728: Kubernetes API Server authentication bypass via webhook certificate validation. CVSS Score: 8.8 (High). Affects Kubernetes < 1.27.4. Critical for containerized AI deployments.",
+      cve_id: "CVE-2023-2728",
+    },
+    {
+      id: "ISSUE-UBUNTU-001",
+      title: "SSH Agent RCE",
+      type: "vuln",
+      severity: "high",
+      confidence_score: 0.91,
+      discovered_at: "2023-08-15",
+      description:
+        "CVE-2023-38408: Remote Code Execution in OpenSSH SSH Agent via signal handler race condition. CVSS Score: 8.2 (High). Affects Ubuntu 20.04 and earlier. Impacts AI infrastructure hosting.",
+      cve_id: "CVE-2023-38408",
+    },
   ],
 
   relationships: [
