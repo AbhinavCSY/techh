@@ -98,7 +98,7 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
         </div>
 
         <div>
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+          <h4 className="font-semibold text-gray-900 mb-3 text-xs">
             Upgrade Available
           </h4>
           <div className="space-y-2">
@@ -117,9 +117,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="text-sm text-gray-700">Yes</span>
+                <span className="text-xs text-gray-700">Yes</span>
               </div>
-              <span className="text-sm font-bold text-blue-900">
+              <span className="text-xs font-bold text-blue-900">
                 {eolUpgradable + nonEolUpgradable}
               </span>
             </div>
@@ -138,9 +138,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-                <span className="text-sm text-gray-700">No</span>
+                <span className="text-xs text-gray-700">No</span>
               </div>
-              <span className="text-sm font-bold text-gray-900">
+              <span className="text-xs font-bold text-gray-900">
                 {eolNotUpgradable + nonEolNotUpgradable}
               </span>
             </div>
