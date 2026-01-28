@@ -97,7 +97,14 @@ export function TechStackTableView({
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{techStack.logo}</span>
                     <div>
-                      <p className="font-semibold">{techStack.name}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold">{techStack.name}</p>
+                        {isNewTechStack(techStack.createdAt) && (
+                          <Badge className="bg-purple-200 text-purple-800 text-xs font-bold">
+                            NEW
+                          </Badge>
+                        )}
+                      </div>
                       <p className="text-xs text-gray-500">{techStack.type}</p>
                     </div>
                   </div>
