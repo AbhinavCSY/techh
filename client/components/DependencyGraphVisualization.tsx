@@ -594,6 +594,7 @@ function GraphRenderer({
 
               const radius = getNodeRadius();
               const innerRadius = Math.max(radius - 8, 12);
+              const isSelected = selectedNode === node.id;
 
               // Get position from nodePositions state if available, otherwise use node position
               const nodePos = nodePositions.get(node.id) || {
