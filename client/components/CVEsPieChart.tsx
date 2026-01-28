@@ -282,13 +282,13 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
 
             {/* Legend - Right Side */}
             <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-2 text-sm font-medium">
+              <div className="flex items-center gap-2 text-xs font-medium">
                 <div className="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></div>
                 <span className="text-gray-700 flex-1">
                   Scanned: {scannedCVEs}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-sm font-medium">
+              <div className="flex items-center gap-2 text-xs font-medium">
                 <div className="w-3 h-3 rounded-full bg-amber-400 flex-shrink-0"></div>
                 <span className="text-gray-700 flex-1">
                   Unscanned: {unscannedCVEs}
