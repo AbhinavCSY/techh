@@ -91,6 +91,26 @@ export interface Asset {
 }
 
 const commonCVEs: Record<string, CVE[]> = {
+  vLLm: [
+    {
+      id: "CVE-2024-0001",
+      severity: "critical",
+      title: "vLLm Remote Code Execution",
+      score: 9.8,
+    },
+    {
+      id: "CVE-2024-0002",
+      severity: "high",
+      title: "vLLm Model Poisoning",
+      score: 8.5,
+    },
+    {
+      id: "CVE-2024-0003",
+      severity: "high",
+      title: "vLLm Memory Leak",
+      score: 7.2,
+    },
+  ],
   Log4j: [
     {
       id: "CVE-2021-44228",
