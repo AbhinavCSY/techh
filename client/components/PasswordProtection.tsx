@@ -22,7 +22,7 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
 
   // Check if user is already authenticated and get dev password
   useEffect(() => {
-    const checkAuthentication = () => {
+    const checkAuthentication = async () => {
       const token = localStorage.getItem(AUTH_TOKEN);
       const expiry = localStorage.getItem(AUTH_EXPIRY);
 
@@ -41,13 +41,20 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
       setIsCheckingAuth(false);
     };
 
-    // Get dev password from environment if in development
-    const envPassword = import.meta.env.VITE_APP_PASSWORD;
-    if (import.meta.env.DEV && envPassword) {
-      setDevPassword(envPassword);
-    }
+    const fetchDevPassword = async () => {
+      try {
+        const response = await fetch("/api/dev-password");
+        const data = await response.json();
+        if (data.password) {
+          setDevPassword(data.password);
+        }
+      } catch (error) {
+        console.error("Failed to fetch dev password:", error);
+      }
+    };
 
     checkAuthentication();
+    fetchDevPassword();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
