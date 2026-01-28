@@ -17,8 +17,9 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [devPassword, setDevPassword] = useState<string | null>(null);
 
-  // Check if user is already authenticated
+  // Check if user is already authenticated and get dev password
   useEffect(() => {
     const checkAuthentication = () => {
       const token = localStorage.getItem(AUTH_TOKEN);
@@ -38,6 +39,12 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
       }
       setIsCheckingAuth(false);
     };
+
+    // Get dev password from environment if in development
+    const envPassword = import.meta.env.VITE_APP_PASSWORD;
+    if (import.meta.env.DEV && envPassword) {
+      setDevPassword(envPassword);
+    }
 
     checkAuthentication();
   }, []);
@@ -127,6 +134,20 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
                 <div className="flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-destructive text-sm">
                   <AlertCircle className="w-4 h-4 flex-shrink-0" />
                   <span>{error}</span>
+                </div>
+              )}
+
+              {devPassword && (
+                <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 text-amber-600" />
+                  <div className="text-sm">
+                    <p className="text-amber-700 font-medium">
+                      Development Mode
+                    </p>
+                    <p className="text-amber-600 font-mono text-xs">
+                      Password: {devPassword}
+                    </p>
+                  </div>
                 </div>
               )}
 

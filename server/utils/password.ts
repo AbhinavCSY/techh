@@ -50,15 +50,12 @@ export function initializePassword(): string | null {
   ensureDataDir();
   const isProduction = process.env.NODE_ENV === "production";
 
-  // In production, APP_PASSWORD must be set
-  if (isProduction) {
-    if (!process.env.APP_PASSWORD) {
-      throw new Error(
-        "APP_PASSWORD environment variable is required in production",
-      );
-    }
+  // Check if APP_PASSWORD is set (works in both production and development)
+  const envPassword = process.env.APP_PASSWORD;
 
-    const encrypted = encryptPassword(process.env.APP_PASSWORD);
+  if (envPassword) {
+    // Use environment variable password
+    const encrypted = encryptPassword(envPassword);
     fs.writeFileSync(
       PASSWORD_FILE,
       JSON.stringify(
@@ -68,14 +65,22 @@ export function initializePassword(): string | null {
       ),
     );
 
-    console.log("\n=== APP PASSWORD INITIALIZED (PRODUCTION) ===");
+    const mode = isProduction ? "PRODUCTION" : "DEVELOPMENT";
+    console.log(`\n=== APP PASSWORD INITIALIZED (${mode}) ===`);
     console.log("App secured with password from APP_PASSWORD env variable.");
     console.log("=====================================\n");
 
     return null;
   }
 
-  // In development: generate a new random password on every server start
+  // If no environment variable is set and we're in production, throw error
+  if (isProduction) {
+    throw new Error(
+      "APP_PASSWORD environment variable is required in production",
+    );
+  }
+
+  // In development without env var: generate a new random password on every server start
   const newPassword = generateRandomPassword();
   const encrypted = encryptPassword(newPassword);
 
