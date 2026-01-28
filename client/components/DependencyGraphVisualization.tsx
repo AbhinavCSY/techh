@@ -987,25 +987,31 @@ export function DependencyGraphVisualization({
 
       {/* Fullscreen View */}
       {isFullscreen && (
-        <div className="fixed inset-0 z-50 bg-white flex flex-col">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 flex items-center justify-between shadow-lg">
-            <h2 className="text-lg font-bold">
-              Dependency Graph - {techStack.name}
-            </h2>
+        <div className="fixed inset-0 z-50 bg-gradient-to-br from-white to-gray-50 flex flex-col">
+          {/* Professional Header */}
+          <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white px-6 py-4 flex items-center justify-between shadow-2xl border-b border-slate-700">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white bg-opacity-10 rounded-lg">
+                <Package width="20" height="20" className="text-blue-400" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">Dependency Graph</h2>
+                <p className="text-sm text-slate-400">{techStack.name}</p>
+              </div>
+            </div>
             <button
               onClick={() => setIsFullscreen(false)}
-              className="p-2 hover:bg-blue-500 rounded-lg transition-colors bg-blue-500 bg-opacity-50"
+              className="p-2 hover:bg-slate-700 rounded-lg transition-all duration-200 text-slate-300 hover:text-white"
               title="Exit fullscreen"
             >
-              <X width="24" height="24" className="text-white" />
+              <X width="24" height="24" />
             </button>
           </div>
 
           {/* Graph Container */}
           <div
             ref={graphContainerRef}
-            className="flex-1 overflow-hidden bg-gray-50 relative"
+            className="flex-1 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 relative"
           >
             <GraphRenderer
               nodes={graphData.nodes}
