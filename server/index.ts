@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { handleVerifyPassword } from "./routes/auth";
+import { handleVerifyPassword, handleGetDevPassword } from "./routes/auth";
 import { initializePassword } from "./utils/password";
 
 export function createServer() {
@@ -26,6 +26,7 @@ export function createServer() {
 
   // Auth routes
   app.post("/api/verify-password", handleVerifyPassword);
+  app.get("/api/dev-password", handleGetDevPassword);
 
   return app;
 }
