@@ -182,6 +182,7 @@ function GraphRenderer({
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const [draggedNodeId, setDraggedNodeId] = useState<string | null>(null);
+  const [hoveredEdgeIndex, setHoveredEdgeIndex] = useState<number | null>(null);
   const [nodePositions, setNodePositions] = useState<
     Map<string, { x: number; y: number }>
   >(new Map());
