@@ -14,6 +14,11 @@ export function TechStackCardView({
   allAssets,
   onSelectCard,
 }: TechStackCardViewProps) {
+  const isNewTechStack = (createdAt: Date) => {
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    return new Date(createdAt) > oneDayAgo;
+  };
+
   const getRiskColor = (level: string) => {
     switch (level) {
       case "critical":
@@ -89,9 +94,16 @@ export function TechStackCardView({
               <div className="flex items-center gap-3">
                 <span className="text-3xl">{techStack.logo}</span>
                 <div>
-                  <h3 className="font-semibold text-gray-900">
-                    {techStack.name}
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-gray-900">
+                      {techStack.name}
+                    </h3>
+                    {isNewTechStack(techStack.createdAt) && (
+                      <Badge className="bg-purple-200 text-purple-800 text-xs font-bold">
+                        NEW
+                      </Badge>
+                    )}
+                  </div>
                   <p className="text-xs text-gray-500">v{techStack.version}</p>
                 </div>
               </div>

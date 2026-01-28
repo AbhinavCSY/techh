@@ -91,6 +91,26 @@ export interface Asset {
 }
 
 const commonCVEs: Record<string, CVE[]> = {
+  vLLm: [
+    {
+      id: "CVE-2024-0001",
+      severity: "critical",
+      title: "vLLm Remote Code Execution",
+      score: 9.8,
+    },
+    {
+      id: "CVE-2024-0002",
+      severity: "high",
+      title: "vLLm Model Poisoning",
+      score: 8.5,
+    },
+    {
+      id: "CVE-2024-0003",
+      severity: "high",
+      title: "vLLm Memory Leak",
+      score: 7.2,
+    },
+  ],
   Log4j: [
     {
       id: "CVE-2021-44228",
@@ -151,6 +171,50 @@ const commonCVEs: Record<string, CVE[]> = {
 };
 
 const techStackDatabase: TechStack[] = [
+  {
+    id: "ts-0",
+    name: "vLLm",
+    type: "library",
+    version: "0.3.0",
+    logo: "🤖",
+    isEOL: false,
+    isUpgradable: true,
+    secureVersion: "0.4.0",
+    cves: commonCVEs["vLLm"],
+    unscannedThreatsCount: 4,
+    riskLevel: "critical",
+    riskScore: 8.5,
+    createdAt: new Date("2026-01-27"),
+    lastUpdated: new Date("2026-01-27"),
+    license: "Apache License 2.0",
+    effectiveLicense: "Apache",
+    versionHistory: [
+      { version: "0.2.0", releaseDate: new Date("2025-06-15"), isEOL: false },
+      { version: "0.3.0", releaseDate: new Date("2025-12-01"), isEOL: false },
+      { version: "0.4.0", releaseDate: new Date("2026-01-15"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-vllm-1",
+        title: "Update to vLLm 0.4.0",
+        description: "Critical security update to address RCE vulnerabilities",
+        priority: "critical",
+        estimatedTime: "2-3 hours",
+      },
+      {
+        id: "rem-vllm-2",
+        title: "Implement Model Validation",
+        description: "Add strict validation for model inputs and outputs",
+        priority: "high",
+        estimatedTime: "4-6 hours",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 8, riskLevel: "low" },
+      packageReliability: { score: 6, riskLevel: "medium" },
+      behavioralIntegrity: { score: 7, riskLevel: "low" },
+    },
+  },
   {
     id: "ts-1",
     name: "Log4j",

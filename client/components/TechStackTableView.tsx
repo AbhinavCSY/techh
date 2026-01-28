@@ -21,6 +21,11 @@ export function TechStackTableView({
   allAssets,
   onSelectRow,
 }: TechStackTableViewProps) {
+  const isNewTechStack = (createdAt: Date) => {
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    return new Date(createdAt) > oneDayAgo;
+  };
+
   const getRiskColor = (level: string) => {
     switch (level) {
       case "critical":
@@ -92,7 +97,14 @@ export function TechStackTableView({
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{techStack.logo}</span>
                     <div>
-                      <p className="font-semibold">{techStack.name}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold">{techStack.name}</p>
+                        {isNewTechStack(techStack.createdAt) && (
+                          <Badge className="bg-purple-200 text-purple-800 text-xs font-bold">
+                            NEW
+                          </Badge>
+                        )}
+                      </div>
                       <p className="text-xs text-gray-500">{techStack.type}</p>
                     </div>
                   </div>
@@ -148,11 +160,11 @@ export function TechStackTableView({
                   <ThreatBar
                     cves={techStack.cves}
                     unscannedCount={techStack.unscannedThreatsCount}
-                    className="w-48"
+                    className="w-24"
                   />
                 </TableCell>
                 <TableCell>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-nowrap gap-1 whitespace-nowrap">
                     {techStack.isEOL && (
                       <Badge className="bg-red-200 text-red-800 text-xs">
                         EOL
