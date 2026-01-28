@@ -790,6 +790,49 @@ export const dependencyGraphData: DependencyGraphDataType = {
       products: ["tech-jvm"],
       vendor_type: "software_vendor",
     },
+    // AI Vendors
+    {
+      id: "vendor-huggingface",
+      name: "Hugging Face",
+      products: ["tech-hf-transformers"],
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-langchain",
+      name: "LangChain Inc.",
+      products: ["tech-langchain"],
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-berkeley",
+      name: "UC Berkeley / Open Source",
+      products: ["tech-vllm"],
+      vendor_type: "foundation",
+    },
+    {
+      id: "vendor-meta-ai",
+      name: "Meta",
+      products: ["tech-pytorch", "tech-faiss"],
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-psf",
+      name: "Python Software Foundation",
+      products: ["tech-python"],
+      vendor_type: "foundation",
+    },
+    {
+      id: "vendor-nvidia",
+      name: "NVIDIA",
+      products: ["tech-cuda"],
+      vendor_type: "software_vendor",
+    },
+    {
+      id: "vendor-canonical",
+      name: "Canonical",
+      products: ["tech-ubuntu"],
+      vendor_type: "software_vendor",
+    },
   ],
 
   issues: [
