@@ -427,8 +427,9 @@ function GraphRenderer({
 
               return (
                 <g key={idx}>
-                  {/* Edge line with gradient effect */}
+                  {/* Edge line with smooth styling */}
                   <line
+                    className="edge-line"
                     x1={sourcePos.x}
                     y1={sourcePos.y}
                     x2={targetPos.x}
@@ -436,31 +437,36 @@ function GraphRenderer({
                     stroke={getLabelColor()}
                     strokeWidth={2}
                     markerEnd="url(#arrowhead)"
-                    opacity={0.4}
+                    opacity={0.45}
+                    style={{ strokeLinecap: "round" }}
                   />
 
-                  {/* Shadow for label background */}
-                  <rect
-                    x={midX - 55}
-                    y={midY - 16}
-                    width="110"
-                    height="32"
-                    fill="white"
-                    opacity={0.95}
-                    rx="5"
-                    filter="drop-shadow(0 1px 3px rgba(0,0,0,0.1))"
-                  />
+                  {/* Enhanced label background with shadow */}
+                  <g filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))">
+                    <rect
+                      x={midX - 55}
+                      y={midY - 16}
+                      width="110"
+                      height="32"
+                      fill="white"
+                      opacity={0.97}
+                      rx="6"
+                      strokeWidth="1"
+                      stroke={getLabelColor()}
+                      strokeOpacity="0.15"
+                    />
+                  </g>
 
-                  {/* Label text - bold and prominent */}
+                  {/* Label text - professional styling */}
                   <text
                     x={midX}
                     y={midY + 5}
                     textAnchor="middle"
-                    fontSize="13"
-                    fontWeight="700"
+                    fontSize="12"
+                    fontWeight="600"
                     fill={getLabelColor()}
                     opacity={1}
-                    style={{ pointerEvents: "none" }}
+                    style={{ pointerEvents: "none", letterSpacing: "0.3px" }}
                   >
                     {label}
                   </text>
