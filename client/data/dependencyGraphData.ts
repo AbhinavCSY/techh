@@ -510,6 +510,169 @@ export const dependencyGraphData: DependencyGraphDataType = {
         },
       ],
     },
+
+    // ===== AI TECH STACKS =====
+    {
+      id: "tech-hf-transformers",
+      product: "Hugging Face Transformers",
+      vendor: "Hugging Face",
+      master_node: true,
+      abstraction_level: "framework",
+      category: "framework",
+      versions: [
+        {
+          version: "4.36.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-langchain",
+      product: "LangChain",
+      vendor: "LangChain Inc.",
+      master_node: true,
+      abstraction_level: "framework",
+      category: "framework",
+      versions: [
+        {
+          version: "0.1.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-vllm",
+      product: "vLLM",
+      vendor: "UC Berkeley / Open Source",
+      master_node: true,
+      abstraction_level: "framework",
+      category: "framework",
+      versions: [
+        {
+          version: "0.2.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-pytorch",
+      product: "PyTorch",
+      vendor: "Meta / Linux Foundation",
+      abstraction_level: "framework",
+      category: "framework",
+      versions: [
+        {
+          version: "1.13.0",
+          eol: false,
+          cves: ["CVE-2023-43654"],
+        },
+        {
+          version: "2.1.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-python",
+      product: "Python",
+      vendor: "Python Software Foundation",
+      abstraction_level: "runtime",
+      category: "runtime",
+      versions: [
+        {
+          version: "3.8",
+          eol: true,
+          eol_date: "2024-10-07",
+          cves: ["CVE-2023-24329"],
+        },
+        {
+          version: "3.11",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-cuda",
+      product: "NVIDIA CUDA Toolkit",
+      vendor: "NVIDIA",
+      abstraction_level: "runtime",
+      category: "runtime",
+      versions: [
+        {
+          version: "11.0",
+          eol: true,
+          eol_date: "2022-12-31",
+          cves: ["CVE-2024-0050"],
+        },
+        {
+          version: "12.2",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-kubernetes",
+      product: "Kubernetes",
+      vendor: "Cloud Native Computing Foundation",
+      abstraction_level: "runtime",
+      category: "container",
+      versions: [
+        {
+          version: "1.24.0",
+          eol: false,
+          cves: ["CVE-2023-2728"],
+        },
+        {
+          version: "1.29.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-ubuntu",
+      product: "Ubuntu OS",
+      vendor: "Canonical",
+      abstraction_level: "runtime",
+      category: "runtime",
+      versions: [
+        {
+          version: "20.04",
+          eol: false,
+          cves: ["CVE-2023-38408"],
+        },
+        {
+          version: "22.04",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
+    {
+      id: "tech-faiss",
+      product: "FAISS Vector DB",
+      vendor: "Meta / Facebook Research",
+      abstraction_level: "framework",
+      category: "database",
+      versions: [
+        {
+          version: "1.7.4",
+          eol: false,
+          cves: [],
+        },
+        {
+          version: "1.8.0",
+          eol: false,
+          cves: [],
+        },
+      ],
+    },
   ],
 
   vendors: [
