@@ -595,20 +595,42 @@ function GraphRenderer({
               return (
                 <g
                   key={node.id}
-                  className={`cursor-move node-group ${draggedNodeId === node.id ? "opacity-75" : ""}`}
+                  className={`cursor-move node-group transition-all duration-200 ${draggedNodeId === node.id ? "opacity-75" : ""}`}
                   style={{ pointerEvents: "auto" }}
                   onClick={handleNodeClick}
                   onMouseDown={handleNodeMouseDown}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
-                  {/* Outer colored circle */}
+                  {/* Shadow effect for depth */}
+                  <circle
+                    cx={nodeX + 1}
+                    cy={nodeY + 2}
+                    r={radius + 2}
+                    fill="black"
+                    opacity="0.08"
+                    filter="blur(2px)"
+                  />
+
+                  {/* Outer colored circle with gradient */}
                   <circle
                     cx={nodeX}
                     cy={nodeY}
                     r={radius}
-                    fill={getNodeColor()}
-                    opacity={0.9}
+                    fill={colorInfo.gradient !== "none" ? colorInfo.gradient : colorInfo.color}
+                    opacity={0.95}
+                    style={{ transition: "all 0.2s ease" }}
+                  />
+
+                  {/* Subtle border ring */}
+                  <circle
+                    cx={nodeX}
+                    cy={nodeY}
+                    r={radius}
+                    fill="none"
+                    stroke={colorInfo.color}
+                    strokeWidth="0.5"
+                    opacity="0.3"
                   />
 
                   {/* Inner white circle */}
@@ -617,7 +639,8 @@ function GraphRenderer({
                     cy={nodeY}
                     r={innerRadius}
                     fill="white"
-                    opacity={0.98}
+                    opacity={0.99}
+                    style={{ transition: "all 0.2s ease" }}
                   />
 
                   {/* Node icon */}
