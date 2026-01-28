@@ -304,14 +304,35 @@ function GraphRenderer({
   };
 
   return (
-    <div className="relative w-full h-full bg-gray-50">
+    <div className="relative w-full h-full bg-gradient-to-br from-gray-50 to-gray-100">
+      <style>{`
+        @keyframes nodeHoverPulse {
+          0% { filter: drop-shadow(0 0 0 rgba(59, 130, 246, 0)); }
+          50% { filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4)); }
+          100% { filter: drop-shadow(0 0 0 rgba(59, 130, 246, 0)); }
+        }
+        .node-group:hover circle:first-child {
+          animation: nodeHoverPulse 0.6s ease-in-out;
+          filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+        }
+        .node-group:hover {
+          filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+        }
+        .edge-line {
+          transition: stroke-width 0.2s ease, opacity 0.2s ease;
+        }
+        .edge-line:hover {
+          stroke-width: 3;
+          opacity: 0.7;
+        }
+      `}</style>
       <svg
         ref={svgRef}
         width={width}
         height={height}
         className="w-full h-full cursor-grab active:cursor-grabbing"
         style={{
-          backgroundColor: "#f9fafb",
+          backgroundColor: "transparent",
           touchAction: "none",
         }}
         onMouseDown={handleMouseDown}
@@ -321,6 +342,24 @@ function GraphRenderer({
         onWheel={handleWheel}
       >
         <defs>
+          {/* Gradient backgrounds for nodes */}
+          <linearGradient id="criticalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style={{ stopColor: "#DC2626", stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: "#991B1B", stopOpacity: 1 }} />
+          </linearGradient>
+          <linearGradient id="highGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style={{ stopColor: "#EA580C", stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: "#C2410C", stopOpacity: 1 }} />
+          </linearGradient>
+          <linearGradient id="mediumGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style={{ stopColor: "#D97706", stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: "#92400E", stopOpacity: 1 }} />
+          </linearGradient>
+          <linearGradient id="lowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style={{ stopColor: "#10B981", stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: "#065F46", stopOpacity: 1 }} />
+          </linearGradient>
+
           <marker
             id="arrowhead"
             markerWidth="10"
@@ -329,7 +368,7 @@ function GraphRenderer({
             refY="3"
             orient="auto"
           >
-            <polygon points="0 0, 10 3, 0 6" fill="#9CA3AF" />
+            <polygon points="0 0, 10 3, 0 6" fill="#9CA3AF" opacity="0.5" />
           </marker>
         </defs>
 
