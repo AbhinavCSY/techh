@@ -118,7 +118,7 @@ export function TechStacksAndAssetsChart({
             )}
             <XAxis
               dataKey="date"
-              tick={{ fontSize: fullSize ? 12 : 8, fill: "#6b7280" }}
+              tick={{ fontSize: fullSize ? 6 : 4, fill: "#6b7280" }}
               axisLine={{ stroke: "#e5e7eb" }}
               angle={fullSize ? -45 : 0}
               textAnchor={fullSize ? "end" : "middle"}
@@ -126,7 +126,7 @@ export function TechStacksAndAssetsChart({
               interval={fullSize ? 0 : 2}
             />
             <YAxis
-              tick={{ fontSize: fullSize ? 12 : 8, fill: "#6b7280" }}
+              tick={{ fontSize: fullSize ? 6 : 4, fill: "#6b7280" }}
               axisLine={{ stroke: "#e5e7eb" }}
               label={
                 fullSize
@@ -135,8 +135,9 @@ export function TechStacksAndAssetsChart({
                       angle: -90,
                       position: "insideLeft",
                       offset: 10,
+                      fontSize: 6,
                     }
-                  : { value: "Count", angle: -90, position: "insideLeft" }
+                  : { value: "Count", angle: -90, position: "insideLeft", fontSize: 4 }
               }
             />
             <Tooltip
