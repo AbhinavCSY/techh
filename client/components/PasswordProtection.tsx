@@ -19,7 +19,7 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [devPassword, setDevPassword] = useState<string | null>(null);
 
-  // Check if user is already authenticated
+  // Check if user is already authenticated and get dev password
   useEffect(() => {
     const checkAuthentication = () => {
       const token = localStorage.getItem(AUTH_TOKEN);
@@ -39,6 +39,12 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
       }
       setIsCheckingAuth(false);
     };
+
+    // Get dev password from environment if in development
+    const envPassword = import.meta.env.VITE_APP_PASSWORD;
+    if (import.meta.env.DEV && envPassword) {
+      setDevPassword(envPassword);
+    }
 
     checkAuthentication();
   }, []);
