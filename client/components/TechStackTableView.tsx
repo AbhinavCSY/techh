@@ -21,6 +21,11 @@ export function TechStackTableView({
   allAssets,
   onSelectRow,
 }: TechStackTableViewProps) {
+  const isNewTechStack = (createdAt: Date) => {
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    return new Date(createdAt) > oneDayAgo;
+  };
+
   const getRiskColor = (level: string) => {
     switch (level) {
       case "critical":
