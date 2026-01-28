@@ -72,7 +72,9 @@ export function TechStacksAndAssetsChart({
     if (active && payload && payload.length) {
       return (
         <div className="bg-white border border-gray-300 rounded-lg shadow-lg p-2 text-xxs">
-          <p className="font-semibold text-gray-900 mb-1 text-xxs">📅 {label}</p>
+          <p className="font-semibold text-gray-900 mb-1 text-xxs">
+            📅 {label}
+          </p>
           {payload.map((entry: any, index: number) => (
             <div key={index} className="flex items-center gap-2">
               <div
@@ -137,7 +139,12 @@ export function TechStacksAndAssetsChart({
                       offset: 10,
                       fontSize: 6,
                     }
-                  : { value: "Count", angle: -90, position: "insideLeft", fontSize: 4 }
+                  : {
+                      value: "Count",
+                      angle: -90,
+                      position: "insideLeft",
+                      fontSize: 4,
+                    }
               }
             />
             <Tooltip

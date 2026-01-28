@@ -56,7 +56,9 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 <Lock width="32" height="32" className="text-blue-600" />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Secure Dashboard</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Secure Dashboard
+            </h1>
             <p className="text-sm text-gray-600">
               Enter the password to access the security dashboard
             </p>
@@ -96,7 +98,11 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
             {/* Error Message */}
             {error && (
               <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <AlertCircle width="16" height="16" className="text-red-600 flex-shrink-0" />
+                <AlertCircle
+                  width="16"
+                  height="16"
+                  className="text-red-600 flex-shrink-0"
+                />
                 <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
@@ -104,10 +110,16 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
             {/* Dev Password Display */}
             {devPassword && (
               <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                <AlertCircle width="16" height="16" className="text-amber-600 flex-shrink-0" />
+                <AlertCircle
+                  width="16"
+                  height="16"
+                  className="text-amber-600 flex-shrink-0"
+                />
                 <div className="text-sm">
                   <p className="text-amber-700 font-medium">Dev Mode</p>
-                  <p className="text-amber-600 font-mono text-xs">Password: {devPassword}</p>
+                  <p className="text-amber-600 font-mono text-xs">
+                    Password: {devPassword}
+                  </p>
                 </div>
               </div>
             )}
@@ -125,7 +137,8 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
           {/* Footer */}
           <div className="pt-4 border-t border-gray-100">
             <p className="text-xs text-gray-500 text-center">
-              This is a secure dashboard for viewing security metrics and dependencies.
+              This is a secure dashboard for viewing security metrics and
+              dependencies.
             </p>
           </div>
         </div>

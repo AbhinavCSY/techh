@@ -148,14 +148,18 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
                 <div className="w-4 h-4 rounded-full bg-red-500"></div>
                 <span className="text-xs text-gray-700">Scanned</span>
               </div>
-              <span className="font-bold text-red-900 text-xs">{scannedCVEs}</span>
+              <span className="font-bold text-red-900 text-xs">
+                {scannedCVEs}
+              </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-amber-50 rounded-lg border border-amber-200">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full bg-amber-400"></div>
                 <span className="text-xs text-gray-700">Unscanned</span>
               </div>
-              <span className="font-bold text-amber-900 text-xs">{unscannedCVEs}</span>
+              <span className="font-bold text-amber-900 text-xs">
+                {unscannedCVEs}
+              </span>
             </div>
           </div>
         </div>

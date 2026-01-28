@@ -171,8 +171,7 @@ class HierarchicalGraph {
     // Position nodes
     levelGroups.forEach((nodeIds, level) => {
       const adjustedLevel = level - minLevel;
-      const y =
-        (adjustedLevel / (levelRange || 1)) * (this.height - 160) + 80;
+      const y = (adjustedLevel / (levelRange || 1)) * (this.height - 160) + 80;
 
       // Distribute nodes horizontally at this level
       const spacing = this.width / (nodeIds.length + 1);
@@ -230,7 +229,10 @@ class HierarchicalGraph {
       nodeArray.forEach((node) => {
         node.vx! *= 0.7;
         node.vy! *= 0.7;
-        node.x = Math.max(50, Math.min(this.width - 50, (node.x ?? 0) + node.vx!));
+        node.x = Math.max(
+          50,
+          Math.min(this.width - 50, (node.x ?? 0) + node.vx!),
+        );
         // Keep y from original level assignment
         const level = this.levels.get(node.id) ?? 0;
         const minLevel = Math.min(...Array.from(this.levels.values()));
@@ -452,21 +454,57 @@ function GraphRenderer({
       >
         <defs>
           {/* Gradient backgrounds for nodes */}
-          <linearGradient id="criticalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style={{ stopColor: "#DC2626", stopOpacity: 1 }} />
-            <stop offset="100%" style={{ stopColor: "#991B1B", stopOpacity: 1 }} />
+          <linearGradient
+            id="criticalGradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop
+              offset="0%"
+              style={{ stopColor: "#DC2626", stopOpacity: 1 }}
+            />
+            <stop
+              offset="100%"
+              style={{ stopColor: "#991B1B", stopOpacity: 1 }}
+            />
           </linearGradient>
           <linearGradient id="highGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style={{ stopColor: "#EA580C", stopOpacity: 1 }} />
-            <stop offset="100%" style={{ stopColor: "#C2410C", stopOpacity: 1 }} />
+            <stop
+              offset="0%"
+              style={{ stopColor: "#EA580C", stopOpacity: 1 }}
+            />
+            <stop
+              offset="100%"
+              style={{ stopColor: "#C2410C", stopOpacity: 1 }}
+            />
           </linearGradient>
-          <linearGradient id="mediumGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style={{ stopColor: "#D97706", stopOpacity: 1 }} />
-            <stop offset="100%" style={{ stopColor: "#92400E", stopOpacity: 1 }} />
+          <linearGradient
+            id="mediumGradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop
+              offset="0%"
+              style={{ stopColor: "#D97706", stopOpacity: 1 }}
+            />
+            <stop
+              offset="100%"
+              style={{ stopColor: "#92400E", stopOpacity: 1 }}
+            />
           </linearGradient>
           <linearGradient id="lowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style={{ stopColor: "#10B981", stopOpacity: 1 }} />
-            <stop offset="100%" style={{ stopColor: "#065F46", stopOpacity: 1 }} />
+            <stop
+              offset="0%"
+              style={{ stopColor: "#10B981", stopOpacity: 1 }}
+            />
+            <stop
+              offset="100%"
+              style={{ stopColor: "#065F46", stopOpacity: 1 }}
+            />
           </linearGradient>
 
           <marker
@@ -683,10 +721,30 @@ function GraphRenderer({
                       0,
                     );
                     // Return color and gradient ID based on severity
-                    if (totalCVEs === 0) return { color: "#10B981", gradient: "url(#lowGradient)", severity: "low" };
-                    if (totalCVEs >= 5) return { color: "#DC2626", gradient: "url(#criticalGradient)", severity: "critical" };
-                    if (totalCVEs >= 3) return { color: "#EA580C", gradient: "url(#highGradient)", severity: "high" };
-                    if (totalCVEs >= 1) return { color: "#D97706", gradient: "url(#mediumGradient)", severity: "medium" };
+                    if (totalCVEs === 0)
+                      return {
+                        color: "#10B981",
+                        gradient: "url(#lowGradient)",
+                        severity: "low",
+                      };
+                    if (totalCVEs >= 5)
+                      return {
+                        color: "#DC2626",
+                        gradient: "url(#criticalGradient)",
+                        severity: "critical",
+                      };
+                    if (totalCVEs >= 3)
+                      return {
+                        color: "#EA580C",
+                        gradient: "url(#highGradient)",
+                        severity: "high",
+                      };
+                    if (totalCVEs >= 1)
+                      return {
+                        color: "#D97706",
+                        gradient: "url(#mediumGradient)",
+                        severity: "medium",
+                      };
                   }
                 }
                 return { color: "#0EA5E9", gradient: "none", severity: "none" }; // Use default blue
@@ -697,18 +755,33 @@ function GraphRenderer({
                 if (isIssue) {
                   switch (node.subtype) {
                     case "critical":
-                      return { color: "#DC2626", gradient: "url(#criticalGradient)" };
+                      return {
+                        color: "#DC2626",
+                        gradient: "url(#criticalGradient)",
+                      };
                     case "high":
-                      return { color: "#EA580C", gradient: "url(#highGradient)" };
+                      return {
+                        color: "#EA580C",
+                        gradient: "url(#highGradient)",
+                      };
                     case "medium":
-                      return { color: "#D97706", gradient: "url(#mediumGradient)" };
+                      return {
+                        color: "#D97706",
+                        gradient: "url(#mediumGradient)",
+                      };
                     case "low":
-                      return { color: "#10B981", gradient: "url(#lowGradient)" };
+                      return {
+                        color: "#10B981",
+                        gradient: "url(#lowGradient)",
+                      };
                     default:
                       return { color: "#8B5CF6", gradient: "none" };
                   }
                 } else if (isVendor) {
-                  return { color: isDirectAffected ? "#A855F7" : "#D8B4FE", gradient: "none" };
+                  return {
+                    color: isDirectAffected ? "#A855F7" : "#D8B4FE",
+                    gradient: "none",
+                  };
                 } else if (isTech) {
                   // For tech nodes, use severity color if available, otherwise use blue
                   const severityInfo = getSeverityInfo();
@@ -772,10 +845,18 @@ function GraphRenderer({
                     cx={nodeX}
                     cy={nodeY}
                     r={radius}
-                    fill={colorInfo.gradient !== "none" ? colorInfo.gradient : colorInfo.color}
+                    fill={
+                      colorInfo.gradient !== "none"
+                        ? colorInfo.gradient
+                        : colorInfo.color
+                    }
                     opacity={isSelected ? 1 : 0.95}
                     style={{ transition: "all 0.2s ease" }}
-                    filter={isSelected ? "drop-shadow(0 0 8px rgba(0,0,0,0.2))" : "none"}
+                    filter={
+                      isSelected
+                        ? "drop-shadow(0 0 8px rgba(0,0,0,0.2))"
+                        : "none"
+                    }
                   />
 
                   {/* Prominent border ring for selected node */}
@@ -876,7 +957,10 @@ function GraphRenderer({
       </svg>
 
       {/* Professional Control Sidebar - Bottom Left */}
-      <div className="absolute left-4 bottom-6 flex flex-col gap-1.5 bg-white rounded-lg shadow-lg p-1.5 backdrop-blur-sm border border-gray-200" style={{ transform: "scale(0.75)", transformOrigin: "bottom left" }}>
+      <div
+        className="absolute left-4 bottom-6 flex flex-col gap-1.5 bg-white rounded-lg shadow-lg p-1.5 backdrop-blur-sm border border-gray-200"
+        style={{ transform: "scale(0.75)", transformOrigin: "bottom left" }}
+      >
         {/* Zoom In Button */}
         <button
           onClick={zoomIn}
@@ -1022,7 +1106,7 @@ export function DependencyGraphVisualization({
       setGraphData({ nodes: initialNodes, edges: initialEdges });
       // Auto-select the first direct/primary node
       const primaryNode = initialNodes.find(
-        (n) => n.subtype === "direct" || n.type === "technology"
+        (n) => n.subtype === "direct" || n.type === "technology",
       );
       if (primaryNode) {
         setSelectedNodeId(primaryNode.id);

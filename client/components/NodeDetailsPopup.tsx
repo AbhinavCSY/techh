@@ -46,7 +46,10 @@ export function NodeDetailsPopup({
 
   return (
     <div className={wrapperClass} onClick={onClose}>
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-md max-h-96 flex flex-col" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="bg-white rounded-lg shadow-2xl w-full max-w-md max-h-96 flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-start justify-between p-4 border-b border-gray-200">
           <div className="flex items-start gap-3 flex-1">

@@ -1380,7 +1380,8 @@ const techStackDatabase: TechStack[] = [
       {
         id: "rem-ai-python",
         title: "Upgrade to Python 3.11",
-        description: "Python 3.8 has reached end-of-life. Upgrade to 3.11 for security patches.",
+        description:
+          "Python 3.8 has reached end-of-life. Upgrade to 3.11 for security patches.",
         priority: "high",
         estimatedTime: "6-12 hours",
       },
@@ -1424,7 +1425,8 @@ const techStackDatabase: TechStack[] = [
       {
         id: "rem-ai-pytorch",
         title: "Update to PyTorch 2.1.0",
-        description: "Address CVE-2023-43654 by upgrading to the latest stable version.",
+        description:
+          "Address CVE-2023-43654 by upgrading to the latest stable version.",
         priority: "high",
         estimatedTime: "2-4 hours",
       },
@@ -1468,7 +1470,8 @@ const techStackDatabase: TechStack[] = [
       {
         id: "rem-ai-cuda",
         title: "Update CUDA Toolkit to 12.2",
-        description: "Migrate from unsupported CUDA 11.0 to 12.2 for security and performance.",
+        description:
+          "Migrate from unsupported CUDA 11.0 to 12.2 for security and performance.",
         priority: "high",
         estimatedTime: "4-8 hours",
       },
@@ -1619,7 +1622,8 @@ const techStackDatabase: TechStack[] = [
       {
         id: "rem-ai-langchain",
         title: "Update LangChain to latest",
-        description: "Ensure compatibility with latest API changes and security improvements.",
+        description:
+          "Ensure compatibility with latest API changes and security improvements.",
         priority: "medium",
         estimatedTime: "1-2 hours",
       },

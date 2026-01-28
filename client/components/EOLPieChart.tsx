@@ -83,7 +83,9 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
                 <div className="w-4 h-4 rounded-full bg-red-500"></div>
                 <span className="text-xs text-gray-700">End of Life</span>
               </div>
-              <span className="font-bold text-red-900 text-xs">{eolTechStacks}</span>
+              <span className="font-bold text-red-900 text-xs">
+                {eolTechStacks}
+              </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
               <div className="flex items-center gap-2">
@@ -153,20 +155,34 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
             </p>
             <div className="space-y-1 text-xxs">
               <div className="flex justify-between">
-                <span className="text-gray-600 text-xxs">EOL + Upgradable:</span>
+                <span className="text-gray-600 text-xxs">
+                  EOL + Upgradable:
+                </span>
                 <span className="font-semibold text-xxs">{eolUpgradable}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 text-xxs">EOL + Not Upgradable:</span>
-                <span className="font-semibold text-xxs">{eolNotUpgradable}</span>
+                <span className="text-gray-600 text-xxs">
+                  EOL + Not Upgradable:
+                </span>
+                <span className="font-semibold text-xxs">
+                  {eolNotUpgradable}
+                </span>
               </div>
               <div className="flex justify-between border-t border-gray-300 pt-1 mt-1">
-                <span className="text-gray-600 text-xxs">Active + Upgradable:</span>
-                <span className="font-semibold text-xxs">{nonEolUpgradable}</span>
+                <span className="text-gray-600 text-xxs">
+                  Active + Upgradable:
+                </span>
+                <span className="font-semibold text-xxs">
+                  {nonEolUpgradable}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 text-xxs">Active + Not Upgradable:</span>
-                <span className="font-semibold text-xxs">{nonEolNotUpgradable}</span>
+                <span className="text-gray-600 text-xxs">
+                  Active + Not Upgradable:
+                </span>
+                <span className="font-semibold text-xxs">
+                  {nonEolNotUpgradable}
+                </span>
               </div>
             </div>
           </div>
