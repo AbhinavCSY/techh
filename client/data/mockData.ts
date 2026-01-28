@@ -1250,6 +1250,103 @@ const techStackDatabase: TechStack[] = [
       behavioralIntegrity: { score: 10, riskLevel: "no risk" },
     },
   },
+  {
+    id: "ts-26",
+    name: "Apache Log4j",
+    type: "library",
+    version: "2.14.1",
+    logo: "📋",
+    isEOL: true,
+    isUpgradable: true,
+    secureVersion: "2.20.0",
+    cves: [
+      {
+        id: "CVE-2021-44228",
+        severity: "critical",
+        title: "Log4j Remote Code Execution",
+        score: 10.0,
+      },
+    ],
+    unscannedThreatsCount: 0,
+    riskLevel: "critical",
+    riskScore: 10.0,
+    createdAt: new Date("2024-01-20"),
+    lastUpdated: new Date("2024-02-18"),
+    license: "Apache License 2.0",
+    effectiveLicense: "Apache",
+    versionHistory: [
+      { version: "2.14.1", releaseDate: new Date("2021-12-10"), isEOL: true },
+      { version: "2.20.0", releaseDate: new Date("2023-10-20"), isEOL: false },
+    ],
+    remediations: [
+      {
+        id: "rem-26-log4j",
+        title: "CRITICAL: Immediate Upgrade Required",
+        description:
+          "Upgrade Apache Log4j to version 2.20.0 or later immediately. CVE-2021-44228 is an actively exploited RCE vulnerability.",
+        priority: "critical",
+        estimatedTime: "1-2 hours",
+      },
+      {
+        id: "rem-27-log4j",
+        title: "Disable JNDI in Java Runtime",
+        description:
+          "As a temporary mitigation, disable JNDI lookups by setting com.sun.jndi.ldap.connect.pool=false",
+        priority: "critical",
+        estimatedTime: "15 minutes",
+      },
+    ],
+    reliabilityIndicators: {
+      contributorReputation: { score: 10, riskLevel: "no risk" },
+      packageReliability: { score: 3, riskLevel: "critical" },
+      behavioralIntegrity: { score: 2, riskLevel: "critical" },
+    },
+    associatedComponents: [
+      {
+        component_name: "Spring Boot",
+        component_version: "2.5.4",
+        component_type: "Framework",
+        directly_vulnerable: false,
+        inherited_risk: true,
+        risk_reason: "Bundles vulnerable Log4j version internally",
+        dependency_depth: 1,
+      },
+      {
+        component_name: "Apache Tomcat",
+        component_version: "9.0.52",
+        component_type: "Runtime",
+        directly_vulnerable: false,
+        inherited_risk: true,
+        risk_reason: "Executes applications using Log4j logging pipeline",
+        dependency_depth: 2,
+      },
+      {
+        component_name: "Java JDK",
+        component_version: "11.0.12",
+        component_type: "Runtime",
+        directly_vulnerable: false,
+        inherited_risk: true,
+        risk_reason: "JNDI LDAP lookups enabled, enabling exploit chain",
+        dependency_depth: 3,
+      },
+      {
+        component_name: "AWS EC2",
+        component_version: "Amazon Linux 2",
+        component_type: "Infrastructure",
+        directly_vulnerable: false,
+        inherited_risk: true,
+        risk_reason: "Hosts exploited Java service allowing attacker OS access",
+        dependency_depth: 4,
+      },
+    ],
+    impactContext: {
+      execution_context: "Docker Container",
+      privilege_level: "Root",
+      exposure_surface: "Internet-facing",
+      blast_radius: "Entire Cloud Account",
+      lateral_movement_possible: true,
+    },
+  },
 ];
 
 // Common CVEs for reference
