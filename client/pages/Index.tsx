@@ -23,7 +23,6 @@ import {
   ChevronDown,
   AlertTriangle,
   Badge as BadgeIcon,
-  LogOut,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
