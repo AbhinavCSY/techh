@@ -47,24 +47,13 @@ function decryptPassword(encryptedData: string): string {
 }
 
 export function initializePassword(): string | null {
-  ensureDataDir();
   const isProduction = process.env.NODE_ENV === "production";
 
   // Check if APP_PASSWORD is set (works in both production and development)
   const envPassword = process.env.APP_PASSWORD;
 
   if (envPassword) {
-    // Use environment variable password
-    const encrypted = encryptPassword(envPassword);
-    fs.writeFileSync(
-      PASSWORD_FILE,
-      JSON.stringify(
-        { encrypted, createdAt: new Date().toISOString() },
-        null,
-        2,
-      ),
-    );
-
+    // Use environment variable password - no file operations needed
     const mode = isProduction ? "PRODUCTION" : "DEVELOPMENT";
     console.log(`\n=== APP PASSWORD INITIALIZED (${mode}) ===`);
     console.log("App secured with password from APP_PASSWORD env variable.");
@@ -81,6 +70,7 @@ export function initializePassword(): string | null {
   }
 
   // In development without env var: generate a new random password on every server start
+  ensureDataDir();
   const newPassword = generateRandomPassword();
   const encrypted = encryptPassword(newPassword);
 
@@ -116,6 +106,13 @@ File location: ${setupFile}
 }
 
 export function verifyPassword(inputPassword: string): boolean {
+  // Check if APP_PASSWORD is set in environment (production)
+  const envPassword = process.env.APP_PASSWORD;
+  if (envPassword) {
+    return inputPassword === envPassword;
+  }
+
+  // Otherwise, check the file (development)
   ensureDataDir();
 
   if (!fs.existsSync(PASSWORD_FILE)) {
@@ -133,11 +130,24 @@ export function verifyPassword(inputPassword: string): boolean {
 }
 
 export function getDevPassword(): string | null {
-  // Only return password in development mode
-  if (process.env.NODE_ENV === "production") {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  // Check if APP_PASSWORD is set in environment
+  if (process.env.APP_PASSWORD) {
+    // In production with env var, don't expose the password
+    if (isProduction) {
+      return null;
+    }
+    // In development with env var, return it for convenience
+    return process.env.APP_PASSWORD;
+  }
+
+  // In production without env var, return null
+  if (isProduction) {
     return null;
   }
 
+  // In development, try to read from file
   ensureDataDir();
 
   if (!fs.existsSync(PASSWORD_FILE)) {
