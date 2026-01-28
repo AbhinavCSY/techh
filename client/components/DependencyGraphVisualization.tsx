@@ -292,7 +292,7 @@ function GraphRenderer({
 
   // Create graph only once and cache it - prevents nodes from jumping
   const renderedNodes = useMemo(() => {
-    const graph = new ForceDirectedGraph(nodes, edges, width, height);
+    const graph = new HierarchicalGraph(nodes, edges, width, height);
     return graph.getNodes();
   }, [nodes, edges, width, height]);
 
