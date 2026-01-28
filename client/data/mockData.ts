@@ -1705,6 +1705,55 @@ const commonCVEsExpanded: Record<string, CVE[]> = {
 
 const assetDatabase: Asset[] = [
   {
+    id: "asset-ai-1",
+    name: "AI Model Inference API",
+    type: "app",
+    riskLevel: "high",
+    techStacks: [
+      techStackDatabase[32], // Hugging Face Transformers
+      techStackDatabase[28], // PyTorch
+      techStackDatabase[27], // Python
+      techStackDatabase[29], // CUDA
+    ],
+    cveCount: 3,
+    topCriticalCVE: techStackDatabase[28].cves[0],
+    lastUpdated: new Date("2024-02-18"),
+    isScanned: true,
+  },
+  {
+    id: "asset-ai-2",
+    name: "AI-powered Chat Application",
+    type: "app",
+    riskLevel: "medium",
+    techStacks: [
+      techStackDatabase[33], // LangChain
+      techStackDatabase[35], // FAISS
+      techStackDatabase[27], // Python
+      techStackDatabase[30], // Kubernetes
+    ],
+    cveCount: 3,
+    topCriticalCVE: techStackDatabase[30].cves[0],
+    lastUpdated: new Date("2024-02-18"),
+    isScanned: true,
+  },
+  {
+    id: "asset-ai-3",
+    name: "Internal LLM Service",
+    type: "app",
+    riskLevel: "high",
+    techStacks: [
+      techStackDatabase[34], // vLLM
+      techStackDatabase[28], // PyTorch
+      techStackDatabase[27], // Python
+      techStackDatabase[30], // Kubernetes
+      techStackDatabase[31], // Ubuntu OS
+    ],
+    cveCount: 5,
+    topCriticalCVE: techStackDatabase[30].cves[0],
+    lastUpdated: new Date("2024-02-18"),
+    isScanned: true,
+  },
+  {
     id: "asset-1",
     name: "prod-web-server-01",
     type: "ip",
