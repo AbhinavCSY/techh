@@ -519,8 +519,9 @@ function GraphRenderer({
 
               // Enhanced node sizing based on severity and type
               const getNodeRadius = () => {
-                if (isIssue) return 20;
-                if (isTech) {
+                let baseRadius = 28;
+                if (isIssue) baseRadius = 20;
+                else if (isTech) {
                   const tech = getTechDetails(node.id, dependencyGraphData);
                   if (tech) {
                     const totalCVEs = tech.versions.reduce(
@@ -528,11 +529,21 @@ function GraphRenderer({
                       0,
                     );
                     // Larger for nodes with more vulnerabilities
-                    if (totalCVEs >= 5) return 36;
-                    if (totalCVEs >= 3) return 33;
+                    if (totalCVEs >= 5) baseRadius = 36;
+                    else if (totalCVEs >= 3) baseRadius = 33;
+                  } else if (isDirectAffected) {
+                    baseRadius = 32;
                   }
+                } else if (isDirectAffected) {
+                  baseRadius = 32;
                 }
-                return isDirectAffected ? 32 : 28;
+
+                // Double the size if selected
+                if (selectedNode === node.id) {
+                  baseRadius *= 2;
+                }
+
+                return baseRadius;
               };
 
               // Get CVE severity color and gradient for tech nodes
