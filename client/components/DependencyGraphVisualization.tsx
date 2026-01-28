@@ -939,10 +939,10 @@ export function DependencyGraphVisualization({
       {/* Normal View */}
       {!isFullscreen && (
         <div>
-          {/* Graph Container */}
+          {/* Graph Container with Professional Styling */}
           <div
             ref={graphContainerRef}
-            className="border border-gray-200 rounded-lg bg-white overflow-hidden h-[600px] relative"
+            className="border border-gray-200 rounded-xl bg-gradient-to-br from-white to-gray-50 overflow-hidden h-[600px] relative shadow-lg hover:shadow-xl transition-shadow duration-300"
           >
             <GraphRenderer
               nodes={graphData.nodes}
@@ -964,18 +964,18 @@ export function DependencyGraphVisualization({
               />
             )}
 
-            {/* Floating Buttons on Graph Frame */}
-            <div className="absolute top-4 right-4 flex items-center gap-2">
+            {/* Top Right Control Buttons */}
+            <div className="absolute top-4 right-4 flex items-center gap-3">
               <button
                 onClick={() => setShowLegend(true)}
-                className="p-2 hover:bg-gray-200 bg-white text-gray-600 rounded-lg transition-colors shadow-md"
+                className="p-2.5 hover:bg-gray-100 bg-white text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg border border-gray-200"
                 title="Show legend"
               >
                 <Info width="20" height="20" />
               </button>
               <button
                 onClick={handleFullscreenClick}
-                className="p-2 hover:bg-blue-600 bg-blue-500 text-white rounded-lg transition-colors shadow-md"
+                className="p-2.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
                 title="Open fullscreen"
               >
                 <Maximize2 width="20" height="20" />
