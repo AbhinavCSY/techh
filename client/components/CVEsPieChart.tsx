@@ -161,43 +161,43 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
         </div>
 
         <div>
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">
+          <h4 className="font-semibold text-gray-900 mb-3 text-xs">
             Severity Breakdown (Scanned)
           </h4>
           <div className="space-y-2">
             <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-600"></div>
-                <span className="text-xs text-gray-700">Critical</span>
+                <span className="text-xxs text-gray-700">Critical</span>
               </div>
-              <span className="text-xs font-bold text-gray-900">
+              <span className="text-xxs font-bold text-gray-900">
                 {severityBreakdown.critical}
               </span>
             </div>
             <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                <span className="text-xs text-gray-700">High</span>
+                <span className="text-xxs text-gray-700">High</span>
               </div>
-              <span className="text-xs font-bold text-gray-900">
+              <span className="text-xxs font-bold text-gray-900">
                 {severityBreakdown.high}
               </span>
             </div>
             <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <span className="text-xs text-gray-700">Medium</span>
+                <span className="text-xxs text-gray-700">Medium</span>
               </div>
-              <span className="text-xs font-bold text-gray-900">
+              <span className="text-xxs font-bold text-gray-900">
                 {severityBreakdown.medium}
               </span>
             </div>
             <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                <span className="text-xs text-gray-700">Low</span>
+                <span className="text-xxs text-gray-700">Low</span>
               </div>
-              <span className="text-xs font-bold text-gray-900">
+              <span className="text-xxs font-bold text-gray-900">
                 {severityBreakdown.low}
               </span>
             </div>
