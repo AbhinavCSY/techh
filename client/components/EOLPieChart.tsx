@@ -151,22 +151,22 @@ export function EOLPieChart({ compact = false }: EOLPieChartProps) {
             <p className="text-xs font-semibold text-gray-600 mb-2">
               Breakdown:
             </p>
-            <div className="space-y-1 text-xs">
+            <div className="space-y-1 text-xxs">
               <div className="flex justify-between">
-                <span className="text-gray-600">EOL + Upgradable:</span>
-                <span className="font-semibold">{eolUpgradable}</span>
+                <span className="text-gray-600 text-xxs">EOL + Upgradable:</span>
+                <span className="font-semibold text-xxs">{eolUpgradable}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">EOL + Not Upgradable:</span>
-                <span className="font-semibold">{eolNotUpgradable}</span>
+                <span className="text-gray-600 text-xxs">EOL + Not Upgradable:</span>
+                <span className="font-semibold text-xxs">{eolNotUpgradable}</span>
               </div>
               <div className="flex justify-between border-t border-gray-300 pt-1 mt-1">
-                <span className="text-gray-600">Active + Upgradable:</span>
-                <span className="font-semibold">{nonEolUpgradable}</span>
+                <span className="text-gray-600 text-xxs">Active + Upgradable:</span>
+                <span className="font-semibold text-xxs">{nonEolUpgradable}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Active + Not Upgradable:</span>
-                <span className="font-semibold">{nonEolNotUpgradable}</span>
+                <span className="text-gray-600 text-xxs">Active + Not Upgradable:</span>
+                <span className="font-semibold text-xxs">{nonEolNotUpgradable}</span>
               </div>
             </div>
           </div>
