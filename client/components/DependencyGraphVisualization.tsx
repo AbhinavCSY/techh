@@ -460,13 +460,13 @@ function GraphRenderer({
                   {/* Label text - professional styling */}
                   <text
                     x={midX}
-                    y={midY + 5}
+                    y={midY + 4}
                     textAnchor="middle"
-                    fontSize="12"
+                    fontSize="9"
                     fontWeight="600"
                     fill={getLabelColor()}
                     opacity={1}
-                    style={{ pointerEvents: "none", letterSpacing: "0.3px" }}
+                    style={{ pointerEvents: "none", letterSpacing: "0.2px" }}
                   >
                     {label}
                   </text>
