@@ -19,11 +19,7 @@ import { EOLPieChart } from "@/components/EOLPieChart";
 import { TechStacksAndAssetsChart } from "@/components/TechStacksAndAssetsChart";
 import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
-import {
-  ChevronDown,
-  AlertTriangle,
-  Badge as BadgeIcon,
-} from "lucide-react";
+import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { DependencyGraph } from "@/components/DependencyGraph";
@@ -58,7 +54,6 @@ export default function Index() {
     const filtered = filterAssets(assetDatabase, filters);
     return sortAssets(filtered, filters.sortBy, filters.sortOrder);
   }, [filters]);
-
 
   const handleExport = (format: "csv" | "json" | "pdf") => {
     const dataToExport =
