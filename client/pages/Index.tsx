@@ -60,33 +60,6 @@ export default function Index() {
     return sortAssets(filtered, filters.sortBy, filters.sortOrder);
   }, [filters]);
 
-  // Check authentication on mount
-  useEffect(() => {
-    const authToken = localStorage.getItem("app_auth_token");
-    if (authToken === "authenticated") {
-      setIsAuthenticated(true);
-    }
-    setIsCheckingAuth(false);
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("app_auth_token");
-    setIsAuthenticated(false);
-  };
-
-  // Show loading state
-  if (isCheckingAuth) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-600">Loading...</div>
-      </div>
-    );
-  }
-
-  // Show login if not authenticated
-  if (!isAuthenticated) {
-    return <LoginPage onAuthenticated={() => setIsAuthenticated(true)} />;
-  }
 
   const handleExport = (format: "csv" | "json" | "pdf") => {
     const dataToExport =
