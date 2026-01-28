@@ -439,6 +439,19 @@ function GraphRenderer({
 
               return (
                 <g key={idx}>
+                  {/* Invisible larger hitbox for easier hover detection */}
+                  <line
+                    x1={sourcePos.x}
+                    y1={sourcePos.y}
+                    x2={targetPos.x}
+                    y2={targetPos.y}
+                    stroke="transparent"
+                    strokeWidth={20}
+                    style={{ cursor: "pointer", pointerEvents: "auto" }}
+                    onMouseEnter={() => setHoveredEdgeIndex(idx)}
+                    onMouseLeave={() => setHoveredEdgeIndex(null)}
+                  />
+
                   {/* Edge line with smooth styling */}
                   <line
                     className="edge-line"
@@ -450,10 +463,7 @@ function GraphRenderer({
                     strokeWidth={2}
                     markerEnd="url(#arrowhead)"
                     opacity={0.45}
-                    style={{ strokeLinecap: "round" }}
-                    onMouseEnter={() => setHoveredEdgeIndex(idx)}
-                    onMouseLeave={() => setHoveredEdgeIndex(null)}
-                    style={{ strokeLinecap: "round", cursor: "pointer", pointerEvents: "auto" }}
+                    style={{ strokeLinecap: "round", pointerEvents: "none" }}
                   />
 
                   {/* Enhanced label background with shadow - Only show on hover */}
