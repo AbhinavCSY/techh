@@ -1710,13 +1710,13 @@ const assetDatabase: Asset[] = [
     type: "app",
     riskLevel: "high",
     techStacks: [
-      techStackDatabase[32], // Hugging Face Transformers
-      techStackDatabase[28], // PyTorch
-      techStackDatabase[27], // Python
-      techStackDatabase[29], // CUDA
+      techStackDatabase[31], // Hugging Face Transformers (ts-32)
+      techStackDatabase[27], // PyTorch (ts-28)
+      techStackDatabase[26], // Python (ts-27)
+      techStackDatabase[28], // CUDA (ts-29)
     ],
     cveCount: 3,
-    topCriticalCVE: techStackDatabase[28].cves[0],
+    topCriticalCVE: techStackDatabase[27].cves[0],
     lastUpdated: new Date("2024-02-18"),
     isScanned: true,
   },
@@ -1726,13 +1726,13 @@ const assetDatabase: Asset[] = [
     type: "app",
     riskLevel: "medium",
     techStacks: [
-      techStackDatabase[33], // LangChain
-      techStackDatabase[35], // FAISS
-      techStackDatabase[27], // Python
-      techStackDatabase[30], // Kubernetes
+      techStackDatabase[32], // LangChain (ts-33)
+      techStackDatabase[34], // FAISS (ts-35)
+      techStackDatabase[26], // Python (ts-27)
+      techStackDatabase[29], // Kubernetes (ts-30)
     ],
     cveCount: 3,
-    topCriticalCVE: techStackDatabase[30].cves[0],
+    topCriticalCVE: techStackDatabase[29].cves[0],
     lastUpdated: new Date("2024-02-18"),
     isScanned: true,
   },
@@ -1742,14 +1742,14 @@ const assetDatabase: Asset[] = [
     type: "app",
     riskLevel: "high",
     techStacks: [
-      techStackDatabase[34], // vLLM
-      techStackDatabase[28], // PyTorch
-      techStackDatabase[27], // Python
-      techStackDatabase[30], // Kubernetes
-      techStackDatabase[31], // Ubuntu OS
+      techStackDatabase[33], // vLLM (ts-34)
+      techStackDatabase[27], // PyTorch (ts-28)
+      techStackDatabase[26], // Python (ts-27)
+      techStackDatabase[29], // Kubernetes (ts-30)
+      techStackDatabase[30], // Ubuntu OS (ts-31)
     ],
     cveCount: 5,
-    topCriticalCVE: techStackDatabase[30].cves[0],
+    topCriticalCVE: techStackDatabase[29].cves[0],
     lastUpdated: new Date("2024-02-18"),
     isScanned: true,
   },
