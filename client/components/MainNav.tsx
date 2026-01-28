@@ -178,6 +178,15 @@ export function MainNav() {
               <div className="text-xs text-gray-500 leading-tight">Admin</div>
             </div>
           </button>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="text-gray-600 hover:text-gray-900 hover:bg-red-50 p-1.5 rounded transition-colors flex-shrink-0"
+            title="Logout"
+          >
+            <LogOut size={16} />
+          </button>
         </div>
       </div>
 
