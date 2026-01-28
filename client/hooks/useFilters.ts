@@ -28,7 +28,7 @@ const defaultFilterState: FilterState = {
   eolStatus: [],
   cveSeverities: [],
   timeFilter: 'month',
-  sortBy: 'risk',
+  sortBy: 'recency',
   sortOrder: 'desc',
 };
 
