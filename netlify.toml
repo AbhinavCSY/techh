@@ -1,17 +1,9 @@
 [build]
-  command = "npm run build:client"
+  command = "pnpm build"
   functions = "netlify/functions"
   publish = "dist/spa"
 
-[build.environment]
-  NODE_ENV = "production"
-
-
-[functions]
-  node_bundler = "esbuild"
-  
 [[redirects]]
-  force = true
   from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
-  to = "/.netlify/functions/api/:splat"
