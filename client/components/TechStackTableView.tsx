@@ -160,11 +160,11 @@ export function TechStackTableView({
                   <ThreatBar
                     cves={techStack.cves}
                     unscannedCount={techStack.unscannedThreatsCount}
-                    className="w-48"
+                    className="w-24"
                   />
                 </TableCell>
                 <TableCell>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-nowrap gap-1 whitespace-nowrap">
                     {techStack.isEOL && (
                       <Badge className="bg-red-200 text-red-800 text-xs">
                         EOL
