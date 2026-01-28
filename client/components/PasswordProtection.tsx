@@ -17,6 +17,7 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [devPassword, setDevPassword] = useState<string | null>(null);
 
   // Check if user is already authenticated
   useEffect(() => {
