@@ -894,6 +894,13 @@ export function DependencyGraphVisualization({
   useEffect(() => {
     if (initialNodes && initialEdges) {
       setGraphData({ nodes: initialNodes, edges: initialEdges });
+      // Auto-select the first direct/primary node
+      const primaryNode = initialNodes.find(
+        (n) => n.subtype === "direct" || n.type === "technology"
+      );
+      if (primaryNode) {
+        setSelectedNode(primaryNode.id);
+      }
     } else {
       const defaultNodes: GraphNode[] = [
         {
@@ -957,6 +964,8 @@ export function DependencyGraphVisualization({
       ];
 
       setGraphData({ nodes: defaultNodes, edges: defaultEdges });
+      // Auto-select the main node by default (tech-main)
+      setSelectedNode("tech-main");
     }
   }, []);
 
