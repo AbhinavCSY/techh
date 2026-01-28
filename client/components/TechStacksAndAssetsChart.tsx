@@ -151,7 +151,7 @@ export function TechStacksAndAssetsChart({
               content={(props) => {
                 const { payload } = props;
                 return (
-                  <div className="flex items-center justify-center gap-8 text-sm mt-4">
+                  <div className="flex items-center justify-center gap-8 text-xs mt-4">
                     {payload?.map((entry) => (
                       <div
                         key={entry.dataKey}
@@ -161,7 +161,7 @@ export function TechStacksAndAssetsChart({
                           className="w-3 h-3 rounded"
                           style={{ backgroundColor: entry.color }}
                         ></div>
-                        <span className="text-gray-700 font-medium">
+                        <span className="text-gray-700 font-medium text-xs">
                           {entry.dataKey === "techStacks"
                             ? "Tech Stacks"
                             : "Assets Scanned"}
