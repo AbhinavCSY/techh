@@ -718,35 +718,50 @@ function GraphRenderer({
         </g>
       </svg>
 
-      {/* Controls Overlay - Bottom Left Corner */}
-      <div className="absolute bottom-4 left-4 flex flex-row gap-1 bg-white rounded-lg shadow-lg p-1 items-center">
+      {/* Professional Control Sidebar - Left Side */}
+      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-2 bg-white rounded-xl shadow-xl p-2 backdrop-blur-sm border border-gray-200">
+        {/* Zoom In Button */}
         <button
           onClick={zoomIn}
-          className="p-1 hover:bg-gray-100 rounded transition-colors"
-          title="Zoom In"
+          className="p-3 hover:bg-blue-50 rounded-lg transition-all duration-200 text-gray-600 hover:text-blue-600 hover:shadow-md"
+          title="Zoom In (Scroll)"
         >
-          <ZoomIn width="14" height="14" className="text-gray-600" />
-        </button>
-        <button
-          onClick={zoomOut}
-          className="p-1 hover:bg-gray-100 rounded transition-colors"
-          title="Zoom Out"
-        >
-          <ZoomOut width="14" height="14" className="text-gray-600" />
-        </button>
-        <div className="w-px h-4 bg-gray-200" />
-        <button
-          onClick={resetView}
-          className="p-1 hover:bg-gray-100 rounded transition-colors"
-          title="Reset View"
-        >
-          <Home width="14" height="14" className="text-gray-600" />
+          <ZoomIn width="18" height="18" />
         </button>
 
-        <div className="w-px h-4 bg-gray-200" />
         {/* Zoom Level Indicator */}
-        <div className="flex justify-center px-1 py-0.5 text-xs text-gray-600 font-medium min-w-[28px]">
-          {Math.round(zoom * 100)}%
+        <div className="flex flex-col items-center justify-center px-2 py-1 bg-gray-50 rounded-lg border border-gray-200">
+          <span className="text-xs font-bold text-gray-700">
+            {Math.round(zoom * 100)}
+          </span>
+          <span className="text-xxs text-gray-500">%</span>
+        </div>
+
+        {/* Zoom Out Button */}
+        <button
+          onClick={zoomOut}
+          className="p-3 hover:bg-blue-50 rounded-lg transition-all duration-200 text-gray-600 hover:text-blue-600 hover:shadow-md"
+          title="Zoom Out (Scroll)"
+        >
+          <ZoomOut width="18" height="18" />
+        </button>
+
+        {/* Divider */}
+        <div className="w-8 h-px bg-gray-200 mx-auto" />
+
+        {/* Reset View Button */}
+        <button
+          onClick={resetView}
+          className="p-3 hover:bg-green-50 rounded-lg transition-all duration-200 text-gray-600 hover:text-green-600 hover:shadow-md"
+          title="Reset View"
+        >
+          <Home width="18" height="18" />
+        </button>
+
+        {/* Bottom Help Text */}
+        <div className="text-xs text-gray-500 text-center px-2 py-1 border-t border-gray-200 mt-1">
+          <p>Drag to pan</p>
+          <p>Space + Drag</p>
         </div>
       </div>
 
