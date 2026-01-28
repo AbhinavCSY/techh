@@ -38,6 +38,11 @@ export function MainNav() {
   const isAssetInventoryActive = location.pathname === "/";
   const activeProduct = isAssetInventoryActive ? "asset-inv" : "bevigil";
 
+  const handleLogout = () => {
+    localStorage.removeItem("app_auth_token");
+    window.location.reload();
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-gray-200 py-1">
       <div className="flex items-center h-12 px-3 gap-1">
