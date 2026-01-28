@@ -47,6 +47,17 @@ export default function Index() {
   const [showDetails, setShowDetails] = useState(false);
   const [showWidgetPanel, setShowWidgetPanel] = useState(true);
 
+  // Filter and sort data - must be called before any early returns
+  const filteredTechStacks = useMemo(() => {
+    const filtered = filterTechStacks(techStackDatabase, filters);
+    return sortTechStacks(filtered, filters.sortBy, filters.sortOrder);
+  }, [filters]);
+
+  const filteredAssets = useMemo(() => {
+    const filtered = filterAssets(assetDatabase, filters);
+    return sortAssets(filtered, filters.sortBy, filters.sortOrder);
+  }, [filters]);
+
   // Check authentication on mount
   useEffect(() => {
     const authToken = localStorage.getItem("app_auth_token");
@@ -74,17 +85,6 @@ export default function Index() {
   if (!isAuthenticated) {
     return <LoginPage onAuthenticated={() => setIsAuthenticated(true)} />;
   }
-
-  // Filter and sort data
-  const filteredTechStacks = useMemo(() => {
-    const filtered = filterTechStacks(techStackDatabase, filters);
-    return sortTechStacks(filtered, filters.sortBy, filters.sortOrder);
-  }, [filters]);
-
-  const filteredAssets = useMemo(() => {
-    const filtered = filterAssets(assetDatabase, filters);
-    return sortAssets(filtered, filters.sortBy, filters.sortOrder);
-  }, [filters]);
 
   const handleExport = (format: "csv" | "json" | "pdf") => {
     const dataToExport =
