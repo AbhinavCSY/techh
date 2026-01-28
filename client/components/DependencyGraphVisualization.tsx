@@ -57,12 +57,13 @@ interface DependencyGraphVisualizationProps {
   edges?: GraphEdge[];
 }
 
-// Force-directed graph simulation
-class ForceDirectedGraph {
+// Hierarchical graph layout
+class HierarchicalGraph {
   nodes: Map<string, GraphNode>;
   edges: GraphEdge[];
   width: number;
   height: number;
+  levels: Map<string, number>;
 
   constructor(
     nodes: GraphNode[],
@@ -73,16 +74,21 @@ class ForceDirectedGraph {
     this.width = Math.max(width, 400);
     this.height = Math.max(height, 500);
     this.edges = edges;
+    this.levels = new Map();
+
+    // Calculate hierarchy levels using breadth-first search
+    this.calculateLevels(nodes);
 
     this.nodes = new Map(
       nodes.map((node) => {
+        const level = this.levels.get(node.id) ?? 0;
         const initializedNode: GraphNode = {
           id: node.id,
           label: node.label,
           type: node.type,
           subtype: node.subtype,
-          x: node.x ?? Math.random() * this.width,
-          y: node.y ?? Math.random() * this.height,
+          x: 0,
+          y: 0,
           vx: 0,
           vy: 0,
         };
@@ -90,58 +96,150 @@ class ForceDirectedGraph {
       }),
     );
 
-    this.simulate(50);
+    this.layoutHierarchical();
   }
 
-  simulate(iterations: number) {
-    const k = Math.sqrt((this.width * this.height) / this.nodes.size) * 1.5; // Increased spacing
-    const c = 0.05;
+  calculateLevels(nodes: GraphNode[]) {
+    const visited = new Set<string>();
+    const queue: { id: string; level: number }[] = [];
+
+    // Find root nodes (nodes with no incoming edges or "direct" subtype)
+    const hasIncoming = new Set<string>();
+    this.edges.forEach((edge) => {
+      hasIncoming.add(edge.target);
+    });
+
+    nodes.forEach((node) => {
+      if (!hasIncoming.has(node.id) || node.subtype === "direct") {
+        queue.push({ id: node.id, level: 0 });
+        this.levels.set(node.id, 0);
+        visited.add(node.id);
+      }
+    });
+
+    // BFS to assign levels
+    while (queue.length > 0) {
+      const { id, level } = queue.shift()!;
+
+      // Find all children (targets of this node's edges)
+      this.edges.forEach((edge) => {
+        if (edge.source === id && !visited.has(edge.target)) {
+          this.levels.set(edge.target, level + 1);
+          visited.add(edge.target);
+          queue.push({ id: edge.target, level: level + 1 });
+        }
+      });
+
+      // Also handle reverse relationships
+      this.edges.forEach((edge) => {
+        if (edge.target === id && !visited.has(edge.source)) {
+          // Nodes that point to this node go to higher level
+          const sourceLevel = this.levels.get(edge.source);
+          if (sourceLevel === undefined || sourceLevel >= level) {
+            this.levels.set(edge.source, level - 1);
+            visited.add(edge.source);
+            queue.push({ id: edge.source, level: level - 1 });
+          }
+        }
+      });
+    }
+
+    // Assign unvisited nodes to appropriate levels
+    nodes.forEach((node) => {
+      if (!this.levels.has(node.id)) {
+        this.levels.set(node.id, Math.floor(Math.random() * 3));
+      }
+    });
+  }
+
+  layoutHierarchical() {
+    // Group nodes by level
+    const levelGroups = new Map<number, string[]>();
+    this.nodes.forEach((node) => {
+      const level = this.levels.get(node.id) ?? 0;
+      if (!levelGroups.has(level)) {
+        levelGroups.set(level, []);
+      }
+      levelGroups.get(level)!.push(node.id);
+    });
+
+    // Calculate y positions based on levels
+    const minLevel = Math.min(...Array.from(this.levels.values()));
+    const maxLevel = Math.max(...Array.from(this.levels.values()));
+    const levelRange = maxLevel - minLevel || 1;
+
+    // Position nodes
+    levelGroups.forEach((nodeIds, level) => {
+      const adjustedLevel = level - minLevel;
+      const y =
+        (adjustedLevel / (levelRange || 1)) * (this.height - 160) + 80;
+
+      // Distribute nodes horizontally at this level
+      const spacing = this.width / (nodeIds.length + 1);
+      nodeIds.forEach((nodeId, index) => {
+        const node = this.nodes.get(nodeId)!;
+        node.x = spacing * (index + 1);
+        node.y = y;
+      });
+    });
+
+    // Light force simulation to avoid overlaps while maintaining hierarchy
+    this.refineLayout(30);
+  }
+
+  refineLayout(iterations: number) {
+    const nodeArray = Array.from(this.nodes.values());
+    const k = Math.sqrt((this.width * this.height) / nodeArray.length) * 0.8;
 
     for (let iter = 0; iter < iterations; iter++) {
-      const nodeArray = Array.from(this.nodes.values());
       nodeArray.forEach((node1) => {
         node1.vx = 0;
         node1.vy = 0;
+
         nodeArray.forEach((node2) => {
           if (node1.id !== node2.id) {
             const dx = (node2.x ?? 0) - (node1.x ?? 0);
             const dy = (node2.y ?? 0) - (node1.y ?? 0);
             const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-            // Increased repulsion for better spacing
-            const repulsion = ((k * k) / distance) * 1.3;
+
+            // Repulsion for spacing
+            const repulsion = (k / distance) * 0.5;
             node1.vx! -= (dx / distance) * repulsion;
-            node1.vy! -= (dy / distance) * repulsion;
+            // Much weaker vertical repulsion to preserve hierarchy
+            node1.vy! -= (dy / distance) * repulsion * 0.1;
+          }
+        });
+
+        // Weak attraction to edges while preserving hierarchy
+        this.edges.forEach((edge) => {
+          if (edge.source === node1.id) {
+            const target = this.nodes.get(edge.target);
+            if (target) {
+              const dx = (target.x ?? 0) - (node1.x ?? 0);
+              const dy = (target.y ?? 0) - (node1.y ?? 0);
+              const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
+              const attraction = (distance / k) * 0.02;
+              node1.vx! += (dx / distance) * attraction;
+              node1.vy! += (dy / distance) * attraction * 0.1;
+            }
           }
         });
       });
 
-      this.edges.forEach((edge) => {
-        const source = this.nodes.get(edge.source);
-        const target = this.nodes.get(edge.target);
-        if (source && target) {
-          const dx = (target.x ?? 0) - (source.x ?? 0);
-          const dy = (target.y ?? 0) - (source.y ?? 0);
-          const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-          // Reduced attraction strength to allow more repulsion
-          const attraction = ((distance * distance) / k) * 0.08;
-          source.vx! += (dx / distance) * attraction;
-          source.vy! += (dy / distance) * attraction;
-          target.vx! -= (dx / distance) * attraction;
-          target.vy! -= (dy / distance) * attraction;
-        }
-      });
-
+      // Apply velocity damping and position updates
       nodeArray.forEach((node) => {
-        node.vx! *= c;
-        node.vy! *= c;
-        node.x = Math.max(
-          80,
-          Math.min(this.width - 80, (node.x ?? 0) + node.vx!),
-        );
-        node.y = Math.max(
-          80,
-          Math.min(this.height - 80, (node.y ?? 0) + node.vy!),
-        );
+        node.vx! *= 0.7;
+        node.vy! *= 0.7;
+        node.x = Math.max(50, Math.min(this.width - 50, (node.x ?? 0) + node.vx!));
+        // Keep y from original level assignment
+        const level = this.levels.get(node.id) ?? 0;
+        const minLevel = Math.min(...Array.from(this.levels.values()));
+        const maxLevel = Math.max(...Array.from(this.levels.values()));
+        const levelRange = maxLevel - minLevel || 1;
+        const adjustedLevel = level - minLevel;
+        const targetY =
+          (adjustedLevel / (levelRange || 1)) * (this.height - 160) + 80;
+        node.y = targetY + (node.y! - targetY) * 0.95;
       });
     }
   }
