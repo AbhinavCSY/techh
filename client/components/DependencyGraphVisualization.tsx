@@ -814,6 +814,7 @@ export function DependencyGraphVisualization({
   const [selectedTechNode, setSelectedTechNode] = useState<Technology | null>(
     null,
   );
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [showFullDetails, setShowFullDetails] = useState(false);
   const [quickInfoNode, setQuickInfoNode] = useState<Technology | null>(null);
   const [quickInfoPos, setQuickInfoPos] = useState({ x: 0, y: 0 });
