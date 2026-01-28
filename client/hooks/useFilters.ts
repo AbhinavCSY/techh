@@ -1,11 +1,11 @@
-import { useMemo } from 'react';
-import { usePersistentState } from './usePersistentState';
-import { TechStack, Asset } from '@/data/mockData';
+import { useMemo } from "react";
+import { usePersistentState } from "./usePersistentState";
+import { TechStack, Asset } from "@/data/mockData";
 
-export type ViewType = 'card' | 'table';
-export type GroupingType = 'tech-stack' | 'asset';
-export type TimeFilter = 'week' | 'month' | 'quarter' | 'custom';
-export type SortField = 'risk' | 'cve-count' | 'asset-count' | 'recency';
+export type ViewType = "card" | "table";
+export type GroupingType = "tech-stack" | "asset";
+export type TimeFilter = "week" | "month" | "quarter" | "custom";
+export type SortField = "risk" | "cve-count" | "asset-count" | "recency";
 
 export interface FilterState {
   searchTerm: string;
@@ -17,30 +17,33 @@ export interface FilterState {
   timeFilter: TimeFilter;
   customDateRange?: [Date, Date];
   sortBy: SortField;
-  sortOrder: 'asc' | 'desc';
+  sortOrder: "asc" | "desc";
 }
 
 const defaultFilterState: FilterState = {
-  searchTerm: '',
+  searchTerm: "",
   techStackTypes: [],
   assetTypes: [],
   riskLevels: [],
   eolStatus: [],
   cveSeverities: [],
-  timeFilter: 'month',
-  sortBy: 'recency',
-  sortOrder: 'desc',
+  timeFilter: "month",
+  sortBy: "recency",
+  sortOrder: "desc",
 };
 
 export function useFilters() {
-  const [viewType, setViewType] = usePersistentState<ViewType>('viewType', 'card');
+  const [viewType, setViewType] = usePersistentState<ViewType>(
+    "viewType",
+    "card",
+  );
   const [grouping, setGrouping] = usePersistentState<GroupingType>(
-    'grouping',
-    'tech-stack'
+    "grouping",
+    "tech-stack",
   );
   const [filters, setFilters] = usePersistentState<FilterState>(
-    'filters',
-    defaultFilterState
+    "filters",
+    defaultFilterState,
   );
 
   const updateFilter = (updates: Partial<FilterState>) => {
@@ -53,13 +56,13 @@ export function useFilters() {
 
   const hasActiveFilters = useMemo(() => {
     return (
-      filters.searchTerm !== '' ||
+      filters.searchTerm !== "" ||
       filters.techStackTypes.length > 0 ||
       filters.assetTypes.length > 0 ||
       filters.riskLevels.length > 0 ||
       filters.eolStatus.length > 0 ||
       filters.cveSeverities.length > 0 ||
-      filters.timeFilter !== 'month'
+      filters.timeFilter !== "month"
     );
   }, [filters]);
 
@@ -77,7 +80,7 @@ export function useFilters() {
 
 export function filterTechStacks(
   items: TechStack[],
-  filters: FilterState
+  filters: FilterState,
 ): TechStack[] {
   return items.filter((item) => {
     // Search filter
@@ -90,12 +93,18 @@ export function filterTechStacks(
     }
 
     // Tech stack type filter
-    if (filters.techStackTypes.length > 0 && !filters.techStackTypes.includes(item.type)) {
+    if (
+      filters.techStackTypes.length > 0 &&
+      !filters.techStackTypes.includes(item.type)
+    ) {
       return false;
     }
 
     // Risk level filter
-    if (filters.riskLevels.length > 0 && !filters.riskLevels.includes(item.riskLevel)) {
+    if (
+      filters.riskLevels.length > 0 &&
+      !filters.riskLevels.includes(item.riskLevel)
+    ) {
       return false;
     }
 
@@ -104,9 +113,9 @@ export function filterTechStacks(
       const isEol = item.isEOL;
       const isUpgradable = item.isUpgradable;
       const filterMatch = filters.eolStatus.some((status) => {
-        if (status === 'eol') return isEol;
-        if (status === 'upgradable') return isUpgradable && !isEol;
-        if (status === 'current') return !isEol && !isUpgradable;
+        if (status === "eol") return isEol;
+        if (status === "upgradable") return isUpgradable && !isEol;
+        if (status === "current") return !isEol && !isUpgradable;
         return false;
       });
       if (!filterMatch) return false;
@@ -115,26 +124,26 @@ export function filterTechStacks(
     // CVE severity filter
     if (filters.cveSeverities.length > 0) {
       const hasSeverity = item.cves.some((cve) =>
-        filters.cveSeverities.includes(cve.severity)
+        filters.cveSeverities.includes(cve.severity),
       );
       if (!hasSeverity && item.cves.length === 0) return false;
     }
 
     // Time filter
-    if (filters.timeFilter !== 'month') {
+    if (filters.timeFilter !== "month") {
       const itemDate = new Date(item.createdAt);
       const now = new Date();
       const diffDays =
         (now.getTime() - itemDate.getTime()) / (1000 * 60 * 60 * 24);
 
       switch (filters.timeFilter) {
-        case 'week':
+        case "week":
           if (diffDays > 7) return false;
           break;
-        case 'quarter':
+        case "quarter":
           if (diffDays > 90) return false;
           break;
-        case 'custom':
+        case "custom":
           if (
             filters.customDateRange &&
             (itemDate < filters.customDateRange[0] ||
@@ -163,30 +172,36 @@ export function filterAssets(items: Asset[], filters: FilterState): Asset[] {
     }
 
     // Asset type filter
-    if (filters.assetTypes.length > 0 && !filters.assetTypes.includes(item.type)) {
+    if (
+      filters.assetTypes.length > 0 &&
+      !filters.assetTypes.includes(item.type)
+    ) {
       return false;
     }
 
     // Risk level filter
-    if (filters.riskLevels.length > 0 && !filters.riskLevels.includes(item.riskLevel)) {
+    if (
+      filters.riskLevels.length > 0 &&
+      !filters.riskLevels.includes(item.riskLevel)
+    ) {
       return false;
     }
 
     // Time filter
-    if (filters.timeFilter !== 'month') {
+    if (filters.timeFilter !== "month") {
       const itemDate = new Date(item.lastUpdated);
       const now = new Date();
       const diffDays =
         (now.getTime() - itemDate.getTime()) / (1000 * 60 * 60 * 24);
 
       switch (filters.timeFilter) {
-        case 'week':
+        case "week":
           if (diffDays > 7) return false;
           break;
-        case 'quarter':
+        case "quarter":
           if (diffDays > 90) return false;
           break;
-        case 'custom':
+        case "custom":
           if (
             filters.customDateRange &&
             (itemDate < filters.customDateRange[0] ||
@@ -204,23 +219,27 @@ export function filterAssets(items: Asset[], filters: FilterState): Asset[] {
   });
 }
 
-export function sortTechStacks(items: TechStack[], sortBy: SortField, order: 'asc' | 'desc') {
+export function sortTechStacks(
+  items: TechStack[],
+  sortBy: SortField,
+  order: "asc" | "desc",
+) {
   const sorted = [...items].sort((a, b) => {
     let aVal: number = 0;
     let bVal: number = 0;
 
     switch (sortBy) {
-      case 'risk': {
+      case "risk": {
         const riskOrder = { critical: 4, high: 3, medium: 2, low: 1 };
         aVal = riskOrder[a.riskLevel];
         bVal = riskOrder[b.riskLevel];
         break;
       }
-      case 'cve-count':
+      case "cve-count":
         aVal = a.cves.length;
         bVal = b.cves.length;
         break;
-      case 'recency':
+      case "recency":
         aVal = new Date(a.createdAt).getTime();
         bVal = new Date(b.createdAt).getTime();
         break;
@@ -228,29 +247,33 @@ export function sortTechStacks(items: TechStack[], sortBy: SortField, order: 'as
         return 0;
     }
 
-    return order === 'desc' ? bVal - aVal : aVal - bVal;
+    return order === "desc" ? bVal - aVal : aVal - bVal;
   });
 
   return sorted;
 }
 
-export function sortAssets(items: Asset[], sortBy: SortField, order: 'asc' | 'desc') {
+export function sortAssets(
+  items: Asset[],
+  sortBy: SortField,
+  order: "asc" | "desc",
+) {
   const sorted = [...items].sort((a, b) => {
     let aVal: number = 0;
     let bVal: number = 0;
 
     switch (sortBy) {
-      case 'risk': {
+      case "risk": {
         const riskOrder = { critical: 4, high: 3, medium: 2, low: 1 };
         aVal = riskOrder[a.riskLevel];
         bVal = riskOrder[b.riskLevel];
         break;
       }
-      case 'cve-count':
+      case "cve-count":
         aVal = a.cveCount;
         bVal = b.cveCount;
         break;
-      case 'recency':
+      case "recency":
         aVal = new Date(a.lastUpdated).getTime();
         bVal = new Date(b.lastUpdated).getTime();
         break;
@@ -258,7 +281,7 @@ export function sortAssets(items: Asset[], sortBy: SortField, order: 'asc' | 'de
         return 0;
     }
 
-    return order === 'desc' ? bVal - aVal : aVal - bVal;
+    return order === "desc" ? bVal - aVal : aVal - bVal;
   });
 
   return sorted;
