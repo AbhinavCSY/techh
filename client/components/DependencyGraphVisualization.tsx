@@ -718,19 +718,19 @@ function GraphRenderer({
         </g>
       </svg>
 
-      {/* Professional Control Sidebar - Left Side */}
-      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-2 bg-white rounded-xl shadow-xl p-2 backdrop-blur-sm border border-gray-200">
+      {/* Professional Control Sidebar - Bottom Left */}
+      <div className="absolute left-4 bottom-6 flex flex-col gap-1.5 bg-white rounded-lg shadow-lg p-1.5 backdrop-blur-sm border border-gray-200" style={{ transform: "scale(0.75)", transformOrigin: "bottom left" }}>
         {/* Zoom In Button */}
         <button
           onClick={zoomIn}
-          className="p-3 hover:bg-blue-50 rounded-lg transition-all duration-200 text-gray-600 hover:text-blue-600 hover:shadow-md"
+          className="p-2 hover:bg-blue-50 rounded-md transition-all duration-200 text-gray-600 hover:text-blue-600 hover:shadow-sm"
           title="Zoom In (Scroll)"
         >
-          <ZoomIn width="18" height="18" />
+          <ZoomIn width="14" height="14" />
         </button>
 
         {/* Zoom Level Indicator */}
-        <div className="flex flex-col items-center justify-center px-2 py-1 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="flex flex-col items-center justify-center px-1.5 py-0.5 bg-gray-50 rounded-md border border-gray-200">
           <span className="text-xs font-bold text-gray-700">
             {Math.round(zoom * 100)}
           </span>
@@ -740,29 +740,23 @@ function GraphRenderer({
         {/* Zoom Out Button */}
         <button
           onClick={zoomOut}
-          className="p-3 hover:bg-blue-50 rounded-lg transition-all duration-200 text-gray-600 hover:text-blue-600 hover:shadow-md"
+          className="p-2 hover:bg-blue-50 rounded-md transition-all duration-200 text-gray-600 hover:text-blue-600 hover:shadow-sm"
           title="Zoom Out (Scroll)"
         >
-          <ZoomOut width="18" height="18" />
+          <ZoomOut width="14" height="14" />
         </button>
 
         {/* Divider */}
-        <div className="w-8 h-px bg-gray-200 mx-auto" />
+        <div className="w-6 h-px bg-gray-200 mx-auto" />
 
         {/* Reset View Button */}
         <button
           onClick={resetView}
-          className="p-3 hover:bg-green-50 rounded-lg transition-all duration-200 text-gray-600 hover:text-green-600 hover:shadow-md"
+          className="p-2 hover:bg-green-50 rounded-md transition-all duration-200 text-gray-600 hover:text-green-600 hover:shadow-sm"
           title="Reset View"
         >
-          <Home width="18" height="18" />
+          <Home width="14" height="14" />
         </button>
-
-        {/* Bottom Help Text */}
-        <div className="text-xs text-gray-500 text-center px-2 py-1 border-t border-gray-200 mt-1">
-          <p>Drag to pan</p>
-          <p>Space + Drag</p>
-        </div>
       </div>
 
       {/* Tooltip - Disabled, using node labels instead */}
