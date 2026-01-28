@@ -130,11 +130,24 @@ export function verifyPassword(inputPassword: string): boolean {
 }
 
 export function getDevPassword(): string | null {
-  // Only return password in development mode
-  if (process.env.NODE_ENV === "production") {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  // Check if APP_PASSWORD is set in environment
+  if (process.env.APP_PASSWORD) {
+    // In production with env var, don't expose the password
+    if (isProduction) {
+      return null;
+    }
+    // In development with env var, return it for convenience
+    return process.env.APP_PASSWORD;
+  }
+
+  // In production without env var, return null
+  if (isProduction) {
     return null;
   }
 
+  // In development, try to read from file
   ensureDataDir();
 
   if (!fs.existsSync(PASSWORD_FILE)) {
