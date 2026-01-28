@@ -535,8 +535,8 @@ function GraphRenderer({
                 return isDirectAffected ? 32 : 28;
               };
 
-              // Get CVE severity color for tech nodes (PRIMARY COLOR)
-              const getSeverityColor = () => {
+              // Get CVE severity color and gradient for tech nodes
+              const getSeverityInfo = () => {
                 if (isTech) {
                   const tech = getTechDetails(node.id, dependencyGraphData);
                   if (tech) {
@@ -544,41 +544,42 @@ function GraphRenderer({
                       (sum, v) => sum + v.cves.length,
                       0,
                     );
-                    // Return bright colors based on severity
-                    if (totalCVEs === 0) return "#10B981"; // Green - no CVEs
-                    if (totalCVEs >= 5) return "#DC2626"; // Bright Red - CRITICAL
-                    if (totalCVEs >= 3) return "#EA580C"; // Orange - HIGH
-                    if (totalCVEs >= 1) return "#D97706"; // Amber - MEDIUM
+                    // Return color and gradient ID based on severity
+                    if (totalCVEs === 0) return { color: "#10B981", gradient: "url(#lowGradient)", severity: "low" };
+                    if (totalCVEs >= 5) return { color: "#DC2626", gradient: "url(#criticalGradient)", severity: "critical" };
+                    if (totalCVEs >= 3) return { color: "#EA580C", gradient: "url(#highGradient)", severity: "high" };
+                    if (totalCVEs >= 1) return { color: "#D97706", gradient: "url(#mediumGradient)", severity: "medium" };
                   }
                 }
-                return null; // Use default color
+                return { color: "#0EA5E9", gradient: "none", severity: "none" }; // Use default blue
               };
 
-              // Determine node color based on type and subtype with better colors
-              const getNodeColor = () => {
+              // Determine node color and gradient based on type and subtype
+              const getNodeColorInfo = () => {
                 if (isIssue) {
                   switch (node.subtype) {
                     case "critical":
-                      return "#DC2626"; // Bright Red
+                      return { color: "#DC2626", gradient: "url(#criticalGradient)" };
                     case "high":
-                      return "#EA580C"; // Orange
+                      return { color: "#EA580C", gradient: "url(#highGradient)" };
                     case "medium":
-                      return "#D97706"; // Amber
+                      return { color: "#D97706", gradient: "url(#mediumGradient)" };
                     case "low":
-                      return "#10B981"; // Green
+                      return { color: "#10B981", gradient: "url(#lowGradient)" };
                     default:
-                      return "#8B5CF6"; // Purple
+                      return { color: "#8B5CF6", gradient: "none" };
                   }
                 } else if (isVendor) {
-                  return isDirectAffected ? "#A855F7" : "#D8B4FE"; // Purple variants
+                  return { color: isDirectAffected ? "#A855F7" : "#D8B4FE", gradient: "none" };
                 } else if (isTech) {
                   // For tech nodes, use severity color if available, otherwise use blue
-                  const severityColor = getSeverityColor();
-                  if (severityColor) return severityColor;
-                  return isDirectAffected ? "#0EA5E9" : "#60A5FA"; // Blue variants (fallback)
+                  const severityInfo = getSeverityInfo();
+                  return severityInfo;
                 }
-                return "#6B7280";
+                return { color: "#6B7280", gradient: "none" };
               };
+
+              const colorInfo = getNodeColorInfo();
 
               const radius = getNodeRadius();
               const innerRadius = Math.max(radius - 8, 12);
