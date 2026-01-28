@@ -130,11 +130,6 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
                   autoFocus
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter" && !isLoading) {
-                      handleSubmit(e as any);
-                    }
-                  }}
                   className="pr-10"
                 />
                 <button
@@ -158,7 +153,7 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
                 </div>
               )}
 
-              {devPassword && (
+              {devPassword && !import.meta.env.PROD && (
                 <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 text-amber-600" />
                   <div className="text-sm">
