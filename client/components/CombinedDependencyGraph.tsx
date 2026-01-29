@@ -338,6 +338,14 @@ export function CombinedDependencyGraph({
 
               const isEdgeHovered = hoveredEdgeIndex === idx;
 
+              // Check if this is a direct relationship
+              const isDirect = dependencyGraphData.relationships.some(
+                (rel) =>
+                  rel.from === edge.source &&
+                  rel.to === edge.target &&
+                  (rel.type === "uses" || rel.type === "implements" || rel.type === "derived_from")
+              );
+
               // Connect box centers
               const sourceX = source.x + source.width / 2;
               const sourceY = source.y + source.height / 2;
