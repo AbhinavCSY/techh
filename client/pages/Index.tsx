@@ -1827,25 +1827,41 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                       Source to Scan <span className="text-red-500">*</span>
                     </label>
                     <div className="flex gap-2 mb-4">
-                      {["File", "Repository", "SBOM"].map((type) => (
-                        <button
-                          key={type}
-                          onClick={() =>
-                            setFormData({
-                              ...formData,
-                              sourceType: type.toLowerCase() as any,
-                            })
-                          }
-                          className={cn(
-                            "px-4 py-2 rounded-lg font-medium text-sm transition-colors",
-                            formData.sourceType === type.toLowerCase()
-                              ? "bg-gray-600 text-white"
-                              : "bg-gray-300 text-gray-700 hover:bg-gray-400"
-                          )}
-                        >
-                          {type}
-                        </button>
-                      ))}
+                      {["File", "SBOM", "Repository"].map((type) => {
+                        const isDisabled = type === "Repository";
+                        return (
+                          <div key={type} className="relative group">
+                            <button
+                              onClick={() => {
+                                if (!isDisabled) {
+                                  setFormData({
+                                    ...formData,
+                                    sourceType: type.toLowerCase() as any,
+                                  });
+                                }
+                              }}
+                              disabled={isDisabled}
+                              className={cn(
+                                "px-4 py-2 rounded-lg font-medium text-sm transition-colors",
+                                isDisabled
+                                  ? "bg-gray-300 text-gray-500 opacity-70 cursor-not-allowed"
+                                  : formData.sourceType === type.toLowerCase()
+                                  ? "bg-gray-600 text-white"
+                                  : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+                              )}
+                            >
+                              {type}
+                            </button>
+                            {isDisabled && (
+                              <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
+                                <span className="text-white text-xs font-semibold whitespace-nowrap">
+                                  Coming Soon
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
 
                     {/* File Type - File Upload */}
