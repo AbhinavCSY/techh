@@ -258,9 +258,9 @@ export function InteractiveDependencyGraph() {
           })}
 
           {/* Draw edges */}
-          {layoutResult.edges.map((edge, idx) => {
-            const source = layoutResult.nodes.find((n) => n.id === edge.source);
-            const target = layoutResult.nodes.find((n) => n.id === edge.target);
+          {filteredEdges.map((edge, idx) => {
+            const source = filteredNodes.find((n) => n.id === edge.source);
+            const target = filteredNodes.find((n) => n.id === edge.target);
 
             if (!source || !target) return null;
 
