@@ -1640,12 +1640,16 @@ interface NewProjectModalProps {
 }
 
 function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
-  const [activeStep, setActiveStep] = useState<"options" | "form">("options");
+  const [activeStep, setActiveStep] = useState<"options" | "sourceCode" | "selectScanners">("options");
   const [formData, setFormData] = useState({
     projectName: "",
     tags: [] as string[],
-    groups: "",
     tagInput: "",
+    sourceType: "file" as "file" | "repository" | "sbom",
+    branch: "",
+    incrementalScan: false,
+    saveAsDefault: false,
+    scanners: [] as string[],
   });
 
   if (!isOpen) return null;
