@@ -406,27 +406,37 @@ export function CombinedDependencyGraph({
                   {isEdgeHovered && (
                     <g filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))">
                       <rect
-                        x={midX - 50}
-                        y={midY - 16}
-                        width="100"
-                        height="32"
+                        x={midX - 65}
+                        y={midY - 20}
+                        width="130"
+                        height="40"
                         fill="white"
-                        opacity={0.97}
+                        opacity={0.98}
                         rx="4"
                         strokeWidth="1"
-                        stroke="#60A5FA"
-                        strokeOpacity="0.5"
+                        stroke={isDirect ? "#3B82F6" : "#60A5FA"}
+                        strokeOpacity="0.7"
                       />
                       <text
                         x={midX}
-                        y={midY + 3}
+                        y={midY - 5}
                         textAnchor="middle"
-                        fontSize="10"
-                        fontWeight="600"
-                        fill="#0EA5E9"
+                        fontSize="9"
+                        fontWeight="700"
+                        fill={isDirect ? "#1E40AF" : "#0369A1"}
                         opacity={1}
                       >
                         {label}
+                      </text>
+                      <text
+                        x={midX}
+                        y={midY + 8}
+                        textAnchor="middle"
+                        fontSize="8"
+                        fill="#6B7280"
+                        opacity={1}
+                      >
+                        ({relationshipType})
                       </text>
                     </g>
                   )}
