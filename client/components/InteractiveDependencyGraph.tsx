@@ -453,6 +453,18 @@ export function InteractiveDependencyGraph() {
       {/* Control Sidebar */}
       <div className="absolute left-6 bottom-8 flex flex-col gap-2 bg-white rounded-lg shadow-xl p-3 border border-gray-300 z-50">
         <button
+          onClick={() => setShowOnlyCritical(!showOnlyCritical)}
+          className={`p-3 rounded-md transition-all font-bold text-sm ${
+            showOnlyCritical
+              ? "bg-red-100 text-red-700 hover:bg-red-200"
+              : "hover:bg-red-50 text-gray-700 hover:text-red-600"
+          }`}
+          title="Show only Critical Issues"
+        >
+          🔴
+        </button>
+        <div className="w-8 h-px bg-gray-300 mx-auto" />
+        <button
           onClick={zoomIn}
           className="p-3 hover:bg-blue-50 rounded-md transition-all text-gray-700 hover:text-blue-600"
           title="Zoom In"
