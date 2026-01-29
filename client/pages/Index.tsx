@@ -2058,11 +2058,11 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                             scanners: {
                               sast: true,
                               sca: true,
-                              containerSecurity: true,
-                              iacSecurity: true,
-                              apiSecurity: true,
-                              ossfScorecard: true,
-                              secretDetection: true,
+                              containerSecurity: false,
+                              iacSecurity: false,
+                              apiSecurity: false,
+                              ossfScorecard: false,
+                              secretDetection: false,
                             },
                           });
                         }}
