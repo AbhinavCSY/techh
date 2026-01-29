@@ -555,6 +555,7 @@ export function InteractiveDependencyGraph() {
               <p>• <strong>Click Issue</strong> - Show affected techs</p>
               <p>• <strong>Drag</strong> - Pan the view</p>
               <p>• <strong>Scroll</strong> - Zoom in/out</p>
+              <p>• <strong>🔴 Button</strong> - Filter critical issues</p>
             </div>
           </div>
 
