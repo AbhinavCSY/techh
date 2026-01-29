@@ -46,39 +46,37 @@ export class ForceLayout {
   }
 
   private initializeClusterPositions() {
-    const clusterPositions = new Map<string, { cx: number; cy: number; count: number }>();
+    // Position clusters horizontally in a line
+    const clusterArray = Array.from(this.clusters.values());
+    const clusterSpacing = this.width / (clusterArray.length + 1);
 
-    // Calculate cluster centers
-    this.nodes.forEach((node) => {
-      if (!node.cluster) return;
+    clusterArray.forEach((cluster, idx) => {
+      // Center x position for this cluster
+      const cx = clusterSpacing * (idx + 1);
+      // Centered vertically
+      const cy = this.height / 2;
 
-      if (!clusterPositions.has(node.cluster)) {
-        clusterPositions.set(node.cluster, { cx: 0, cy: 0, count: 0 });
+      // Get nodes in this cluster
+      const clusterNodes = this.nodes.filter((n) => n.cluster === cluster.id);
+
+      // Position nodes around cluster center in a circle
+      if (clusterNodes.length > 0) {
+        const radius = Math.min(80, clusterSpacing / 4);
+
+        clusterNodes.forEach((node, nodeIdx) => {
+          const angle = (nodeIdx / clusterNodes.length) * Math.PI * 2;
+          node.x = cx + Math.cos(angle) * radius;
+          node.y = cy + Math.sin(angle) * radius + (Math.random() - 0.5) * 40;
+        });
       }
-
-      const pos = clusterPositions.get(node.cluster)!;
-      pos.cx += node.x;
-      pos.cy += node.y;
-      pos.count++;
     });
 
-    // Position clusters around the canvas
-    const clusterArray = Array.from(this.clusters.values());
-    clusterArray.forEach((cluster, idx) => {
-      const angle = (idx / clusterArray.length) * Math.PI * 2;
-      const distance = 250;
-      const cx = this.width / 2 + Math.cos(angle) * distance;
-      const cy = this.height / 2 + Math.sin(angle) * distance;
-
-      // Position all nodes in this cluster around its center
-      this.nodes.forEach((node) => {
-        if (node.cluster === cluster.id) {
-          const r = Math.random() * 80;
-          const theta = Math.random() * Math.PI * 2;
-          node.x = cx + Math.cos(theta) * r;
-          node.y = cy + Math.sin(theta) * r;
-        }
-      });
+    // Position vendor nodes (non-clustered) at the bottom
+    const vendorNodes = this.nodes.filter((n) => !n.cluster);
+    vendorNodes.forEach((node, idx) => {
+      const spacing = this.width / (vendorNodes.length + 1);
+      node.x = spacing * (idx + 1);
+      node.y = this.height - 100 + (Math.random() - 0.5) * 40;
     });
   }
 
