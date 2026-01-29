@@ -173,6 +173,17 @@ export default function Index() {
             >
               📦 Tech Stack
             </button>
+            <button
+              onClick={() => setGrouping("graph")}
+              className={cn(
+                "px-4 py-2 rounded font-medium text-sm transition-all whitespace-nowrap",
+                grouping === "graph"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900",
+              )}
+            >
+              📊 Graph
+            </button>
           </div>
         </div>
       </div>
