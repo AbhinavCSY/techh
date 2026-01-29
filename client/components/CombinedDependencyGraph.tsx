@@ -609,22 +609,30 @@ export function CombinedDependencyGraph({
           <Info width="16" height="16" className="text-blue-600" />
           <h3 className="font-semibold text-sm text-gray-900">Legend</h3>
         </div>
-        <div className="space-y-2 text-xs">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <span className="text-gray-700">Critical (5+ CVEs)</span>
+        <div className="space-y-3 text-xs">
+          <div>
+            <p className="font-medium text-gray-700 mb-2">Risk Levels (Box Border):</p>
+            <div className="space-y-1 ml-2">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded border-2 border-red-500"></div>
+                <span className="text-gray-700">Critical (5+ CVEs)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded border-2 border-orange-500"></div>
+                <span className="text-gray-700">High (3-4 CVEs)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded border-2 border-amber-500"></div>
+                <span className="text-gray-700">Medium (1-2 CVEs)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded border-2 border-green-500"></div>
+                <span className="text-gray-700">Low (No CVEs)</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-            <span className="text-gray-700">High (3-4 CVEs)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-            <span className="text-gray-700">Medium (1-2 CVEs)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="text-gray-700">Low (No CVEs)</span>
+          <div className="pt-2 border-t border-gray-200">
+            <p className="text-gray-600">Boxes connected by lines show dependencies between tech stacks.</p>
           </div>
         </div>
       </div>
