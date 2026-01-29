@@ -1191,9 +1191,15 @@ export function DependencyGraphVisualization({
           <div
             ref={graphContainerRef}
             className="border border-gray-200 rounded-xl bg-gradient-to-br from-white to-gray-50 overflow-hidden h-[600px] relative shadow-lg hover:shadow-xl transition-shadow duration-300"
-            onClick={() => {
-              // Close popups when clicking on empty area
-              handleCloseQuickInfo();
+            onClick={(e) => {
+              // Only close popups if clicking on the SVG background (not on nodes)
+              const target = e.target as SVGElement;
+              if (
+                target.tagName === "svg" ||
+                (target.tagName === "g" && !target.closest(".node-group"))
+              ) {
+                handleCloseQuickInfo();
+              }
             }}
           >
             <GraphRenderer
@@ -1265,9 +1271,15 @@ export function DependencyGraphVisualization({
           <div
             ref={graphContainerRef}
             className="flex-1 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 relative"
-            onClick={() => {
-              // Close popups when clicking on empty area
-              handleCloseQuickInfo();
+            onClick={(e) => {
+              // Only close popups if clicking on the SVG background (not on nodes)
+              const target = e.target as SVGElement;
+              if (
+                target.tagName === "svg" ||
+                (target.tagName === "g" && !target.closest(".node-group"))
+              ) {
+                handleCloseQuickInfo();
+              }
             }}
           >
             <GraphRenderer

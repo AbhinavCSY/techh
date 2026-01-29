@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { usePersistentState } from "./usePersistentState";
 import { TechStack, Asset } from "@/data/mockData";
 
-export type ViewType = "card" | "table";
+export type ViewType = "card" | "table" | "graph";
 export type GroupingType = "tech-stack" | "asset";
 export type TimeFilter = "week" | "month" | "quarter" | "custom";
 export type SortField = "risk" | "cve-count" | "asset-count" | "recency";
