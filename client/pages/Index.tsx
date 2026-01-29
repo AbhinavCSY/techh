@@ -189,10 +189,10 @@ export default function Index() {
       />
 
       {/* Main Content */}
-      <main className={cn(grouping === "graph" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-8")}>
+      <main className={cn(viewType === "graph" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-8")}>
         {/* Graph View */}
-        {grouping === "graph" ? (
-          <div className="w-full h-screen bg-white flex flex-col">
+        {viewType === "graph" ? (
+          <div className="w-full" style={{ height: "calc(100vh - 200px)" }}>
             {filteredTechStacks.length === 0 ? (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
@@ -211,17 +211,7 @@ export default function Index() {
                 </div>
               </div>
             ) : (
-              <>
-                <div className="p-6 border-b border-gray-200">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Technology Dependency Graph</h2>
-                  <p className="text-gray-600">
-                    Visualizing {filteredTechStacks.length} technology stack{filteredTechStacks.length !== 1 ? "s" : ""} and their dependencies
-                  </p>
-                </div>
-                <div className="flex-1 overflow-hidden">
-                  <CombinedDependencyGraph techStacks={filteredTechStacks} />
-                </div>
-              </>
+              <CombinedDependencyGraph techStacks={filteredTechStacks} />
             )}
           </div>
         ) : (
