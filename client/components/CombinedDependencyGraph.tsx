@@ -7,6 +7,7 @@ import {
   Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { dependencyGraphData, getTechDetails } from "@/data/dependencyGraphData";
 
 interface TechStack {
   id: string;
@@ -27,6 +28,8 @@ interface GraphNode {
   y: number;
   cveCount?: number;
   riskLevel?: string;
+  width: number;
+  height: number;
 }
 
 interface GraphEdge {
