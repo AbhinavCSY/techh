@@ -144,8 +144,8 @@ class GridBoxLayout {
 export function CombinedDependencyGraph({
   techStacks,
 }: CombinedDependencyGraphProps) {
-  const [pan, setPan] = useState({ x: 100, y: 100 });
-  const [zoom, setZoom] = useState(0.65); // Start zoomed out
+  const [pan, setPan] = useState({ x: 50, y: 50 });
+  const [zoom, setZoom] = useState(0.4); // Start very zoomed out to see all boxes
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [hoveredEdgeIndex, setHoveredEdgeIndex] = useState<number | null>(null);
@@ -153,8 +153,8 @@ export function CombinedDependencyGraph({
   const [edges, setEdges] = useState<BoxEdge[]>([]);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const WIDTH = 2000; // Much larger canvas
-  const HEIGHT = 1200; // Much larger canvas
+  const WIDTH = 1400; // Viewport width
+  const HEIGHT = 900; // Viewport height
 
   // Build combined graph from all tech stacks using actual dependencies
   useEffect(() => {
