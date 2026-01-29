@@ -178,17 +178,15 @@ export default function Index() {
       </div>
 
       {/* Filter Bar */}
-      {grouping !== "graph" && (
-        <HorizontalFilterBar
-          filters={filters}
-          onFilterChange={updateFilter}
-          onClearFilters={clearFilters}
-          hasActiveFilters={hasActiveFilters}
-          viewType={viewType}
-          onViewTypeChange={setViewType}
-          onExport={handleExport}
-        />
-      )}
+      <HorizontalFilterBar
+        filters={filters}
+        onFilterChange={updateFilter}
+        onClearFilters={clearFilters}
+        hasActiveFilters={hasActiveFilters}
+        viewType={viewType}
+        onViewTypeChange={setViewType}
+        onExport={handleExport}
+      />
 
       {/* Main Content */}
       <main className={cn(grouping === "graph" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-8")}>
