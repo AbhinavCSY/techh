@@ -2233,6 +2233,14 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
 
             {/* Action Buttons */}
             <div className="flex gap-3 border-t border-gray-200 pt-4 mt-6">
+              {activeStep === "selectScanners" && (
+                <button
+                  onClick={() => setActiveStep("sourceCode")}
+                  className="px-4 py-2 text-gray-700 font-medium text-sm"
+                >
+                  Back
+                </button>
+              )}
               <button
                 onClick={onClose}
                 className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-sm"
