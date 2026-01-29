@@ -271,6 +271,14 @@ export default function Index() {
           }}
         />
       )}
+
+      {/* New Project Modal */}
+      {showNewProjectModal && (
+        <NewProjectModal
+          isOpen={showNewProjectModal}
+          onClose={() => setShowNewProjectModal(false)}
+        />
+      )}
     </div>
   );
 }
