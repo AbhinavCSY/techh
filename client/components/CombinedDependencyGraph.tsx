@@ -227,11 +227,11 @@ export function CombinedDependencyGraph({
     setZoom(newZoom);
   };
 
-  const zoomIn = () => setZoom((z) => Math.min(z + 0.2, 3));
-  const zoomOut = () => setZoom((z) => Math.max(z - 0.2, 0.5));
+  const zoomIn = () => setZoom((z) => Math.min(z + 0.1, 3));
+  const zoomOut = () => setZoom((z) => Math.max(z - 0.1, 0.2)); // Allow zooming out more
   const resetView = () => {
-    setPan({ x: 0, y: 0 });
-    setZoom(1);
+    setPan({ x: 50, y: 50 });
+    setZoom(0.4);
   };
 
   return (
