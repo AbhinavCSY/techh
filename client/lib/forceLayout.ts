@@ -146,7 +146,7 @@ export class ForceLayout {
       target.vy -= fy;
     });
 
-    // Cluster gravity - keep nodes within their cluster region (stronger)
+    // Cluster gravity - keep nodes within their cluster region (moderate)
     this.nodes.forEach((node) => {
       if (!node.cluster) return;
 
@@ -159,7 +159,7 @@ export class ForceLayout {
       const dy = cy - node.y;
       const dist = Math.hypot(dx, dy) || 1;
 
-      const strength = 0.15; // Increased from 0.05 for tighter clusters
+      const strength = 0.10; // Moderate clustering (was 0.15)
       const fx = (dx / dist) * strength;
       const fy = (dy / dist) * strength;
 
