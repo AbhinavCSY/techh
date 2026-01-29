@@ -222,6 +222,17 @@ export function HorizontalFilterBar({
             >
               📊 Table
             </button>
+            <button
+              onClick={() => onViewTypeChange("graph")}
+              className={cn(
+                "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
+                viewType === "graph"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900",
+              )}
+            >
+              🔗 Graph
+            </button>
           </div>
 
           {/* Sort Dropdown */}
