@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { DependencyGraph } from "@/components/DependencyGraph";
 import { CombinedDependencyGraph } from "@/components/CombinedDependencyGraph";
+import { InteractiveDependencyGraph } from "@/components/InteractiveDependencyGraph";
 import { cn } from "@/lib/utils";
 
 export default function Index() {
