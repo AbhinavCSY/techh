@@ -123,7 +123,7 @@ export class ForceLayout {
       }
     }
 
-    // Attractive forces for edges
+    // Attractive forces for edges (weaker to let clusters spread)
     this.edges.forEach((edge) => {
       const source = nodeMap.get(edge.source);
       const target = nodeMap.get(edge.target);
@@ -134,8 +134,8 @@ export class ForceLayout {
       const dy = target.y - source.y;
       const dist = Math.hypot(dx, dy) || 1;
 
-      const restLength = 150; // Target distance
-      const strength = 0.1;
+      const restLength = 180; // Increased target distance
+      const strength = 0.08; // Reduced strength
 
       const fx = (dx / dist) * strength * (dist - restLength);
       const fy = (dy / dist) * strength * (dist - restLength);
