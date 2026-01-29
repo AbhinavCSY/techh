@@ -1731,144 +1731,273 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
     });
   };
 
-  if (activeStep === "form") {
+  if (activeStep !== "options") {
     return (
       <div
         className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
         onClick={onClose}
       >
         <div
-          className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 flex max-h-96 overflow-hidden"
+          className="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 flex max-h-[90vh] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Left Sidebar */}
-          <div className="bg-gray-50 w-48 p-6 flex flex-col border-r border-gray-200">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-2xl">📁</span>
-              <h2 className="text-lg font-bold text-gray-900">New<br />Project</h2>
+          <div className="bg-gray-50 w-56 p-6 flex flex-col border-r border-gray-200">
+            <div className="flex items-center gap-3 mb-8">
+              <span className="text-2xl">📡</span>
+              <h2 className="text-lg font-bold text-gray-900">New Scan</h2>
             </div>
+
+            {/* Steps */}
+            <div className="space-y-4 flex-1">
+              <div className="flex items-start gap-3">
+                <div className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white",
+                  activeStep === "sourceCode" ? "bg-blue-600" : "bg-gray-400"
+                )}>
+                  1
+                </div>
+                <div>
+                  <p className={cn(
+                    "font-semibold text-sm",
+                    activeStep === "sourceCode" ? "text-gray-900" : "text-gray-600"
+                  )}>
+                    Source Code
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white",
+                  activeStep === "selectScanners" ? "bg-blue-600" : "bg-gray-400"
+                )}>
+                  2
+                </div>
+                <div>
+                  <p className={cn(
+                    "font-semibold text-sm",
+                    activeStep === "selectScanners" ? "text-gray-900" : "text-gray-600"
+                  )}>
+                    Select Scanners
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <button
               onClick={handleBackToOptions}
-              className="mt-auto text-xs text-blue-600 hover:text-blue-800 font-medium"
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium"
             >
               ← Back
             </button>
           </div>
 
           {/* Right Content */}
-          <div className="flex-1 p-6 overflow-y-auto">
-            <div className="space-y-4">
-              {/* Project Name */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Project Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Project Name"
-                  value={formData.projectName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, projectName: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                />
-              </div>
-
-              {/* Project Tags */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Project Tags
-                </label>
-                <div className="flex gap-2 mb-2">
-                  <input
-                    type="text"
-                    placeholder="Add tags"
-                    value={formData.tagInput}
-                    onChange={(e) =>
-                      setFormData({ ...formData, tagInput: e.target.value })
-                    }
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleAddTag();
-                      }
-                    }}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                  />
-                  <button
-                    onClick={handleAddTag}
-                    className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
-                  >
-                    Add
-                  </button>
-                </div>
-                {formData.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {formData.tags.map((tag, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs"
+          <div className="flex-1 p-6 overflow-y-auto flex flex-col">
+            <div className="space-y-4 flex-1">
+              {activeStep === "sourceCode" && (
+                <>
+                  {/* Project Name */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      Project Name <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={formData.projectName}
+                        onChange={(e) =>
+                          setFormData({ ...formData, projectName: e.target.value })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
                       >
-                        {tag}
-                        <button
-                          onClick={() => handleRemoveTag(index)}
-                          className="text-blue-600 hover:text-blue-900 font-bold"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
+                        <option value="">Select project</option>
+                        <option value="as">as</option>
+                        <option value="new-project">New Project</option>
+                      </select>
+                      <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                        ▼
+                      </span>
+                    </div>
                   </div>
-                )}
-              </div>
 
-              {/* Groups */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Groups
-                </label>
-                <input
-                  type="text"
-                  placeholder="Add Groups"
-                  value={formData.groups}
-                  onChange={(e) =>
-                    setFormData({ ...formData, groups: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                />
-              </div>
+                  {/* Source to Scan */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      Source to Scan <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex gap-2 mb-4">
+                      {["File", "Repository", "SBOM"].map((type) => (
+                        <button
+                          key={type}
+                          onClick={() =>
+                            setFormData({
+                              ...formData,
+                              sourceType: type.toLowerCase() as any,
+                            })
+                          }
+                          className={cn(
+                            "px-4 py-2 rounded-lg font-medium text-sm transition-colors",
+                            formData.sourceType === type.toLowerCase()
+                              ? "bg-gray-600 text-white"
+                              : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+                          )}
+                        >
+                          {type}
+                        </button>
+                      ))}
+                    </div>
 
-              {/* By Rule */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  By Rule (0)
-                </label>
-                <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                  + Add Rule
-                </button>
-              </div>
+                    {/* File Upload Area */}
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
+                      <div className="text-4xl mb-2">📱</div>
+                      <p className="text-sm text-gray-600">
+                        Drop ZIP/TAR file here or{" "}
+                        <button className="text-blue-600 hover:text-blue-800 font-medium">
+                          Select File
+                        </button>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Branch */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      Branch
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter branch"
+                      value={formData.branch}
+                      onChange={(e) =>
+                        setFormData({ ...formData, branch: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    />
+                  </div>
+
+                  {/* Scan Tags */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      Scan Tags
+                    </label>
+                    <div className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        placeholder="Add Tags (i.e. CodeVersion:Feature)"
+                        value={formData.tagInput}
+                        onChange={(e) =>
+                          setFormData({ ...formData, tagInput: e.target.value })
+                        }
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddTag();
+                          }
+                        }}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      />
+                    </div>
+                    {formData.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {formData.tags.map((tag, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs"
+                          >
+                            {tag}
+                            <button
+                              onClick={() => handleRemoveTag(index)}
+                              className="text-blue-600 hover:text-blue-900 font-bold"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Checkboxes */}
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.incrementalScan}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            incrementalScan: e.target.checked,
+                          })
+                        }
+                        className="w-4 h-4 rounded border-gray-300"
+                      />
+                      <span className="text-sm text-gray-700 font-medium">
+                        Incremental Scan
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.saveAsDefault}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            saveAsDefault: e.target.checked,
+                          })
+                        }
+                        className="w-4 h-4 rounded border-gray-300"
+                      />
+                      <span className="text-sm text-gray-700 font-medium">
+                        Save as default repository for the project
+                      </span>
+                    </label>
+                  </div>
+                </>
+              )}
+
+              {activeStep === "selectScanners" && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Select Scanners
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Choose the scanners you want to use for this scan.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3 mt-6 border-t border-gray-200 pt-4">
+            <div className="flex gap-3 border-t border-gray-200 pt-4 mt-6">
               <button
                 onClick={onClose}
                 className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-sm"
               >
                 Cancel
               </button>
-              <button
-                onClick={handleCreateProject}
-                disabled={!formData.projectName.trim()}
-                className={cn(
-                  "flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-colors",
-                  formData.projectName.trim()
-                    ? "bg-blue-600 hover:bg-blue-700 text-white"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                )}
-              >
-                Create Project
-              </button>
+              {activeStep === "sourceCode" && (
+                <button
+                  onClick={handleNext}
+                  disabled={!formData.projectName.trim()}
+                  className={cn(
+                    "flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-colors",
+                    formData.projectName.trim()
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  )}
+                >
+                  Next
+                </button>
+              )}
+              {activeStep === "selectScanners" && (
+                <button
+                  onClick={handleFinish}
+                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm"
+                >
+                  Complete
+                </button>
+              )}
             </div>
           </div>
         </div>
