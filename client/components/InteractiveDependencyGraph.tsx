@@ -58,8 +58,8 @@ export function InteractiveDependencyGraph() {
   const zoomIn = () => setZoom((z) => Math.min(z + 0.1, 3));
   const zoomOut = () => setZoom((z) => Math.max(z - 0.1, 0.3));
   const resetView = () => {
-    setPan({ x: 0, y: 0 });
-    setZoom(0.8);
+    setPan({ x: 50, y: 100 });
+    setZoom(1);
   };
 
   const getNodeColor = (node: typeof layoutResult.nodes[0]) => {
