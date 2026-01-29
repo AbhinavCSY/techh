@@ -380,12 +380,16 @@ export function CombinedDependencyGraph({
                   <path
                     className="edge-line"
                     d={`M ${sourceX} ${sourceY} L ${sourceX} ${(sourceY + targetY) / 2} L ${targetX} ${(sourceY + targetY) / 2} L ${targetX} ${targetY}`}
-                    stroke="#60A5FA"
-                    strokeWidth={2}
+                    stroke={isEdgeHovered ? "#1D4ED8" : "#3B82F6"}
+                    strokeWidth={isEdgeHovered ? 3 : 2}
                     fill="none"
                     markerEnd="url(#arrowhead)"
-                    opacity={isEdgeHovered ? 0.8 : 0.5}
-                    style={{ strokeLinecap: "round", pointerEvents: "none" }}
+                    opacity={isEdgeHovered ? 1 : 0.6}
+                    style={{
+                      strokeLinecap: "round",
+                      pointerEvents: "none",
+                      transition: "all 0.2s ease"
+                    }}
                   />
 
                   {/* Label on hover */}
