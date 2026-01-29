@@ -351,11 +351,11 @@ export function CombinedDependencyGraph({
             id="arrowhead"
             markerWidth="10"
             markerHeight="10"
-            refX="20"
+            refX="18"
             refY="3"
             orient="auto"
           >
-            <polygon points="0 0, 10 3, 0 6" fill="#9CA3AF" opacity="0.5" />
+            <polygon points="0 0, 10 3, 0 6" fill="#60A5FA" opacity="0.7" />
           </marker>
         </defs>
 
