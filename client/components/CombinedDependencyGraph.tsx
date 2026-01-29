@@ -42,12 +42,13 @@ interface CombinedDependencyGraphProps {
   techStacks: TechStack[];
 }
 
-class CombinedGraphLayout {
+class TreeGraphLayout {
   nodes: Map<string, GraphNode>;
   edges: GraphEdge[];
   width: number;
   height: number;
   levels: Map<string, number>;
+  children: Map<string, string[]>;
 
   constructor(
     nodes: GraphNode[],
@@ -55,13 +56,14 @@ class CombinedGraphLayout {
     width: number,
     height: number,
   ) {
-    this.width = Math.max(width, 800);
-    this.height = Math.max(height, 600);
+    this.width = Math.max(width, 1000);
+    this.height = Math.max(height, 700);
     this.edges = edges;
     this.levels = new Map();
+    this.children = new Map();
 
-    // Calculate hierarchy levels
-    this.calculateLevels(nodes);
+    // Build tree structure
+    this.buildTreeStructure(nodes);
 
     this.nodes = new Map(
       nodes.map((node) => [
@@ -70,18 +72,18 @@ class CombinedGraphLayout {
       ]),
     );
 
-    this.layoutHierarchical();
+    this.layoutAsTree();
   }
 
-  calculateLevels(nodes: GraphNode[]) {
-    const visited = new Set<string>();
-    const queue: { id: string; level: number }[] = [];
-
+  buildTreeStructure(nodes: GraphNode[]) {
     // Find root nodes (nodes with no incoming edges)
     const hasIncoming = new Set<string>();
     this.edges.forEach((edge) => {
       hasIncoming.add(edge.target);
     });
+
+    const visited = new Set<string>();
+    const queue: { id: string; level: number }[] = [];
 
     nodes.forEach((node) => {
       if (!hasIncoming.has(node.id)) {
@@ -91,7 +93,7 @@ class CombinedGraphLayout {
       }
     });
 
-    // BFS to assign levels
+    // Build hierarchy tree
     while (queue.length > 0) {
       const { id, level } = queue.shift()!;
 
@@ -100,11 +102,16 @@ class CombinedGraphLayout {
           this.levels.set(edge.target, level + 1);
           visited.add(edge.target);
           queue.push({ id: edge.target, level: level + 1 });
+
+          if (!this.children.has(id)) {
+            this.children.set(id, []);
+          }
+          this.children.get(id)!.push(edge.target);
         }
       });
     }
 
-    // Assign unvisited nodes to level 0
+    // Assign remaining nodes to level 0
     nodes.forEach((node) => {
       if (!this.levels.has(node.id)) {
         this.levels.set(node.id, 0);
@@ -112,89 +119,57 @@ class CombinedGraphLayout {
     });
   }
 
-  layoutHierarchical() {
+  layoutAsTree() {
+    const levels = new Map<number, string[]>();
+
     // Group nodes by level
-    const levelGroups = new Map<number, string[]>();
-    this.nodes.forEach((node) => {
-      const level = this.levels.get(node.id) ?? 0;
-      if (!levelGroups.has(level)) {
-        levelGroups.set(level, []);
+    this.nodes.forEach((node, id) => {
+      const level = this.levels.get(id) ?? 0;
+      if (!levels.has(level)) {
+        levels.set(level, []);
       }
-      levelGroups.get(level)!.push(node.id);
+      levels.get(level)!.push(id);
     });
 
-    // Calculate positions
+    // Find root nodes
+    const rootNodes = Array.from(this.nodes.keys()).filter(
+      (id) => this.levels.get(id) === 0
+    );
+
+    // Position nodes recursively
     const minLevel = Math.min(...Array.from(this.levels.values()));
     const maxLevel = Math.max(...Array.from(this.levels.values()));
-    const levelRange = maxLevel - minLevel || 1;
+    const levelHeight = (this.height - 150) / Math.max(maxLevel - minLevel + 1, 1);
 
-    levelGroups.forEach((nodeIds, level) => {
-      const adjustedLevel = level - minLevel;
-      const y = (adjustedLevel / (levelRange || 1)) * (this.height - 200) + 100;
-
-      const spacing = this.width / (nodeIds.length + 1);
-      nodeIds.forEach((nodeId, index) => {
-        const node = this.nodes.get(nodeId)!;
-        node.x = spacing * (index + 1);
-        node.y = y;
-      });
+    // Position root nodes
+    const rootSpacing = this.width / (rootNodes.length + 1);
+    rootNodes.forEach((nodeId, index) => {
+      const node = this.nodes.get(nodeId)!;
+      node.x = rootSpacing * (index + 1);
+      node.y = 60;
+      this.positionChildrenRecursively(nodeId, node.x, node.y + levelHeight, levelHeight);
     });
-
-    // Light force simulation to avoid overlaps while maintaining hierarchy
-    this.refineLayout(20);
   }
 
-  refineLayout(iterations: number) {
-    const nodeArray = Array.from(this.nodes.values());
-    const k = Math.sqrt((this.width * this.height) / nodeArray.length) * 0.8;
+  positionChildrenRecursively(
+    parentId: string,
+    parentX: number,
+    startY: number,
+    levelHeight: number,
+  ) {
+    const children = this.children.get(parentId) || [];
+    if (children.length === 0) return;
 
-    for (let iter = 0; iter < iterations; iter++) {
-      nodeArray.forEach((node1) => {
-        (node1 as any).vx = 0;
-        (node1 as any).vy = 0;
+    const childSpacing = Math.min(140, 800 / (children.length + 1));
+    const startX = parentX - (childSpacing * (children.length - 1)) / 2;
 
-        nodeArray.forEach((node2) => {
-          if (node1.id !== node2.id) {
-            const dx = node2.x - node1.x;
-            const dy = node2.y - node1.y;
-            const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
+    children.forEach((childId, index) => {
+      const child = this.nodes.get(childId)!;
+      child.x = startX + childSpacing * index;
+      child.y = startY;
 
-            const repulsion = (k / distance) * 0.5;
-            (node1 as any).vx -= (dx / distance) * repulsion;
-            (node1 as any).vy -= (dy / distance) * repulsion * 0.1;
-          }
-        });
-
-        // Attractive forces along edges
-        this.edges.forEach((edge) => {
-          if (edge.source === node1.id) {
-            const target = this.nodes.get(edge.target);
-            if (target) {
-              const dx = target.x - node1.x;
-              const dy = target.y - node1.y;
-              const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-              const attraction = (distance / k) * 0.02;
-              (node1 as any).vx += (dx / distance) * attraction;
-              (node1 as any).vy += (dy / distance) * attraction * 0.1;
-            }
-          }
-        });
-      });
-
-      nodeArray.forEach((node) => {
-        (node as any).vx *= 0.7;
-        (node as any).vy *= 0.7;
-        node.x = Math.max(100, Math.min(this.width - 100, node.x + (node as any).vx));
-
-        const level = this.levels.get(node.id) ?? 0;
-        const minLevel = Math.min(...Array.from(this.levels.values()));
-        const maxLevel = Math.max(...Array.from(this.levels.values()));
-        const levelRange = maxLevel - minLevel || 1;
-        const adjustedLevel = level - minLevel;
-        const targetY = (adjustedLevel / (levelRange || 1)) * (this.height - 200) + 100;
-        node.y = targetY + (node.y - targetY) * 0.95;
-      });
-    }
+      this.positionChildrenRecursively(childId, child.x, child.y + levelHeight, levelHeight);
+    });
   }
 
   getNodes() {
