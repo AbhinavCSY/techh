@@ -194,23 +194,27 @@ export function InteractiveDependencyGraph() {
                   opacity="0.5"
                 />
 
-                {/* Cluster label */}
+                {/* Cluster label background */}
                 <rect
-                  x={minX - padding + 10}
-                  y={minY - padding - 25}
-                  width="auto"
-                  height="20"
+                  x={minX - padding + 8}
+                  y={minY - padding - 28}
+                  width={cluster.label.length * 6 + 12}
+                  height="22"
                   fill="white"
-                  rx="3"
-                  opacity="0.9"
+                  stroke="#94A3B8"
+                  strokeWidth="1.5"
+                  rx="4"
+                  opacity="0.95"
+                  style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))" }}
                 />
                 <text
-                  x={minX - padding + 15}
-                  y={minY - padding - 8}
-                  fontSize="11"
+                  x={minX - padding + 14}
+                  y={minY - padding - 17}
+                  fontSize="12"
                   fontWeight="700"
-                  fill="#475569"
+                  fill="#1F2937"
                   dominantBaseline="middle"
+                  style={{ userSelect: "none" }}
                 >
                   {cluster.label}
                 </text>
