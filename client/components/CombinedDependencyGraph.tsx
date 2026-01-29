@@ -56,8 +56,8 @@ class GridBoxLayout {
     width: number,
     height: number,
   ) {
-    this.width = Math.max(width, 1600);
-    this.height = Math.max(height, 1000);
+    this.width = Math.max(width, 3000); // Much larger canvas
+    this.height = Math.max(height, 2000); // Much larger canvas
     this.edges = edges;
     this.boxWidth = 180;
     this.boxHeight = 100;
