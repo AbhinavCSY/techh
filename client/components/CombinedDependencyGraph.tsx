@@ -368,6 +368,7 @@ export function CombinedDependencyGraph({
               };
 
               const label = relationshipLabels[edge.relationship] || edge.relationship;
+              const relationshipType = isDirect ? "Direct" : "Transitive";
 
               return (
                 <g key={idx}>
