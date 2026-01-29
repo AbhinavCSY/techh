@@ -377,41 +377,38 @@ export function CombinedDependencyGraph({
       </svg>
 
       {/* Control Sidebar */}
-      <div
-        className="absolute left-4 bottom-6 flex flex-col gap-1.5 bg-white rounded-lg shadow-lg p-1.5 backdrop-blur-sm border border-gray-200"
-        style={{ transform: "scale(0.75)", transformOrigin: "bottom left" }}
-      >
+      <div className="absolute left-6 bottom-8 flex flex-col gap-2 bg-white rounded-lg shadow-xl p-3 backdrop-blur-sm border border-gray-300 z-50">
         <button
           onClick={zoomIn}
-          className="p-2 hover:bg-blue-50 rounded-md transition-all duration-200 text-gray-600 hover:text-blue-600 hover:shadow-sm"
-          title="Zoom In"
+          className="p-3 hover:bg-blue-50 rounded-md transition-all duration-200 text-gray-700 hover:text-blue-600 hover:shadow-md flex items-center justify-center"
+          title="Zoom In (⌘+)"
         >
-          <ZoomIn width="14" height="14" />
+          <ZoomIn width="18" height="18" />
         </button>
 
-        <div className="flex flex-col items-center justify-center px-1.5 py-0.5 bg-gray-50 rounded-md border border-gray-200">
-          <span className="text-xs font-bold text-gray-700">
+        <div className="flex flex-col items-center justify-center px-2 py-2 bg-gray-50 rounded-md border border-gray-300 min-w-12">
+          <span className="text-sm font-bold text-gray-700">
             {Math.round(zoom * 100)}
           </span>
-          <span className="text-xxs text-gray-500">%</span>
+          <span className="text-xs text-gray-500">%</span>
         </div>
 
         <button
           onClick={zoomOut}
-          className="p-2 hover:bg-blue-50 rounded-md transition-all duration-200 text-gray-600 hover:text-blue-600 hover:shadow-sm"
-          title="Zoom Out"
+          className="p-3 hover:bg-blue-50 rounded-md transition-all duration-200 text-gray-700 hover:text-blue-600 hover:shadow-md flex items-center justify-center"
+          title="Zoom Out (⌘-)"
         >
-          <ZoomOut width="14" height="14" />
+          <ZoomOut width="18" height="18" />
         </button>
 
-        <div className="w-6 h-px bg-gray-200 mx-auto" />
+        <div className="w-8 h-px bg-gray-300 mx-auto" />
 
         <button
           onClick={resetView}
-          className="p-2 hover:bg-green-50 rounded-md transition-all duration-200 text-gray-600 hover:text-green-600 hover:shadow-sm"
-          title="Reset View"
+          className="p-3 hover:bg-green-50 rounded-md transition-all duration-200 text-gray-700 hover:text-green-600 hover:shadow-md flex items-center justify-center"
+          title="Reset View (R)"
         >
-          <Home width="14" height="14" />
+          <Home width="18" height="18" />
         </button>
       </div>
 
