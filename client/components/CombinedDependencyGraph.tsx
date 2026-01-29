@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  Package,
   ZoomIn,
   ZoomOut,
   Home,
@@ -8,6 +7,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { dependencyGraphData, getTechDetails } from "@/data/dependencyGraphData";
+import { TechStackDependencyBox } from "./TechStackDependencyBox";
 
 interface TechStack {
   id: string;
@@ -20,19 +20,19 @@ interface TechStack {
   riskScore?: number;
 }
 
-interface GraphNode {
+interface BoxNode {
   id: string;
-  label: string;
-  type: "technology";
+  techId: string;
+  name: string;
   x: number;
   y: number;
-  cveCount?: number;
-  riskLevel?: string;
   width: number;
   height: number;
+  cveCount?: number;
+  riskLevel?: string;
 }
 
-interface GraphEdge {
+interface BoxEdge {
   source: string;
   target: string;
   relationship: string;
@@ -42,138 +42,93 @@ interface CombinedDependencyGraphProps {
   techStacks: TechStack[];
 }
 
-class TreeGraphLayout {
-  nodes: Map<string, GraphNode>;
-  edges: GraphEdge[];
+class GridBoxLayout {
+  boxes: Map<string, BoxNode>;
+  edges: BoxEdge[];
   width: number;
   height: number;
-  levels: Map<string, number>;
-  children: Map<string, string[]>;
+  boxWidth: number;
+  boxHeight: number;
 
   constructor(
-    nodes: GraphNode[],
-    edges: GraphEdge[],
+    boxes: BoxNode[],
+    edges: BoxEdge[],
     width: number,
     height: number,
   ) {
-    this.width = Math.max(width, 1000);
-    this.height = Math.max(height, 700);
+    this.width = Math.max(width, 1200);
+    this.height = Math.max(height, 800);
     this.edges = edges;
-    this.levels = new Map();
-    this.children = new Map();
+    this.boxWidth = 200;
+    this.boxHeight = 120;
 
-    // Build tree structure
-    this.buildTreeStructure(nodes);
-
-    this.nodes = new Map(
-      nodes.map((node) => [
-        node.id,
-        { ...node, x: 0, y: 0 },
-      ]),
-    );
-
-    this.layoutAsTree();
+    // Build hierarchical layout based on dependencies
+    this.layoutBoxes(boxes);
+    this.boxes = new Map(boxes.map((b) => [b.id, b]));
   }
 
-  buildTreeStructure(nodes: GraphNode[]) {
-    // Find root nodes (nodes with no incoming edges)
+  layoutBoxes(boxes: BoxNode[]) {
+    // Find root boxes (no incoming edges from other tech stacks)
     const hasIncoming = new Set<string>();
     this.edges.forEach((edge) => {
       hasIncoming.add(edge.target);
     });
 
+    const rootBoxes = boxes.filter((b) => !hasIncoming.has(b.id));
+    const levels = new Map<number, string[]>();
+
+    // Assign levels using BFS
     const visited = new Set<string>();
     const queue: { id: string; level: number }[] = [];
 
-    nodes.forEach((node) => {
-      if (!hasIncoming.has(node.id)) {
-        queue.push({ id: node.id, level: 0 });
-        this.levels.set(node.id, 0);
-        visited.add(node.id);
-      }
+    rootBoxes.forEach((box) => {
+      queue.push({ id: box.id, level: 0 });
+      visited.add(box.id);
     });
 
-    // Build hierarchy tree
     while (queue.length > 0) {
       const { id, level } = queue.shift()!;
 
-      this.edges.forEach((edge) => {
-        if (edge.source === id && !visited.has(edge.target)) {
-          this.levels.set(edge.target, level + 1);
-          visited.add(edge.target);
-          queue.push({ id: edge.target, level: level + 1 });
-
-          if (!this.children.has(id)) {
-            this.children.set(id, []);
-          }
-          this.children.get(id)!.push(edge.target);
-        }
-      });
-    }
-
-    // Assign remaining nodes to level 0
-    nodes.forEach((node) => {
-      if (!this.levels.has(node.id)) {
-        this.levels.set(node.id, 0);
-      }
-    });
-  }
-
-  layoutAsTree() {
-    const levels = new Map<number, string[]>();
-
-    // Group nodes by level
-    this.nodes.forEach((node, id) => {
-      const level = this.levels.get(id) ?? 0;
       if (!levels.has(level)) {
         levels.set(level, []);
       }
       levels.get(level)!.push(id);
+
+      // Find children
+      this.edges.forEach((edge) => {
+        if (edge.source === id && !visited.has(edge.target)) {
+          visited.add(edge.target);
+          queue.push({ id: edge.target, level: level + 1 });
+        }
+      });
+    }
+
+    // Assign remaining boxes to level 0
+    boxes.forEach((box) => {
+      if (!visited.has(box.id)) {
+        if (!levels.has(0)) {
+          levels.set(0, []);
+        }
+        levels.get(0)!.push(box.id);
+      }
     });
 
-    // Find root nodes
-    const rootNodes = Array.from(this.nodes.keys()).filter(
-      (id) => this.levels.get(id) === 0
-    );
+    // Position boxes
+    const maxLevel = Math.max(...Array.from(levels.keys()));
+    const verticalSpacing = (this.height - 100) / Math.max(maxLevel + 1, 1);
 
-    // Position nodes recursively
-    const minLevel = Math.min(...Array.from(this.levels.values()));
-    const maxLevel = Math.max(...Array.from(this.levels.values()));
-    const levelHeight = (this.height - 150) / Math.max(maxLevel - minLevel + 1, 1);
-
-    // Position root nodes
-    const rootSpacing = this.width / (rootNodes.length + 1);
-    rootNodes.forEach((nodeId, index) => {
-      const node = this.nodes.get(nodeId)!;
-      node.x = rootSpacing * (index + 1);
-      node.y = 60;
-      this.positionChildrenRecursively(nodeId, node.x, node.y + levelHeight, levelHeight);
-    });
-  }
-
-  positionChildrenRecursively(
-    parentId: string,
-    parentX: number,
-    startY: number,
-    levelHeight: number,
-  ) {
-    const children = this.children.get(parentId) || [];
-    if (children.length === 0) return;
-
-    const childSpacing = Math.min(140, 800 / (children.length + 1));
-    const startX = parentX - (childSpacing * (children.length - 1)) / 2;
-
-    children.forEach((childId, index) => {
-      const child = this.nodes.get(childId)!;
-      child.x = startX + childSpacing * index;
-      child.y = startY;
-
-      this.positionChildrenRecursively(childId, child.x, child.y + levelHeight, levelHeight);
+    levels.forEach((boxIds, level) => {
+      const horizontalSpacing = this.width / (boxIds.length + 1);
+      boxIds.forEach((boxId, index) => {
+        const box = boxes.find((b) => b.id === boxId)!;
+        box.x = horizontalSpacing * (index + 1) - this.boxWidth / 2;
+        box.y = 40 + level * verticalSpacing;
+      });
     });
   }
 
-  getNodes() {
-    return Array.from(this.nodes.values());
+  getBoxes() {
+    return Array.from(this.boxes.values());
   }
 }
 
