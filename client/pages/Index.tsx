@@ -1695,15 +1695,25 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
     });
   };
 
-  const handleCreateProject = () => {
-    console.log("Creating project:", formData);
+  const handleNext = () => {
+    if (activeStep === "sourceCode") {
+      setActiveStep("selectScanners");
+    }
+  };
+
+  const handleFinish = () => {
+    console.log("Finishing scan setup:", formData);
     onClose();
     setActiveStep("options");
     setFormData({
       projectName: "",
       tags: [],
-      groups: "",
       tagInput: "",
+      sourceType: "file",
+      branch: "",
+      incrementalScan: false,
+      saveAsDefault: false,
+      scanners: [],
     });
   };
 
@@ -1712,8 +1722,12 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
     setFormData({
       projectName: "",
       tags: [],
-      groups: "",
       tagInput: "",
+      sourceType: "file",
+      branch: "",
+      incrementalScan: false,
+      saveAsDefault: false,
+      scanners: [],
     });
   };
 
