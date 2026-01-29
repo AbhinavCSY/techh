@@ -19,6 +19,7 @@ export function InteractiveDependencyGraph() {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [expandedClusters, setExpandedClusters] = useState(new Set<string>());
   const [showLegend, setShowLegend] = useState(false);
+  const [showOnlyCritical, setShowOnlyCritical] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
 
   const layoutResult = useMemo(() => {
