@@ -412,40 +412,53 @@ export function CombinedDependencyGraph({
         </button>
       </div>
 
-      {/* Legend */}
-      <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-4 border border-gray-200 max-w-xs">
-        <div className="flex items-center gap-2 mb-3">
-          <Info width="16" height="16" className="text-blue-600" />
-          <h3 className="font-semibold text-sm text-gray-900">Legend</h3>
+      {/* Legend & Help */}
+      <div className="absolute top-6 right-6 bg-white rounded-lg shadow-xl p-5 border border-gray-300 max-w-sm z-50">
+        <div className="flex items-center gap-2 mb-4">
+          <Info width="18" height="18" className="text-blue-600" />
+          <h3 className="font-bold text-sm text-gray-900">Dependency Graph</h3>
         </div>
-        <div className="space-y-3 text-xs">
+
+        <div className="space-y-4 text-xs">
+          {/* Controls Info */}
           <div>
-            <p className="font-medium text-gray-700 mb-2">Risk Levels (Box Border):</p>
+            <p className="font-semibold text-gray-700 mb-2">Controls:</p>
+            <ul className="space-y-1 ml-2 text-gray-600">
+              <li>🖱️ <strong>Drag</strong> - Pan the view</li>
+              <li>🔍 <strong>Scroll</strong> - Zoom in/out</li>
+              <li>➕ <strong>+/-</strong> - Adjust zoom level</li>
+              <li>🏠 <strong>Home</strong> - Reset view</li>
+            </ul>
+          </div>
+
+          {/* Risk Levels */}
+          <div>
+            <p className="font-semibold text-gray-700 mb-2">Risk Levels (Box Border):</p>
             <div className="space-y-1 ml-2">
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded border-2 border-red-500"></div>
+                <div className="w-3 h-3 rounded border-2 border-red-500"></div>
                 <span className="text-gray-700">Critical (5+ CVEs)</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded border-2 border-orange-500"></div>
+                <div className="w-3 h-3 rounded border-2 border-orange-500"></div>
                 <span className="text-gray-700">High (3-4 CVEs)</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded border-2 border-amber-500"></div>
+                <div className="w-3 h-3 rounded border-2 border-amber-500"></div>
                 <span className="text-gray-700">Medium (1-2 CVEs)</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded border-2 border-green-500"></div>
+                <div className="w-3 h-3 rounded border-2 border-green-500"></div>
                 <span className="text-gray-700">Low (No CVEs)</span>
               </div>
             </div>
           </div>
-          <div className="pt-2 border-t border-gray-200">
-            <p className="text-gray-600 text-xs">
-              <strong>Each box:</strong> Shows one tech stack with internal dependency info
-            </p>
-            <p className="text-gray-600 text-xs mt-1">
-              <strong>Arrows:</strong> Show dependencies between tech stacks
+
+          {/* Relationships */}
+          <div className="pt-2 border-t border-gray-300">
+            <p className="font-semibold text-gray-700 mb-1">Layout:</p>
+            <p className="text-gray-600">
+              Boxes show tech stacks. Arrows show dependencies between them. Hover over arrows for relationship details.
             </p>
           </div>
         </div>
