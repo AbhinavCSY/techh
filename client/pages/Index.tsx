@@ -1806,14 +1806,24 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                     <div className="relative">
                       <select
                         value={formData.projectName}
-                        onChange={(e) =>
-                          setFormData({ ...formData, projectName: e.target.value })
-                        }
+                        onChange={(e) => {
+                          if (e.target.value === "add-new") {
+                            // Handle add new project - you can add logic here to open a new project creation form
+                            console.log("Add new project clicked");
+                            setFormData({ ...formData, projectName: "" });
+                          } else {
+                            setFormData({ ...formData, projectName: e.target.value });
+                          }
+                        }}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
                       >
                         <option value="">Select project</option>
                         <option value="as">as</option>
                         <option value="new-project">New Project</option>
+                        <option value="" disabled>
+                          ──────────────
+                        </option>
+                        <option value="add-new">+ Add New Project</option>
                       </select>
                       <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
                         ▼
