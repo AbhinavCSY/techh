@@ -11,8 +11,8 @@ const WIDTH = 2200;
 const HEIGHT = 1200;
 
 export function InteractiveDependencyGraph() {
-  const [pan, setPan] = useState({ x: 50, y: 100 });
-  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 100, y: 150 });
+  const [zoom, setZoom] = useState(0.75);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
