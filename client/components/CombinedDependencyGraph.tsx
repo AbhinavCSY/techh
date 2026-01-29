@@ -56,11 +56,11 @@ class GridBoxLayout {
     width: number,
     height: number,
   ) {
-    this.width = Math.max(width, 1200);
-    this.height = Math.max(height, 800);
+    this.width = Math.max(width, 1600);
+    this.height = Math.max(height, 1000);
     this.edges = edges;
-    this.boxWidth = 200;
-    this.boxHeight = 120;
+    this.boxWidth = 180;
+    this.boxHeight = 100;
     this.boxes = new Map();
 
     // Build hierarchical layout based on dependencies
