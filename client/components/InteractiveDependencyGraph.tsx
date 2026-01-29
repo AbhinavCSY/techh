@@ -18,6 +18,7 @@ export function InteractiveDependencyGraph() {
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [expandedClusters, setExpandedClusters] = useState(new Set<string>());
+  const [showLegend, setShowLegend] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
 
   const layoutResult = useMemo(() => {
