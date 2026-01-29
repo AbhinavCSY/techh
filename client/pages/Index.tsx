@@ -1644,22 +1644,25 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
 
   const options = [
     {
-      id: "code-repo",
-      icon: "📤",
-      title: "New Project - Code Repository Integration",
-      description: "Import your code repositories from your SCM",
-    },
-    {
       id: "manual-scan",
       icon: "➕",
       title: "New Project - Manual Scan",
       description: "Scan from ZIP/TAR archive, SBOM file or repository URL",
+      active: true,
+    },
+    {
+      id: "code-repo",
+      icon: "📤",
+      title: "New Project - Code Repository Integration",
+      description: "Import your code repositories from your SCM",
+      active: false,
     },
     {
       id: "new-app",
       icon: "📊",
       title: "New Application",
       description: "Create an application to organize your projects",
+      active: false,
     },
   ];
 
@@ -1669,30 +1672,47 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl p-8 max-w-lg w-full mx-4"
+        className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-4"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="space-y-4">
+        <div className="space-y-3">
           {options.map((option) => (
-            <button
-              key={option.id}
-              onClick={() => {
-                // Handle option click
-                console.log(`Selected: ${option.id}`);
-                onClose();
-              }}
-              className="w-full flex items-start gap-4 p-4 rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all text-left group"
-            >
-              <span className="text-3xl flex-shrink-0">{option.icon}</span>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-gray-900 group-hover:text-blue-600">
-                  {option.title}
-                </h3>
-                <p className="text-sm text-gray-600 mt-1">
-                  {option.description}
-                </p>
-              </div>
-            </button>
+            <div key={option.id} className="relative group">
+              <button
+                onClick={() => {
+                  if (option.active) {
+                    console.log(`Selected: ${option.id}`);
+                    onClose();
+                  }
+                }}
+                disabled={!option.active}
+                className={cn(
+                  "w-full flex items-start gap-3 p-3 rounded-lg border transition-all text-left",
+                  option.active
+                    ? "border-gray-200 hover:border-blue-400 hover:bg-blue-50 cursor-pointer"
+                    : "border-gray-200 opacity-70 cursor-not-allowed"
+                )}
+              >
+                <span className="text-2xl flex-shrink-0">{option.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <h3 className={cn(
+                    "font-semibold text-sm",
+                    option.active ? "text-gray-900 group-hover:text-blue-600" : "text-gray-600"
+                  )}>
+                    {option.title}
+                  </h3>
+                  <p className="text-xs text-gray-600 mt-0.5">
+                    {option.description}
+                  </p>
+                </div>
+              </button>
+
+              {!option.active && (
+                <div className="absolute inset-0 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 backdrop-blur-sm">
+                  <span className="text-white text-xs font-semibold whitespace-nowrap">Coming Soon</span>
+                </div>
+              )}
+            </div>
           ))}
         </div>
       </div>
