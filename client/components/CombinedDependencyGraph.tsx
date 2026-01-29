@@ -224,37 +224,9 @@ export function CombinedDependencyGraph({
     setZoom(1);
   };
 
-  const getRiskColor = (riskLevel: string, cveCount?: number) => {
-    if (cveCount === 0) return "#10B981"; // Green
-    if (cveCount && cveCount >= 5) return "#DC2626"; // Red
-    if (cveCount && cveCount >= 3) return "#EA580C"; // Orange
-    if (cveCount && cveCount >= 1) return "#D97706"; // Amber
-    switch (riskLevel.toLowerCase()) {
-      case "critical":
-        return "#DC2626";
-      case "high":
-        return "#EA580C";
-      case "medium":
-        return "#D97706";
-      case "low":
-        return "#10B981";
-      default:
-        return "#0EA5E9";
-    }
-  };
-
   return (
     <div className="relative w-full h-full bg-gradient-to-br from-gray-50 to-gray-100">
       <style>{`
-        @keyframes nodeHoverPulse {
-          0% { filter: drop-shadow(0 0 0 rgba(59, 130, 246, 0)); }
-          50% { filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4)); }
-          100% { filter: drop-shadow(0 0 0 rgba(59, 130, 246, 0)); }
-        }
-        .node-group:hover circle:first-child {
-          animation: nodeHoverPulse 0.6s ease-in-out;
-          filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
-        }
         .edge-line {
           transition: stroke-width 0.2s ease, opacity 0.2s ease;
         }
@@ -290,17 +262,24 @@ export function CombinedDependencyGraph({
         </defs>
 
         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
-          {/* Edges */}
+          {/* Inter-tech-stack dependency edges */}
           <g className="edges">
             {edges.map((edge, idx) => {
-              const source = nodes.find((n) => n.id === edge.source);
-              const target = nodes.find((n) => n.id === edge.target);
+              const source = boxes.find((b) => b.id === edge.source);
+              const target = boxes.find((b) => b.id === edge.target);
 
               if (!source || !target) return null;
 
               const isEdgeHovered = hoveredEdgeIndex === idx;
-              const midX = (source.x + target.x) / 2;
-              const midY = (source.y + target.y) / 2;
+
+              // Connect box centers
+              const sourceX = source.x + source.width / 2;
+              const sourceY = source.y + source.height / 2;
+              const targetX = target.x + target.width / 2;
+              const targetY = target.y + target.height / 2;
+
+              const midX = (sourceX + targetX) / 2;
+              const midY = (sourceY + targetY) / 2;
 
               const relationshipLabels: Record<string, string> = {
                 uses: "Uses",
@@ -320,10 +299,10 @@ export function CombinedDependencyGraph({
                 <g key={idx}>
                   {/* Invisible larger hitbox for easier hover detection */}
                   <line
-                    x1={source.x}
-                    y1={source.y}
-                    x2={target.x}
-                    y2={target.y}
+                    x1={sourceX}
+                    y1={sourceY}
+                    x2={targetX}
+                    y2={targetY}
                     stroke="transparent"
                     strokeWidth={20}
                     style={{ cursor: "pointer", pointerEvents: "auto" }}
@@ -331,14 +310,15 @@ export function CombinedDependencyGraph({
                     onMouseLeave={() => setHoveredEdgeIndex(null)}
                   />
 
-                  {/* Edge line - curved path for tree layout */}
+                  {/* Edge line - curved path */}
                   <path
                     className="edge-line"
-                    d={`M ${source.x} ${source.y} L ${source.x} ${(source.y + target.y) / 2} L ${target.x} ${(source.y + target.y) / 2} L ${target.x} ${target.y}`}
-                    stroke="#94A3B8"
-                    strokeWidth={1.5}
+                    d={`M ${sourceX} ${sourceY} L ${sourceX} ${(sourceY + targetY) / 2} L ${targetX} ${(sourceY + targetY) / 2} L ${targetX} ${targetY}`}
+                    stroke="#60A5FA"
+                    strokeWidth={2}
                     fill="none"
-                    opacity={isEdgeHovered ? 0.7 : 0.4}
+                    markerEnd="url(#arrowhead)"
+                    opacity={isEdgeHovered ? 0.8 : 0.5}
                     style={{ strokeLinecap: "round", pointerEvents: "none" }}
                   />
 
@@ -361,7 +341,7 @@ export function CombinedDependencyGraph({
                         x={midX}
                         y={midY + 3}
                         textAnchor="middle"
-                        fontSize="9"
+                        fontSize="10"
                         fontWeight="600"
                         fill="#0EA5E9"
                         opacity={1}
@@ -375,102 +355,21 @@ export function CombinedDependencyGraph({
             })}
           </g>
 
-          {/* Nodes as Circles */}
-          <g className="nodes">
-            {nodes.map((node) => {
-              const radius = 45;
-              const color = getRiskColor(node.riskLevel || "low", node.cveCount);
-
-              return (
-                <g key={node.id} className="node-group cursor-move hover:opacity-80 transition-opacity">
-                  {/* Circle shadow */}
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={radius}
-                    fill="black"
-                    opacity="0.1"
-                    filter="blur(3px)"
-                  />
-
-                  {/* Main circle with gradient background */}
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={radius}
-                    fill="white"
-                    stroke={color}
-                    strokeWidth="3"
-                    opacity={1}
-                    style={{ transition: "all 0.2s ease" }}
-                    filter="drop-shadow(0 2px 6px rgba(0,0,0,0.15))"
-                  />
-
-                  {/* Background colored circle (inner) */}
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={radius - 6}
-                    fill={color}
-                    opacity="0.08"
-                  />
-
-                  {/* Icon - Package */}
-                  <g transform={`translate(${node.x - 9}, ${node.y - 25})`}>
-                    <Package
-                      width="18"
-                      height="18"
-                      stroke={color}
-                      fill="none"
-                      strokeWidth="2.5"
-                    />
-                  </g>
-
-                  {/* Tech name - Abbreviated */}
-                  <text
-                    x={node.x}
-                    y={node.y + 5}
-                    textAnchor="middle"
-                    fontSize="11"
-                    fontWeight="700"
-                    fill="#1F2937"
-                    style={{
-                      pointerEvents: "none",
-                      userSelect: "none",
-                    }}
-                  >
-                    {node.label.length > 12
-                      ? node.label.substring(0, 12)
-                      : node.label}
-                  </text>
-
-                  {/* CVE Badge - positioned at bottom right */}
-                  {node.cveCount !== undefined && node.cveCount > 0 && (
-                    <g transform={`translate(${node.x + 30}, ${node.y + 25})`}>
-                      <circle
-                        cx="0"
-                        cy="0"
-                        r="14"
-                        fill={color}
-                        opacity="0.9"
-                        stroke="white"
-                        strokeWidth="2"
-                      />
-                      <text
-                        x="0"
-                        y="4"
-                        textAnchor="middle"
-                        fontSize="10"
-                        fontWeight="bold"
-                        fill="white"
-                      >
-                        {node.cveCount}
-                      </text>
-                    </g>
-                  )}
-                </g>
-              );
-            })}
+          {/* Tech Stack Dependency Boxes */}
+          <g className="boxes">
+            {boxes.map((box) => (
+              <TechStackDependencyBox
+                key={box.id}
+                techId={box.techId}
+                techName={box.name}
+                x={box.x}
+                y={box.y}
+                width={box.width}
+                height={box.height}
+                cveCount={box.cveCount}
+                riskLevel={box.riskLevel}
+              />
+            ))}
           </g>
         </g>
       </svg>
