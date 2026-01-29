@@ -388,11 +388,12 @@ export function CombinedDependencyGraph({
                   <path
                     className="edge-line"
                     d={`M ${sourceX} ${sourceY} L ${sourceX} ${(sourceY + targetY) / 2} L ${targetX} ${(sourceY + targetY) / 2} L ${targetX} ${targetY}`}
-                    stroke={isEdgeHovered ? "#1D4ED8" : "#3B82F6"}
-                    strokeWidth={isEdgeHovered ? 3 : 2}
+                    stroke={isEdgeHovered ? "#1D4ED8" : (isDirect ? "#3B82F6" : "#60A5FA")}
+                    strokeWidth={isEdgeHovered ? 3 : (isDirect ? 2.5 : 1.5)}
                     fill="none"
                     markerEnd="url(#arrowhead)"
-                    opacity={isEdgeHovered ? 1 : 0.6}
+                    strokeDasharray={isDirect ? "0" : "5,5"}
+                    opacity={isEdgeHovered ? 1 : (isDirect ? 0.7 : 0.45)}
                     style={{
                       strokeLinecap: "round",
                       pointerEvents: "none",
