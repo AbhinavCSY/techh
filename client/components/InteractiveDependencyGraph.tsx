@@ -324,6 +324,25 @@ export function InteractiveDependencyGraph() {
                   />
                 )}
 
+                {/* Node label */}
+                <text
+                  x={node.x}
+                  y={node.y + size + 14}
+                  textAnchor="middle"
+                  fontSize={node.type === "technology" ? "10" : "8"}
+                  fontWeight={node.type === "technology" ? "700" : "600"}
+                  fill={isSelected ? "#1E40AF" : "#1F2937"}
+                  dominantBaseline="middle"
+                  pointerEvents="none"
+                  style={{
+                    userSelect: "none",
+                    maxWidth: "100px",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {node.label.length > 16 ? node.label.substring(0, 13) + "..." : node.label}
+                </text>
+
                 {/* CVE badge for technology nodes */}
                 {node.type === "technology" && node.cveCount && node.cveCount > 0 && (
                   <g transform={`translate(${node.x + size + 5}, ${node.y - size - 2})`}>
