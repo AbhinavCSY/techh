@@ -296,7 +296,7 @@ export function InteractiveDependencyGraph() {
           })}
 
           {/* Draw nodes */}
-          {layoutResult.nodes.map((node) => {
+          {filteredNodes.map((node) => {
             const color = getNodeColor(node);
             const size = getNodeSize(node);
             const isHovered = hoveredNodeId === node.id;
