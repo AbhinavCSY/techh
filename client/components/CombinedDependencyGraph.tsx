@@ -376,17 +376,14 @@ export function CombinedDependencyGraph({
                     onMouseLeave={() => setHoveredEdgeIndex(null)}
                   />
 
-                  {/* Edge line with arrow */}
-                  <line
+                  {/* Edge line - curved path for tree layout */}
+                  <path
                     className="edge-line"
-                    x1={source.x}
-                    y1={source.y}
-                    x2={target.x}
-                    y2={target.y}
-                    stroke="#60A5FA"
-                    strokeWidth={2}
-                    markerEnd="url(#arrowhead)"
-                    opacity={isEdgeHovered ? 0.8 : 0.5}
+                    d={`M ${source.x} ${source.y} L ${source.x} ${(source.y + target.y) / 2} L ${target.x} ${(source.y + target.y) / 2} L ${target.x} ${target.y}`}
+                    stroke="#94A3B8"
+                    strokeWidth={1.5}
+                    fill="none"
+                    opacity={isEdgeHovered ? 0.7 : 0.4}
                     style={{ strokeLinecap: "round", pointerEvents: "none" }}
                   />
 
