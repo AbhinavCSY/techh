@@ -2030,12 +2030,203 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
 
               {activeStep === "selectScanners" && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Select Scanners
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Choose the scanners you want to use for this scan.
-                  </p>
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Select Scanners
+                    </h3>
+                    <div className="flex gap-4">
+                      <button
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            scanners: {
+                              sast: true,
+                              sca: true,
+                              containerSecurity: true,
+                              iacSecurity: true,
+                              apiSecurity: true,
+                              ossfScorecard: true,
+                              secretDetection: true,
+                            },
+                          });
+                        }}
+                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        Select all
+                      </button>
+                      <button
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            scanners: {
+                              sast: false,
+                              sca: false,
+                              containerSecurity: false,
+                              iacSecurity: false,
+                              apiSecurity: false,
+                              ossfScorecard: false,
+                              secretDetection: false,
+                            },
+                          });
+                        }}
+                        className="text-sm text-gray-400 hover:text-gray-600 font-medium"
+                      >
+                        Deselect all
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    {/* SAST */}
+                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                      <div>
+                        <p className="font-semibold text-gray-900">SAST</p>
+                        <p className="text-xs text-gray-600">CloudSek Static Application Security Testing</p>
+                      </div>
+                      <label className="relative inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={formData.scanners.sast}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              scanners: { ...formData.scanners, sast: e.target.checked },
+                            })
+                          }
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    {/* SCA */}
+                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 bg-blue-50">
+                      <div>
+                        <p className="font-semibold text-gray-900">SCA</p>
+                        <p className="text-xs text-gray-600">CloudSek Software Composition Analysis</p>
+                      </div>
+                      <label className="relative inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={formData.scanners.sca}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              scanners: { ...formData.scanners, sca: e.target.checked },
+                            })
+                          }
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-blue-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    {/* Container Security */}
+                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                      <div>
+                        <p className="font-semibold text-gray-900">Container Security</p>
+                        <p className="text-xs text-gray-600">CloudSek Container Analysis</p>
+                      </div>
+                      <label className="relative inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={formData.scanners.containerSecurity}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              scanners: { ...formData.scanners, containerSecurity: e.target.checked },
+                            })
+                          }
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    {/* IaC Security */}
+                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                      <div>
+                        <p className="font-semibold text-gray-900">IaC Security</p>
+                        <p className="text-xs text-gray-600">CloudSek Static Code Analysis for Infrastructure as Code</p>
+                      </div>
+                      <label className="relative inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={formData.scanners.iacSecurity}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              scanners: { ...formData.scanners, iacSecurity: e.target.checked },
+                            })
+                          }
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    {/* API Security */}
+                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                      <div>
+                        <p className="font-semibold text-gray-900">API Security</p>
+                        <p className="text-xs text-gray-600">CloudSek Static Analysis for API Security</p>
+                      </div>
+                      <label className="relative inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={formData.scanners.apiSecurity}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              scanners: { ...formData.scanners, apiSecurity: e.target.checked },
+                            })
+                          }
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    {/* OSSF Scorecard */}
+                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-gray-900">OSSF Scorecard</p>
+                          <span className="text-gray-400 cursor-help">ℹ</span>
+                        </div>
+                        <p className="text-xs text-gray-600">Identify risk factors throughout your project's supply chain</p>
+                        <p className="text-xs text-blue-600 mt-1">Upgrade license to enable</p>
+                      </div>
+                      <label className="relative inline-flex items-center opacity-50">
+                        <input
+                          type="checkbox"
+                          disabled
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    {/* Secret Detection */}
+                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-gray-900">Secret Detection</p>
+                          <span className="text-gray-400 cursor-help">ℹ</span>
+                        </div>
+                        <p className="text-xs text-gray-600">Detect unencrypted secrets in your project</p>
+                        <p className="text-xs text-blue-600 mt-1">Upgrade license to enable</p>
+                      </div>
+                      <label className="relative inline-flex items-center opacity-50">
+                        <input
+                          type="checkbox"
+                          disabled
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
