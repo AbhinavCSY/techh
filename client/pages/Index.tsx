@@ -205,7 +205,7 @@ export default function Index() {
       <main className={cn(grouping === "graph" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-8")}>
         {/* Graph View */}
         {grouping === "graph" ? (
-          <div className="w-full h-screen bg-white">
+          <div className="w-full h-screen bg-white flex flex-col">
             {filteredTechStacks.length === 0 ? (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
@@ -224,18 +224,17 @@ export default function Index() {
                 </div>
               </div>
             ) : (
-              <div className="p-6 h-full">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Dependency Graph</h2>
-                <p className="text-gray-600 mb-6">
-                  Visualize the relationships between technologies and their dependencies.
-                </p>
-                <div className="bg-gray-100 border border-gray-300 rounded-lg p-8 text-center h-96 flex items-center justify-center">
-                  <div>
-                    <p className="text-gray-500 text-lg mb-4">📊 Interactive Dependency Graph</p>
-                    <p className="text-gray-400 text-sm">Select a technology stack to view its dependency graph</p>
-                  </div>
+              <>
+                <div className="p-6 border-b border-gray-200">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Technology Dependency Graph</h2>
+                  <p className="text-gray-600">
+                    Visualizing {filteredTechStacks.length} technology stack{filteredTechStacks.length !== 1 ? "s" : ""} and their dependencies
+                  </p>
                 </div>
-              </div>
+                <div className="flex-1 overflow-hidden">
+                  <CombinedDependencyGraph techStacks={filteredTechStacks} />
+                </div>
+              </>
             )}
           </div>
         ) : (
