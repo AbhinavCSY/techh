@@ -372,6 +372,20 @@ export function CombinedDependencyGraph({
               const midX = (source.x + target.x) / 2;
               const midY = (source.y + target.y) / 2;
 
+              const relationshipLabels: Record<string, string> = {
+                uses: "Uses",
+                related_to: "Related To",
+                provided_by: "Provided By",
+                subsidiary_of: "Subsidiary Of",
+                found_in: "Found In",
+                provides_by: "Provides",
+                implements: "Implements",
+                derived_from: "Derived From",
+                parent_of: "Parent Of",
+              };
+
+              const label = relationshipLabels[edge.relationship] || edge.relationship;
+
               return (
                 <g key={idx}>
                   {/* Invisible larger hitbox for easier hover detection */}
@@ -387,17 +401,17 @@ export function CombinedDependencyGraph({
                     onMouseLeave={() => setHoveredEdgeIndex(null)}
                   />
 
-                  {/* Edge line */}
+                  {/* Edge line with arrow */}
                   <line
                     className="edge-line"
                     x1={source.x}
                     y1={source.y}
                     x2={target.x}
                     y2={target.y}
-                    stroke="#94A3B8"
+                    stroke="#60A5FA"
                     strokeWidth={2}
                     markerEnd="url(#arrowhead)"
-                    opacity={0.45}
+                    opacity={isEdgeHovered ? 0.8 : 0.5}
                     style={{ strokeLinecap: "round", pointerEvents: "none" }}
                   />
 
@@ -405,27 +419,27 @@ export function CombinedDependencyGraph({
                   {isEdgeHovered && (
                     <g filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))">
                       <rect
-                        x={midX - 45}
-                        y={midY - 14}
-                        width="90"
-                        height="28"
+                        x={midX - 50}
+                        y={midY - 16}
+                        width="100"
+                        height="32"
                         fill="white"
                         opacity={0.97}
                         rx="4"
                         strokeWidth="1"
-                        stroke="#94A3B8"
-                        strokeOpacity="0.3"
+                        stroke="#60A5FA"
+                        strokeOpacity="0.5"
                       />
                       <text
                         x={midX}
                         y={midY + 3}
                         textAnchor="middle"
-                        fontSize="8"
+                        fontSize="9"
                         fontWeight="600"
                         fill="#0EA5E9"
                         opacity={1}
                       >
-                        Related To
+                        {label}
                       </text>
                     </g>
                   )}
@@ -434,58 +448,55 @@ export function CombinedDependencyGraph({
             })}
           </g>
 
-          {/* Nodes */}
+          {/* Nodes as Boxes */}
           <g className="nodes">
             {nodes.map((node) => {
-              const radius = 32;
-              const innerRadius = 20;
+              const boxWidth = 160;
+              const boxHeight = 100;
               const color = getRiskColor(node.riskLevel || "low", node.cveCount);
 
               return (
-                <g key={node.id} className="node-group">
-                  {/* Shadow */}
-                  <circle
-                    cx={node.x + 1}
-                    cy={node.y + 2}
-                    r={radius + 2}
+                <g key={node.id} className="node-group cursor-move">
+                  {/* Box shadow */}
+                  <rect
+                    x={node.x - boxWidth / 2 + 2}
+                    y={node.y - boxHeight / 2 + 2}
+                    width={boxWidth}
+                    height={boxHeight}
+                    rx="8"
                     fill="black"
                     opacity="0.08"
                     filter="blur(2px)"
                   />
 
-                  {/* Outer circle with gradient effect */}
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={radius}
-                    fill={color}
-                    opacity={0.95}
+                  {/* Main box with border */}
+                  <rect
+                    x={node.x - boxWidth / 2}
+                    y={node.y - boxHeight / 2}
+                    width={boxWidth}
+                    height={boxHeight}
+                    rx="8"
+                    fill="white"
+                    stroke={color}
+                    strokeWidth="2"
+                    opacity={0.98}
                     style={{ transition: "all 0.2s ease" }}
                     filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
                   />
 
-                  {/* Border */}
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={radius}
-                    fill="none"
-                    stroke={color}
-                    strokeWidth="0.5"
-                    opacity="0.5"
-                  />
-
-                  {/* Inner white circle */}
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={innerRadius}
-                    fill="white"
-                    opacity={0.99}
+                  {/* Color bar at top */}
+                  <rect
+                    x={node.x - boxWidth / 2}
+                    y={node.y - boxHeight / 2}
+                    width={boxWidth}
+                    height="4"
+                    rx="8"
+                    fill={color}
+                    opacity="0.8"
                   />
 
                   {/* Icon */}
-                  <g transform={`translate(${node.x - 8}, ${node.y - 8})`}>
+                  <g transform={`translate(${node.x - 8}, ${node.y - 30})`}>
                     <Package
                       width="16"
                       height="16"
@@ -495,39 +506,56 @@ export function CombinedDependencyGraph({
                     />
                   </g>
 
-                  {/* Label */}
+                  {/* Tech name */}
                   <text
                     x={node.x}
-                    y={node.y + radius + 24}
+                    y={node.y - 10}
+                    textAnchor="middle"
+                    fontSize="12"
+                    fontWeight="700"
+                    fill="#1F2937"
+                    style={{
+                      pointerEvents: "none",
+                      userSelect: "none",
+                      wordWrap: "break-word",
+                    }}
+                  >
+                    {node.label.length > 18
+                      ? node.label.substring(0, 18) + "..."
+                      : node.label}
+                  </text>
+
+                  {/* Risk level text */}
+                  <text
+                    x={node.x}
+                    y={node.y + 8}
                     textAnchor="middle"
                     fontSize="10"
                     fontWeight="600"
-                    fill="#1F2937"
+                    fill={color}
                     style={{
                       pointerEvents: "none",
                       userSelect: "none",
                     }}
                   >
-                    {node.label.length > 15
-                      ? node.label.substring(0, 15) + "..."
-                      : node.label}
+                    {node.riskLevel?.toUpperCase() || "UNKNOWN"}
                   </text>
 
-                  {/* CVE Count Badge */}
-                  {node.cveCount !== undefined && node.cveCount > 0 && (
-                    <g transform={`translate(${node.x + 20}, ${node.y - 20})`}>
-                      <circle cx="0" cy="0" r="10" fill={color} opacity="0.9" />
-                      <text
-                        x="0"
-                        y="3"
-                        textAnchor="middle"
-                        fontSize="8"
-                        fontWeight="bold"
-                        fill="white"
-                      >
-                        {node.cveCount}
-                      </text>
-                    </g>
+                  {/* CVE Count */}
+                  {node.cveCount !== undefined && (
+                    <text
+                      x={node.x}
+                      y={node.y + 25}
+                      textAnchor="middle"
+                      fontSize="9"
+                      fill="#6B7280"
+                      style={{
+                        pointerEvents: "none",
+                        userSelect: "none",
+                      }}
+                    >
+                      {node.cveCount} CVE{node.cveCount !== 1 ? "s" : ""}
+                    </text>
                   )}
                 </g>
               );
