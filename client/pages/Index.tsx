@@ -202,66 +202,105 @@ export default function Index() {
       )}
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Empty State */}
-        {filteredTechStacks.length === 0 && filteredAssets.length === 0 ? (
-          <div className="bg-white rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
-            <AlertTriangle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No items found
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Try adjusting your filters or search criteria
-            </p>
-            {hasActiveFilters && (
-              <Button onClick={clearFilters} variant="outline">
-                Clear All Filters
-              </Button>
+      <main className={cn(grouping === "graph" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-8")}>
+        {/* Graph View */}
+        {grouping === "graph" ? (
+          <div className="w-full h-screen bg-white">
+            {filteredTechStacks.length === 0 ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <AlertTriangle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    No tech stacks found
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Try adjusting your filters or search criteria
+                  </p>
+                  {hasActiveFilters && (
+                    <Button onClick={clearFilters} variant="outline">
+                      Clear All Filters
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="p-6 h-full">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Dependency Graph</h2>
+                <p className="text-gray-600 mb-6">
+                  Visualize the relationships between technologies and their dependencies.
+                </p>
+                <div className="bg-gray-100 border border-gray-300 rounded-lg p-8 text-center h-96 flex items-center justify-center">
+                  <div>
+                    <p className="text-gray-500 text-lg mb-4">📊 Interactive Dependency Graph</p>
+                    <p className="text-gray-400 text-sm">Select a technology stack to view its dependency graph</p>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         ) : (
           <>
-            {/* Content - Card or Table View */}
-            {viewType === "card" ? (
-              <>
-                {grouping === "tech-stack" ? (
-                  <TechStackCardView
-                    techStacks={filteredTechStacks}
-                    allAssets={assetDatabase}
-                    onSelectCard={(ts) => {
-                      setSelectedItem(ts);
-                      setShowDetails(true);
-                    }}
-                  />
-                ) : (
-                  <AssetCardView
-                    assets={filteredAssets}
-                    onSelectCard={(asset) => {
-                      setSelectedItem(asset);
-                      setShowDetails(true);
-                    }}
-                  />
+            {/* Empty State */}
+            {filteredTechStacks.length === 0 && filteredAssets.length === 0 ? (
+              <div className="bg-white rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
+                <AlertTriangle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No items found
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Try adjusting your filters or search criteria
+                </p>
+                {hasActiveFilters && (
+                  <Button onClick={clearFilters} variant="outline">
+                    Clear All Filters
+                  </Button>
                 )}
-              </>
+              </div>
             ) : (
               <>
-                {grouping === "tech-stack" ? (
-                  <TechStackTableView
-                    techStacks={filteredTechStacks}
-                    allAssets={assetDatabase}
-                    onSelectRow={(ts) => {
-                      setSelectedItem(ts);
-                      setShowDetails(true);
-                    }}
-                  />
+                {/* Content - Card or Table View */}
+                {viewType === "card" ? (
+                  <>
+                    {grouping === "tech-stack" ? (
+                      <TechStackCardView
+                        techStacks={filteredTechStacks}
+                        allAssets={assetDatabase}
+                        onSelectCard={(ts) => {
+                          setSelectedItem(ts);
+                          setShowDetails(true);
+                        }}
+                      />
+                    ) : (
+                      <AssetCardView
+                        assets={filteredAssets}
+                        onSelectCard={(asset) => {
+                          setSelectedItem(asset);
+                          setShowDetails(true);
+                        }}
+                      />
+                    )}
+                  </>
                 ) : (
-                  <AssetTableView
-                    assets={filteredAssets}
-                    onSelectRow={(asset) => {
-                      setSelectedItem(asset);
-                      setShowDetails(true);
-                    }}
-                  />
+                  <>
+                    {grouping === "tech-stack" ? (
+                      <TechStackTableView
+                        techStacks={filteredTechStacks}
+                        allAssets={assetDatabase}
+                        onSelectRow={(ts) => {
+                          setSelectedItem(ts);
+                          setShowDetails(true);
+                        }}
+                      />
+                    ) : (
+                      <AssetTableView
+                        assets={filteredAssets}
+                        onSelectRow={(asset) => {
+                          setSelectedItem(asset);
+                          setShowDetails(true);
+                        }}
+                      />
+                    )}
+                  </>
                 )}
               </>
             )}
