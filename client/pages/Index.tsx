@@ -92,7 +92,15 @@ export default function Index() {
       <header className="border-b border-gray-200 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-2">
           <div className="flex items-center justify-between mb-2">
-            <h1 className="text-lg font-bold text-gray-900">Asset Inventory</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-lg font-bold text-gray-900">Asset Inventory</h1>
+              <Button
+                onClick={() => setShowNewProjectModal(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 px-3 h-auto"
+              >
+                + New
+              </Button>
+            </div>
             <p className="text-xs text-gray-500">
               Manage and monitor your technology dependencies
             </p>
