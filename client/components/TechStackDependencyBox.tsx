@@ -76,175 +76,179 @@ export function TechStackDependencyBox({
     }
   });
 
+  // Create a safe ID for clipPath by removing special characters
+  const safeId = techId.replace(/[^a-zA-Z0-9]/g, "_");
+  const clipPathId = `clip_${safeId}`;
+
   return (
-    <g className="tech-stack-box">
-      {/* Box background */}
-      <rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        fill="white"
-        stroke={borderColor}
-        strokeWidth="2"
-        rx="6"
-        style={{
-          filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.1))",
-        }}
-      />
-
-      {/* Header background */}
-      <rect
-        x={x}
-        y={y}
-        width={width}
-        height={32}
-        fill="#F9FAFB"
-        stroke={borderColor}
-        strokeWidth="2"
-        rx="6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-
-      {/* Header content */}
-      <g>
-        {/* Icon */}
-        <g transform={`translate(${x + 6}, ${y + 5})`}>
-          <Package
-            width="16"
-            height="16"
-            stroke={borderColor}
-            fill="none"
-            strokeWidth="2"
+    <>
+      <defs>
+        <clipPath id={clipPathId}>
+          <rect
+            x={x + 1}
+            y={y + 33}
+            width={width - 2}
+            height={height - 34}
           />
+        </clipPath>
+      </defs>
+      <g className="tech-stack-box">
+        {/* Box background */}
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          fill="white"
+          stroke={borderColor}
+          strokeWidth="2"
+          rx="6"
+          style={{
+            filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.1))",
+          }}
+        />
+
+        {/* Header background */}
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={32}
+          fill="#F9FAFB"
+          stroke={borderColor}
+          strokeWidth="2"
+          rx="6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Header content */}
+        <g>
+          {/* Icon */}
+          <g transform={`translate(${x + 6}, ${y + 5})`}>
+            <Package
+              width="16"
+              height="16"
+              stroke={borderColor}
+              fill="none"
+              strokeWidth="2"
+            />
+          </g>
+
+          {/* Title */}
+          <text
+            x={x + 26}
+            y={y + 18}
+            fontSize="11"
+            fontWeight="600"
+            fill="#1F2937"
+            dominantBaseline="middle"
+            style={{ pointerEvents: "none", userSelect: "none" }}
+          >
+            {techName.length > 16 ? techName.substring(0, 13) + "..." : techName}
+          </text>
+
+          {/* CVE Count */}
+          {cveCount > 0 && (
+            <g transform={`translate(${x + width - 18}, ${y + 16})`}>
+              <circle
+                cx="0"
+                cy="0"
+                r="7"
+                fill={borderColor}
+                opacity="0.9"
+              />
+              <text
+                x="0"
+                y="2"
+                textAnchor="middle"
+                fontSize="8"
+                fontWeight="bold"
+                fill="white"
+                dominantBaseline="middle"
+              >
+                {cveCount}
+              </text>
+            </g>
+          )}
         </g>
 
-        {/* Title */}
-        <text
-          x={x + 26}
-          y={y + 18}
-          fontSize="11"
-          fontWeight="600"
-          fill="#1F2937"
-          dominantBaseline="middle"
-          style={{ pointerEvents: "none", userSelect: "none" }}
-        >
-          {techName.length > 16 ? techName.substring(0, 13) + "..." : techName}
-        </text>
+        {/* Internal dependency visualization */}
+        <g clipPath={`url(#${clipPathId})`}>
+          {/* Dependency edges */}
+          {techEdges.map((edge, idx) => {
+            const source = nodePositions.get(edge.source);
+            const target = nodePositions.get(edge.target);
+            if (!source || !target) return null;
 
-        {/* CVE Count */}
-        {cveCount > 0 && (
-          <g transform={`translate(${x + width - 18}, ${y + 16})`}>
-            <circle
-              cx="0"
-              cy="0"
-              r="7"
-              fill={borderColor}
-              opacity="0.9"
-            />
-            <text
-              x="0"
-              y="2"
-              textAnchor="middle"
-              fontSize="8"
-              fontWeight="bold"
-              fill="white"
-              dominantBaseline="middle"
-            >
-              {cveCount}
-            </text>
-          </g>
+            return (
+              <line
+                key={`edge-${idx}`}
+                x1={x + source.x}
+                y1={y + source.y}
+                x2={x + target.x}
+                y2={y + target.y}
+                stroke="#D1D5DB"
+                strokeWidth="1"
+                opacity="0.6"
+              />
+            );
+          })}
+
+          {/* Dependency nodes */}
+          {techNodes.map((node) => {
+            const pos = nodePositions.get(node.id);
+            if (!pos) return null;
+
+            const isMain = node.id === techId;
+
+            return (
+              <g key={node.id}>
+                {/* Node circle */}
+                <circle
+                  cx={x + pos.x}
+                  cy={y + pos.y}
+                  r={isMain ? nodeRadius + 2 : nodeRadius}
+                  fill="white"
+                  stroke={isMain ? borderColor : "#D1D5DB"}
+                  strokeWidth={isMain ? 2 : 1}
+                  style={{ transition: "all 0.2s ease" }}
+                />
+
+                {/* Node label (abbreviated) */}
+                {isMain && (
+                  <text
+                    x={x + pos.x}
+                    y={y + pos.y}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontSize="7"
+                    fontWeight="600"
+                    fill="#374151"
+                    style={{ pointerEvents: "none", userSelect: "none" }}
+                  >
+                    {node.label.substring(0, 2).toUpperCase()}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </g>
+
+        {/* Dependency count indicator */}
+        {techNodes.length > 1 && (
+          <text
+            x={x + width - 8}
+            y={y + height - 4}
+            textAnchor="end"
+            fontSize="8"
+            fill="#9CA3AF"
+            style={{ pointerEvents: "none", userSelect: "none" }}
+          >
+            +{techNodes.length - 1}
+          </text>
         )}
       </g>
-
-      {/* Internal dependency visualization */}
-      <g clipPath={`url(#clip-${techId})`}>
-        {/* Defs for clipping */}
-        <defs>
-          <clipPath id={`clip-${techId}`}>
-            <rect
-              x={x + 1}
-              y={y + 33}
-              width={width - 2}
-              height={height - 34}
-            />
-          </clipPath>
-        </defs>
-
-        {/* Dependency edges */}
-        {techEdges.map((edge, idx) => {
-          const source = nodePositions.get(edge.source);
-          const target = nodePositions.get(edge.target);
-          if (!source || !target) return null;
-
-          return (
-            <line
-              key={`edge-${idx}`}
-              x1={x + source.x}
-              y1={y + source.y}
-              x2={x + target.x}
-              y2={y + target.y}
-              stroke="#D1D5DB"
-              strokeWidth="1"
-              opacity="0.6"
-            />
-          );
-        })}
-
-        {/* Dependency nodes */}
-        {techNodes.map((node) => {
-          const pos = nodePositions.get(node.id);
-          if (!pos) return null;
-
-          const isMain = node.id === techId;
-
-          return (
-            <g key={node.id}>
-              {/* Node circle */}
-              <circle
-                cx={x + pos.x}
-                cy={y + pos.y}
-                r={isMain ? nodeRadius + 2 : nodeRadius}
-                fill="white"
-                stroke={isMain ? borderColor : "#D1D5DB"}
-                strokeWidth={isMain ? 2 : 1}
-                style={{ transition: "all 0.2s ease" }}
-              />
-
-              {/* Node label (abbreviated) */}
-              {isMain && (
-                <text
-                  x={x + pos.x}
-                  y={y + pos.y}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  fontSize="7"
-                  fontWeight="600"
-                  fill="#374151"
-                  style={{ pointerEvents: "none", userSelect: "none" }}
-                >
-                  {node.label.substring(0, 2).toUpperCase()}
-                </text>
-              )}
-            </g>
-          );
-        })}
-      </g>
-
-      {/* Dependency count indicator */}
-      {techNodes.length > 1 && (
-        <text
-          x={x + width - 8}
-          y={y + height - 4}
-          textAnchor="end"
-          fontSize="8"
-          fill="#9CA3AF"
-          style={{ pointerEvents: "none", userSelect: "none" }}
-        >
-          +{techNodes.length - 1}
-        </text>
-      )}
-    </g>
+    </>
   );
 }
