@@ -2258,7 +2258,7 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                   onClick={handleFinish}
                   className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm"
                 >
-                  Complete
+                  Scan
                 </button>
               )}
             </div>
