@@ -445,8 +445,18 @@ export function InteractiveDependencyGraph() {
         </button>
       </div>
 
+      {/* Info Icon Button */}
+      <button
+        onClick={() => setShowLegend(!showLegend)}
+        className="absolute top-6 right-6 p-3 bg-white rounded-lg shadow-xl border border-gray-300 hover:bg-blue-50 transition-all text-gray-700 hover:text-blue-600 z-50"
+        title={showLegend ? "Hide Legend" : "Show Legend"}
+      >
+        <Info width="20" height="20" />
+      </button>
+
       {/* Legend Panel */}
-      <div className="absolute top-6 right-6 bg-white rounded-lg shadow-xl p-5 border border-gray-300 max-w-sm z-50 max-h-96 overflow-y-auto">
+      {showLegend && (
+      <div className="absolute top-20 right-6 bg-white rounded-lg shadow-xl p-5 border border-gray-300 max-w-sm z-50 max-h-96 overflow-y-auto">
         <div className="flex items-center gap-2 mb-4">
           <Info width="18" height="18" className="text-blue-600" />
           <h3 className="font-bold text-sm text-gray-900">Legend</h3>
@@ -523,6 +533,7 @@ export function InteractiveDependencyGraph() {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }
