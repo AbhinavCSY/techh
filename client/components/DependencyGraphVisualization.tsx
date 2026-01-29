@@ -1194,7 +1194,7 @@ export function DependencyGraphVisualization({
             onClick={(e) => {
               // Only close popups if clicking on the SVG background (not on nodes)
               const target = e.target as SVGElement;
-              if (target.tagName === "svg" || target.tagName === "g" && !target.closest(".node-group")) {
+              if (target.tagName === "svg" || (target.tagName === "g" && !target.closest(".node-group"))) {
                 handleCloseQuickInfo();
               }
             }}
@@ -1271,7 +1271,7 @@ export function DependencyGraphVisualization({
             onClick={(e) => {
               // Only close popups if clicking on the SVG background (not on nodes)
               const target = e.target as SVGElement;
-              if (target.tagName === "svg" || target.tagName === "g" && !target.closest(".node-group")) {
+              if (target.tagName === "svg" || (target.tagName === "g" && !target.closest(".node-group"))) {
                 handleCloseQuickInfo();
               }
             }}
