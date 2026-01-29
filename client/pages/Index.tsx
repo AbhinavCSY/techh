@@ -195,26 +195,7 @@ export default function Index() {
         {/* Graph View */}
         {viewType === "graph" ? (
           <div className="w-full" style={{ height: "calc(100vh - 200px)" }}>
-            {filteredTechStacks.length === 0 ? (
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center">
-                  <AlertTriangle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    No tech stacks found
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    Try adjusting your filters or search criteria
-                  </p>
-                  {hasActiveFilters && (
-                    <Button onClick={clearFilters} variant="outline">
-                      Clear All Filters
-                    </Button>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <CombinedDependencyGraph techStacks={filteredTechStacks} />
-            )}
+            <InteractiveDependencyGraph />
           </div>
         ) : (
           <>
