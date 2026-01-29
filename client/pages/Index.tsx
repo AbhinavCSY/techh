@@ -1649,7 +1649,15 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
     branch: "",
     incrementalScan: false,
     saveAsDefault: false,
-    scanners: [] as string[],
+    scanners: {
+      sast: false,
+      sca: true,
+      containerSecurity: false,
+      iacSecurity: false,
+      apiSecurity: false,
+      ossfScorecard: false,
+      secretDetection: false,
+    } as Record<string, boolean>,
   });
 
   if (!isOpen) return null;
