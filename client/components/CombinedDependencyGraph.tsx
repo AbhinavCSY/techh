@@ -217,30 +217,43 @@ export function CombinedDependencyGraph({
   const WIDTH = 1200;
   const HEIGHT = 700;
 
-  // Build combined graph from all tech stacks
+  // Build combined graph from all tech stacks using actual dependencies
   useEffect(() => {
     // Create nodes from tech stacks
-    const graphNodes: GraphNode[] = techStacks.map((tech) => ({
-      id: tech.id || `tech-${tech.name.replace(/\s+/g, "-").toLowerCase()}`,
-      label: tech.name,
-      type: "technology",
-      x: 0,
-      y: 0,
-      cveCount: tech.cveCount || 0,
-      riskLevel: tech.riskLevel || "low",
-    }));
+    const graphNodes: GraphNode[] = techStacks.map((tech) => {
+      const techId = tech.id || `tech-${tech.name.replace(/\s+/g, "-").toLowerCase()}`;
+      const techDetails = getTechDetails(techId, dependencyGraphData);
+      const cveCount = techDetails ?
+        techDetails.versions.reduce((sum, v) => sum + v.cves.length, 0) :
+        tech.cveCount || 0;
 
-    // Create edges - connect all nodes to create a connected graph
+      return {
+        id: techId,
+        label: tech.name,
+        type: "technology",
+        x: 0,
+        y: 0,
+        cveCount,
+        riskLevel: tech.riskLevel || "low",
+        width: 160,
+        height: 100,
+      };
+    });
+
+    // Create edges from dependency graph relationships
     const graphEdges: GraphEdge[] = [];
-    for (let i = 0; i < graphNodes.length; i++) {
-      for (let j = i + 1; j < graphNodes.length; j++) {
+    const nodeIds = new Set(graphNodes.map(n => n.id));
+
+    // Find relationships between the tech stacks in our graph
+    dependencyGraphData.relationships.forEach((rel) => {
+      if (nodeIds.has(rel.from) && nodeIds.has(rel.to)) {
         graphEdges.push({
-          source: graphNodes[i].id,
-          target: graphNodes[j].id,
-          relationship: "related_to",
+          source: rel.from,
+          target: rel.to,
+          relationship: rel.type,
         });
       }
-    }
+    });
 
     // Layout the graph
     const layout = new CombinedGraphLayout(graphNodes, graphEdges, WIDTH, HEIGHT);
