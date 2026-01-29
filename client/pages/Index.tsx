@@ -95,7 +95,9 @@ export default function Index() {
         <div className="max-w-7xl mx-auto px-6 py-2">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
-              <h1 className="text-lg font-bold text-gray-900">Asset Inventory</h1>
+              <h1 className="text-lg font-bold text-gray-900">
+                Asset Inventory
+              </h1>
               <Button
                 onClick={() => setShowNewProjectModal(true)}
                 className="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 px-3 h-auto"
@@ -191,7 +193,11 @@ export default function Index() {
       />
 
       {/* Main Content */}
-      <main className={cn(viewType === "graph" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-8")}>
+      <main
+        className={cn(
+          viewType === "graph" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-8",
+        )}
+      >
         {/* Graph View */}
         {viewType === "graph" ? (
           <div className="w-full" style={{ height: "calc(100vh - 200px)" }}>
@@ -1651,7 +1657,9 @@ interface NewProjectModalProps {
 }
 
 function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
-  const [activeStep, setActiveStep] = useState<"options" | "sourceCode" | "selectScanners">("options");
+  const [activeStep, setActiveStep] = useState<
+    "options" | "sourceCode" | "selectScanners"
+  >("options");
   const [formData, setFormData] = useState({
     projectName: "",
     tags: [] as string[],
@@ -1786,34 +1794,48 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
             {/* Steps */}
             <div className="space-y-4 flex-1">
               <div className="flex items-start gap-3">
-                <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white",
-                  activeStep === "sourceCode" ? "bg-blue-600" : "bg-gray-400"
-                )}>
+                <div
+                  className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white",
+                    activeStep === "sourceCode" ? "bg-blue-600" : "bg-gray-400",
+                  )}
+                >
                   1
                 </div>
                 <div>
-                  <p className={cn(
-                    "font-semibold text-sm",
-                    activeStep === "sourceCode" ? "text-gray-900" : "text-gray-600"
-                  )}>
+                  <p
+                    className={cn(
+                      "font-semibold text-sm",
+                      activeStep === "sourceCode"
+                        ? "text-gray-900"
+                        : "text-gray-600",
+                    )}
+                  >
                     Source Code
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white",
-                  activeStep === "selectScanners" ? "bg-blue-600" : "bg-gray-400"
-                )}>
+                <div
+                  className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white",
+                    activeStep === "selectScanners"
+                      ? "bg-blue-600"
+                      : "bg-gray-400",
+                  )}
+                >
                   2
                 </div>
                 <div>
-                  <p className={cn(
-                    "font-semibold text-sm",
-                    activeStep === "selectScanners" ? "text-gray-900" : "text-gray-600"
-                  )}>
+                  <p
+                    className={cn(
+                      "font-semibold text-sm",
+                      activeStep === "selectScanners"
+                        ? "text-gray-900"
+                        : "text-gray-600",
+                    )}
+                  >
                     Select Scanners
                   </p>
                 </div>
@@ -1847,7 +1869,10 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                             console.log("Add new project clicked");
                             setFormData({ ...formData, projectName: "" });
                           } else {
-                            setFormData({ ...formData, projectName: e.target.value });
+                            setFormData({
+                              ...formData,
+                              projectName: e.target.value,
+                            });
                           }
                         }}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
@@ -1891,8 +1916,8 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                                 isDisabled
                                   ? "bg-gray-300 text-gray-500 opacity-70 cursor-not-allowed"
                                   : formData.sourceType === type.toLowerCase()
-                                  ? "bg-gray-600 text-white"
-                                  : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+                                    ? "bg-gray-600 text-white"
+                                    : "bg-gray-300 text-gray-700 hover:bg-gray-400",
                               )}
                             >
                               {type}
@@ -1927,7 +1952,10 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                       <>
                         <div className="mb-4">
                           <label className="block text-sm font-semibold text-gray-900 mb-2">
-                            Repository URL <span className="text-gray-500 text-xs">(i) Info</span>
+                            Repository URL{" "}
+                            <span className="text-gray-500 text-xs">
+                              (i) Info
+                            </span>
                           </label>
                           <div className="flex gap-2">
                             <input
@@ -2108,7 +2136,9 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                     <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
                       <div>
                         <p className="font-semibold text-gray-900">SAST</p>
-                        <p className="text-xs text-gray-600">CloudSek Static Application Security Testing</p>
+                        <p className="text-xs text-gray-600">
+                          CloudSek Static Application Security Testing
+                        </p>
                       </div>
                       <label className="relative inline-flex items-center">
                         <input
@@ -2117,7 +2147,10 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                           onChange={(e) =>
                             setFormData({
                               ...formData,
-                              scanners: { ...formData.scanners, sast: e.target.checked },
+                              scanners: {
+                                ...formData.scanners,
+                                sast: e.target.checked,
+                              },
                             })
                           }
                           className="sr-only peer"
@@ -2130,7 +2163,9 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                     <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 bg-blue-50">
                       <div>
                         <p className="font-semibold text-gray-900">SCA</p>
-                        <p className="text-xs text-gray-600">CloudSek Software Composition Analysis</p>
+                        <p className="text-xs text-gray-600">
+                          CloudSek Software Composition Analysis
+                        </p>
                       </div>
                       <label className="relative inline-flex items-center">
                         <input
@@ -2139,7 +2174,10 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                           onChange={(e) =>
                             setFormData({
                               ...formData,
-                              scanners: { ...formData.scanners, sca: e.target.checked },
+                              scanners: {
+                                ...formData.scanners,
+                                sca: e.target.checked,
+                              },
                             })
                           }
                           className="sr-only peer"
@@ -2152,8 +2190,12 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                     <div className="relative group">
                       <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
                         <div>
-                          <p className="font-semibold text-gray-900">Container Security</p>
-                          <p className="text-xs text-gray-600">CloudSek Container Analysis</p>
+                          <p className="font-semibold text-gray-900">
+                            Container Security
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            CloudSek Container Analysis
+                          </p>
                         </div>
                         <label className="relative inline-flex items-center opacity-50">
                           <input
@@ -2165,7 +2207,9 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                         </label>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
-                        <span className="text-white text-xs font-semibold whitespace-nowrap">Coming Soon</span>
+                        <span className="text-white text-xs font-semibold whitespace-nowrap">
+                          Coming Soon
+                        </span>
                       </div>
                     </div>
 
@@ -2173,8 +2217,13 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                     <div className="relative group">
                       <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
                         <div>
-                          <p className="font-semibold text-gray-900">IaC Security</p>
-                          <p className="text-xs text-gray-600">CloudSek Static Code Analysis for Infrastructure as Code</p>
+                          <p className="font-semibold text-gray-900">
+                            IaC Security
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            CloudSek Static Code Analysis for Infrastructure as
+                            Code
+                          </p>
                         </div>
                         <label className="relative inline-flex items-center opacity-50">
                           <input
@@ -2186,7 +2235,9 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                         </label>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
-                        <span className="text-white text-xs font-semibold whitespace-nowrap">Coming Soon</span>
+                        <span className="text-white text-xs font-semibold whitespace-nowrap">
+                          Coming Soon
+                        </span>
                       </div>
                     </div>
 
@@ -2194,8 +2245,12 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                     <div className="relative group">
                       <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
                         <div>
-                          <p className="font-semibold text-gray-900">API Security</p>
-                          <p className="text-xs text-gray-600">CloudSek Static Analysis for API Security</p>
+                          <p className="font-semibold text-gray-900">
+                            API Security
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            CloudSek Static Analysis for API Security
+                          </p>
                         </div>
                         <label className="relative inline-flex items-center opacity-50">
                           <input
@@ -2207,7 +2262,9 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                         </label>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
-                        <span className="text-white text-xs font-semibold whitespace-nowrap">Coming Soon</span>
+                        <span className="text-white text-xs font-semibold whitespace-nowrap">
+                          Coming Soon
+                        </span>
                       </div>
                     </div>
 
@@ -2216,10 +2273,15 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                       <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="font-semibold text-gray-900">OSSF Scorecard</p>
+                            <p className="font-semibold text-gray-900">
+                              OSSF Scorecard
+                            </p>
                             <span className="text-gray-400 cursor-help">ℹ</span>
                           </div>
-                          <p className="text-xs text-gray-600">Identify risk factors throughout your project's supply chain</p>
+                          <p className="text-xs text-gray-600">
+                            Identify risk factors throughout your project's
+                            supply chain
+                          </p>
                         </div>
                         <label className="relative inline-flex items-center opacity-50">
                           <input
@@ -2231,7 +2293,9 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                         </label>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
-                        <span className="text-white text-xs font-semibold whitespace-nowrap">Coming Soon</span>
+                        <span className="text-white text-xs font-semibold whitespace-nowrap">
+                          Coming Soon
+                        </span>
                       </div>
                     </div>
 
@@ -2240,10 +2304,14 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                       <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="font-semibold text-gray-900">Secret Detection</p>
+                            <p className="font-semibold text-gray-900">
+                              Secret Detection
+                            </p>
                             <span className="text-gray-400 cursor-help">ℹ</span>
                           </div>
-                          <p className="text-xs text-gray-600">Detect unencrypted secrets in your project</p>
+                          <p className="text-xs text-gray-600">
+                            Detect unencrypted secrets in your project
+                          </p>
                         </div>
                         <label className="relative inline-flex items-center opacity-50">
                           <input
@@ -2255,7 +2323,9 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                         </label>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
-                        <span className="text-white text-xs font-semibold whitespace-nowrap">Coming Soon</span>
+                        <span className="text-white text-xs font-semibold whitespace-nowrap">
+                          Coming Soon
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -2287,7 +2357,7 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                     "flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-colors",
                     formData.projectName.trim()
                       ? "bg-blue-600 hover:bg-blue-700 text-white"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed",
                   )}
                 >
                   Next
@@ -2331,15 +2401,19 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                   "w-full flex items-start gap-3 p-3 rounded-lg border transition-all text-left",
                   option.active
                     ? "border-gray-200 hover:border-blue-400 hover:bg-blue-50 cursor-pointer"
-                    : "border-gray-200 opacity-70 cursor-not-allowed"
+                    : "border-gray-200 opacity-70 cursor-not-allowed",
                 )}
               >
                 <span className="text-2xl flex-shrink-0">{option.icon}</span>
                 <div className="flex-1 min-w-0">
-                  <h3 className={cn(
-                    "font-semibold text-sm",
-                    option.active ? "text-gray-900 group-hover:text-blue-600" : "text-gray-600"
-                  )}>
+                  <h3
+                    className={cn(
+                      "font-semibold text-sm",
+                      option.active
+                        ? "text-gray-900 group-hover:text-blue-600"
+                        : "text-gray-600",
+                    )}
+                  >
                     {option.title}
                   </h3>
                   <p className="text-xs text-gray-600 mt-0.5">
@@ -2350,7 +2424,9 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
 
               {!option.active && (
                 <div className="absolute inset-0 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 backdrop-blur-sm">
-                  <span className="text-white text-xs font-semibold whitespace-nowrap">Coming Soon</span>
+                  <span className="text-white text-xs font-semibold whitespace-nowrap">
+                    Coming Soon
+                  </span>
                 </div>
               )}
             </div>

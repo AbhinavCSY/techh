@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  ZoomIn,
-  ZoomOut,
-  Home,
-  Info,
-} from "lucide-react";
+import { ZoomIn, ZoomOut, Home, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { dependencyGraphData, getTechDetails } from "@/data/dependencyGraphData";
+import {
+  dependencyGraphData,
+  getTechDetails,
+} from "@/data/dependencyGraphData";
 import { TechStackDependencyBox } from "./TechStackDependencyBox";
 
 interface TechStack {
@@ -160,11 +158,12 @@ export function CombinedDependencyGraph({
   useEffect(() => {
     // Create box nodes from tech stacks
     const boxNodes: BoxNode[] = techStacks.map((tech) => {
-      const techId = tech.id || `tech-${tech.name.replace(/\s+/g, "-").toLowerCase()}`;
+      const techId =
+        tech.id || `tech-${tech.name.replace(/\s+/g, "-").toLowerCase()}`;
       const techDetails = getTechDetails(techId, dependencyGraphData);
-      const cveCount = techDetails ?
-        techDetails.versions.reduce((sum, v) => sum + v.cves.length, 0) :
-        tech.cveCount || 0;
+      const cveCount = techDetails
+        ? techDetails.versions.reduce((sum, v) => sum + v.cves.length, 0)
+        : tech.cveCount || 0;
 
       return {
         id: techId,
@@ -181,18 +180,28 @@ export function CombinedDependencyGraph({
 
     // Create edges from dependency graph relationships with path tracing
     const boxEdges: BoxEdge[] = [];
-    const boxIds = new Set(boxNodes.map(b => b.id));
+    const boxIds = new Set(boxNodes.map((b) => b.id));
     const edgesSet = new Set<string>(); // Avoid duplicate edges
 
     // Helper function to trace paths between boxes
-    const findPathsToTechStack = (startId: string, targetId: string, visited = new Set<string>()): boolean => {
+    const findPathsToTechStack = (
+      startId: string,
+      targetId: string,
+      visited = new Set<string>(),
+    ): boolean => {
       if (startId === targetId) return true;
       if (visited.has(startId)) return false;
       visited.add(startId);
 
       // Find all techs that startId depends on
       const dependsOn = dependencyGraphData.relationships
-        .filter((rel) => rel.from === startId && (rel.type === "uses" || rel.type === "implements" || rel.type === "derived_from"))
+        .filter(
+          (rel) =>
+            rel.from === startId &&
+            (rel.type === "uses" ||
+              rel.type === "implements" ||
+              rel.type === "derived_from"),
+        )
         .map((rel) => rel.to);
 
       for (const depId of dependsOn) {
@@ -215,7 +224,9 @@ export function CombinedDependencyGraph({
               (rel) =>
                 rel.from === sourceNode.id &&
                 rel.to === targetNode.id &&
-                (rel.type === "uses" || rel.type === "implements" || rel.type === "derived_from")
+                (rel.type === "uses" ||
+                  rel.type === "implements" ||
+                  rel.type === "derived_from"),
             );
 
             if (directRel) {
@@ -235,7 +246,9 @@ export function CombinedDependencyGraph({
               const firstStep = dependencyGraphData.relationships.find(
                 (rel) =>
                   rel.from === sourceNode.id &&
-                  (rel.type === "uses" || rel.type === "implements" || rel.type === "derived_from")
+                  (rel.type === "uses" ||
+                    rel.type === "implements" ||
+                    rel.type === "derived_from"),
               );
 
               boxEdges.push({
@@ -343,7 +356,9 @@ export function CombinedDependencyGraph({
                 (rel) =>
                   rel.from === edge.source &&
                   rel.to === edge.target &&
-                  (rel.type === "uses" || rel.type === "implements" || rel.type === "derived_from")
+                  (rel.type === "uses" ||
+                    rel.type === "implements" ||
+                    rel.type === "derived_from"),
               );
 
               // Connect box centers
@@ -367,7 +382,8 @@ export function CombinedDependencyGraph({
                 parent_of: "Parent Of",
               };
 
-              const label = relationshipLabels[edge.relationship] || edge.relationship;
+              const label =
+                relationshipLabels[edge.relationship] || edge.relationship;
               const relationshipType = isDirect ? "Direct" : "Transitive";
 
               return (
@@ -389,16 +405,22 @@ export function CombinedDependencyGraph({
                   <path
                     className="edge-line"
                     d={`M ${sourceX} ${sourceY} L ${sourceX} ${(sourceY + targetY) / 2} L ${targetX} ${(sourceY + targetY) / 2} L ${targetX} ${targetY}`}
-                    stroke={isEdgeHovered ? "#1D4ED8" : (isDirect ? "#3B82F6" : "#60A5FA")}
-                    strokeWidth={isEdgeHovered ? 3 : (isDirect ? 2.5 : 1.5)}
+                    stroke={
+                      isEdgeHovered
+                        ? "#1D4ED8"
+                        : isDirect
+                          ? "#3B82F6"
+                          : "#60A5FA"
+                    }
+                    strokeWidth={isEdgeHovered ? 3 : isDirect ? 2.5 : 1.5}
                     fill="none"
                     markerEnd="url(#arrowhead)"
                     strokeDasharray={isDirect ? "0" : "5,5"}
-                    opacity={isEdgeHovered ? 1 : (isDirect ? 0.7 : 0.45)}
+                    opacity={isEdgeHovered ? 1 : isDirect ? 0.7 : 0.45}
                     style={{
                       strokeLinecap: "round",
                       pointerEvents: "none",
-                      transition: "all 0.2s ease"
+                      transition: "all 0.2s ease",
                     }}
                   />
 
@@ -512,16 +534,26 @@ export function CombinedDependencyGraph({
           <div>
             <p className="font-semibold text-gray-700 mb-2">Controls:</p>
             <ul className="space-y-1 ml-2 text-gray-600">
-              <li>🖱️ <strong>Drag</strong> - Pan the view</li>
-              <li>🔍 <strong>Scroll</strong> - Zoom in/out</li>
-              <li>➕ <strong>+/-</strong> - Adjust zoom level</li>
-              <li>🏠 <strong>Home</strong> - Reset view</li>
+              <li>
+                🖱️ <strong>Drag</strong> - Pan the view
+              </li>
+              <li>
+                🔍 <strong>Scroll</strong> - Zoom in/out
+              </li>
+              <li>
+                ➕ <strong>+/-</strong> - Adjust zoom level
+              </li>
+              <li>
+                🏠 <strong>Home</strong> - Reset view
+              </li>
             </ul>
           </div>
 
           {/* Risk Levels */}
           <div>
-            <p className="font-semibold text-gray-700 mb-2">Risk Levels (Box Border):</p>
+            <p className="font-semibold text-gray-700 mb-2">
+              Risk Levels (Box Border):
+            </p>
             <div className="space-y-1 ml-2">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded border-2 border-red-500"></div>
@@ -548,18 +580,24 @@ export function CombinedDependencyGraph({
             <div className="space-y-1 ml-2 text-gray-600">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-0.5 bg-blue-600"></div>
-                <span className="text-xs">Direct dependency (uses/implements)</span>
+                <span className="text-xs">
+                  Direct dependency (uses/implements)
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-6 h-0.5 bg-blue-400"></div>
-                <span className="text-xs">Transitive dependency (indirect)</span>
+                <span className="text-xs">
+                  Transitive dependency (indirect)
+                </span>
               </div>
             </div>
             <p className="text-gray-600 text-xs mt-2">
-              <strong>Nodes inside boxes:</strong> Show internal dependencies. Main node is larger.
+              <strong>Nodes inside boxes:</strong> Show internal dependencies.
+              Main node is larger.
             </p>
             <p className="text-gray-600 text-xs mt-1">
-              <strong>Arrows between boxes:</strong> Show tech stack dependencies (including transitive).
+              <strong>Arrows between boxes:</strong> Show tech stack
+              dependencies (including transitive).
             </p>
           </div>
         </div>

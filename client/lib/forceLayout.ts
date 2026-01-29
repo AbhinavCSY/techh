@@ -26,7 +26,7 @@ export class ForceLayout {
     edges: GraphEdge[],
     clusters: Cluster[],
     width: number,
-    height: number
+    height: number,
   ) {
     this.nodes = nodes.map((node) => ({
       ...node,
@@ -110,7 +110,8 @@ export class ForceLayout {
         const dist = Math.hypot(dx, dy) || 1;
 
         // Strong repulsion between clusters, mild within
-        const sameCluster = node1.cluster && node2.cluster && node1.cluster === node2.cluster;
+        const sameCluster =
+          node1.cluster && node2.cluster && node1.cluster === node2.cluster;
         const strength = sameCluster ? 25 : 150; // Much more repulsion between different clusters
 
         const fx = (dx / dist) * (-strength / dist);
@@ -152,14 +153,16 @@ export class ForceLayout {
 
       // Find cluster center
       const clusterNodes = this.nodes.filter((n) => n.cluster === node.cluster);
-      const cx = clusterNodes.reduce((sum, n) => sum + n.x, 0) / clusterNodes.length;
-      const cy = clusterNodes.reduce((sum, n) => sum + n.y, 0) / clusterNodes.length;
+      const cx =
+        clusterNodes.reduce((sum, n) => sum + n.x, 0) / clusterNodes.length;
+      const cy =
+        clusterNodes.reduce((sum, n) => sum + n.y, 0) / clusterNodes.length;
 
       const dx = cx - node.x;
       const dy = cy - node.y;
       const dist = Math.hypot(dx, dy) || 1;
 
-      const strength = 0.10; // Moderate clustering (was 0.15)
+      const strength = 0.1; // Moderate clustering (was 0.15)
       const fx = (dx / dist) * strength;
       const fy = (dy / dist) * strength;
 

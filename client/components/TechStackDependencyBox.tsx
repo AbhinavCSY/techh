@@ -1,6 +1,10 @@
 import React, { useMemo } from "react";
 import { Package } from "lucide-react";
-import { buildGraphForTech, getTechDetails, dependencyGraphData } from "@/data/dependencyGraphData";
+import {
+  buildGraphForTech,
+  getTechDetails,
+  dependencyGraphData,
+} from "@/data/dependencyGraphData";
 
 interface TechStackDependencyBoxProps {
   techId: string;
@@ -40,7 +44,7 @@ export function TechStackDependencyBox({
 
   // Extract only technology nodes for internal visualization
   const techNodes = graphData.nodes.filter((n) => n.type === "technology");
-  
+
   // Get edges between tech nodes only
   const techEdges = graphData.edges.filter((e) => {
     const sourceIsInTechs = techNodes.some((n) => n.id === e.source);
@@ -56,8 +60,14 @@ export function TechStackDependencyBox({
   // Simple grid layout for internal nodes
   const nodePositions = new Map<string, { x: number; y: number }>();
   const nodeRadius = 5;
-  const nodeSpacingX = Math.max(40, innerWidth / Math.max(2, Math.ceil(Math.sqrt(techNodes.length))));
-  const nodeSpacingY = Math.max(30, innerHeight / Math.max(2, Math.ceil(Math.sqrt(techNodes.length))));
+  const nodeSpacingX = Math.max(
+    40,
+    innerWidth / Math.max(2, Math.ceil(Math.sqrt(techNodes.length))),
+  );
+  const nodeSpacingY = Math.max(
+    30,
+    innerHeight / Math.max(2, Math.ceil(Math.sqrt(techNodes.length))),
+  );
 
   let nodeIndex = 0;
   const cols = Math.max(1, Math.ceil(innerWidth / nodeSpacingX));

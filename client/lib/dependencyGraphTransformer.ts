@@ -79,7 +79,8 @@ export function transformToDependencyGraph(): DependencyGraph {
   // Add technology nodes
   dependencyGraphData.technologies.forEach((tech) => {
     const techId = tech.id;
-    const clusterId = categoryToCluster[tech.category || "framework"] || "stack-frameworks";
+    const clusterId =
+      categoryToCluster[tech.category || "framework"] || "stack-frameworks";
     const cveCount = tech.versions.reduce((sum, v) => sum + v.cves.length, 0);
 
     // Technology node
@@ -120,12 +121,13 @@ export function transformToDependencyGraph(): DependencyGraph {
 
   // Add issue nodes
   dependencyGraphData.issues.forEach((issue) => {
-    const severityMap: Record<string, "critical" | "high" | "medium" | "low"> = {
-      critical: "critical",
-      high: "high",
-      medium: "medium",
-      low: "low",
-    };
+    const severityMap: Record<string, "critical" | "high" | "medium" | "low"> =
+      {
+        critical: "critical",
+        high: "high",
+        medium: "medium",
+        low: "low",
+      };
 
     // Find which techs this issue affects
     const affectedTechs = dependencyGraphData.relationships
@@ -134,7 +136,7 @@ export function transformToDependencyGraph(): DependencyGraph {
 
     const firstAffectedTech = affectedTechs[0];
     const clusterId = firstAffectedTech
-      ? (nodesMap.get(firstAffectedTech)?.cluster || "stack-frameworks")
+      ? nodesMap.get(firstAffectedTech)?.cluster || "stack-frameworks"
       : "stack-frameworks";
 
     nodesMap.set(issue.id, {
@@ -175,7 +177,9 @@ export function transformToDependencyGraph(): DependencyGraph {
     // Only add edges if both nodes exist
     if (nodesMap.has(rel.from) && nodesMap.has(rel.to)) {
       // Check if edge already exists
-      const edgeExists = edges.some((e) => e.source === rel.from && e.target === rel.to);
+      const edgeExists = edges.some(
+        (e) => e.source === rel.from && e.target === rel.to,
+      );
       if (!edgeExists) {
         edges.push({
           source: rel.from,
@@ -198,7 +202,7 @@ export function transformToDependencyGraph(): DependencyGraph {
  */
 export function getAffectedTechnologies(
   issueId: string,
-  graph: DependencyGraph
+  graph: DependencyGraph,
 ): { direct: string[]; transitive: string[] } {
   const direct = graph.edges
     .filter((e) => e.source === issueId && e.type === "found_in")
@@ -235,13 +239,13 @@ export function getAffectedTechnologies(
  */
 export function getBlastRadius(
   techId: string,
-  graph: DependencyGraph
+  graph: DependencyGraph,
 ): { direct: string[]; transitive: string[] } {
   const direct = graph.edges
     .filter(
       (e) =>
         e.target === techId &&
-        (e.type === "uses" || e.type === "runs_on" || e.type === "implements")
+        (e.type === "uses" || e.type === "runs_on" || e.type === "implements"),
     )
     .map((e) => e.source);
 
@@ -255,7 +259,9 @@ export function getBlastRadius(
     graph.edges.forEach((edge) => {
       if (
         edge.target === nodeId &&
-        (edge.type === "uses" || edge.type === "runs_on" || edge.type === "implements")
+        (edge.type === "uses" ||
+          edge.type === "runs_on" ||
+          edge.type === "implements")
       ) {
         if (!direct.includes(edge.source)) {
           transitive.add(edge.source);
