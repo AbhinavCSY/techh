@@ -211,7 +211,7 @@ export function InteractiveDependencyGraph() {
             const maxX = Math.max(...xs);
             const minY = Math.min(...ys);
             const maxY = Math.max(...ys);
-            const padding = 60;
+            const padding = 100;
 
             return (
               <g key={`cluster-${cluster.id}`}>
