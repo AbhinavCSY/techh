@@ -164,6 +164,60 @@ export function InteractiveDependencyGraph() {
         </defs>
 
         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+          {/* Draw cluster boundaries */}
+          {layoutResult.clusters.map((cluster) => {
+            const clusterNodes = layoutResult.nodes.filter((n) => n.cluster === cluster.id);
+            if (clusterNodes.length === 0) return null;
+
+            // Calculate bounding box
+            const xs = clusterNodes.map((n) => n.x);
+            const ys = clusterNodes.map((n) => n.y);
+            const minX = Math.min(...xs);
+            const maxX = Math.max(...xs);
+            const minY = Math.min(...ys);
+            const maxY = Math.max(...ys);
+            const padding = 60;
+
+            return (
+              <g key={`cluster-${cluster.id}`}>
+                {/* Cluster boundary */}
+                <rect
+                  x={minX - padding}
+                  y={minY - padding}
+                  width={maxX - minX + 2 * padding}
+                  height={maxY - minY + 2 * padding}
+                  fill="none"
+                  stroke="#94A3B8"
+                  strokeWidth="2"
+                  strokeDasharray="5,5"
+                  rx="8"
+                  opacity="0.5"
+                />
+
+                {/* Cluster label */}
+                <rect
+                  x={minX - padding + 10}
+                  y={minY - padding - 25}
+                  width="auto"
+                  height="20"
+                  fill="white"
+                  rx="3"
+                  opacity="0.9"
+                />
+                <text
+                  x={minX - padding + 15}
+                  y={minY - padding - 8}
+                  fontSize="11"
+                  fontWeight="700"
+                  fill="#475569"
+                  dominantBaseline="middle"
+                >
+                  {cluster.label}
+                </text>
+              </g>
+            );
+          })}
+
           {/* Draw edges */}
           {layoutResult.edges.map((edge, idx) => {
             const source = layoutResult.nodes.find((n) => n.id === edge.source);
