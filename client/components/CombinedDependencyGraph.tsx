@@ -164,8 +164,8 @@ export function CombinedDependencyGraph({
         name: tech.name,
         x: 0,
         y: 0,
-        width: 200,
-        height: 120,
+        width: 180,
+        height: 100,
         cveCount,
         riskLevel: tech.riskLevel || "low",
       };
