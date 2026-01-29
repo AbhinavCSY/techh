@@ -442,7 +442,12 @@ export function CombinedDependencyGraph({
             </div>
           </div>
           <div className="pt-2 border-t border-gray-200">
-            <p className="text-gray-600">Boxes connected by lines show dependencies between tech stacks.</p>
+            <p className="text-gray-600 text-xs">
+              <strong>Each box:</strong> Shows one tech stack with its internal dependencies
+            </p>
+            <p className="text-gray-600 text-xs mt-1">
+              <strong>Arrows between boxes:</strong> Show dependencies between tech stacks
+            </p>
           </div>
         </div>
       </div>
