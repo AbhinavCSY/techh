@@ -402,44 +402,74 @@ export function InteractiveDependencyGraph() {
 
                 {/* Hover tooltip */}
                 {isHovered && (
-                  <g filter="url(#node-shadow)">
+                  <g style={{ pointerEvents: "none" }}>
+                    {/* Shadow background */}
+                    <rect
+                      x={node.x + size + 8}
+                      y={node.y - 32}
+                      width="200"
+                      height="66"
+                      fill="black"
+                      opacity="0.15"
+                      rx="6"
+                    />
+                    {/* Main tooltip background */}
                     <rect
                       x={node.x + size + 10}
                       y={node.y - 30}
-                      width="180"
-                      height="60"
+                      width="200"
+                      height="66"
                       fill="white"
-                      stroke="#3B82F6"
-                      strokeWidth="1.5"
-                      rx="4"
-                      opacity="0.95"
+                      stroke="#2563EB"
+                      strokeWidth="2"
+                      rx="6"
                     />
+                    {/* Title */}
                     <text
-                      x={node.x + size + 20}
-                      y={node.y - 12}
-                      fontSize="11"
-                      fontWeight="700"
-                      fill="#1F2937"
+                      x={node.x + size + 16}
+                      y={node.y - 16}
+                      fontSize="12"
+                      fontWeight="800"
+                      fill="#0F172A"
+                      style={{ pointerEvents: "none" }}
                     >
-                      {node.label.substring(0, 20)}
+                      {node.label.length > 20 ? node.label.substring(0, 17) + "..." : node.label}
                     </text>
+                    {/* Type */}
                     <text
-                      x={node.x + size + 20}
-                      y={node.y + 2}
-                      fontSize="9"
-                      fill="#6B7280"
+                      x={node.x + size + 16}
+                      y={node.y - 2}
+                      fontSize="10"
+                      fontWeight="600"
+                      fill="#475569"
+                      style={{ pointerEvents: "none" }}
                     >
-                      Type: {node.type}
+                      {node.type.charAt(0).toUpperCase() + node.type.slice(1)}
                     </text>
+                    {/* CVE count */}
                     {node.cveCount !== undefined && node.cveCount > 0 && (
                       <text
-                        x={node.x + size + 20}
-                        y={node.y + 14}
-                        fontSize="9"
+                        x={node.x + size + 16}
+                        y={node.y + 12}
+                        fontSize="10"
+                        fontWeight="700"
                         fill="#DC2626"
-                        fontWeight="600"
+                        style={{ pointerEvents: "none" }}
                       >
                         CVEs: {node.cveCount}
+                      </text>
+                    )}
+                    {/* Severity if issue */}
+                    {node.type === "issue" && node.severity && (
+                      <text
+                        x={node.x + size + 16}
+                        y={node.y + 12}
+                        fontSize="10"
+                        fontWeight="700"
+                        fill="#EA580C"
+                        style={{ pointerEvents: "none" }}
+                      >
+                        Severity: {node.severity}
                       </text>
                     )}
                   </g>
