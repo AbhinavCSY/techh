@@ -1640,6 +1640,14 @@ interface NewProjectModalProps {
 }
 
 function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
+  const [activeStep, setActiveStep] = useState<"options" | "form">("options");
+  const [formData, setFormData] = useState({
+    projectName: "",
+    tags: [] as string[],
+    groups: "",
+    tagInput: "",
+  });
+
   if (!isOpen) return null;
 
   const options = [
@@ -1666,6 +1674,190 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
     },
   ];
 
+  const handleAddTag = () => {
+    if (formData.tagInput.trim()) {
+      setFormData({
+        ...formData,
+        tags: [...formData.tags, formData.tagInput.trim()],
+        tagInput: "",
+      });
+    }
+  };
+
+  const handleRemoveTag = (index: number) => {
+    setFormData({
+      ...formData,
+      tags: formData.tags.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleCreateProject = () => {
+    console.log("Creating project:", formData);
+    onClose();
+    setActiveStep("options");
+    setFormData({
+      projectName: "",
+      tags: [],
+      groups: "",
+      tagInput: "",
+    });
+  };
+
+  const handleBackToOptions = () => {
+    setActiveStep("options");
+    setFormData({
+      projectName: "",
+      tags: [],
+      groups: "",
+      tagInput: "",
+    });
+  };
+
+  if (activeStep === "form") {
+    return (
+      <div
+        className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
+        onClick={onClose}
+      >
+        <div
+          className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 flex max-h-96 overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Left Sidebar */}
+          <div className="bg-gray-50 w-48 p-6 flex flex-col border-r border-gray-200">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-2xl">📁</span>
+              <h2 className="text-lg font-bold text-gray-900">New<br />Project</h2>
+            </div>
+            <button
+              onClick={handleBackToOptions}
+              className="mt-auto text-xs text-blue-600 hover:text-blue-800 font-medium"
+            >
+              ← Back
+            </button>
+          </div>
+
+          {/* Right Content */}
+          <div className="flex-1 p-6 overflow-y-auto">
+            <div className="space-y-4">
+              {/* Project Name */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Project Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Project Name"
+                  value={formData.projectName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, projectName: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                />
+              </div>
+
+              {/* Project Tags */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Project Tags
+                </label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    placeholder="Add tags"
+                    value={formData.tagInput}
+                    onChange={(e) =>
+                      setFormData({ ...formData, tagInput: e.target.value })
+                    }
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddTag();
+                      }
+                    }}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  />
+                  <button
+                    onClick={handleAddTag}
+                    className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
+                  >
+                    Add
+                  </button>
+                </div>
+                {formData.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {formData.tags.map((tag, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs"
+                      >
+                        {tag}
+                        <button
+                          onClick={() => handleRemoveTag(index)}
+                          className="text-blue-600 hover:text-blue-900 font-bold"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Groups */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Groups
+                </label>
+                <input
+                  type="text"
+                  placeholder="Add Groups"
+                  value={formData.groups}
+                  onChange={(e) =>
+                    setFormData({ ...formData, groups: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                />
+              </div>
+
+              {/* By Rule */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  By Rule (0)
+                </label>
+                <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                  + Add Rule
+                </button>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 mt-6 border-t border-gray-200 pt-4">
+              <button
+                onClick={onClose}
+                className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCreateProject}
+                disabled={!formData.projectName.trim()}
+                className={cn(
+                  "flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-colors",
+                  formData.projectName.trim()
+                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                )}
+              >
+                Create Project
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
@@ -1681,8 +1873,7 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
               <button
                 onClick={() => {
                   if (option.active) {
-                    console.log(`Selected: ${option.id}`);
-                    onClose();
+                    setActiveStep("form");
                   }
                 }}
                 disabled={!option.active}
