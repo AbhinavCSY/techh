@@ -231,7 +231,7 @@ export function CombinedDependencyGraph({
     });
 
     // Layout the graph
-    const layout = new CombinedGraphLayout(graphNodes, graphEdges, WIDTH, HEIGHT);
+    const layout = new TreeGraphLayout(graphNodes, graphEdges, WIDTH, HEIGHT);
     setNodes(layout.getNodes());
     setEdges(graphEdges);
   }, [techStacks]);
