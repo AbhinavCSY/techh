@@ -524,9 +524,22 @@ export function CombinedDependencyGraph({
 
           {/* Relationships */}
           <div className="pt-2 border-t border-gray-300">
-            <p className="font-semibold text-gray-700 mb-1">Layout:</p>
-            <p className="text-gray-600">
-              Boxes show tech stacks. Arrows show dependencies between them. Hover over arrows for relationship details.
+            <p className="font-semibold text-gray-700 mb-2">Connections:</p>
+            <div className="space-y-1 ml-2 text-gray-600">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-0.5 bg-blue-600"></div>
+                <span className="text-xs">Direct dependency (uses/implements)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-0.5 bg-blue-400"></div>
+                <span className="text-xs">Transitive dependency (indirect)</span>
+              </div>
+            </div>
+            <p className="text-gray-600 text-xs mt-2">
+              <strong>Nodes inside boxes:</strong> Show internal dependencies. Main node is larger.
+            </p>
+            <p className="text-gray-600 text-xs mt-1">
+              <strong>Arrows between boxes:</strong> Show tech stack dependencies (including transitive).
             </p>
           </div>
         </div>
