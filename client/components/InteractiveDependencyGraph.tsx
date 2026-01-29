@@ -105,23 +105,56 @@ export function InteractiveDependencyGraph() {
     }
   };
 
+  // Filter nodes for critical issues
+  const filteredNodes = useMemo(() => {
+    if (!showOnlyCritical) return layoutResult.nodes;
+
+    const criticalIssueIds = new Set(
+      layoutResult.nodes
+        .filter((n) => n.type === "issue" && n.severity === "critical")
+        .map((n) => n.id)
+    );
+
+    const affectedTechIds = new Set<string>();
+    layoutResult.edges.forEach((edge) => {
+      if (criticalIssueIds.has(edge.source) && edge.type === "found_in") {
+        affectedTechIds.add(edge.target);
+      }
+    });
+
+    return layoutResult.nodes.filter(
+      (n) =>
+        (n.type === "issue" && n.severity === "critical") ||
+        affectedTechIds.has(n.id) ||
+        (n.type === "technology" && n.cveCount && n.cveCount > 0)
+    );
+  }, [showOnlyCritical, layoutResult.nodes, layoutResult.edges]);
+
+  // Filter edges based on visible nodes
+  const filteredEdges = useMemo(() => {
+    if (!showOnlyCritical) return layoutResult.edges;
+
+    const visibleNodeIds = new Set(filteredNodes.map((n) => n.id));
+    return layoutResult.edges.filter((e) => visibleNodeIds.has(e.source) && visibleNodeIds.has(e.target));
+  }, [showOnlyCritical, filteredNodes, layoutResult.edges]);
+
   const selectedNode = selectedNodeId
-    ? layoutResult.nodes.find((n) => n.id === selectedNodeId)
+    ? filteredNodes.find((n) => n.id === selectedNodeId)
     : null;
 
   const blastRadius = selectedNode && selectedNode.type === "technology"
     ? getBlastRadius(selectedNode.id, {
         clusters: layoutResult.clusters,
-        nodes: layoutResult.nodes,
-        edges: layoutResult.edges,
+        nodes: filteredNodes,
+        edges: filteredEdges,
       })
     : null;
 
   const affectedTechs = selectedNode && selectedNode.type === "issue"
     ? getAffectedTechnologies(selectedNode.id, {
         clusters: layoutResult.clusters,
-        nodes: layoutResult.nodes,
-        edges: layoutResult.edges,
+        nodes: filteredNodes,
+        edges: filteredEdges,
       })
     : null;
 
