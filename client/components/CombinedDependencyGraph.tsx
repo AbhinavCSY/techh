@@ -179,19 +179,75 @@ export function CombinedDependencyGraph({
       };
     });
 
-    // Create edges from dependency graph relationships
+    // Create edges from dependency graph relationships with path tracing
     const boxEdges: BoxEdge[] = [];
     const boxIds = new Set(boxNodes.map(b => b.id));
+    const edgesSet = new Set<string>(); // Avoid duplicate edges
 
-    // Find relationships between the tech stacks in our graph
-    dependencyGraphData.relationships.forEach((rel) => {
-      if (boxIds.has(rel.from) && boxIds.has(rel.to)) {
-        boxEdges.push({
-          source: rel.from,
-          target: rel.to,
-          relationship: rel.type,
-        });
+    // Helper function to trace paths between boxes
+    const findPathsToTechStack = (startId: string, targetId: string, visited = new Set<string>()): boolean => {
+      if (startId === targetId) return true;
+      if (visited.has(startId)) return false;
+      visited.add(startId);
+
+      // Find all techs that startId depends on
+      const dependsOn = dependencyGraphData.relationships
+        .filter((rel) => rel.from === startId && (rel.type === "uses" || rel.type === "implements" || rel.type === "derived_from"))
+        .map((rel) => rel.to);
+
+      for (const depId of dependsOn) {
+        if (findPathsToTechStack(depId, targetId, new Set(visited))) {
+          return true;
+        }
       }
+
+      return false;
+    };
+
+    // Find all direct and transitive relationships between tech stacks
+    boxNodes.forEach((sourceNode) => {
+      boxNodes.forEach((targetNode) => {
+        if (sourceNode.id !== targetNode.id) {
+          const edgeKey = `${sourceNode.id}-${targetNode.id}`;
+          if (!edgesSet.has(edgeKey)) {
+            // Check for direct relationship
+            const directRel = dependencyGraphData.relationships.find(
+              (rel) =>
+                rel.from === sourceNode.id &&
+                rel.to === targetNode.id &&
+                (rel.type === "uses" || rel.type === "implements" || rel.type === "derived_from")
+            );
+
+            if (directRel) {
+              boxEdges.push({
+                source: sourceNode.id,
+                target: targetNode.id,
+                relationship: directRel.type,
+              });
+              edgesSet.add(edgeKey);
+            } else if (
+              // Check if there's an indirect path (transitive dependency)
+              findPathsToTechStack(sourceNode.id, targetNode.id) &&
+              boxIds.has(sourceNode.id) &&
+              boxIds.has(targetNode.id)
+            ) {
+              // Find the type of relationship in the chain
+              const firstStep = dependencyGraphData.relationships.find(
+                (rel) =>
+                  rel.from === sourceNode.id &&
+                  (rel.type === "uses" || rel.type === "implements" || rel.type === "derived_from")
+              );
+
+              boxEdges.push({
+                source: sourceNode.id,
+                target: targetNode.id,
+                relationship: firstStep?.type || "uses",
+              });
+              edgesSet.add(edgeKey);
+            }
+          }
+        }
+      });
     });
 
     // Layout the boxes
