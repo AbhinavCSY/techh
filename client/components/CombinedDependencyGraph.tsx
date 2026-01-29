@@ -423,114 +423,98 @@ export function CombinedDependencyGraph({
             })}
           </g>
 
-          {/* Nodes as Boxes */}
+          {/* Nodes as Circles */}
           <g className="nodes">
             {nodes.map((node) => {
-              const boxWidth = 160;
-              const boxHeight = 100;
+              const radius = 45;
               const color = getRiskColor(node.riskLevel || "low", node.cveCount);
 
               return (
-                <g key={node.id} className="node-group cursor-move">
-                  {/* Box shadow */}
-                  <rect
-                    x={node.x - boxWidth / 2 + 2}
-                    y={node.y - boxHeight / 2 + 2}
-                    width={boxWidth}
-                    height={boxHeight}
-                    rx="8"
+                <g key={node.id} className="node-group cursor-move hover:opacity-80 transition-opacity">
+                  {/* Circle shadow */}
+                  <circle
+                    cx={node.x}
+                    cy={node.y}
+                    r={radius}
                     fill="black"
-                    opacity="0.08"
-                    filter="blur(2px)"
+                    opacity="0.1"
+                    filter="blur(3px)"
                   />
 
-                  {/* Main box with border */}
-                  <rect
-                    x={node.x - boxWidth / 2}
-                    y={node.y - boxHeight / 2}
-                    width={boxWidth}
-                    height={boxHeight}
-                    rx="8"
+                  {/* Main circle with gradient background */}
+                  <circle
+                    cx={node.x}
+                    cy={node.y}
+                    r={radius}
                     fill="white"
                     stroke={color}
-                    strokeWidth="2"
-                    opacity={0.98}
+                    strokeWidth="3"
+                    opacity={1}
                     style={{ transition: "all 0.2s ease" }}
-                    filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
+                    filter="drop-shadow(0 2px 6px rgba(0,0,0,0.15))"
                   />
 
-                  {/* Color bar at top */}
-                  <rect
-                    x={node.x - boxWidth / 2}
-                    y={node.y - boxHeight / 2}
-                    width={boxWidth}
-                    height="4"
-                    rx="8"
+                  {/* Background colored circle (inner) */}
+                  <circle
+                    cx={node.x}
+                    cy={node.y}
+                    r={radius - 6}
                     fill={color}
-                    opacity="0.8"
+                    opacity="0.08"
                   />
 
-                  {/* Icon */}
-                  <g transform={`translate(${node.x - 8}, ${node.y - 30})`}>
+                  {/* Icon - Package */}
+                  <g transform={`translate(${node.x - 9}, ${node.y - 25})`}>
                     <Package
-                      width="16"
-                      height="16"
+                      width="18"
+                      height="18"
                       stroke={color}
                       fill="none"
-                      strokeWidth="2"
+                      strokeWidth="2.5"
                     />
                   </g>
 
-                  {/* Tech name */}
+                  {/* Tech name - Abbreviated */}
                   <text
                     x={node.x}
-                    y={node.y - 10}
+                    y={node.y + 5}
                     textAnchor="middle"
-                    fontSize="12"
+                    fontSize="11"
                     fontWeight="700"
                     fill="#1F2937"
                     style={{
                       pointerEvents: "none",
                       userSelect: "none",
-                      wordWrap: "break-word",
                     }}
                   >
-                    {node.label.length > 18
-                      ? node.label.substring(0, 18) + "..."
+                    {node.label.length > 12
+                      ? node.label.substring(0, 12)
                       : node.label}
                   </text>
 
-                  {/* Risk level text */}
-                  <text
-                    x={node.x}
-                    y={node.y + 8}
-                    textAnchor="middle"
-                    fontSize="10"
-                    fontWeight="600"
-                    fill={color}
-                    style={{
-                      pointerEvents: "none",
-                      userSelect: "none",
-                    }}
-                  >
-                    {node.riskLevel?.toUpperCase() || "UNKNOWN"}
-                  </text>
-
-                  {/* CVE Count */}
-                  {node.cveCount !== undefined && (
-                    <text
-                      x={node.x}
-                      y={node.y + 25}
-                      textAnchor="middle"
-                      fontSize="9"
-                      fill="#6B7280"
-                      style={{
-                        pointerEvents: "none",
-                        userSelect: "none",
-                      }}
-                    >
-                      {node.cveCount} CVE{node.cveCount !== 1 ? "s" : ""}
-                    </text>
+                  {/* CVE Badge - positioned at bottom right */}
+                  {node.cveCount !== undefined && node.cveCount > 0 && (
+                    <g transform={`translate(${node.x + 30}, ${node.y + 25})`}>
+                      <circle
+                        cx="0"
+                        cy="0"
+                        r="14"
+                        fill={color}
+                        opacity="0.9"
+                        stroke="white"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x="0"
+                        y="4"
+                        textAnchor="middle"
+                        fontSize="10"
+                        fontWeight="bold"
+                        fill="white"
+                      >
+                        {node.cveCount}
+                      </text>
+                    </g>
                   )}
                 </g>
               );
