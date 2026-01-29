@@ -33,39 +33,24 @@ export function NodeQuickInfo({
       const offsetY = 12;
       const margin = 10;
 
-      // If containerRef is provided, clamp to container bounds, otherwise clamp to viewport
-      if (containerRef?.current) {
-        const container = containerRef.current;
-        const containerRect = container.getBoundingClientRect();
+      // Always use window viewport positioning for consistency
+      let x = position.x + offsetX;
+      let y = position.y + offsetY;
 
-        // Convert viewport-based position to container-relative position
-        let x = position.x - containerRect.left + offsetX;
-        let y = position.y - containerRect.top + offsetY;
+      // Clamp to viewport bounds
+      x = Math.max(margin, x);
+      x = Math.min(window.innerWidth - width - margin, x);
 
-        // Clamp to container bounds
-        x = Math.max(margin, x);
-        x = Math.min(container.offsetWidth - width - margin, x);
+      y = Math.max(margin, y);
+      y = Math.min(window.innerHeight - height - margin, y);
 
-        y = Math.max(margin, y);
-        y = Math.min(container.offsetHeight - height - margin, y);
-
-        setAdjustedPos({ x, y });
-      } else {
-        // Hard clamps to keep popup in viewport (original behavior)
-        let x = position.x + offsetX;
-        let y = position.y + offsetY;
-
-        x = Math.max(margin, x);
-        x = Math.min(window.innerWidth - width - margin, x);
-
-        y = Math.max(margin, y);
-        y = Math.min(window.innerHeight - height - margin, y);
-
-        setAdjustedPos({ x, y });
-      }
+      setAdjustedPos({ x, y });
     };
 
-    // Try measuring with a small delay first
+    // Measure immediately
+    measureAndPosition();
+
+    // Also measure with a small delay for accuracy
     const timer = setTimeout(measureAndPosition, 50);
 
     return () => clearTimeout(timer);
