@@ -112,7 +112,7 @@ export class ForceLayout {
         // Strong repulsion between clusters, mild within
         const sameCluster =
           node1.cluster && node2.cluster && node1.cluster === node2.cluster;
-        const strength = sameCluster ? 25 : 150; // Much more repulsion between different clusters
+        const strength = sameCluster ? 80 : 300; // Increased repulsion to spread nodes more
 
         const fx = (dx / dist) * (-strength / dist);
         const fy = (dy / dist) * (-strength / dist);
@@ -135,8 +135,8 @@ export class ForceLayout {
       const dy = target.y - source.y;
       const dist = Math.hypot(dx, dy) || 1;
 
-      const restLength = 180; // Increased target distance
-      const strength = 0.08; // Reduced strength
+      const restLength = 280; // Increased minimum distance between connected nodes (~2cm at screen scale)
+      const strength = 0.06; // Reduced strength to allow more spacing
 
       const fx = (dx / dist) * strength * (dist - restLength);
       const fy = (dy / dist) * strength * (dist - restLength);
@@ -147,7 +147,7 @@ export class ForceLayout {
       target.vy -= fy;
     });
 
-    // Cluster gravity - keep nodes within their cluster region (moderate)
+    // Cluster gravity - keep nodes within their cluster region (weaker to allow spreading)
     this.nodes.forEach((node) => {
       if (!node.cluster) return;
 
@@ -162,7 +162,7 @@ export class ForceLayout {
       const dy = cy - node.y;
       const dist = Math.hypot(dx, dy) || 1;
 
-      const strength = 0.1; // Moderate clustering (was 0.15)
+      const strength = 0.05; // Reduced clustering to allow more spacing
       const fx = (dx / dist) * strength;
       const fy = (dy / dist) * strength;
 
