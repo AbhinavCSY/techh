@@ -140,17 +140,17 @@ export function CombinedDependencyGraph({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [hoveredEdgeIndex, setHoveredEdgeIndex] = useState<number | null>(null);
-  const [nodes, setNodes] = useState<GraphNode[]>([]);
-  const [edges, setEdges] = useState<GraphEdge[]>([]);
+  const [boxes, setBoxes] = useState<BoxNode[]>([]);
+  const [edges, setEdges] = useState<BoxEdge[]>([]);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const WIDTH = 1200;
-  const HEIGHT = 700;
+  const WIDTH = 1400;
+  const HEIGHT = 900;
 
   // Build combined graph from all tech stacks using actual dependencies
   useEffect(() => {
-    // Create nodes from tech stacks
-    const graphNodes: GraphNode[] = techStacks.map((tech) => {
+    // Create box nodes from tech stacks
+    const boxNodes: BoxNode[] = techStacks.map((tech) => {
       const techId = tech.id || `tech-${tech.name.replace(/\s+/g, "-").toLowerCase()}`;
       const techDetails = getTechDetails(techId, dependencyGraphData);
       const cveCount = techDetails ?
@@ -159,25 +159,25 @@ export function CombinedDependencyGraph({
 
       return {
         id: techId,
-        label: tech.name,
-        type: "technology",
+        techId: techId,
+        name: tech.name,
         x: 0,
         y: 0,
+        width: 200,
+        height: 120,
         cveCount,
         riskLevel: tech.riskLevel || "low",
-        width: 160,
-        height: 100,
       };
     });
 
     // Create edges from dependency graph relationships
-    const graphEdges: GraphEdge[] = [];
-    const nodeIds = new Set(graphNodes.map(n => n.id));
+    const boxEdges: BoxEdge[] = [];
+    const boxIds = new Set(boxNodes.map(b => b.id));
 
     // Find relationships between the tech stacks in our graph
     dependencyGraphData.relationships.forEach((rel) => {
-      if (nodeIds.has(rel.from) && nodeIds.has(rel.to)) {
-        graphEdges.push({
+      if (boxIds.has(rel.from) && boxIds.has(rel.to)) {
+        boxEdges.push({
           source: rel.from,
           target: rel.to,
           relationship: rel.type,
@@ -185,10 +185,10 @@ export function CombinedDependencyGraph({
       }
     });
 
-    // Layout the graph
-    const layout = new TreeGraphLayout(graphNodes, graphEdges, WIDTH, HEIGHT);
-    setNodes(layout.getNodes());
-    setEdges(graphEdges);
+    // Layout the boxes
+    const layout = new GridBoxLayout(boxNodes, boxEdges, WIDTH, HEIGHT);
+    setBoxes(layout.getBoxes());
+    setEdges(boxEdges);
   }, [techStacks]);
 
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
