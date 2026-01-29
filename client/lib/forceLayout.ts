@@ -99,7 +99,7 @@ export class ForceLayout {
   private applyForces() {
     const nodeMap = new Map(this.nodes.map((n) => [n.id, n]));
 
-    // Repulsive forces between all nodes
+    // Repulsive forces between nodes (reduced for tighter clusters)
     for (let i = 0; i < this.nodes.length; i++) {
       for (let j = i + 1; j < this.nodes.length; j++) {
         const node1 = this.nodes[i];
@@ -108,7 +108,10 @@ export class ForceLayout {
         const dx = node2.x - node1.x;
         const dy = node2.y - node1.y;
         const dist = Math.hypot(dx, dy) || 1;
-        const strength = 150; // Increased repulsion
+
+        // Only apply repulsion if nodes are in different clusters
+        const sameCluster = node1.cluster && node2.cluster && node1.cluster === node2.cluster;
+        const strength = sameCluster ? 30 : 100; // Less repulsion within cluster
 
         const fx = (dx / dist) * (-strength / dist);
         const fy = (dy / dist) * (-strength / dist);
