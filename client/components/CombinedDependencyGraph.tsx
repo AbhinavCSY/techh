@@ -114,16 +114,16 @@ class GridBoxLayout {
       }
     });
 
-    // Position boxes
+    // Position boxes with better spread
     const maxLevel = Math.max(...Array.from(levels.keys()), 0);
-    const verticalSpacing = Math.max((this.height - 100) / Math.max(maxLevel + 1, 1), 150);
+    const verticalSpacing = Math.max((this.height - 200) / Math.max(maxLevel + 1, 1), 200);
 
     levels.forEach((boxIds, level) => {
       const horizontalSpacing = this.width / (boxIds.length + 1);
       boxIds.forEach((boxId, index) => {
         const box = boxes.find((b) => b.id === boxId)!;
         box.x = horizontalSpacing * (index + 1) - this.boxWidth / 2;
-        box.y = 40 + level * verticalSpacing;
+        box.y = 100 + level * verticalSpacing;
       });
     });
   }
