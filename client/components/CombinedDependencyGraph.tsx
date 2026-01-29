@@ -47,6 +47,7 @@ class CombinedGraphLayout {
   edges: GraphEdge[];
   width: number;
   height: number;
+  levels: Map<string, number>;
 
   constructor(
     nodes: GraphNode[],
@@ -54,9 +55,14 @@ class CombinedGraphLayout {
     width: number,
     height: number,
   ) {
-    this.width = Math.max(width, 600);
+    this.width = Math.max(width, 800);
     this.height = Math.max(height, 600);
     this.edges = edges;
+    this.levels = new Map();
+
+    // Calculate hierarchy levels
+    this.calculateLevels(nodes);
+
     this.nodes = new Map(
       nodes.map((node) => [
         node.id,
@@ -64,48 +70,98 @@ class CombinedGraphLayout {
       ]),
     );
 
-    this.layoutCircular();
+    this.layoutHierarchical();
   }
 
-  layoutCircular() {
-    const nodeArray = Array.from(this.nodes.values());
-    const nodeCount = nodeArray.length;
-    const centerX = this.width / 2;
-    const centerY = this.height / 2;
-    const radius = Math.min(this.width, this.height) / 3;
+  calculateLevels(nodes: GraphNode[]) {
+    const visited = new Set<string>();
+    const queue: { id: string; level: number }[] = [];
 
-    // Arrange nodes in a circle
-    nodeArray.forEach((node, index) => {
-      const angle = (index / nodeCount) * 2 * Math.PI;
-      node.x = centerX + radius * Math.cos(angle);
-      node.y = centerY + radius * Math.sin(angle);
+    // Find root nodes (nodes with no incoming edges)
+    const hasIncoming = new Set<string>();
+    this.edges.forEach((edge) => {
+      hasIncoming.add(edge.target);
     });
 
-    // Apply force-directed refinement
-    this.refineLayout(50);
+    nodes.forEach((node) => {
+      if (!hasIncoming.has(node.id)) {
+        queue.push({ id: node.id, level: 0 });
+        this.levels.set(node.id, 0);
+        visited.add(node.id);
+      }
+    });
+
+    // BFS to assign levels
+    while (queue.length > 0) {
+      const { id, level } = queue.shift()!;
+
+      this.edges.forEach((edge) => {
+        if (edge.source === id && !visited.has(edge.target)) {
+          this.levels.set(edge.target, level + 1);
+          visited.add(edge.target);
+          queue.push({ id: edge.target, level: level + 1 });
+        }
+      });
+    }
+
+    // Assign unvisited nodes to level 0
+    nodes.forEach((node) => {
+      if (!this.levels.has(node.id)) {
+        this.levels.set(node.id, 0);
+      }
+    });
+  }
+
+  layoutHierarchical() {
+    // Group nodes by level
+    const levelGroups = new Map<number, string[]>();
+    this.nodes.forEach((node) => {
+      const level = this.levels.get(node.id) ?? 0;
+      if (!levelGroups.has(level)) {
+        levelGroups.set(level, []);
+      }
+      levelGroups.get(level)!.push(node.id);
+    });
+
+    // Calculate positions
+    const minLevel = Math.min(...Array.from(this.levels.values()));
+    const maxLevel = Math.max(...Array.from(this.levels.values()));
+    const levelRange = maxLevel - minLevel || 1;
+
+    levelGroups.forEach((nodeIds, level) => {
+      const adjustedLevel = level - minLevel;
+      const y = (adjustedLevel / (levelRange || 1)) * (this.height - 200) + 100;
+
+      const spacing = this.width / (nodeIds.length + 1);
+      nodeIds.forEach((nodeId, index) => {
+        const node = this.nodes.get(nodeId)!;
+        node.x = spacing * (index + 1);
+        node.y = y;
+      });
+    });
+
+    // Light force simulation to avoid overlaps while maintaining hierarchy
+    this.refineLayout(20);
   }
 
   refineLayout(iterations: number) {
     const nodeArray = Array.from(this.nodes.values());
-    const k = Math.sqrt((this.width * this.height) / nodeArray.length);
+    const k = Math.sqrt((this.width * this.height) / nodeArray.length) * 0.8;
 
     for (let iter = 0; iter < iterations; iter++) {
-      // Reset velocities
-      nodeArray.forEach((node) => {
-        (node as any).vx = 0;
-        (node as any).vy = 0;
-      });
-
-      // Repulsive forces between all nodes
       nodeArray.forEach((node1) => {
+        (node1 as any).vx = 0;
+        (node1 as any).vy = 0;
+
         nodeArray.forEach((node2) => {
           if (node1.id !== node2.id) {
             const dx = node2.x - node1.x;
             const dy = node2.y - node1.y;
             const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-            const repulsion = (k * k) / distance;
-            (node1 as any).vx -= (dx / distance) * repulsion * 0.001;
-            (node1 as any).vy -= (dy / distance) * repulsion * 0.001;
+
+            const repulsion = (k / distance) * 0.5;
+            (node1 as any).vx -= (dx / distance) * repulsion;
+            (node1 as any).vy -= (dy / distance) * repulsion * 0.1;
           }
         });
 
@@ -117,24 +173,26 @@ class CombinedGraphLayout {
               const dx = target.x - node1.x;
               const dy = target.y - node1.y;
               const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-              const attraction = (distance / k) * 0.0005;
+              const attraction = (distance / k) * 0.02;
               (node1 as any).vx += (dx / distance) * attraction;
-              (node1 as any).vy += (dy / distance) * attraction;
+              (node1 as any).vy += (dy / distance) * attraction * 0.1;
             }
           }
         });
       });
 
-      // Apply velocities with damping
       nodeArray.forEach((node) => {
-        (node as any).vx *= 0.85;
-        (node as any).vy *= 0.85;
-        node.x += (node as any).vx;
-        node.y += (node as any).vy;
+        (node as any).vx *= 0.7;
+        (node as any).vy *= 0.7;
+        node.x = Math.max(100, Math.min(this.width - 100, node.x + (node as any).vx));
 
-        // Keep nodes within bounds
-        node.x = Math.max(50, Math.min(this.width - 50, node.x));
-        node.y = Math.max(50, Math.min(this.height - 50, node.y));
+        const level = this.levels.get(node.id) ?? 0;
+        const minLevel = Math.min(...Array.from(this.levels.values()));
+        const maxLevel = Math.max(...Array.from(this.levels.values()));
+        const levelRange = maxLevel - minLevel || 1;
+        const adjustedLevel = level - minLevel;
+        const targetY = (adjustedLevel / (levelRange || 1)) * (this.height - 200) + 100;
+        node.y = targetY + (node.y - targetY) * 0.95;
       });
     }
   }
