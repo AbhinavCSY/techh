@@ -1633,3 +1633,69 @@ function DetailRowClickable({
     </button>
   );
 }
+
+interface NewProjectModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
+  if (!isOpen) return null;
+
+  const options = [
+    {
+      id: "code-repo",
+      icon: "📤",
+      title: "New Project - Code Repository Integration",
+      description: "Import your code repositories from your SCM",
+    },
+    {
+      id: "manual-scan",
+      icon: "➕",
+      title: "New Project - Manual Scan",
+      description: "Scan from ZIP/TAR archive, SBOM file or repository URL",
+    },
+    {
+      id: "new-app",
+      icon: "📊",
+      title: "New Application",
+      description: "Create an application to organize your projects",
+    },
+  ];
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl p-8 max-w-lg w-full mx-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="space-y-4">
+          {options.map((option) => (
+            <button
+              key={option.id}
+              onClick={() => {
+                // Handle option click
+                console.log(`Selected: ${option.id}`);
+                onClose();
+              }}
+              className="w-full flex items-start gap-4 p-4 rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all text-left group"
+            >
+              <span className="text-3xl flex-shrink-0">{option.icon}</span>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-gray-900 group-hover:text-blue-600">
+                  {option.title}
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  {option.description}
+                </p>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
