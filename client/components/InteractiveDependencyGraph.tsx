@@ -1,0 +1,450 @@
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { ZoomIn, ZoomOut, Home, Info, AlertCircle } from "lucide-react";
+import {
+  transformToDependencyGraph,
+  getAffectedTechnologies,
+  getBlastRadius,
+} from "@/lib/dependencyGraphTransformer";
+import { ForceLayout } from "@/lib/forceLayout";
+
+const WIDTH = 1600;
+const HEIGHT = 1000;
+
+export function InteractiveDependencyGraph() {
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(0.8);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [expandedClusters, setExpandedClusters] = useState(new Set<string>());
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  const layoutResult = useMemo(() => {
+    const graph = transformToDependencyGraph();
+    const layout = new ForceLayout(graph.nodes, graph.edges, graph.clusters, WIDTH, HEIGHT);
+    return {
+      ...layout.simulate(),
+      clusters: graph.clusters,
+    };
+  }, []);
+
+  const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (isDragging) {
+      setPan({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y,
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleWheel = (e: React.WheelEvent<SVGSVGElement>) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    const newZoom = Math.min(Math.max(zoom * delta, 0.3), 3);
+    setZoom(newZoom);
+  };
+
+  const zoomIn = () => setZoom((z) => Math.min(z + 0.1, 3));
+  const zoomOut = () => setZoom((z) => Math.max(z - 0.1, 0.3));
+  const resetView = () => {
+    setPan({ x: 0, y: 0 });
+    setZoom(0.8);
+  };
+
+  const getNodeColor = (node: typeof layoutResult.nodes[0]) => {
+    switch (node.type) {
+      case "technology":
+        return "#3B82F6"; // Blue
+      case "version":
+        return node.eol ? "#EF4444" : "#D1D5DB"; // Red if EOL, else gray
+      case "issue":
+        switch (node.severity) {
+          case "critical":
+            return "#DC2626"; // Red
+          case "high":
+            return "#EA580C"; // Orange
+          case "medium":
+            return "#FBBF24"; // Yellow
+          case "low":
+            return "#10B981"; // Green
+          default:
+            return "#6B7280";
+        }
+      case "vendor":
+        return "#A855F7"; // Purple
+      default:
+        return "#6B7280";
+    }
+  };
+
+  const getNodeSize = (node: typeof layoutResult.nodes[0]) => {
+    switch (node.type) {
+      case "technology":
+        return 18;
+      case "version":
+        return 10;
+      case "issue":
+        return 12;
+      case "vendor":
+        return 14;
+      default:
+        return 10;
+    }
+  };
+
+  const selectedNode = selectedNodeId
+    ? layoutResult.nodes.find((n) => n.id === selectedNodeId)
+    : null;
+
+  const blastRadius = selectedNode && selectedNode.type === "technology"
+    ? getBlastRadius(selectedNode.id, {
+        clusters: layoutResult.clusters,
+        nodes: layoutResult.nodes,
+        edges: layoutResult.edges,
+      })
+    : null;
+
+  const affectedTechs = selectedNode && selectedNode.type === "issue"
+    ? getAffectedTechnologies(selectedNode.id, {
+        clusters: layoutResult.clusters,
+        nodes: layoutResult.nodes,
+        edges: layoutResult.edges,
+      })
+    : null;
+
+  return (
+    <div className="relative w-full h-full bg-gradient-to-br from-gray-50 to-gray-100">
+      <svg
+        ref={svgRef}
+        width={WIDTH}
+        height={HEIGHT}
+        className="w-full h-full cursor-grab active:cursor-grabbing"
+        style={{ backgroundColor: "transparent", touchAction: "none" }}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onWheel={handleWheel}
+      >
+        <defs>
+          <marker
+            id="arrowhead-default"
+            markerWidth="10"
+            markerHeight="10"
+            refX="12"
+            refY="3"
+            orient="auto"
+          >
+            <polygon points="0 0, 10 3, 0 6" fill="#60A5FA" />
+          </marker>
+          <marker
+            id="arrowhead-highlight"
+            markerWidth="10"
+            markerHeight="10"
+            refX="12"
+            refY="3"
+            orient="auto"
+          >
+            <polygon points="0 0, 10 3, 0 6" fill="#1D4ED8" />
+          </marker>
+          <filter id="node-shadow">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+          </filter>
+        </defs>
+
+        <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+          {/* Draw edges */}
+          {layoutResult.edges.map((edge, idx) => {
+            const source = layoutResult.nodes.find((n) => n.id === edge.source);
+            const target = layoutResult.nodes.find((n) => n.id === edge.target);
+
+            if (!source || !target) return null;
+
+            const isHighlighted =
+              selectedNode &&
+              ((selectedNode.type === "technology" &&
+                blastRadius &&
+                (blastRadius.direct.includes(source.id) ||
+                  blastRadius.direct.includes(target.id) ||
+                  blastRadius.transitive.includes(source.id) ||
+                  blastRadius.transitive.includes(target.id))) ||
+                (selectedNode.type === "issue" &&
+                  affectedTechs &&
+                  (affectedTechs.direct.includes(source.id) ||
+                    affectedTechs.direct.includes(target.id) ||
+                    affectedTechs.transitive.includes(source.id) ||
+                    affectedTechs.transitive.includes(target.id))));
+
+            return (
+              <line
+                key={`edge-${idx}`}
+                x1={source.x}
+                y1={source.y}
+                x2={target.x}
+                y2={target.y}
+                stroke={isHighlighted ? "#1D4ED8" : "#94A3B8"}
+                strokeWidth={isHighlighted ? 2.5 : 1.5}
+                opacity={isHighlighted ? 0.8 : 0.3}
+                markerEnd={isHighlighted ? "url(#arrowhead-highlight)" : "url(#arrowhead-default)"}
+                style={{ transition: "all 0.2s ease", pointerEvents: "none" }}
+              />
+            );
+          })}
+
+          {/* Draw nodes */}
+          {layoutResult.nodes.map((node) => {
+            const color = getNodeColor(node);
+            const size = getNodeSize(node);
+            const isHovered = hoveredNodeId === node.id;
+            const isSelected = selectedNodeId === node.id;
+
+            const isAffected =
+              selectedNode &&
+              ((selectedNode.type === "technology" &&
+                blastRadius &&
+                (blastRadius.direct.includes(node.id) ||
+                  blastRadius.transitive.includes(node.id))) ||
+                (selectedNode.type === "issue" &&
+                  affectedTechs &&
+                  (affectedTechs.direct.includes(node.id) ||
+                    affectedTechs.transitive.includes(node.id))));
+
+            return (
+              <g
+                key={node.id}
+                style={{ cursor: node.type !== "vendor" ? "pointer" : "default" }}
+                opacity={selectedNode && !isAffected && !isSelected ? 0.2 : 1}
+                onMouseEnter={() => setHoveredNodeId(node.id)}
+                onMouseLeave={() => setHoveredNodeId(null)}
+                onClick={() => {
+                  if (node.type !== "vendor") {
+                    setSelectedNodeId(selectedNodeId === node.id ? null : node.id);
+                  }
+                }}
+              >
+                {/* Node shadow */}
+                <circle
+                  cx={node.x}
+                  cy={node.y}
+                  r={size + 2}
+                  fill="black"
+                  opacity={isHovered || isSelected ? 0.2 : 0.05}
+                  filter="url(#node-shadow)"
+                />
+
+                {/* Main node */}
+                {node.type === "vendor" ? (
+                  // Square for vendor nodes
+                  <rect
+                    x={node.x - size}
+                    y={node.y - size}
+                    width={size * 2}
+                    height={size * 2}
+                    fill={color}
+                    stroke={isSelected ? "#1E40AF" : isHovered ? "#6B7280" : color}
+                    strokeWidth={isSelected ? 3 : isHovered ? 2 : 1.5}
+                    opacity={0.85}
+                    rx="3"
+                  />
+                ) : (
+                  // Circle for other nodes
+                  <circle
+                    cx={node.x}
+                    cy={node.y}
+                    r={size}
+                    fill={color}
+                    stroke={isSelected ? "#FFF" : isHovered ? "#FFF" : color}
+                    strokeWidth={isSelected ? 3 : isHovered ? 2 : 1.5}
+                    opacity={0.85}
+                  />
+                )}
+
+                {/* CVE badge for technology nodes */}
+                {node.type === "technology" && node.cveCount && node.cveCount > 0 && (
+                  <g transform={`translate(${node.x + size + 5}, ${node.y - size - 2})`}>
+                    <circle cx="0" cy="0" r="6" fill="#EF4444" opacity="0.9" />
+                    <text
+                      x="0"
+                      y="2"
+                      textAnchor="middle"
+                      fontSize="9"
+                      fontWeight="bold"
+                      fill="white"
+                      dominantBaseline="middle"
+                    >
+                      {node.cveCount}
+                    </text>
+                  </g>
+                )}
+
+                {/* Hover tooltip */}
+                {isHovered && (
+                  <g filter="url(#node-shadow)">
+                    <rect
+                      x={node.x + size + 10}
+                      y={node.y - 30}
+                      width="180"
+                      height="60"
+                      fill="white"
+                      stroke="#3B82F6"
+                      strokeWidth="1.5"
+                      rx="4"
+                      opacity="0.95"
+                    />
+                    <text
+                      x={node.x + size + 20}
+                      y={node.y - 12}
+                      fontSize="11"
+                      fontWeight="700"
+                      fill="#1F2937"
+                    >
+                      {node.label.substring(0, 20)}
+                    </text>
+                    <text
+                      x={node.x + size + 20}
+                      y={node.y + 2}
+                      fontSize="9"
+                      fill="#6B7280"
+                    >
+                      Type: {node.type}
+                    </text>
+                    {node.cveCount !== undefined && node.cveCount > 0 && (
+                      <text
+                        x={node.x + size + 20}
+                        y={node.y + 14}
+                        fontSize="9"
+                        fill="#DC2626"
+                        fontWeight="600"
+                      >
+                        CVEs: {node.cveCount}
+                      </text>
+                    )}
+                  </g>
+                )}
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+
+      {/* Control Sidebar */}
+      <div className="absolute left-6 bottom-8 flex flex-col gap-2 bg-white rounded-lg shadow-xl p-3 border border-gray-300 z-50">
+        <button
+          onClick={zoomIn}
+          className="p-3 hover:bg-blue-50 rounded-md transition-all text-gray-700 hover:text-blue-600"
+          title="Zoom In"
+        >
+          <ZoomIn width="18" height="18" />
+        </button>
+        <div className="flex flex-col items-center px-2 py-2 bg-gray-50 rounded-md border border-gray-300 min-w-12">
+          <span className="text-sm font-bold text-gray-700">{Math.round(zoom * 100)}%</span>
+        </div>
+        <button
+          onClick={zoomOut}
+          className="p-3 hover:bg-blue-50 rounded-md transition-all text-gray-700 hover:text-blue-600"
+          title="Zoom Out"
+        >
+          <ZoomOut width="18" height="18" />
+        </button>
+        <div className="w-8 h-px bg-gray-300 mx-auto" />
+        <button
+          onClick={resetView}
+          className="p-3 hover:bg-green-50 rounded-md transition-all text-gray-700 hover:text-green-600"
+          title="Reset View"
+        >
+          <Home width="18" height="18" />
+        </button>
+      </div>
+
+      {/* Legend Panel */}
+      <div className="absolute top-6 right-6 bg-white rounded-lg shadow-xl p-5 border border-gray-300 max-w-sm z-50 max-h-96 overflow-y-auto">
+        <div className="flex items-center gap-2 mb-4">
+          <Info width="18" height="18" className="text-blue-600" />
+          <h3 className="font-bold text-sm text-gray-900">Legend</h3>
+        </div>
+
+        <div className="space-y-4 text-xs">
+          <div>
+            <p className="font-semibold text-gray-700 mb-2">Node Types:</p>
+            <div className="space-y-1 ml-2">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <span>Technology (Main Component)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-gray-400"></div>
+                <span>Version (Active)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <span>Version (End of Life)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-600"></div>
+                <span>Issue - Critical</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-orange-600"></div>
+                <span>Issue - High</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <span>Issue - Medium</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <span>Issue - Low</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-purple-500" style={{ width: "6px", height: "6px" }}></div>
+                <span>Vendor</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-gray-300">
+            <p className="font-semibold text-gray-700 mb-2">Interactions:</p>
+            <div className="space-y-1 ml-2 text-gray-600">
+              <p>• <strong>Hover</strong> - View node details</p>
+              <p>• <strong>Click Tech</strong> - Highlight blast radius</p>
+              <p>• <strong>Click Issue</strong> - Show affected techs</p>
+              <p>• <strong>Drag</strong> - Pan the view</p>
+              <p>• <strong>Scroll</strong> - Zoom in/out</p>
+            </div>
+          </div>
+
+          {selectedNode && (
+            <div className="pt-3 border-t border-gray-300">
+              <p className="font-semibold text-gray-700 mb-2">Selected: {selectedNode.label}</p>
+              {selectedNode.type === "technology" && blastRadius && (
+                <div className="ml-2 text-gray-600">
+                  <p className="font-semibold text-sm mb-1">Blast Radius:</p>
+                  <p>Direct: {blastRadius.direct.length}</p>
+                  <p>Transitive: {blastRadius.transitive.length}</p>
+                </div>
+              )}
+              {selectedNode.type === "issue" && affectedTechs && (
+                <div className="ml-2 text-gray-600">
+                  <p className="font-semibold text-sm mb-1">Affected Techs:</p>
+                  <p>Direct: {affectedTechs.direct.length}</p>
+                  <p>Transitive: {affectedTechs.transitive.length}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
