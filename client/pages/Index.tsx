@@ -1848,33 +1848,71 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                       ))}
                     </div>
 
-                    {/* File Upload Area */}
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
-                      <div className="text-4xl mb-2">📱</div>
-                      <p className="text-sm text-gray-600">
-                        Drop ZIP/TAR file here or{" "}
-                        <button className="text-blue-600 hover:text-blue-800 font-medium">
-                          Select File
-                        </button>
-                      </p>
-                    </div>
+                    {/* File Type - File Upload */}
+                    {formData.sourceType === "file" && (
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 mb-4">
+                        <div className="text-4xl mb-2">📱</div>
+                        <p className="text-sm text-gray-600">
+                          Drop ZIP/TAR file here or{" "}
+                          <button className="text-blue-600 hover:text-blue-800 font-medium">
+                            Select File
+                          </button>
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Repository Type - Repository URL */}
+                    {formData.sourceType === "repository" && (
+                      <>
+                        <div className="mb-4">
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Repository URL <span className="text-gray-500 text-xs">(i) Info</span>
+                          </label>
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              placeholder=""
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                            />
+                            <button className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg text-sm font-medium">
+                              Fetch Branches
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {/* SBOM Type - File Upload */}
+                    {formData.sourceType === "sbom" && (
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 mb-4">
+                        <div className="text-4xl mb-2">📄</div>
+                        <p className="text-sm text-gray-600">
+                          Drop JSON/XML file here or{" "}
+                          <button className="text-blue-600 hover:text-blue-800 font-medium">
+                            Select File
+                          </button>
+                        </p>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Branch */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Branch
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Enter branch"
-                      value={formData.branch}
-                      onChange={(e) =>
-                        setFormData({ ...formData, branch: e.target.value })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                    />
-                  </div>
+                  {/* Branch - Only for File and SBOM */}
+                  {formData.sourceType !== "repository" && (
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                        Branch
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter branch"
+                        value={formData.branch}
+                        onChange={(e) =>
+                          setFormData({ ...formData, branch: e.target.value })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      />
+                    </div>
+                  )}
 
                   {/* Scan Tags */}
                   <div>
