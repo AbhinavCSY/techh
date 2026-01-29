@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import React, { useState, useEffect, useRef } from "react";
 import {
   ZoomIn,
   ZoomOut,
@@ -62,6 +61,7 @@ class GridBoxLayout {
     this.edges = edges;
     this.boxWidth = 200;
     this.boxHeight = 120;
+    this.boxes = new Map();
 
     // Build hierarchical layout based on dependencies
     this.layoutBoxes(boxes);
@@ -115,8 +115,8 @@ class GridBoxLayout {
     });
 
     // Position boxes
-    const maxLevel = Math.max(...Array.from(levels.keys()));
-    const verticalSpacing = (this.height - 100) / Math.max(maxLevel + 1, 1);
+    const maxLevel = Math.max(...Array.from(levels.keys()), 0);
+    const verticalSpacing = Math.max((this.height - 100) / Math.max(maxLevel + 1, 1), 150);
 
     levels.forEach((boxIds, level) => {
       const horizontalSpacing = this.width / (boxIds.length + 1);
@@ -145,8 +145,8 @@ export function CombinedDependencyGraph({
   const [edges, setEdges] = useState<BoxEdge[]>([]);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const WIDTH = 1400;
-  const HEIGHT = 900;
+  const WIDTH = 1200;
+  const HEIGHT = 700;
 
   // Build combined graph from all tech stacks using actual dependencies
   useEffect(() => {
@@ -188,7 +188,8 @@ export function CombinedDependencyGraph({
 
     // Layout the boxes
     const layout = new GridBoxLayout(boxNodes, boxEdges, WIDTH, HEIGHT);
-    setBoxes(layout.getBoxes());
+    const layoutBoxes = layout.getBoxes();
+    setBoxes(layoutBoxes);
     setEdges(boxEdges);
   }, [techStacks]);
 
@@ -444,10 +445,10 @@ export function CombinedDependencyGraph({
           </div>
           <div className="pt-2 border-t border-gray-200">
             <p className="text-gray-600 text-xs">
-              <strong>Each box:</strong> Shows one tech stack with its internal dependencies
+              <strong>Each box:</strong> Shows one tech stack with internal dependency info
             </p>
             <p className="text-gray-600 text-xs mt-1">
-              <strong>Arrows between boxes:</strong> Show dependencies between tech stacks
+              <strong>Arrows:</strong> Show dependencies between tech stacks
             </p>
           </div>
         </div>
