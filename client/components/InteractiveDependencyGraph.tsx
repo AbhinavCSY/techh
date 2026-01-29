@@ -201,7 +201,7 @@ export function InteractiveDependencyGraph() {
         <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
           {/* Draw cluster boundaries */}
           {layoutResult.clusters.map((cluster) => {
-            const clusterNodes = layoutResult.nodes.filter((n) => n.cluster === cluster.id);
+            const clusterNodes = filteredNodes.filter((n) => n.cluster === cluster.id);
             if (clusterNodes.length === 0) return null;
 
             // Calculate bounding box
