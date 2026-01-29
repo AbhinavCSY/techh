@@ -2020,7 +2020,7 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
               <button
                 onClick={() => {
                   if (option.active) {
-                    setActiveStep("form");
+                    setActiveStep("sourceCode");
                   }
                 }}
                 disabled={!option.active}
