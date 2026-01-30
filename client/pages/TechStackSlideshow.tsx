@@ -586,10 +586,12 @@ const slides: Slide[] = [
     title: "Tech Stack Discovery Workflow",
     subtitle: "Per-Asset: From Detection to Remediation Action",
     content: (
-      <div className="space-y-6">
+      <div className="space-y-6 flex flex-col items-center">
         {/* Flow Diagram */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <CompleteFlowDiagram />
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden w-full">
+          <div className="flex justify-center">
+            <CompleteFlowDiagram />
+          </div>
         </div>
       </div>
     ),
