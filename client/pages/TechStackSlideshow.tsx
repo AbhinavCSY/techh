@@ -202,62 +202,81 @@ const slides: Slide[] = [
     title: "Tech Stack Management for CISOs",
     subtitle: "Enterprise-Level Security & Compliance Leadership",
     content: (
-      <div className="space-y-4">
-        <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 rounded-lg border-2 border-slate-700">
-          <h4 className="text-lg font-bold mb-3">🏢 Organizational Control & Visibility</h4>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-slate-700 p-3 rounded">
-              <p className="font-semibold mb-1">Overall Risk Scoring</p>
-              <p className="text-sm">Enterprise-wide security posture assessment with actionable metrics</p>
+      <div className="space-y-3 max-h-96 overflow-y-auto">
+        {/* What is Tech Stack Page */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-lg border-2 border-blue-800">
+          <h4 className="text-lg font-bold mb-2">📊 What is the Tech Stack Page?</h4>
+          <p className="text-sm mb-2">
+            A unified, enriched view of all technologies, frameworks, and services running on each asset (IP, subdomain, or web application).
+          </p>
+          <p className="text-sm font-semibold">Answers the critical question:</p>
+          <p className="text-sm italic ml-2">
+            "What exactly is running here, is it safe, and what should I do about it?"
+          </p>
+        </div>
+
+        {/* Key Problems Solved */}
+        <div className="bg-red-50 border-2 border-red-300 p-4 rounded-lg">
+          <h4 className="font-bold text-red-900 mb-2">⚠️ Problems We Solve</h4>
+          <ul className="text-xs text-gray-700 space-y-1 ml-3">
+            <li>✓ See complete tech stack on every asset (no blind spots)</li>
+            <li>✓ Identify outdated & end-of-life (EOL) technologies</li>
+            <li>✓ Correlate tech components with CVEs & misconfigurations</li>
+            <li>✓ Track stack changes over time (upgrades, additions, removals)</li>
+            <li>✓ Prioritize remediation with clear context</li>
+          </ul>
+        </div>
+
+        {/* Organizational Control */}
+        <div className="bg-slate-900 text-white p-4 rounded-lg border-2 border-slate-700">
+          <h4 className="font-bold mb-2">🏢 Organizational Control & Visibility</h4>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="bg-slate-800 p-2 rounded text-center">
+              <p className="font-semibold text-xs mb-1">Overall Risk</p>
+              <p className="text-xs">Enterprise-wide scoring</p>
             </div>
-            <div className="bg-slate-700 p-3 rounded">
-              <p className="font-semibold mb-1">Domain-Level Scoring</p>
-              <p className="text-sm">Granular visibility into security per department, team, or business unit</p>
+            <div className="bg-slate-800 p-2 rounded text-center">
+              <p className="font-semibold text-xs mb-1">Domain Level</p>
+              <p className="text-xs">Team/unit scoring</p>
             </div>
-            <div className="bg-slate-700 p-3 rounded col-span-2">
-              <p className="font-semibold mb-1">Dashboard & PDF Export</p>
-              <p className="text-sm">Generate compliance-ready reports and executive dashboards in seconds</p>
+            <div className="bg-slate-800 p-2 rounded text-center">
+              <p className="font-semibold text-xs mb-1">PDF Export</p>
+              <p className="text-xs">Compliance reports</p>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-lg border-2 border-green-300">
-            <h4 className="font-bold text-green-900 mb-3">🎯 Highest Accuracy Detection</h4>
-            <p className="text-sm text-gray-700">
-              Trust vulnerability detection that beats industry standards on all key metrics with zero false positives
-            </p>
+        {/* Core Capabilities - Compact */}
+        <div className="grid grid-cols-2 gap-2">
+          <div className="bg-green-50 p-3 rounded-lg border border-green-300">
+            <h5 className="font-bold text-green-900 text-xs mb-1">🎯 Highest Accuracy</h5>
+            <p className="text-xs text-gray-700">Zero false positives on all metrics</p>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-5 rounded-lg border-2 border-blue-300">
-            <h4 className="font-bold text-blue-900 mb-3">⚡ Developer Enablement</h4>
-            <p className="text-sm text-gray-700">
-              Empower dev teams with IDE integration for continuous security scanning without workflow interruption
-            </p>
+          <div className="bg-blue-50 p-3 rounded-lg border border-blue-300">
+            <h5 className="font-bold text-blue-900 text-xs mb-1">⚡ Developer Enabled</h5>
+            <p className="text-xs text-gray-700">IDE integration, no friction</p>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-50 to-violet-50 p-5 rounded-lg border-2 border-purple-300">
-            <h4 className="font-bold text-purple-900 mb-3">🔍 Smart Prioritization</h4>
-            <p className="text-sm text-gray-700">
-              Focus remediation efforts on what matters most with correlated insights and impact analysis
-            </p>
+          <div className="bg-purple-50 p-3 rounded-lg border border-purple-300">
+            <h5 className="font-bold text-purple-900 text-xs mb-1">🔍 Smart Priority</h5>
+            <p className="text-xs text-gray-700">Focus on what matters</p>
           </div>
 
-          <div className="bg-gradient-to-br from-red-50 to-rose-50 p-5 rounded-lg border-2 border-red-300">
-            <h4 className="font-bold text-red-900 mb-3">🛡️ Industry-Leading Protection</h4>
-            <p className="text-sm text-gray-700">
-              Leverage comprehensive threat intelligence to identify and remediate malicious packages and dependencies
-            </p>
+          <div className="bg-red-50 p-3 rounded-lg border border-red-300">
+            <h5 className="font-bold text-red-900 text-xs mb-1">🛡️ Industry Leading</h5>
+            <p className="text-xs text-gray-700">Threat intelligence backed</p>
           </div>
         </div>
 
-        <div className="bg-indigo-50 border-2 border-indigo-400 p-5 rounded-lg">
-          <h4 className="font-bold text-indigo-900 mb-2">✅ CISO Value Proposition</h4>
-          <ul className="text-sm text-gray-700 space-y-1 ml-4">
-            <li>• Reduce security incidents and breach risk by 90%+</li>
-            <li>• Meet compliance requirements (SOC 2, ISO 27001, HIPAA, PCI-DSS)</li>
-            <li>• Demonstrate security ROI with quantifiable metrics</li>
-            <li>• Enable faster incident response with clear dependency insights</li>
+        {/* CISO Value */}
+        <div className="bg-indigo-50 border-2 border-indigo-400 p-3 rounded-lg">
+          <h4 className="font-bold text-indigo-900 text-sm mb-1">✅ CISO Value Proposition</h4>
+          <ul className="text-xs text-gray-700 space-y-0.5 ml-3">
+            <li>• Reduce breach risk by 90%+ with complete visibility</li>
+            <li>• Meet SOC 2, ISO 27001, HIPAA, PCI-DSS compliance</li>
+            <li>• Quantifiable security ROI metrics for board reporting</li>
+            <li>• Faster incident response with dependency context</li>
           </ul>
         </div>
       </div>
