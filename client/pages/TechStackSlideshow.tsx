@@ -121,65 +121,9 @@ const slides: Slide[] = [
   },
   {
     title: "Key Features & Capabilities",
-    subtitle: "What You Get",
+    subtitle: "What You Get - Click to Expand",
     content: (
-      <div className="space-y-4">
-        {/* Core Features */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-lg border-2 border-blue-300">
-            <h4 className="font-bold text-blue-900 mb-2">📚 Complete Inventory</h4>
-            <p className="text-sm text-gray-700">
-              Unified view of all technologies, frameworks, and services running on every asset
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-br from-red-50 to-red-100 p-5 rounded-lg border-2 border-red-300">
-            <h4 className="font-bold text-red-900 mb-2">🔍 Vulnerability Detection</h4>
-            <p className="text-sm text-gray-700">
-              Identify CVEs, EOL versions, and security misconfigurations automatically
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-lg border-2 border-green-300">
-            <h4 className="font-bold text-green-900 mb-2">📊 Risk Scoring</h4>
-            <p className="text-sm text-gray-700">
-              Enterprise and domain-level scoring with actionable prioritization
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-lg border-2 border-purple-300">
-            <h4 className="font-bold text-purple-900 mb-2">🔗 Dependency Mapping</h4>
-            <p className="text-sm text-gray-700">
-              Visualize technology relationships and blast radius impact analysis
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-5 rounded-lg border-2 border-yellow-300">
-            <h4 className="font-bold text-yellow-900 mb-2">📈 Compliance Tracking</h4>
-            <p className="text-sm text-gray-700">
-              Export dashboards and PDF reports for SOC 2, ISO, HIPAA, and PCI-DSS compliance
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-br from-cyan-50 to-cyan-100 p-5 rounded-lg border-2 border-cyan-300">
-            <h4 className="font-bold text-cyan-900 mb-2">⚡ Continuous Monitoring</h4>
-            <p className="text-sm text-gray-700">
-              Track technology changes, scan regularly, and rescan after updates
-            </p>
-          </div>
-        </div>
-
-        {/* Why It Matters */}
-        <div className="bg-gradient-to-r from-orange-50 to-rose-50 p-5 rounded-lg border-2 border-orange-300">
-          <h5 className="font-bold text-orange-900 mb-2">💡 Why This Matters</h5>
-          <p className="text-sm text-gray-700 mb-2">
-            <span className="font-semibold">For CISOs:</span> Complete visibility to reduce breach risk, meet compliance, and demonstrate security ROI to the board.
-          </p>
-          <p className="text-sm text-gray-700">
-            <span className="font-semibold">For DevSecOps:</span> Automated scanning, smart prioritization, and context-aware remediation guidance to secure your stack efficiently.
-          </p>
-        </div>
-      </div>
+      <FeatureCardsSlide />
     ),
   },
 ];
