@@ -761,6 +761,26 @@ function FeatureCardsSlide() {
     { id: "monitoring", emoji: "⚡", key: "monitoring" as const },
   ];
 
+  // Handle arrow navigation when card is expanded
+  useEffect(() => {
+    if (!expandedFeature) return;
+
+    const currentIndex = features.findIndex((f) => f.key === expandedFeature);
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight" && currentIndex < features.length - 1) {
+        e.preventDefault();
+        setExpandedFeature(features[currentIndex + 1].key);
+      } else if (e.key === "ArrowLeft" && currentIndex > 0) {
+        e.preventDefault();
+        setExpandedFeature(features[currentIndex - 1].key);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [expandedFeature]);
+
   const cardColors = {
     inventory: {
       bg: "from-blue-50 to-blue-100",
