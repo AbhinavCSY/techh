@@ -559,78 +559,68 @@ const slides: Slide[] = [
     ),
   },
   {
-    title: "Tech Stack Management",
-    subtitle: "What It Does & Why It Matters",
+    title: "BeVigil Tech Stack Discovery",
+    subtitle: "Unified View of Technologies, Frameworks & Services Per Asset",
     content: (
       <div className="space-y-4">
-        {/* Problem & Solution */}
+        {/* Core Question */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-lg border-2 border-blue-800">
-          <h4 className="text-lg font-bold mb-3">🎯 The Challenge</h4>
-          <p className="mb-3">
-            Organizations struggle to answer:{" "}
-            <span className="italic font-semibold">
-              "What's running on our assets, is it safe, and what should we do
-              about it?"
-            </span>
+          <h4 className="text-lg font-bold mb-3">👉 The Key Question</h4>
+          <p className="text-center text-lg font-semibold italic mb-2">
+            "What exactly is running here, is it safe, and what should I do about it?"
           </p>
           <p className="text-sm">
-            Without unified visibility into tech stacks, you can't identify
-            outdated technologies, correlate CVEs with components, or prioritize
-            remediation effectively.
+            BeVigil's Tech Stack page answers this by providing a unified, enriched view of all technologies, frameworks, and services running on each asset—giving you complete visibility into your attack surface.
           </p>
         </div>
 
-        {/* Business Value */}
+        {/* The Problem */}
+        <div className="bg-red-50 border-2 border-red-300 p-4 rounded-lg">
+          <h5 className="font-bold text-red-900 mb-3">⚠️ The Problem</h5>
+          <p className="text-sm text-gray-700 mb-3">
+            Traditional EASM solutions show you assets, but lack a dedicated, unified view of the complete tech stack running on each one. Without this, customers struggle to:
+          </p>
+          <ul className="text-sm text-gray-700 space-y-1 ml-4">
+            <li>🔸 Understand what software, frameworks, and libraries are running</li>
+            <li>🔸 Identify outdated or end-of-life (EOL) technologies that pose risk</li>
+            <li>🔸 Correlate detected technologies with CVEs and misconfigurations</li>
+            <li>🔸 Track changes in the stack over time (upgrades, removals, new components)</li>
+            <li>🔸 Prioritize and act on risks with remediation context</li>
+          </ul>
+        </div>
+
+        {/* The Solution */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg">
-            <h5 className="font-bold text-green-900 mb-2">📊 Business Value</h5>
+            <h5 className="font-bold text-green-900 mb-2">✅ What You Get</h5>
             <ul className="text-sm text-gray-700 space-y-1">
-              <li>✓ Reduce breach risk by 90%+</li>
-              <li>✓ Meet compliance (SOC 2, ISO, HIPAA, PCI-DSS)</li>
-              <li>✓ Quantifiable security ROI</li>
-              <li>✓ Executive dashboards & PDF reports</li>
+              <li>✓ Complete tech stack per asset (IP, subdomain, webapp)</li>
+              <li>✓ Automated detection of all frameworks & libraries</li>
+              <li>✓ EOL & vulnerable technology identification</li>
+              <li>✓ CVE correlation with detected tech</li>
+              <li>✓ Historical tracking & change detection</li>
+              <li>✓ Risk-prioritized remediation actions</li>
             </ul>
           </div>
 
           <div className="bg-purple-50 border-2 border-purple-300 p-4 rounded-lg">
-            <h5 className="font-bold text-purple-900 mb-2">
-              👨‍💻 DevSecOps Benefits
-            </h5>
+            <h5 className="font-bold text-purple-900 mb-2">🎯 Key Insights</h5>
             <ul className="text-sm text-gray-700 space-y-1">
-              <li>✓ See complete tech stack per asset</li>
-              <li>✓ Identify EOL & vulnerable tech</li>
-              <li>✓ Correlate tech with CVEs</li>
-              <li>✓ Track changes over time</li>
+              <li>📊 See exactly what's running on each asset</li>
+              <li>⚡ Know the risk level instantly</li>
+              <li>🔗 Understand tech dependencies</li>
+              <li>📈 Track improvements over time</li>
+              <li>🛡️ Reduce breach risk by understanding your stack</li>
+              <li>✔️ Meet compliance & audit requirements</li>
             </ul>
           </div>
         </div>
 
-        {/* CISO & Enterprise Features */}
-        <div className="bg-slate-900 text-white p-4 rounded-lg border-2 border-slate-700">
-          <h5 className="font-bold mb-2">🏢 Enterprise Capabilities</h5>
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-slate-800 p-2 rounded text-center">
-              <p className="text-xs font-semibold">Overall Risk Scoring</p>
-              <p className="text-xs mt-1">Enterprise-wide assessment</p>
-            </div>
-            <div className="bg-slate-800 p-2 rounded text-center">
-              <p className="text-xs font-semibold">Domain-Level Scoring</p>
-              <p className="text-xs mt-1">Granular by team/dept</p>
-            </div>
-            <div className="bg-slate-800 p-2 rounded text-center">
-              <p className="text-xs font-semibold">Highest Accuracy</p>
-              <p className="text-xs mt-1">Zero false positives</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Key Outcome */}
+        {/* Core Value */}
         <div className="bg-indigo-50 border-2 border-indigo-400 p-4 rounded-lg">
-          <h5 className="font-bold text-indigo-900 mb-2">🚀 The Outcome</h5>
+          <h5 className="font-bold text-indigo-900 mb-2">💎 The Value</h5>
           <p className="text-sm text-gray-700">
-            A unified view of all technologies running on your assets with
-            automated risk scoring, compliance readiness, and actionable
-            remediation guidance.
+            Move beyond asset discovery. Get complete visibility into every technology running on each asset, automatically correlate with threats, and take action with confidence. Inside BeVigil's EASM platform, Tech Stack becomes your most powerful tool for understanding and securing your attack surface.
           </p>
         </div>
       </div>
