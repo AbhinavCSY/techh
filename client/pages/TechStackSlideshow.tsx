@@ -13,7 +13,7 @@ interface Slide {
 // Complete Flow Diagram Component with Inputs/Outputs
 function CompleteFlowDiagram() {
   return (
-    <svg viewBox="0 0 1200 650" className="w-full h-full">
+    <svg viewBox="0 0 1200 700" className="w-full h-full">
       {/* Background */}
       <rect width="1200" height="650" fill="#f8f9fa" />
 
