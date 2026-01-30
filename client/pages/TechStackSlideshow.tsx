@@ -683,15 +683,45 @@ const slides: Slide[] = [
 function FeatureModal({
   feature,
   onClose,
+  onNext,
+  onPrev,
+  canGoNext,
+  canGoPrev,
 }: {
   feature: (typeof featureDetails)[keyof typeof featureDetails] | null;
   onClose: () => void;
+  onNext?: () => void;
+  onPrev?: () => void;
+  canGoNext?: boolean;
+  canGoPrev?: boolean;
 }) {
   if (!feature) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-90vh overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-90vh overflow-y-auto relative">
+        {/* Left Arrow Button */}
+        {canGoPrev && onPrev && (
+          <button
+            onClick={onPrev}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition"
+            title="Previous feature"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+        )}
+
+        {/* Right Arrow Button */}
+        {canGoNext && onNext && (
+          <button
+            onClick={onNext}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition"
+            title="Next feature"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        )}
+
         {/* Close Button */}
         <div className="sticky top-0 flex justify-between items-center p-6 border-b bg-white">
           <h2 className="text-2xl font-bold text-gray-900">{feature.title}</h2>
