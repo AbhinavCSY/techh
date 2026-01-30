@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
+import { NoNavLayout } from "@/components/NoNavLayout";
 import { PasswordProtection } from "@/components/PasswordProtection";
 import Index from "./pages/Index";
 import WebApplications from "./pages/WebApplications";
