@@ -19,7 +19,7 @@ function CompleteFlowDiagram() {
 
       {/* Title */}
       <text x="600" y="30" fontSize="24" fontWeight="bold" fill="#1a202c" textAnchor="middle">
-        Tech Stack Discovery: Per-Asset Workflow with Inputs &amp; Outputs
+        Tech Stack Discovery
       </text>
 
       {/* Stage 1: Discovery */}
