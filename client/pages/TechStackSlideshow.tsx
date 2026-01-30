@@ -10,6 +10,46 @@ interface Slide {
   notes?: string;
 }
 
+// Feature details with GIF references
+const featureDetails = {
+  inventory: {
+    title: "Complete Inventory",
+    description: "Unified view of all technologies, frameworks, and services running on every asset",
+    details: "Automatically discover and catalog every technology component across your entire infrastructure. Get a complete picture of software versions, frameworks, libraries, and services in one centralized dashboard.",
+    gif: "https://via.placeholder.com/400x300/e3f2fd/1976d2?text=Complete+Inventory+Management"
+  },
+  vulnerability: {
+    title: "Vulnerability Detection",
+    description: "Identify CVEs, EOL versions, and security misconfigurations automatically",
+    details: "Scan your tech stack against known vulnerability databases. Automatically identify outdated components, end-of-life versions, and security misconfigurations with real-time alerts and severity ratings.",
+    gif: "https://via.placeholder.com/400x300/ffebee/d32f2f?text=Vulnerability+Detection"
+  },
+  riskScoring: {
+    title: "Risk Scoring",
+    description: "Enterprise and domain-level scoring with actionable prioritization",
+    details: "Get actionable risk scores at the enterprise level and per domain/team. Automatically prioritize which vulnerabilities and components to address first based on impact and criticality.",
+    gif: "https://via.placeholder.com/400x300/f3e5f5/7b1fa2?text=Risk+Scoring+System"
+  },
+  dependency: {
+    title: "Dependency Mapping",
+    description: "Visualize technology relationships and blast radius impact analysis",
+    details: "See how technologies are interconnected and understand the cascading impact when removing or updating components. Interactive graphs show dependency chains and affected services.",
+    gif: "https://via.placeholder.com/400x300/f3e5f5/6a1b9a?text=Dependency+Mapping"
+  },
+  compliance: {
+    title: "Compliance Tracking",
+    description: "Export dashboards and PDF reports for SOC 2, ISO, HIPAA, and PCI-DSS compliance",
+    details: "Generate compliance-ready reports with executive summaries, risk metrics, and remediation status. Export to PDF or dashboard format for board presentations and audit requirements.",
+    gif: "https://via.placeholder.com/400x300/fff3e0/e65100?text=Compliance+Reporting"
+  },
+  monitoring: {
+    title: "Continuous Monitoring",
+    description: "Track technology changes, scan regularly, and rescan after updates",
+    details: "Set up automated, continuous scanning of your infrastructure. Schedule regular scans and automatic rescans after updates to stay ahead of newly discovered vulnerabilities.",
+    gif: "https://via.placeholder.com/400x300/e0f2f1/00695c?text=Continuous+Monitoring"
+  }
+};
+
 const slides: Slide[] = [
   {
     title: "Tech Stack Management",
