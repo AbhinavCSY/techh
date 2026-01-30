@@ -583,18 +583,6 @@ const featureDetails = {
 
 const slides: Slide[] = [
   {
-    title: "Tech Stack Discovery Workflow",
-    subtitle: "Per-Asset: From Detection to Remediation Action",
-    content: (
-      <div className="space-y-6 w-full">
-        {/* Flow Diagram */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden w-full">
-          <CompleteFlowDiagram />
-        </div>
-      </div>
-    ),
-  },
-  {
     title: "BeVigil Tech Stack Discovery",
     subtitle: "Unified View of Technologies, Frameworks & Services Per Asset",
     content: (
@@ -658,6 +646,18 @@ const slides: Slide[] = [
           <p className="text-sm text-gray-700">
             Move beyond asset discovery. Get complete visibility into every technology running on each asset, automatically correlate with threats, and take action with confidence. Inside BeVigil's EASM platform, Tech Stack becomes your most powerful tool for understanding and securing your attack surface.
           </p>
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: "Tech Stack Discovery Workflow",
+    subtitle: "Per-Asset: From Detection to Remediation Action",
+    content: (
+      <div className="space-y-6 w-full">
+        {/* Flow Diagram */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden w-full">
+          <CompleteFlowDiagram />
         </div>
       </div>
     ),
