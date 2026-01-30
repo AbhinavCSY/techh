@@ -992,24 +992,6 @@ export default function TechStackSlideshow() {
           </div>
         </div>
 
-        {/* Quick Tips */}
-        <div className="mt-8 grid grid-cols-3 gap-4">
-          <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-            <p className="text-sm text-gray-700">
-              <span className="font-semibold">Slide 1:</span> The problem BeVigil Tech Stack solves and the key question it answers
-            </p>
-          </div>
-          <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
-            <p className="text-sm text-gray-700">
-              <span className="font-semibold">Slide 2:</span> Complete discovery workflow from per-asset detection to action
-            </p>
-          </div>
-          <div className="bg-purple-50 border border-purple-200 p-4 rounded-lg">
-            <p className="text-sm text-gray-700">
-              <span className="font-semibold">Slide 3:</span> Deep dive into each feature with detailed examples
-            </p>
-          </div>
-        </div>
       </main>
     </div>
   );
