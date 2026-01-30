@@ -594,30 +594,6 @@ const slides: Slide[] = [
           <CompleteFlowDiagram />
         </div>
 
-        {/* Explanation */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg">
-            <h5 className="font-bold text-blue-900 mb-2">🔄 What Happens</h5>
-            <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
-              <li><span className="font-semibold">Discovery:</span> Scan each asset for all tech</li>
-              <li><span className="font-semibold">Analysis:</span> Find CVEs &amp; EOL versions</li>
-              <li><span className="font-semibold">Scoring:</span> Prioritize by risk level</li>
-              <li><span className="font-semibold">Monitoring:</span> Track stack changes</li>
-              <li><span className="font-semibold">Compliance:</span> Audit-ready findings</li>
-            </ol>
-          </div>
-
-          <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg">
-            <h5 className="font-bold text-green-900 mb-2">🎯 Actionable Output</h5>
-            <ul className="text-sm text-gray-700 space-y-2">
-              <li><span className="font-semibold">📋 Tech Inventory:</span> Full stack view per asset</li>
-              <li><span className="font-semibold">⚠️ Risk Alerts:</span> EOL &amp; vulnerable tech flagged</li>
-              <li><span className="font-semibold">🔗 Dependencies:</span> See what's connected</li>
-              <li><span className="font-semibold">✅ Remediation:</span> Know what to fix first</li>
-            </ul>
-          </div>
-        </div>
-
         {/* Key Insight */}
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-300 p-4 rounded-lg">
           <h5 className="font-bold text-indigo-900 mb-2">💡 Inside BeVigil</h5>
