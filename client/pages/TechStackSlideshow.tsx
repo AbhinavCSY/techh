@@ -464,51 +464,51 @@ function FeatureIllustration({ type }: { type: string }) {
 // Feature details
 const featureDetails = {
   inventory: {
-    title: "Complete Inventory",
+    title: "Tech Stack Per Asset",
     description:
-      "Unified view of all technologies, frameworks, and services running on every asset",
+      "Complete visibility of all frameworks, libraries, and services running on each IP, subdomain, and web application",
     details:
-      "Automatically discover and catalog every technology component across your entire infrastructure. Get a complete picture of software versions, frameworks, libraries, and services in one centralized dashboard.",
+      "Get a unified view of every technology running on a specific asset. See the complete software stack including frameworks (React, Django, Spring), servers (Apache, Nginx), databases, and third-party services with version information.",
     type: "inventory",
   },
   vulnerability: {
-    title: "Vulnerability Detection",
+    title: "EOL & CVE Correlation",
     description:
-      "Identify CVEs, EOL versions, and security misconfigurations automatically",
+      "Automatically identify outdated technologies and correlate them with known vulnerabilities",
     details:
-      "Scan your tech stack against known vulnerability databases. Automatically identify outdated components, end-of-life versions, and security misconfigurations with real-time alerts and severity ratings.",
+      "Instantly flag end-of-life (EOL) versions and out-of-date technologies. Correlate detected tech stacks with CVE databases to see which vulnerabilities directly impact your assets. Get severity ratings and affected versions.",
     type: "vulnerability",
   },
   riskScoring: {
-    title: "Risk Scoring",
+    title: "Risk Prioritization",
     description:
-      "Enterprise and domain-level scoring with actionable prioritization",
+      "Understand which tech stack issues to address first based on impact and criticality",
     details:
-      "Get actionable risk scores at the enterprise level and per domain/team. Automatically prioritize which vulnerabilities and components to address first based on impact and criticality.",
+      "Get actionable risk scores that help you prioritize remediation. Know which EOL versions, vulnerable frameworks, and outdated libraries pose the highest risk to your specific assets so you can focus resources effectively.",
     type: "riskScoring",
   },
   dependency: {
-    title: "Dependency Mapping",
+    title: "Technology Relationships",
     description:
-      "Visualize technology relationships and blast radius impact analysis",
+      "Visualize how technologies on an asset are interconnected and understand dependencies",
     details:
-      "See how technologies are interconnected and understand the cascading impact when removing or updating components. Interactive graphs show dependency chains and affected services.",
+      "See how frameworks, libraries, and services are related on each asset. Understand cascading impacts when you update or remove a component. Get context on which technologies depend on others.",
     type: "dependency",
   },
   compliance: {
-    title: "Compliance Tracking",
+    title: "Audit & Compliance Ready",
     description:
-      "Export dashboards and PDF reports for SOC 2, ISO, HIPAA, and PCI-DSS compliance",
+      "Export tech stack findings for compliance audits and security certifications",
     details:
-      "Generate compliance-ready reports with executive summaries, risk metrics, and remediation status. Export to PDF or dashboard format for board presentations and audit requirements.",
+      "Generate detailed compliance reports showing the complete tech stack, identified risks, and remediation status. Export findings for SOC 2, ISO 27001, and other audit requirements with executive summaries.",
     type: "compliance",
   },
   monitoring: {
-    title: "Continuous Monitoring",
+    title: "Change Tracking",
     description:
-      "Track technology changes, scan regularly, and rescan after updates",
+      "Track what's changed in your tech stack over time and get alerted to new findings",
     details:
-      "Set up automated, continuous scanning of your infrastructure. Schedule regular scans and automatic rescans after updates to stay ahead of newly discovered vulnerabilities.",
+      "Monitor tech stack changes across assets over time. Get alerted when new technologies are detected, versions are upgraded, or components are removed. See the evolution of your infrastructure with historical data.",
     type: "monitoring",
   },
 };
