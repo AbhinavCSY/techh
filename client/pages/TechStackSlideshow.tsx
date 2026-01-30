@@ -515,8 +515,8 @@ const featureDetails = {
 
 const slides: Slide[] = [
   {
-    title: "Complete Product Flow",
-    subtitle: "End-to-End Workflow: From Discovery to Compliance",
+    title: "Tech Stack Discovery Workflow",
+    subtitle: "Per-Asset: From Detection to Remediation Action",
     content: (
       <div className="space-y-6">
         {/* Flow Diagram */}
@@ -527,32 +527,32 @@ const slides: Slide[] = [
         {/* Explanation */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg">
-            <h5 className="font-bold text-blue-900 mb-2">🔄 The Process</h5>
+            <h5 className="font-bold text-blue-900 mb-2">🔄 What Happens</h5>
             <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
-              <li><span className="font-semibold">Discovery:</span> Scan all assets</li>
-              <li><span className="font-semibold">Analysis:</span> Find CVEs &amp; dependencies</li>
-              <li><span className="font-semibold">Scoring:</span> Enterprise risk assessment</li>
-              <li><span className="font-semibold">Monitoring:</span> Continuous scanning</li>
-              <li><span className="font-semibold">Compliance:</span> Generate reports</li>
+              <li><span className="font-semibold">Discovery:</span> Scan each asset for all tech</li>
+              <li><span className="font-semibold">Analysis:</span> Find CVEs &amp; EOL versions</li>
+              <li><span className="font-semibold">Scoring:</span> Prioritize by risk level</li>
+              <li><span className="font-semibold">Monitoring:</span> Track stack changes</li>
+              <li><span className="font-semibold">Compliance:</span> Audit-ready findings</li>
             </ol>
           </div>
 
           <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg">
-            <h5 className="font-bold text-green-900 mb-2">👥 Multiple Views</h5>
+            <h5 className="font-bold text-green-900 mb-2">🎯 Actionable Output</h5>
             <ul className="text-sm text-gray-700 space-y-2">
-              <li><span className="font-semibold">🏢 CISOs:</span> Executive dashboards &amp; metrics</li>
-              <li><span className="font-semibold">👨‍💻 DevSecOps:</span> Prioritized tasks &amp; automations</li>
-              <li><span className="font-semibold">📊 Enterprise:</span> Multi-domain analytics</li>
-              <li><span className="font-semibold">📋 Auditors:</span> Compliance-ready docs</li>
+              <li><span className="font-semibold">📋 Tech Inventory:</span> Full stack view per asset</li>
+              <li><span className="font-semibold">⚠️ Risk Alerts:</span> EOL &amp; vulnerable tech flagged</li>
+              <li><span className="font-semibold">🔗 Dependencies:</span> See what's connected</li>
+              <li><span className="font-semibold">✅ Remediation:</span> Know what to fix first</li>
             </ul>
           </div>
         </div>
 
         {/* Key Insight */}
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-300 p-4 rounded-lg">
-          <h5 className="font-bold text-indigo-900 mb-2">💡 Key Insight</h5>
+          <h5 className="font-bold text-indigo-900 mb-2">💡 Inside BeVigil</h5>
           <p className="text-sm text-gray-700">
-            The entire workflow is <span className="font-semibold">automated and continuous</span>. Once set up, the system continuously monitors your tech stack, detects new vulnerabilities, prioritizes risks, and keeps compliance documentation up-to-date in real-time.
+            Tech Stack answers the core EASM question for every asset you discover: <span className="font-semibold">"What's running here, is it safe, and what do I do?"</span> All inside your BeVigil dashboard with one click per asset.
           </p>
         </div>
       </div>
