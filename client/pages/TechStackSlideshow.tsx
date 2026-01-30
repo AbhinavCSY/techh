@@ -897,10 +897,34 @@ function FeatureCardsSlide() {
       </div>
 
       {/* Feature Modal */}
-      <FeatureModal
-        feature={selectedFeature}
-        onClose={() => setExpandedFeature(null)}
-      />
+      {expandedFeature && (
+        <FeatureModal
+          feature={selectedFeature}
+          onClose={() => setExpandedFeature(null)}
+          onNext={() => {
+            const currentIndex = features.findIndex((f) => f.key === expandedFeature);
+            if (currentIndex < features.length - 1) {
+              setExpandedFeature(features[currentIndex + 1].key);
+            }
+          }}
+          onPrev={() => {
+            const currentIndex = features.findIndex((f) => f.key === expandedFeature);
+            if (currentIndex > 0) {
+              setExpandedFeature(features[currentIndex - 1].key);
+            }
+          }}
+          canGoNext={
+            expandedFeature
+              ? features.findIndex((f) => f.key === expandedFeature) < features.length - 1
+              : false
+          }
+          canGoPrev={
+            expandedFeature
+              ? features.findIndex((f) => f.key === expandedFeature) > 0
+              : false
+          }
+        />
+      )}
     </div>
   );
 }
