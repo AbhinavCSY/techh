@@ -10,124 +10,194 @@ interface Slide {
   notes?: string;
 }
 
-// Complete Flow Diagram Component
+// Complete Flow Diagram Component with Inputs/Outputs
 function CompleteFlowDiagram() {
   return (
-    <svg viewBox="0 0 1000 500" className="w-full h-96">
+    <svg viewBox="0 0 1200 650" className="w-full h-full">
       {/* Background */}
-      <rect width="1000" height="500" fill="#f8f9fa" />
+      <rect width="1200" height="650" fill="#f8f9fa" />
 
       {/* Title */}
-      <text x="500" y="30" fontSize="24" fontWeight="bold" fill="#1a202c" textAnchor="middle">
-        Complete Tech Stack Management Workflow
+      <text x="600" y="30" fontSize="24" fontWeight="bold" fill="#1a202c" textAnchor="middle">
+        Tech Stack Discovery: Per-Asset Workflow with Inputs &amp; Outputs
       </text>
 
       {/* Stage 1: Discovery */}
       <g>
-        <rect x="30" y="80" width="140" height="140" rx="10" fill="#e3f2fd" stroke="#1976d2" strokeWidth="2" />
-        <circle cx="100" cy="120" r="25" fill="#1976d2" />
-        <text x="100" y="128" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">🔍</text>
-        <text x="100" y="155" fontSize="13" fontWeight="bold" fill="#1976d2" textAnchor="middle">Discovery</text>
-        <text x="100" y="170" fontSize="10" fill="#0d47a1" textAnchor="middle">Scan Assets</text>
-        <text x="100" y="182" fontSize="10" fill="#0d47a1" textAnchor="middle">&amp; Dependencies</text>
-        <text x="100" y="200" fontSize="9" fill="#1976d2" textAnchor="middle" fontStyle="italic">All Tech Stacks</text>
+        {/* Input */}
+        <g>
+          <rect x="10" y="60" width="110" height="60" rx="5" fill="#e1f5fe" stroke="#01579b" strokeWidth="1.5" />
+          <text x="65" y="78" fontSize="9" fontWeight="bold" fill="#01579b" textAnchor="middle">INPUT:</text>
+          <text x="65" y="91" fontSize="8" fill="#01579b" textAnchor="middle">IPs, Domains,</text>
+          <text x="65" y="103" fontSize="8" fill="#01579b" textAnchor="middle">Web Apps</text>
+        </g>
+        {/* Main Stage */}
+        <rect x="50" y="140" width="140" height="140" rx="10" fill="#e3f2fd" stroke="#1976d2" strokeWidth="2" />
+        <circle cx="120" cy="180" r="25" fill="#1976d2" />
+        <text x="120" y="188" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">🔍</text>
+        <text x="120" y="215" fontSize="13" fontWeight="bold" fill="#1976d2" textAnchor="middle">Discovery</text>
+        <text x="120" y="230" fontSize="9" fill="#0d47a1" textAnchor="middle">Scan Assets</text>
+        <text x="120" y="242" fontSize="9" fill="#0d47a1" textAnchor="middle">&amp; Libraries</text>
+        {/* Output */}
+        <g>
+          <rect x="10" y="300" width="110" height="60" rx="5" fill="#c8e6c9" stroke="#1b5e20" strokeWidth="1.5" />
+          <text x="65" y="318" fontSize="9" fontWeight="bold" fill="#1b5e20" textAnchor="middle">OUTPUT:</text>
+          <text x="65" y="331" fontSize="8" fill="#1b5e20" textAnchor="middle">Detected Tech</text>
+          <text x="65" y="343" fontSize="8" fill="#1b5e20" textAnchor="middle">Components</text>
+        </g>
       </g>
 
       {/* Arrow 1 */}
-      <path d="M 170 150 L 210 150" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+      <path d="M 190 210 L 240 210" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
 
       {/* Stage 2: Analysis */}
       <g>
-        <rect x="210" y="80" width="140" height="140" rx="10" fill="#fff3e0" stroke="#e65100" strokeWidth="2" />
-        <circle cx="280" cy="120" r="25" fill="#e65100" />
-        <text x="280" y="128" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">📊</text>
-        <text x="280" y="155" fontSize="13" fontWeight="bold" fill="#e65100" textAnchor="middle">Analysis</text>
-        <text x="280" y="170" fontSize="10" fill="#bf360c" textAnchor="middle">Check CVEs,</text>
-        <text x="280" y="182" fontSize="10" fill="#bf360c" textAnchor="middle">Map Dependencies</text>
-        <text x="280" y="200" fontSize="9" fill="#e65100" textAnchor="middle" fontStyle="italic">Correlate Issues</text>
+        {/* Input */}
+        <g>
+          <rect x="240" y="60" width="110" height="60" rx="5" fill="#ffe0b2" stroke="#e65100" strokeWidth="1.5" />
+          <text x="295" y="78" fontSize="9" fontWeight="bold" fill="#e65100" textAnchor="middle">INPUT:</text>
+          <text x="295" y="91" fontSize="8" fill="#e65100" textAnchor="middle">Tech List,</text>
+          <text x="295" y="103" fontSize="8" fill="#e65100" textAnchor="middle">Versions</text>
+        </g>
+        {/* Main Stage */}
+        <rect x="240" y="140" width="140" height="140" rx="10" fill="#fff3e0" stroke="#e65100" strokeWidth="2" />
+        <circle cx="310" cy="180" r="25" fill="#e65100" />
+        <text x="310" y="188" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">📊</text>
+        <text x="310" y="215" fontSize="13" fontWeight="bold" fill="#e65100" textAnchor="middle">Analysis</text>
+        <text x="310" y="230" fontSize="9" fill="#bf360c" textAnchor="middle">CVEs, EOL,</text>
+        <text x="310" y="242" fontSize="9" fill="#bf360c" textAnchor="middle">Dependencies</text>
+        {/* Output */}
+        <g>
+          <rect x="240" y="300" width="110" height="60" rx="5" fill="#f8bbd0" stroke="#880e4f" strokeWidth="1.5" />
+          <text x="295" y="318" fontSize="9" fontWeight="bold" fill="#880e4f" textAnchor="middle">OUTPUT:</text>
+          <text x="295" y="331" fontSize="8" fill="#880e4f" textAnchor="middle">CVEs, Risk</text>
+          <text x="295" y="343" fontSize="8" fill="#880e4f" textAnchor="middle">Flags, Links</text>
+        </g>
       </g>
 
       {/* Arrow 2 */}
-      <path d="M 350 150 L 390 150" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+      <path d="M 380 210 L 430 210" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
 
       {/* Stage 3: Scoring */}
       <g>
-        <rect x="390" y="80" width="140" height="140" rx="10" fill="#f3e5f5" stroke="#6a1b9a" strokeWidth="2" />
-        <circle cx="460" cy="120" r="25" fill="#6a1b9a" />
-        <text x="460" y="128" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">⚡</text>
-        <text x="460" y="155" fontSize="13" fontWeight="bold" fill="#6a1b9a" textAnchor="middle">Risk Scoring</text>
-        <text x="460" y="170" fontSize="10" fill="#4a148c" textAnchor="middle">Enterprise &amp;</text>
-        <text x="460" y="182" fontSize="10" fill="#4a148c" textAnchor="middle">Domain Level</text>
-        <text x="460" y="200" fontSize="9" fill="#6a1b9a" textAnchor="middle" fontStyle="italic">Prioritization</text>
+        {/* Input */}
+        <g>
+          <rect x="430" y="60" width="110" height="60" rx="5" fill="#e1bee7" stroke="#4a148c" strokeWidth="1.5" />
+          <text x="485" y="78" fontSize="9" fontWeight="bold" fill="#4a148c" textAnchor="middle">INPUT:</text>
+          <text x="485" y="91" fontSize="8" fill="#4a148c" textAnchor="middle">Findings,</text>
+          <text x="485" y="103" fontSize="8" fill="#4a148c" textAnchor="middle">Severity</text>
+        </g>
+        {/* Main Stage */}
+        <rect x="430" y="140" width="140" height="140" rx="10" fill="#f3e5f5" stroke="#6a1b9a" strokeWidth="2" />
+        <circle cx="500" cy="180" r="25" fill="#6a1b9a" />
+        <text x="500" y="188" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">⚡</text>
+        <text x="500" y="215" fontSize="13" fontWeight="bold" fill="#6a1b9a" textAnchor="middle">Scoring</text>
+        <text x="500" y="230" fontSize="9" fill="#4a148c" textAnchor="middle">Enterprise &amp;</text>
+        <text x="500" y="242" fontSize="9" fill="#4a148c" textAnchor="middle">Asset-Level</text>
+        {/* Output */}
+        <g>
+          <rect x="430" y="300" width="110" height="60" rx="5" fill="#b2dfdb" stroke="#00695c" strokeWidth="1.5" />
+          <text x="485" y="318" fontSize="9" fontWeight="bold" fill="#00695c" textAnchor="middle">OUTPUT:</text>
+          <text x="485" y="331" fontSize="8" fill="#00695c" textAnchor="middle">Risk Scores,</text>
+          <text x="485" y="343" fontSize="8" fill="#00695c" textAnchor="middle">Prioritization</text>
+        </g>
       </g>
 
       {/* Arrow 3 */}
-      <path d="M 530 150 L 570 150" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+      <path d="M 570 210 L 620 210" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
 
       {/* Stage 4: Monitoring */}
       <g>
-        <rect x="570" y="80" width="140" height="140" rx="10" fill="#e0f2f1" stroke="#00695c" strokeWidth="2" />
-        <circle cx="640" cy="120" r="25" fill="#00695c" />
-        <text x="640" y="128" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">🔄</text>
-        <text x="640" y="155" fontSize="13" fontWeight="bold" fill="#00695c" textAnchor="middle">Monitoring</text>
-        <text x="640" y="170" fontSize="10" fill="#004d40" textAnchor="middle">Continuous</text>
-        <text x="640" y="182" fontSize="10" fill="#004d40" textAnchor="middle">Scanning &amp; Alerts</text>
-        <text x="640" y="200" fontSize="9" fill="#00695c" textAnchor="middle" fontStyle="italic">Track Changes</text>
+        {/* Input */}
+        <g>
+          <rect x="620" y="60" width="110" height="60" rx="5" fill="#c8e6c9" stroke="#1b5e20" strokeWidth="1.5" />
+          <text x="675" y="78" fontSize="9" fontWeight="bold" fill="#1b5e20" textAnchor="middle">INPUT:</text>
+          <text x="675" y="91" fontSize="8" fill="#1b5e20" textAnchor="middle">Baseline</text>
+          <text x="675" y="103" fontSize="8" fill="#1b5e20" textAnchor="middle">Tech Stack</text>
+        </g>
+        {/* Main Stage */}
+        <rect x="620" y="140" width="140" height="140" rx="10" fill="#e0f2f1" stroke="#00695c" strokeWidth="2" />
+        <circle cx="690" cy="180" r="25" fill="#00695c" />
+        <text x="690" y="188" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">🔄</text>
+        <text x="690" y="215" fontSize="13" fontWeight="bold" fill="#00695c" textAnchor="middle">Monitoring</text>
+        <text x="690" y="230" fontSize="9" fill="#004d40" textAnchor="middle">Track Changes,</text>
+        <text x="690" y="242" fontSize="9" fill="#004d40" textAnchor="middle">New Versions</text>
+        {/* Output */}
+        <g>
+          <rect x="620" y="300" width="110" height="60" rx="5" fill="#ffe0b2" stroke="#e65100" strokeWidth="1.5" />
+          <text x="675" y="318" fontSize="9" fontWeight="bold" fill="#e65100" textAnchor="middle">OUTPUT:</text>
+          <text x="675" y="331" fontSize="8" fill="#e65100" textAnchor="middle">Alerts on</text>
+          <text x="675" y="343" fontSize="8" fill="#e65100" textAnchor="middle">Changes</text>
+        </g>
       </g>
 
       {/* Arrow 4 */}
-      <path d="M 710 150 L 750 150" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+      <path d="M 760 210 L 810 210" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
 
       {/* Stage 5: Compliance */}
       <g>
-        <rect x="750" y="80" width="140" height="140" rx="10" fill="#f3e5f5" stroke="#7b1fa2" strokeWidth="2" />
-        <circle cx="820" cy="120" r="25" fill="#7b1fa2" />
-        <text x="820" y="128" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">📋</text>
-        <text x="820" y="155" fontSize="13" fontWeight="bold" fill="#7b1fa2" textAnchor="middle">Compliance</text>
-        <text x="820" y="170" fontSize="10" fill="#4a148c" textAnchor="middle">Reports &amp;</text>
-        <text x="820" y="182" fontSize="10" fill="#4a148c" textAnchor="middle">Dashboards</text>
-        <text x="820" y="200" fontSize="9" fill="#7b1fa2" textAnchor="middle" fontStyle="italic">SOC 2, ISO, etc.</text>
+        {/* Input */}
+        <g>
+          <rect x="810" y="60" width="110" height="60" rx="5" fill="#f8bbd0" stroke="#880e4f" strokeWidth="1.5" />
+          <text x="865" y="78" fontSize="9" fontWeight="bold" fill="#880e4f" textAnchor="middle">INPUT:</text>
+          <text x="865" y="91" fontSize="8" fill="#880e4f" textAnchor="middle">Complete</text>
+          <text x="865" y="103" fontSize="8" fill="#880e4f" textAnchor="middle">Risk Data</text>
+        </g>
+        {/* Main Stage */}
+        <rect x="810" y="140" width="140" height="140" rx="10" fill="#f3e5f5" stroke="#7b1fa2" strokeWidth="2" />
+        <circle cx="880" cy="180" r="25" fill="#7b1fa2" />
+        <text x="880" y="188" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">📋</text>
+        <text x="880" y="215" fontSize="13" fontWeight="bold" fill="#7b1fa2" textAnchor="middle">Compliance</text>
+        <text x="880" y="230" fontSize="9" fill="#4a148c" textAnchor="middle">Reports &amp;</text>
+        <text x="880" y="242" fontSize="9" fill="#4a148c" textAnchor="middle">Dashboards</text>
+        {/* Output */}
+        <g>
+          <rect x="810" y="300" width="110" height="60" rx="5" fill="#e1bee7" stroke="#4a148c" strokeWidth="1.5" />
+          <text x="865" y="318" fontSize="9" fontWeight="bold" fill="#4a148c" textAnchor="middle">OUTPUT:</text>
+          <text x="865" y="331" fontSize="8" fill="#4a148c" textAnchor="middle">Audit-Ready</text>
+          <text x="865" y="343" fontSize="8" fill="#4a148c" textAnchor="middle">Reports</text>
+        </g>
       </g>
 
       {/* Feedback loop arrow */}
-      <path d="M 820 240 Q 820 320 100 320 Q 100 260 100 220" stroke="#d32f2f" strokeWidth="2" fill="none" strokeDasharray="5,5" markerEnd="url(#arrowhead-red)" />
-      <text x="450" y="340" fontSize="11" fill="#d32f2f" fontWeight="bold" textAnchor="middle">Continuous Feedback Loop - Rescan after Updates</text>
+      <path d="M 880 290 Q 880 380 120 380 Q 120 290 120 280" stroke="#d32f2f" strokeWidth="2" fill="none" strokeDasharray="5,5" markerEnd="url(#arrowhead-red)" />
+      <text x="500" y="420" fontSize="11" fill="#d32f2f" fontWeight="bold" textAnchor="middle">🔁 Continuous Loop: Rescan after updates to detect new tech, CVEs, and changes</text>
 
-      {/* Output layers */}
+      {/* Key insight boxes */}
       <g>
-        {/* CISO View */}
-        <rect x="30" y="380" width="180" height="80" rx="8" fill="#fce4ec" stroke="#c2185b" strokeWidth="2" />
-        <text x="120" y="405" fontSize="12" fontWeight="bold" fill="#c2185b" textAnchor="middle">CISO Dashboard</text>
-        <text x="120" y="423" fontSize="10" fill="#880e4f" textAnchor="middle">• Executive Summary</text>
-        <text x="120" y="438" fontSize="10" fill="#880e4f" textAnchor="middle">• Risk Metrics</text>
-        <text x="120" y="453" fontSize="10" fill="#880e4f" textAnchor="middle">• Compliance Status</text>
+        <rect x="50" y="480" width="280" height="140" rx="8" fill="#bbdefb" stroke="#1976d2" strokeWidth="2" />
+        <text x="190" y="505" fontSize="12" fontWeight="bold" fill="#1976d2" textAnchor="middle">Per-Asset Visibility</text>
+        <text x="190" y="525" fontSize="9" fill="#0d47a1" textAnchor="middle">Each asset gets its own</text>
+        <text x="190" y="538" fontSize="9" fill="#0d47a1" textAnchor="middle">complete tech stack</text>
+        <text x="190" y="551" fontSize="9" fill="#0d47a1" textAnchor="middle">showing:</text>
+        <text x="60" y="570" fontSize="8" fill="#0d47a1">✓ All frameworks &amp; libs</text>
+        <text x="60" y="583" fontSize="8" fill="#0d47a1">✓ Versions &amp; EOL status</text>
+        <text x="60" y="596" fontSize="8" fill="#0d47a1">✓ Known CVEs</text>
+        <text x="60" y="609" fontSize="8" fill="#0d47a1">✓ Change history</text>
       </g>
 
-      {/* DevSecOps View */}
       <g>
-        <rect x="230" y="380" width="180" height="80" rx="8" fill="#e8f5e9" stroke="#388e3c" strokeWidth="2" />
-        <text x="320" y="405" fontSize="12" fontWeight="bold" fill="#388e3c" textAnchor="middle">DevSecOps Tools</text>
-        <text x="320" y="423" fontSize="10" fill="#1b5e20" textAnchor="middle">• Prioritized Tasks</text>
-        <text x="320" y="438" fontSize="10" fill="#1b5e20" textAnchor="middle">• API Integration</text>
-        <text x="320" y="453" fontSize="10" fill="#1b5e20" textAnchor="middle">• Alerts &amp; Automations</text>
+        <rect x="370" y="480" width="280" height="140" rx="8" fill="#fff9c4" stroke="#f57f17" strokeWidth="2" />
+        <text x="510" y="505" fontSize="12" fontWeight="bold" fill="#f57f17" textAnchor="middle">Risk Context</text>
+        <text x="510" y="525" fontSize="9" fill="#827717" textAnchor="middle">For each finding,</text>
+        <text x="510" y="538" fontSize="9" fill="#827717" textAnchor="middle">understand:</text>
+        <text x="510" y="551" fontSize="9" fill="#827717" textAnchor="middle" />
+        <text x="380" y="570" fontSize="8" fill="#827717">✓ Why it matters (context)</text>
+        <text x="380" y="583" fontSize="8" fill="#827717">✓ Impact on this asset</text>
+        <text x="380" y="596" fontSize="8" fill="#827717">✓ Dependency chains</text>
+        <text x="380" y="609" fontSize="8" fill="#827717">✓ What to do about it</text>
       </g>
 
-      {/* Enterprise View */}
       <g>
-        <rect x="430" y="380" width="180" height="80" rx="8" fill="#ede7f6" stroke="#512da8" strokeWidth="2" />
-        <text x="520" y="405" fontSize="12" fontWeight="bold" fill="#512da8" textAnchor="middle">Enterprise View</text>
-        <text x="520" y="423" fontSize="10" fill="#311b92" textAnchor="middle">• Multi-Domain</text>
-        <text x="520" y="438" fontSize="10" fill="#311b92" textAnchor="middle">• Asset Inventory</text>
-        <text x="520" y="453" fontSize="10" fill="#311b92" textAnchor="middle">• Correlation Analytics</text>
-      </g>
-
-      {/* Compliance Reports */}
-      <g>
-        <rect x="630" y="380" width="180" height="80" rx="8" fill="#fff3e0" stroke="#e65100" strokeWidth="2" />
-        <text x="720" y="405" fontSize="12" fontWeight="bold" fill="#e65100" textAnchor="middle">Compliance Docs</text>
-        <text x="720" y="423" fontSize="10" fill="#bf360c" textAnchor="middle">• PDF Reports</text>
-        <text x="720" y="438" fontSize="10" fill="#bf360c" textAnchor="middle">• Audit Ready</text>
-        <text x="720" y="453" fontSize="10" fill="#bf360c" textAnchor="middle">• Board Presentations</text>
+        <rect x="690" y="480" width="280" height="140" rx="8" fill="#c8e6c9" stroke="#1b5e20" strokeWidth="2" />
+        <text x="830" y="505" fontSize="12" fontWeight="bold" fill="#1b5e20" textAnchor="middle">Actionable Output</text>
+        <text x="830" y="525" fontSize="9" fill="#1b5e20" textAnchor="middle">Everything is</text>
+        <text x="830" y="538" fontSize="9" fill="#1b5e20" textAnchor="middle">ready to act on:</text>
+        <text x="830" y="551" fontSize="9" fill="#1b5e20" textAnchor="middle" />
+        <text x="700" y="570" fontSize="8" fill="#1b5e20">✓ Prioritized by risk</text>
+        <text x="700" y="583" fontSize="8" fill="#1b5e20">✓ With remediation paths</text>
+        <text x="700" y="596" fontSize="8" fill="#1b5e20">✓ Track progress over time</text>
+        <text x="700" y="609" fontSize="8" fill="#1b5e20">✓ Audit trail included</text>
       </g>
 
       {/* Arrow markers */}
