@@ -10,6 +10,139 @@ interface Slide {
   notes?: string;
 }
 
+// Complete Flow Diagram Component
+function CompleteFlowDiagram() {
+  return (
+    <svg viewBox="0 0 1000 500" className="w-full h-96">
+      {/* Background */}
+      <rect width="1000" height="500" fill="#f8f9fa" />
+
+      {/* Title */}
+      <text x="500" y="30" fontSize="24" fontWeight="bold" fill="#1a202c" textAnchor="middle">
+        Complete Tech Stack Management Workflow
+      </text>
+
+      {/* Stage 1: Discovery */}
+      <g>
+        <rect x="30" y="80" width="140" height="140" rx="10" fill="#e3f2fd" stroke="#1976d2" strokeWidth="2" />
+        <circle cx="100" cy="120" r="25" fill="#1976d2" />
+        <text x="100" y="128" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">🔍</text>
+        <text x="100" y="155" fontSize="13" fontWeight="bold" fill="#1976d2" textAnchor="middle">Discovery</text>
+        <text x="100" y="170" fontSize="10" fill="#0d47a1" textAnchor="middle">Scan Assets</text>
+        <text x="100" y="182" fontSize="10" fill="#0d47a1" textAnchor="middle">&amp; Dependencies</text>
+        <text x="100" y="200" fontSize="9" fill="#1976d2" textAnchor="middle" fontStyle="italic">All Tech Stacks</text>
+      </g>
+
+      {/* Arrow 1 */}
+      <path d="M 170 150 L 210 150" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+
+      {/* Stage 2: Analysis */}
+      <g>
+        <rect x="210" y="80" width="140" height="140" rx="10" fill="#fff3e0" stroke="#e65100" strokeWidth="2" />
+        <circle cx="280" cy="120" r="25" fill="#e65100" />
+        <text x="280" y="128" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">📊</text>
+        <text x="280" y="155" fontSize="13" fontWeight="bold" fill="#e65100" textAnchor="middle">Analysis</text>
+        <text x="280" y="170" fontSize="10" fill="#bf360c" textAnchor="middle">Check CVEs,</text>
+        <text x="280" y="182" fontSize="10" fill="#bf360c" textAnchor="middle">Map Dependencies</text>
+        <text x="280" y="200" fontSize="9" fill="#e65100" textAnchor="middle" fontStyle="italic">Correlate Issues</text>
+      </g>
+
+      {/* Arrow 2 */}
+      <path d="M 350 150 L 390 150" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+
+      {/* Stage 3: Scoring */}
+      <g>
+        <rect x="390" y="80" width="140" height="140" rx="10" fill="#f3e5f5" stroke="#6a1b9a" strokeWidth="2" />
+        <circle cx="460" cy="120" r="25" fill="#6a1b9a" />
+        <text x="460" y="128" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">⚡</text>
+        <text x="460" y="155" fontSize="13" fontWeight="bold" fill="#6a1b9a" textAnchor="middle">Risk Scoring</text>
+        <text x="460" y="170" fontSize="10" fill="#4a148c" textAnchor="middle">Enterprise &amp;</text>
+        <text x="460" y="182" fontSize="10" fill="#4a148c" textAnchor="middle">Domain Level</text>
+        <text x="460" y="200" fontSize="9" fill="#6a1b9a" textAnchor="middle" fontStyle="italic">Prioritization</text>
+      </g>
+
+      {/* Arrow 3 */}
+      <path d="M 530 150 L 570 150" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+
+      {/* Stage 4: Monitoring */}
+      <g>
+        <rect x="570" y="80" width="140" height="140" rx="10" fill="#e0f2f1" stroke="#00695c" strokeWidth="2" />
+        <circle cx="640" cy="120" r="25" fill="#00695c" />
+        <text x="640" y="128" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">🔄</text>
+        <text x="640" y="155" fontSize="13" fontWeight="bold" fill="#00695c" textAnchor="middle">Monitoring</text>
+        <text x="640" y="170" fontSize="10" fill="#004d40" textAnchor="middle">Continuous</text>
+        <text x="640" y="182" fontSize="10" fill="#004d40" textAnchor="middle">Scanning &amp; Alerts</text>
+        <text x="640" y="200" fontSize="9" fill="#00695c" textAnchor="middle" fontStyle="italic">Track Changes</text>
+      </g>
+
+      {/* Arrow 4 */}
+      <path d="M 710 150 L 750 150" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+
+      {/* Stage 5: Compliance */}
+      <g>
+        <rect x="750" y="80" width="140" height="140" rx="10" fill="#f3e5f5" stroke="#7b1fa2" strokeWidth="2" />
+        <circle cx="820" cy="120" r="25" fill="#7b1fa2" />
+        <text x="820" y="128" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">📋</text>
+        <text x="820" y="155" fontSize="13" fontWeight="bold" fill="#7b1fa2" textAnchor="middle">Compliance</text>
+        <text x="820" y="170" fontSize="10" fill="#4a148c" textAnchor="middle">Reports &amp;</text>
+        <text x="820" y="182" fontSize="10" fill="#4a148c" textAnchor="middle">Dashboards</text>
+        <text x="820" y="200" fontSize="9" fill="#7b1fa2" textAnchor="middle" fontStyle="italic">SOC 2, ISO, etc.</text>
+      </g>
+
+      {/* Feedback loop arrow */}
+      <path d="M 820 240 Q 820 320 100 320 Q 100 260 100 220" stroke="#d32f2f" strokeWidth="2" fill="none" strokeDasharray="5,5" markerEnd="url(#arrowhead-red)" />
+      <text x="450" y="340" fontSize="11" fill="#d32f2f" fontWeight="bold" textAnchor="middle">Continuous Feedback Loop - Rescan after Updates</text>
+
+      {/* Output layers */}
+      <g>
+        {/* CISO View */}
+        <rect x="30" y="380" width="180" height="80" rx="8" fill="#fce4ec" stroke="#c2185b" strokeWidth="2" />
+        <text x="120" y="405" fontSize="12" fontWeight="bold" fill="#c2185b" textAnchor="middle">CISO Dashboard</text>
+        <text x="120" y="423" fontSize="10" fill="#880e4f" textAnchor="middle">• Executive Summary</text>
+        <text x="120" y="438" fontSize="10" fill="#880e4f" textAnchor="middle">• Risk Metrics</text>
+        <text x="120" y="453" fontSize="10" fill="#880e4f" textAnchor="middle">• Compliance Status</text>
+      </g>
+
+      {/* DevSecOps View */}
+      <g>
+        <rect x="230" y="380" width="180" height="80" rx="8" fill="#e8f5e9" stroke="#388e3c" strokeWidth="2" />
+        <text x="320" y="405" fontSize="12" fontWeight="bold" fill="#388e3c" textAnchor="middle">DevSecOps Tools</text>
+        <text x="320" y="423" fontSize="10" fill="#1b5e20" textAnchor="middle">• Prioritized Tasks</text>
+        <text x="320" y="438" fontSize="10" fill="#1b5e20" textAnchor="middle">• API Integration</text>
+        <text x="320" y="453" fontSize="10" fill="#1b5e20" textAnchor="middle">• Alerts &amp; Automations</text>
+      </g>
+
+      {/* Enterprise View */}
+      <g>
+        <rect x="430" y="380" width="180" height="80" rx="8" fill="#ede7f6" stroke="#512da8" strokeWidth="2" />
+        <text x="520" y="405" fontSize="12" fontWeight="bold" fill="#512da8" textAnchor="middle">Enterprise View</text>
+        <text x="520" y="423" fontSize="10" fill="#311b92" textAnchor="middle">• Multi-Domain</text>
+        <text x="520" y="438" fontSize="10" fill="#311b92" textAnchor="middle">• Asset Inventory</text>
+        <text x="520" y="453" fontSize="10" fill="#311b92" textAnchor="middle">• Correlation Analytics</text>
+      </g>
+
+      {/* Compliance Reports */}
+      <g>
+        <rect x="630" y="380" width="180" height="80" rx="8" fill="#fff3e0" stroke="#e65100" strokeWidth="2" />
+        <text x="720" y="405" fontSize="12" fontWeight="bold" fill="#e65100" textAnchor="middle">Compliance Docs</text>
+        <text x="720" y="423" fontSize="10" fill="#bf360c" textAnchor="middle">• PDF Reports</text>
+        <text x="720" y="438" fontSize="10" fill="#bf360c" textAnchor="middle">• Audit Ready</text>
+        <text x="720" y="453" fontSize="10" fill="#bf360c" textAnchor="middle">• Board Presentations</text>
+      </g>
+
+      {/* Arrow markers */}
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <polygon points="0 0, 10 3, 0 6" fill="#333" />
+        </marker>
+        <marker id="arrowhead-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <polygon points="0 0, 10 3, 0 6" fill="#d32f2f" />
+        </marker>
+      </defs>
+    </svg>
+  );
+}
+
 // SVG Illustration Component
 function FeatureIllustration({ type }: { type: string }) {
   switch (type) {
