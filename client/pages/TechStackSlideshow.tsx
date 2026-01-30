@@ -242,7 +242,7 @@ const slides: Slide[] = [
 ];
 
 // Feature Modal Component
-function FeatureModal({ feature, onClose }: { feature: typeof featureDetails.inventory | null; onClose: () => void }) {
+function FeatureModal({ feature, onClose }: { feature: (typeof featureDetails)[keyof typeof featureDetails] | null; onClose: () => void }) {
   if (!feature) return null;
 
   return (
