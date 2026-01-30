@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Home, X, Expand } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,207 @@ interface Slide {
   subtitle?: string;
   content: React.ReactNode;
   notes?: string;
+}
+
+// Complete Flow Diagram Component with Inputs/Outputs
+function CompleteFlowDiagram() {
+  return (
+    <svg viewBox="0 0 1200 700" className="w-full h-auto">
+      {/* Background */}
+      <rect width="1200" height="650" fill="#f8f9fa" />
+
+      {/* Title */}
+      <text x="600" y="30" fontSize="24" fontWeight="bold" fill="#1a202c" textAnchor="middle">
+        Tech Stack Discovery
+      </text>
+
+      {/* Stage 1: Discovery */}
+      <g>
+        {/* Input */}
+        <g>
+          <rect x="10" y="60" width="110" height="60" rx="5" fill="#e1f5fe" stroke="#01579b" strokeWidth="1.5" />
+          <text x="65" y="78" fontSize="9" fontWeight="bold" fill="#01579b" textAnchor="middle">INPUT:</text>
+          <text x="65" y="91" fontSize="8" fill="#01579b" textAnchor="middle">IPs, Domains,</text>
+          <text x="65" y="103" fontSize="8" fill="#01579b" textAnchor="middle">Web Apps</text>
+        </g>
+        {/* Main Stage */}
+        <rect x="50" y="140" width="140" height="140" rx="10" fill="#e3f2fd" stroke="#1976d2" strokeWidth="2" />
+        <circle cx="120" cy="180" r="25" fill="#1976d2" />
+        <text x="120" y="188" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">🔍</text>
+        <text x="120" y="215" fontSize="13" fontWeight="bold" fill="#1976d2" textAnchor="middle">Discovery</text>
+        <text x="120" y="230" fontSize="9" fill="#0d47a1" textAnchor="middle">Scan Assets</text>
+        <text x="120" y="242" fontSize="9" fill="#0d47a1" textAnchor="middle">&amp; Libraries</text>
+        {/* Output */}
+        <g>
+          <rect x="10" y="300" width="110" height="60" rx="5" fill="#c8e6c9" stroke="#1b5e20" strokeWidth="1.5" />
+          <text x="65" y="318" fontSize="9" fontWeight="bold" fill="#1b5e20" textAnchor="middle">OUTPUT:</text>
+          <text x="65" y="331" fontSize="8" fill="#1b5e20" textAnchor="middle">Detected Tech</text>
+          <text x="65" y="343" fontSize="8" fill="#1b5e20" textAnchor="middle">Components</text>
+        </g>
+      </g>
+
+      {/* Arrow 1 */}
+      <path d="M 190 210 L 240 210" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+
+      {/* Stage 2: Analysis */}
+      <g>
+        {/* Input */}
+        <g>
+          <rect x="240" y="60" width="110" height="60" rx="5" fill="#ffe0b2" stroke="#e65100" strokeWidth="1.5" />
+          <text x="295" y="78" fontSize="9" fontWeight="bold" fill="#e65100" textAnchor="middle">INPUT:</text>
+          <text x="295" y="91" fontSize="8" fill="#e65100" textAnchor="middle">Tech List,</text>
+          <text x="295" y="103" fontSize="8" fill="#e65100" textAnchor="middle">Versions</text>
+        </g>
+        {/* Main Stage */}
+        <rect x="240" y="140" width="140" height="140" rx="10" fill="#fff3e0" stroke="#e65100" strokeWidth="2" />
+        <circle cx="310" cy="180" r="25" fill="#e65100" />
+        <text x="310" y="188" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">📊</text>
+        <text x="310" y="215" fontSize="13" fontWeight="bold" fill="#e65100" textAnchor="middle">Analysis</text>
+        <text x="310" y="230" fontSize="9" fill="#bf360c" textAnchor="middle">CVEs, EOL,</text>
+        <text x="310" y="242" fontSize="9" fill="#bf360c" textAnchor="middle">Dependencies</text>
+        {/* Output */}
+        <g>
+          <rect x="240" y="300" width="110" height="60" rx="5" fill="#f8bbd0" stroke="#880e4f" strokeWidth="1.5" />
+          <text x="295" y="318" fontSize="9" fontWeight="bold" fill="#880e4f" textAnchor="middle">OUTPUT:</text>
+          <text x="295" y="331" fontSize="8" fill="#880e4f" textAnchor="middle">CVEs, Risk</text>
+          <text x="295" y="343" fontSize="8" fill="#880e4f" textAnchor="middle">Flags, Links</text>
+        </g>
+      </g>
+
+      {/* Arrow 2 */}
+      <path d="M 380 210 L 430 210" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+
+      {/* Stage 3: Scoring */}
+      <g>
+        {/* Input */}
+        <g>
+          <rect x="430" y="60" width="110" height="60" rx="5" fill="#e1bee7" stroke="#4a148c" strokeWidth="1.5" />
+          <text x="485" y="78" fontSize="9" fontWeight="bold" fill="#4a148c" textAnchor="middle">INPUT:</text>
+          <text x="485" y="91" fontSize="8" fill="#4a148c" textAnchor="middle">Findings,</text>
+          <text x="485" y="103" fontSize="8" fill="#4a148c" textAnchor="middle">Severity</text>
+        </g>
+        {/* Main Stage */}
+        <rect x="430" y="140" width="140" height="140" rx="10" fill="#f3e5f5" stroke="#6a1b9a" strokeWidth="2" />
+        <circle cx="500" cy="180" r="25" fill="#6a1b9a" />
+        <text x="500" y="188" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">⚡</text>
+        <text x="500" y="215" fontSize="13" fontWeight="bold" fill="#6a1b9a" textAnchor="middle">Scoring</text>
+        <text x="500" y="230" fontSize="9" fill="#4a148c" textAnchor="middle">Enterprise &amp;</text>
+        <text x="500" y="242" fontSize="9" fill="#4a148c" textAnchor="middle">Asset-Level</text>
+        {/* Output */}
+        <g>
+          <rect x="430" y="300" width="110" height="60" rx="5" fill="#b2dfdb" stroke="#00695c" strokeWidth="1.5" />
+          <text x="485" y="318" fontSize="9" fontWeight="bold" fill="#00695c" textAnchor="middle">OUTPUT:</text>
+          <text x="485" y="331" fontSize="8" fill="#00695c" textAnchor="middle">Risk Scores,</text>
+          <text x="485" y="343" fontSize="8" fill="#00695c" textAnchor="middle">Prioritization</text>
+        </g>
+      </g>
+
+      {/* Arrow 3 */}
+      <path d="M 570 210 L 620 210" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+
+      {/* Stage 4: Monitoring */}
+      <g>
+        {/* Input */}
+        <g>
+          <rect x="620" y="60" width="110" height="60" rx="5" fill="#c8e6c9" stroke="#1b5e20" strokeWidth="1.5" />
+          <text x="675" y="78" fontSize="9" fontWeight="bold" fill="#1b5e20" textAnchor="middle">INPUT:</text>
+          <text x="675" y="91" fontSize="8" fill="#1b5e20" textAnchor="middle">Baseline</text>
+          <text x="675" y="103" fontSize="8" fill="#1b5e20" textAnchor="middle">Tech Stack</text>
+        </g>
+        {/* Main Stage */}
+        <rect x="620" y="140" width="140" height="140" rx="10" fill="#e0f2f1" stroke="#00695c" strokeWidth="2" />
+        <circle cx="690" cy="180" r="25" fill="#00695c" />
+        <text x="690" y="188" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">🔄</text>
+        <text x="690" y="215" fontSize="13" fontWeight="bold" fill="#00695c" textAnchor="middle">Monitoring</text>
+        <text x="690" y="230" fontSize="9" fill="#004d40" textAnchor="middle">Track Changes,</text>
+        <text x="690" y="242" fontSize="9" fill="#004d40" textAnchor="middle">New Versions</text>
+        {/* Output */}
+        <g>
+          <rect x="620" y="300" width="110" height="60" rx="5" fill="#ffe0b2" stroke="#e65100" strokeWidth="1.5" />
+          <text x="675" y="318" fontSize="9" fontWeight="bold" fill="#e65100" textAnchor="middle">OUTPUT:</text>
+          <text x="675" y="331" fontSize="8" fill="#e65100" textAnchor="middle">Alerts on</text>
+          <text x="675" y="343" fontSize="8" fill="#e65100" textAnchor="middle">Changes</text>
+        </g>
+      </g>
+
+      {/* Arrow 4 */}
+      <path d="M 760 210 L 810 210" stroke="#333" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)" />
+
+      {/* Stage 5: Compliance */}
+      <g>
+        {/* Input */}
+        <g>
+          <rect x="810" y="60" width="110" height="60" rx="5" fill="#f8bbd0" stroke="#880e4f" strokeWidth="1.5" />
+          <text x="865" y="78" fontSize="9" fontWeight="bold" fill="#880e4f" textAnchor="middle">INPUT:</text>
+          <text x="865" y="91" fontSize="8" fill="#880e4f" textAnchor="middle">Complete</text>
+          <text x="865" y="103" fontSize="8" fill="#880e4f" textAnchor="middle">Risk Data</text>
+        </g>
+        {/* Main Stage */}
+        <rect x="810" y="140" width="140" height="140" rx="10" fill="#f3e5f5" stroke="#7b1fa2" strokeWidth="2" />
+        <circle cx="880" cy="180" r="25" fill="#7b1fa2" />
+        <text x="880" y="188" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle">📋</text>
+        <text x="880" y="215" fontSize="13" fontWeight="bold" fill="#7b1fa2" textAnchor="middle">Compliance</text>
+        <text x="880" y="230" fontSize="9" fill="#4a148c" textAnchor="middle">Reports &amp;</text>
+        <text x="880" y="242" fontSize="9" fill="#4a148c" textAnchor="middle">Dashboards</text>
+        {/* Output */}
+        <g>
+          <rect x="810" y="300" width="110" height="60" rx="5" fill="#e1bee7" stroke="#4a148c" strokeWidth="1.5" />
+          <text x="865" y="318" fontSize="9" fontWeight="bold" fill="#4a148c" textAnchor="middle">OUTPUT:</text>
+          <text x="865" y="331" fontSize="8" fill="#4a148c" textAnchor="middle">Audit-Ready</text>
+          <text x="865" y="343" fontSize="8" fill="#4a148c" textAnchor="middle">Reports</text>
+        </g>
+      </g>
+
+      {/* Feedback loop arrow */}
+      <path d="M 880 290 Q 880 380 120 380 Q 120 290 120 280" stroke="#d32f2f" strokeWidth="2" fill="none" strokeDasharray="5,5" markerEnd="url(#arrowhead-red)" />
+      <text x="500" y="420" fontSize="11" fill="#d32f2f" fontWeight="bold" textAnchor="middle">🔁 Continuous Loop: Rescan after updates to detect new tech, CVEs, and changes</text>
+
+      {/* Key insight boxes */}
+      <g>
+        <rect x="30" y="460" width="320" height="170" rx="8" fill="#bbdefb" stroke="#1976d2" strokeWidth="2" />
+        <text x="190" y="490" fontSize="14" fontWeight="bold" fill="#1976d2" textAnchor="middle">Per-Asset Visibility</text>
+        <text x="190" y="510" fontSize="10" fill="#0d47a1" textAnchor="middle">Each asset gets its own</text>
+        <text x="190" y="524" fontSize="10" fill="#0d47a1" textAnchor="middle">complete tech stack</text>
+        <text x="190" y="538" fontSize="10" fill="#0d47a1" textAnchor="middle">showing:</text>
+        <text x="50" y="560" fontSize="9" fill="#0d47a1">✓ All frameworks &amp; libs</text>
+        <text x="50" y="575" fontSize="9" fill="#0d47a1">✓ Versions &amp; EOL</text>
+        <text x="50" y="590" fontSize="9" fill="#0d47a1">✓ Known CVEs</text>
+        <text x="50" y="605" fontSize="9" fill="#0d47a1">✓ Change history</text>
+      </g>
+
+      <g>
+        <rect x="370" y="460" width="320" height="170" rx="8" fill="#fff9c4" stroke="#f57f17" strokeWidth="2" />
+        <text x="530" y="490" fontSize="14" fontWeight="bold" fill="#f57f17" textAnchor="middle">Risk Context</text>
+        <text x="530" y="510" fontSize="10" fill="#827717" textAnchor="middle">For each finding,</text>
+        <text x="530" y="524" fontSize="10" fill="#827717" textAnchor="middle">understand:</text>
+        <text x="390" y="560" fontSize="9" fill="#827717">✓ Why it matters</text>
+        <text x="390" y="575" fontSize="9" fill="#827717">✓ Impact on asset</text>
+        <text x="390" y="590" fontSize="9" fill="#827717">✓ Dependency chains</text>
+        <text x="390" y="605" fontSize="9" fill="#827717">✓ What to do about it</text>
+      </g>
+
+      <g>
+        <rect x="710" y="460" width="320" height="170" rx="8" fill="#c8e6c9" stroke="#1b5e20" strokeWidth="2" />
+        <text x="870" y="490" fontSize="14" fontWeight="bold" fill="#1b5e20" textAnchor="middle">Actionable Output</text>
+        <text x="870" y="510" fontSize="10" fill="#1b5e20" textAnchor="middle">Everything is</text>
+        <text x="870" y="524" fontSize="10" fill="#1b5e20" textAnchor="middle">ready to act on:</text>
+        <text x="730" y="560" fontSize="9" fill="#1b5e20">✓ Prioritized by risk</text>
+        <text x="730" y="575" fontSize="9" fill="#1b5e20">✓ Remediation paths</text>
+        <text x="730" y="590" fontSize="9" fill="#1b5e20">✓ Track progress</text>
+        <text x="730" y="605" fontSize="9" fill="#1b5e20">✓ Audit trail included</text>
+      </g>
+
+      {/* Arrow markers */}
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <polygon points="0 0, 10 3, 0 6" fill="#333" />
+        </marker>
+        <marker id="arrowhead-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <polygon points="0 0, 10 3, 0 6" fill="#d32f2f" />
+        </marker>
+      </defs>
+    </svg>
+  );
 }
 
 // SVG Illustration Component
@@ -331,137 +532,139 @@ function FeatureIllustration({ type }: { type: string }) {
 // Feature details
 const featureDetails = {
   inventory: {
-    title: "Complete Inventory",
+    title: "Tech Stack Per Asset",
     description:
-      "Unified view of all technologies, frameworks, and services running on every asset",
+      "Complete visibility of all frameworks, libraries, and services running on each IP, subdomain, and web application",
     details:
-      "Automatically discover and catalog every technology component across your entire infrastructure. Get a complete picture of software versions, frameworks, libraries, and services in one centralized dashboard.",
+      "Get a unified view of every technology running on a specific asset. See the complete software stack including frameworks (React, Django, Spring), servers (Apache, Nginx), databases, and third-party services with version information.",
     type: "inventory",
   },
   vulnerability: {
-    title: "Vulnerability Detection",
+    title: "EOL & CVE Correlation",
     description:
-      "Identify CVEs, EOL versions, and security misconfigurations automatically",
+      "Automatically identify outdated technologies and correlate them with known vulnerabilities",
     details:
-      "Scan your tech stack against known vulnerability databases. Automatically identify outdated components, end-of-life versions, and security misconfigurations with real-time alerts and severity ratings.",
+      "Instantly flag end-of-life (EOL) versions and out-of-date technologies. Correlate detected tech stacks with CVE databases to see which vulnerabilities directly impact your assets. Get severity ratings and affected versions.",
     type: "vulnerability",
   },
   riskScoring: {
-    title: "Risk Scoring",
+    title: "Risk Prioritization",
     description:
-      "Enterprise and domain-level scoring with actionable prioritization",
+      "Understand which tech stack issues to address first based on impact and criticality",
     details:
-      "Get actionable risk scores at the enterprise level and per domain/team. Automatically prioritize which vulnerabilities and components to address first based on impact and criticality.",
+      "Get actionable risk scores that help you prioritize remediation. Know which EOL versions, vulnerable frameworks, and outdated libraries pose the highest risk to your specific assets so you can focus resources effectively.",
     type: "riskScoring",
   },
   dependency: {
-    title: "Dependency Mapping",
+    title: "Technology Relationships",
     description:
-      "Visualize technology relationships and blast radius impact analysis",
+      "Visualize how technologies on an asset are interconnected and understand dependencies",
     details:
-      "See how technologies are interconnected and understand the cascading impact when removing or updating components. Interactive graphs show dependency chains and affected services.",
+      "See how frameworks, libraries, and services are related on each asset. Understand cascading impacts when you update or remove a component. Get context on which technologies depend on others.",
     type: "dependency",
   },
   compliance: {
-    title: "Compliance Tracking",
+    title: "Audit & Compliance Ready",
     description:
-      "Export dashboards and PDF reports for SOC 2, ISO, HIPAA, and PCI-DSS compliance",
+      "Export tech stack findings for compliance audits and security certifications",
     details:
-      "Generate compliance-ready reports with executive summaries, risk metrics, and remediation status. Export to PDF or dashboard format for board presentations and audit requirements.",
+      "Generate detailed compliance reports showing the complete tech stack, identified risks, and remediation status. Export findings for SOC 2, ISO 27001, and other audit requirements with executive summaries.",
     type: "compliance",
   },
   monitoring: {
-    title: "Continuous Monitoring",
+    title: "Change Tracking",
     description:
-      "Track technology changes, scan regularly, and rescan after updates",
+      "Track what's changed in your tech stack over time and get alerted to new findings",
     details:
-      "Set up automated, continuous scanning of your infrastructure. Schedule regular scans and automatic rescans after updates to stay ahead of newly discovered vulnerabilities.",
+      "Monitor tech stack changes across assets over time. Get alerted when new technologies are detected, versions are upgraded, or components are removed. See the evolution of your infrastructure with historical data.",
     type: "monitoring",
   },
 };
 
 const slides: Slide[] = [
   {
-    title: "Tech Stack Management",
-    subtitle: "What It Does & Why It Matters",
+    title: "BeVigil Tech Stack Discovery",
+    subtitle: "Unified View of Technologies, Frameworks & Services Per Asset",
     content: (
       <div className="space-y-4">
-        {/* Problem & Solution */}
+        {/* Core Question */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-lg border-2 border-blue-800">
-          <h4 className="text-lg font-bold mb-3">🎯 The Challenge</h4>
-          <p className="mb-3">
-            Organizations struggle to answer:{" "}
-            <span className="italic font-semibold">
-              "What's running on our assets, is it safe, and what should we do
-              about it?"
-            </span>
+          <h4 className="text-lg font-bold mb-3">👉 The Key Question</h4>
+          <p className="text-center text-lg font-semibold italic mb-2">
+            "What exactly is running here, is it safe, and what should I do about it?"
           </p>
           <p className="text-sm">
-            Without unified visibility into tech stacks, you can't identify
-            outdated technologies, correlate CVEs with components, or prioritize
-            remediation effectively.
+            BeVigil's Tech Stack page answers this by providing a unified, enriched view of all technologies, frameworks, and services running on each asset—giving you complete visibility into your attack surface.
           </p>
         </div>
 
-        {/* Business Value */}
+        {/* The Problem */}
+        <div className="bg-red-50 border-2 border-red-300 p-4 rounded-lg">
+          <h5 className="font-bold text-red-900 mb-3">⚠️ The Problem</h5>
+          <p className="text-sm text-gray-700 mb-3">
+            Traditional EASM solutions show you assets, but lack a dedicated, unified view of the complete tech stack running on each one. Without this, customers struggle to:
+          </p>
+          <ul className="text-sm text-gray-700 space-y-1 ml-4">
+            <li>🔸 Understand what software, frameworks, and libraries are running</li>
+            <li>🔸 Identify outdated or end-of-life (EOL) technologies that pose risk</li>
+            <li>🔸 Correlate detected technologies with CVEs and misconfigurations</li>
+            <li>🔸 Track changes in the stack over time (upgrades, removals, new components)</li>
+            <li>🔸 Prioritize and act on risks with remediation context</li>
+          </ul>
+        </div>
+
+        {/* The Solution */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg">
-            <h5 className="font-bold text-green-900 mb-2">📊 Business Value</h5>
+            <h5 className="font-bold text-green-900 mb-2">✅ What You Get</h5>
             <ul className="text-sm text-gray-700 space-y-1">
-              <li>✓ Reduce breach risk by 90%+</li>
-              <li>✓ Meet compliance (SOC 2, ISO, HIPAA, PCI-DSS)</li>
-              <li>✓ Quantifiable security ROI</li>
-              <li>✓ Executive dashboards & PDF reports</li>
+              <li>✓ Complete tech stack per asset (IP, subdomain, webapp)</li>
+              <li>✓ Automated detection of all frameworks & libraries</li>
+              <li>✓ EOL & vulnerable technology identification</li>
+              <li>✓ CVE correlation with detected tech</li>
+              <li>✓ Historical tracking & change detection</li>
+              <li>✓ Risk-prioritized remediation actions</li>
             </ul>
           </div>
 
           <div className="bg-purple-50 border-2 border-purple-300 p-4 rounded-lg">
-            <h5 className="font-bold text-purple-900 mb-2">
-              👨‍💻 DevSecOps Benefits
-            </h5>
+            <h5 className="font-bold text-purple-900 mb-2">🎯 Key Insights</h5>
             <ul className="text-sm text-gray-700 space-y-1">
-              <li>✓ See complete tech stack per asset</li>
-              <li>✓ Identify EOL & vulnerable tech</li>
-              <li>✓ Correlate tech with CVEs</li>
-              <li>✓ Track changes over time</li>
+              <li>📊 See exactly what's running on each asset</li>
+              <li>⚡ Know the risk level instantly</li>
+              <li>🔗 Understand tech dependencies</li>
+              <li>📈 Track improvements over time</li>
+              <li>🛡️ Reduce breach risk by understanding your stack</li>
+              <li>✔️ Meet compliance & audit requirements</li>
             </ul>
           </div>
         </div>
 
-        {/* CISO & Enterprise Features */}
-        <div className="bg-slate-900 text-white p-4 rounded-lg border-2 border-slate-700">
-          <h5 className="font-bold mb-2">🏢 Enterprise Capabilities</h5>
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-slate-800 p-2 rounded text-center">
-              <p className="text-xs font-semibold">Overall Risk Scoring</p>
-              <p className="text-xs mt-1">Enterprise-wide assessment</p>
-            </div>
-            <div className="bg-slate-800 p-2 rounded text-center">
-              <p className="text-xs font-semibold">Domain-Level Scoring</p>
-              <p className="text-xs mt-1">Granular by team/dept</p>
-            </div>
-            <div className="bg-slate-800 p-2 rounded text-center">
-              <p className="text-xs font-semibold">Highest Accuracy</p>
-              <p className="text-xs mt-1">Zero false positives</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Key Outcome */}
+        {/* Core Value */}
         <div className="bg-indigo-50 border-2 border-indigo-400 p-4 rounded-lg">
-          <h5 className="font-bold text-indigo-900 mb-2">🚀 The Outcome</h5>
+          <h5 className="font-bold text-indigo-900 mb-2">💎 The Value</h5>
           <p className="text-sm text-gray-700">
-            A unified view of all technologies running on your assets with
-            automated risk scoring, compliance readiness, and actionable
-            remediation guidance.
+            Move beyond asset discovery. Get complete visibility into every technology running on each asset, automatically correlate with threats, and take action with confidence. Inside BeVigil's EASM platform, Tech Stack becomes your most powerful tool for understanding and securing your attack surface.
           </p>
         </div>
       </div>
     ),
   },
   {
-    title: "Key Features & Capabilities",
-    subtitle: "What You Get - Click to Expand",
+    title: "Tech Stack Discovery Workflow",
+    subtitle: "Per-Asset: From Detection to Remediation Action",
+    content: (
+      <div className="space-y-6 w-full">
+        {/* Flow Diagram */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden w-full">
+          <CompleteFlowDiagram />
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: "Tech Stack Features in BeVigil",
+    subtitle: "Answer Every Question About Your Assets - Click to Expand",
     content: <FeatureCardsSlide />,
   },
 ];
@@ -470,15 +673,45 @@ const slides: Slide[] = [
 function FeatureModal({
   feature,
   onClose,
+  onNext,
+  onPrev,
+  canGoNext,
+  canGoPrev,
 }: {
   feature: (typeof featureDetails)[keyof typeof featureDetails] | null;
   onClose: () => void;
+  onNext?: () => void;
+  onPrev?: () => void;
+  canGoNext?: boolean;
+  canGoPrev?: boolean;
 }) {
   if (!feature) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-90vh overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-90vh overflow-y-auto relative">
+        {/* Left Arrow Button */}
+        {canGoPrev && onPrev && (
+          <button
+            onClick={onPrev}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition"
+            title="Previous feature"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+        )}
+
+        {/* Right Arrow Button */}
+        {canGoNext && onNext && (
+          <button
+            onClick={onNext}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition"
+            title="Next feature"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        )}
+
         {/* Close Button */}
         <div className="sticky top-0 flex justify-between items-center p-6 border-b bg-white">
           <h2 className="text-2xl font-bold text-gray-900">{feature.title}</h2>
@@ -547,6 +780,26 @@ function FeatureCardsSlide() {
     { id: "compliance", emoji: "📈", key: "compliance" as const },
     { id: "monitoring", emoji: "⚡", key: "monitoring" as const },
   ];
+
+  // Handle arrow navigation when card is expanded
+  useEffect(() => {
+    if (!expandedFeature) return;
+
+    const currentIndex = features.findIndex((f) => f.key === expandedFeature);
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight" && currentIndex < features.length - 1) {
+        e.preventDefault();
+        setExpandedFeature(features[currentIndex + 1].key);
+      } else if (e.key === "ArrowLeft" && currentIndex > 0) {
+        e.preventDefault();
+        setExpandedFeature(features[currentIndex - 1].key);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [expandedFeature]);
 
   const cardColors = {
     inventory: {
@@ -621,24 +874,47 @@ function FeatureCardsSlide() {
 
       {/* Why It Matters */}
       <div className="bg-gradient-to-r from-orange-50 to-rose-50 p-5 rounded-lg border-2 border-orange-300">
-        <h5 className="font-bold text-orange-900 mb-2">💡 Why This Matters</h5>
+        <h5 className="font-bold text-orange-900 mb-2">💡 Why This Matters for EASM</h5>
         <p className="text-sm text-gray-700 mb-2">
-          <span className="font-semibold">For CISOs:</span> Complete visibility
-          to reduce breach risk, meet compliance, and demonstrate security ROI
-          to the board.
+          <span className="font-semibold">Tech Stack ≠ Just Another Asset List:</span> It transforms asset discovery into actionable intelligence by showing exactly what's running, what's vulnerable, and what to do about it.
+        </p>
+        <p className="text-sm text-gray-700 mb-2">
+          <span className="font-semibold">For Security Teams:</span> Move beyond "we found an asset" to "here's every tech on it, here's the risk, here's what to fix."
         </p>
         <p className="text-sm text-gray-700">
-          <span className="font-semibold">For DevSecOps:</span> Automated
-          scanning, smart prioritization, and context-aware remediation guidance
-          to secure your stack efficiently.
+          <span className="font-semibold">For Customers:</span> Answer the #1 question teams ask: "What exactly is running on this asset and is it safe?"
         </p>
       </div>
 
       {/* Feature Modal */}
-      <FeatureModal
-        feature={selectedFeature}
-        onClose={() => setExpandedFeature(null)}
-      />
+      {expandedFeature && (
+        <FeatureModal
+          feature={selectedFeature}
+          onClose={() => setExpandedFeature(null)}
+          onNext={() => {
+            const currentIndex = features.findIndex((f) => f.key === expandedFeature);
+            if (currentIndex < features.length - 1) {
+              setExpandedFeature(features[currentIndex + 1].key);
+            }
+          }}
+          onPrev={() => {
+            const currentIndex = features.findIndex((f) => f.key === expandedFeature);
+            if (currentIndex > 0) {
+              setExpandedFeature(features[currentIndex - 1].key);
+            }
+          }}
+          canGoNext={
+            expandedFeature
+              ? features.findIndex((f) => f.key === expandedFeature) < features.length - 1
+              : false
+          }
+          canGoPrev={
+            expandedFeature
+              ? features.findIndex((f) => f.key === expandedFeature) > 0
+              : false
+          }
+        />
+      )}
     </div>
   );
 }
@@ -658,6 +934,20 @@ export default function TechStackSlideshow() {
       setCurrentSlide(currentSlide - 1);
     }
   };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") {
+        nextSlide();
+      } else if (e.key === "ArrowLeft") {
+        prevSlide();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [currentSlide]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -689,20 +979,43 @@ export default function TechStackSlideshow() {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-6 py-12">
         <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-          {/* Slide Container */}
-          <div className="min-h-96 p-12 bg-gradient-to-br from-slate-50 to-white">
-            {/* Slide Title */}
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                {slide.title}
-              </h1>
-              {slide.subtitle && (
-                <p className="text-xl text-gray-600">{slide.subtitle}</p>
-              )}
-            </div>
+          {/* Slide Container with Arrow Navigation */}
+          <div className="relative flex items-center">
+            {/* Left Arrow */}
+            <button
+              onClick={prevSlide}
+              disabled={currentSlide === 0}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 p-2 rounded-full bg-white shadow-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition"
+              title="Previous slide"
+            >
+              <ChevronLeft className="w-8 h-8 text-blue-600" />
+            </button>
 
             {/* Slide Content */}
-            <div className="mb-8">{slide.content}</div>
+            <div className="min-h-96 p-12 bg-gradient-to-br from-slate-50 to-white w-full flex flex-col items-center">
+              {/* Slide Title */}
+              <div className="mb-8 w-full text-center">
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  {slide.title}
+                </h1>
+                {slide.subtitle && (
+                  <p className="text-xl text-gray-600">{slide.subtitle}</p>
+                )}
+              </div>
+
+              {/* Slide Content */}
+              <div className="mb-8 w-full">{slide.content}</div>
+            </div>
+
+            {/* Right Arrow */}
+            <button
+              onClick={nextSlide}
+              disabled={currentSlide === slides.length - 1}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 p-2 rounded-full bg-white shadow-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition"
+              title="Next slide"
+            >
+              <ChevronRight className="w-8 h-8 text-blue-600" />
+            </button>
           </div>
 
           {/* Progress Bar */}
@@ -713,35 +1026,11 @@ export default function TechStackSlideshow() {
             ></div>
           </div>
 
-          {/* Navigation */}
-          <div className="bg-gray-50 px-12 py-6 flex items-center justify-between">
-            <Button
-              onClick={prevSlide}
-              disabled={currentSlide === 0}
-              variant="outline"
-              size="lg"
-              className="gap-2"
-            >
-              <ChevronLeft className="w-5 h-5" />
-              Previous
-            </Button>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-600">
-                Slide {currentSlide + 1} of {slides.length}
-              </span>
-            </div>
-
-            <Button
-              onClick={nextSlide}
-              disabled={currentSlide === slides.length - 1}
-              variant="outline"
-              size="lg"
-              className="gap-2"
-            >
-              Next
-              <ChevronRight className="w-5 h-5" />
-            </Button>
+          {/* Progress Indicator */}
+          <div className="bg-gray-50 px-12 py-4 flex items-center justify-center">
+            <span className="text-sm font-medium text-gray-600">
+              Slide {currentSlide + 1} of {slides.length} — Use arrow buttons or keyboard arrows to navigate
+            </span>
           </div>
 
           {/* Slide Thumbnails */}
@@ -767,27 +1056,6 @@ export default function TechStackSlideshow() {
           </div>
         </div>
 
-        {/* Quick Tips */}
-        <div className="mt-8 grid grid-cols-3 gap-4">
-          <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-            <p className="text-sm text-gray-700">
-              <span className="font-semibold">Slide 1:</span> Understand what
-              the solution does and its business impact
-            </p>
-          </div>
-          <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
-            <p className="text-sm text-gray-700">
-              <span className="font-semibold">Slide 2:</span> See all the key
-              features and capabilities
-            </p>
-          </div>
-          <div className="bg-purple-50 border border-purple-200 p-4 rounded-lg">
-            <p className="text-sm text-gray-700">
-              <span className="font-semibold">💡 Tip:</span> Use navigation
-              buttons or click slide numbers
-            </p>
-          </div>
-        </div>
       </main>
     </div>
   );
