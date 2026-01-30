@@ -593,14 +593,6 @@ const slides: Slide[] = [
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <CompleteFlowDiagram />
         </div>
-
-        {/* Key Insight */}
-        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-300 p-4 rounded-lg">
-          <h5 className="font-bold text-indigo-900 mb-2">💡 Inside BeVigil</h5>
-          <p className="text-sm text-gray-700">
-            Tech Stack answers the core EASM question for every asset you discover: <span className="font-semibold">"What's running here, is it safe, and what do I do?"</span> All inside your BeVigil dashboard with one click per asset.
-          </p>
-        </div>
       </div>
     ),
   },
