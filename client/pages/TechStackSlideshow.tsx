@@ -128,6 +128,155 @@ const slides: Slide[] = [
   },
 ];
 
+// Feature Modal Component
+function FeatureModal({ feature, onClose }: { feature: typeof featureDetails.inventory | null; onClose: () => void }) {
+  if (!feature) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-90vh overflow-y-auto">
+        {/* Close Button */}
+        <div className="sticky top-0 flex justify-between items-center p-6 border-b bg-white">
+          <h2 className="text-2xl font-bold text-gray-900">{feature.title}</h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg transition"
+          >
+            <X className="w-6 h-6 text-gray-600" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 space-y-4">
+          {/* GIF/Illustration */}
+          <div className="bg-gray-100 rounded-lg overflow-hidden">
+            <img
+              src={feature.gif}
+              alt={feature.title}
+              className="w-full h-64 object-cover"
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-2">Overview</h3>
+            <p className="text-gray-700">
+              {feature.description}
+            </p>
+          </div>
+
+          {/* Detailed Info */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-2">How It Works</h3>
+            <p className="text-gray-700">
+              {feature.details}
+            </p>
+          </div>
+
+          {/* Key Benefits */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-2">Key Benefits</h3>
+            <ul className="text-sm text-gray-700 space-y-1 ml-4">
+              <li>✓ Automated detection and discovery</li>
+              <li>✓ Real-time alerts and notifications</li>
+              <li>✓ Actionable insights and recommendations</li>
+              <li>✓ Integration with existing workflows</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="border-t p-6 bg-gray-50 flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Feature Cards Slide Component
+function FeatureCardsSlide() {
+  const [expandedFeature, setExpandedFeature] = useState<string | null>(null);
+
+  const features = [
+    { id: "inventory", emoji: "📚", key: "inventory" as const },
+    { id: "vulnerability", emoji: "🔍", key: "vulnerability" as const },
+    { id: "riskScoring", emoji: "📊", key: "riskScoring" as const },
+    { id: "dependency", emoji: "🔗", key: "dependency" as const },
+    { id: "compliance", emoji: "📈", key: "compliance" as const },
+    { id: "monitoring", emoji: "⚡", key: "monitoring" as const }
+  ];
+
+  const cardColors = {
+    inventory: { bg: "from-blue-50 to-blue-100", border: "border-blue-300", title: "text-blue-900" },
+    vulnerability: { bg: "from-red-50 to-red-100", border: "border-red-300", title: "text-red-900" },
+    riskScoring: { bg: "from-green-50 to-green-100", border: "border-green-300", title: "text-green-900" },
+    dependency: { bg: "from-purple-50 to-purple-100", border: "border-purple-300", title: "text-purple-900" },
+    compliance: { bg: "from-yellow-50 to-yellow-100", border: "border-yellow-300", title: "text-yellow-900" },
+    monitoring: { bg: "from-cyan-50 to-cyan-100", border: "border-cyan-300", title: "text-cyan-900" }
+  };
+
+  const selectedFeature = expandedFeature ? featureDetails[expandedFeature as keyof typeof featureDetails] : null;
+
+  return (
+    <div className="space-y-4">
+      {/* Core Features */}
+      <div className="grid grid-cols-2 gap-4">
+        {features.map(feature => {
+          const colors = cardColors[feature.key];
+          const featureData = featureDetails[feature.key];
+          return (
+            <div
+              key={feature.id}
+              className={`bg-gradient-to-br ${colors.bg} p-5 rounded-lg border-2 ${colors.border} relative group hover:shadow-lg transition`}
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h4 className={`font-bold ${colors.title} mb-2`}>
+                    {feature.emoji} {featureData.title}
+                  </h4>
+                  <p className="text-sm text-gray-700">
+                    {featureData.description}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setExpandedFeature(feature.key)}
+                  className="ml-3 p-2 rounded-lg bg-white/50 group-hover:bg-white shadow-sm hover:shadow-md transition flex-shrink-0"
+                  title="Click to expand"
+                >
+                  <Expand className="w-4 h-4 text-gray-700 hover:text-blue-600" />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Why It Matters */}
+      <div className="bg-gradient-to-r from-orange-50 to-rose-50 p-5 rounded-lg border-2 border-orange-300">
+        <h5 className="font-bold text-orange-900 mb-2">💡 Why This Matters</h5>
+        <p className="text-sm text-gray-700 mb-2">
+          <span className="font-semibold">For CISOs:</span> Complete visibility to reduce breach risk, meet compliance, and demonstrate security ROI to the board.
+        </p>
+        <p className="text-sm text-gray-700">
+          <span className="font-semibold">For DevSecOps:</span> Automated scanning, smart prioritization, and context-aware remediation guidance to secure your stack efficiently.
+        </p>
+      </div>
+
+      {/* Feature Modal */}
+      <FeatureModal
+        feature={selectedFeature}
+        onClose={() => setExpandedFeature(null)}
+      />
+    </div>
+  );
+}
+
 export default function TechStackSlideshow() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
