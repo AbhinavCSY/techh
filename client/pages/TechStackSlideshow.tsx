@@ -515,6 +515,50 @@ const featureDetails = {
 
 const slides: Slide[] = [
   {
+    title: "Complete Product Flow",
+    subtitle: "End-to-End Workflow: From Discovery to Compliance",
+    content: (
+      <div className="space-y-6">
+        {/* Flow Diagram */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <CompleteFlowDiagram />
+        </div>
+
+        {/* Explanation */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg">
+            <h5 className="font-bold text-blue-900 mb-2">🔄 The Process</h5>
+            <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
+              <li><span className="font-semibold">Discovery:</span> Scan all assets</li>
+              <li><span className="font-semibold">Analysis:</span> Find CVEs &amp; dependencies</li>
+              <li><span className="font-semibold">Scoring:</span> Enterprise risk assessment</li>
+              <li><span className="font-semibold">Monitoring:</span> Continuous scanning</li>
+              <li><span className="font-semibold">Compliance:</span> Generate reports</li>
+            </ol>
+          </div>
+
+          <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg">
+            <h5 className="font-bold text-green-900 mb-2">👥 Multiple Views</h5>
+            <ul className="text-sm text-gray-700 space-y-2">
+              <li><span className="font-semibold">🏢 CISOs:</span> Executive dashboards &amp; metrics</li>
+              <li><span className="font-semibold">👨‍💻 DevSecOps:</span> Prioritized tasks &amp; automations</li>
+              <li><span className="font-semibold">📊 Enterprise:</span> Multi-domain analytics</li>
+              <li><span className="font-semibold">📋 Auditors:</span> Compliance-ready docs</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Key Insight */}
+        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-300 p-4 rounded-lg">
+          <h5 className="font-bold text-indigo-900 mb-2">💡 Key Insight</h5>
+          <p className="text-sm text-gray-700">
+            The entire workflow is <span className="font-semibold">automated and continuous</span>. Once set up, the system continuously monitors your tech stack, detects new vulnerabilities, prioritizes risks, and keeps compliance documentation up-to-date in real-time.
+          </p>
+        </div>
+      </div>
+    ),
+  },
+  {
     title: "Tech Stack Management",
     subtitle: "What It Does & Why It Matters",
     content: (
