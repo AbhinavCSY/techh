@@ -246,6 +246,158 @@ const slides: Slide[] = [
     ),
   },
   {
+    title: "Scanning Assets",
+    subtitle: "How to Identify Vulnerabilities",
+    content: (
+      <div className="space-y-4">
+        <div className="bg-blue-50 p-5 rounded-lg border-2 border-blue-300">
+          <h4 className="font-semibold text-blue-900 mb-3 text-lg">
+            🔍 What is Asset Scanning?
+          </h4>
+          <p className="text-gray-700 mb-3">
+            Scanning is the process of analyzing your technology assets to identify known security vulnerabilities (CVEs), check for deprecated versions, and assess overall risk.
+          </p>
+          <ul className="text-sm text-gray-700 space-y-1 ml-4">
+            <li>✓ Detects known CVEs in your tech stack</li>
+            <li>✓ Identifies end-of-life (EOL) versions</li>
+            <li>✓ Assesses security risk levels</li>
+            <li>✓ Generates vulnerability reports</li>
+          </ul>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+            <h4 className="font-semibold text-red-900 mb-2">Scanned Assets</h4>
+            <p className="text-sm text-gray-700">
+              Complete analysis performed with known vulnerabilities identified
+            </p>
+          </div>
+          <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+            <h4 className="font-semibold text-yellow-900 mb-2">Unscanned Assets</h4>
+            <p className="text-sm text-gray-700">
+              Pending analysis - run scan to identify vulnerabilities
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-green-50 p-4 rounded-lg border-2 border-green-300">
+          <h4 className="font-semibold text-green-900 mb-2">✨ Quick Tip</h4>
+          <p className="text-sm text-gray-700">
+            Select specific assets or scan your entire inventory at once using the "Scan Selected Assets" button
+          </p>
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: "Understanding Scan Results",
+    subtitle: "Interpreting Vulnerability Findings",
+    content: (
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+            <h3 className="font-bold text-red-700 mb-2">🔴 Critical</h3>
+            <p className="text-sm text-gray-700">
+              Severe vulnerabilities requiring immediate action
+            </p>
+            <div className="text-xs text-gray-600 mt-2">
+              CVSS Score: 9.0+
+            </div>
+          </div>
+
+          <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+            <h3 className="font-bold text-orange-700 mb-2">🟠 High</h3>
+            <p className="text-sm text-gray-700">
+              Serious vulnerabilities needing prompt attention
+            </p>
+            <div className="text-xs text-gray-600 mt-2">
+              CVSS Score: 7.0-8.9
+            </div>
+          </div>
+
+          <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+            <h3 className="font-bold text-yellow-700 mb-2">🟡 Medium</h3>
+            <p className="text-sm text-gray-700">
+              Moderate vulnerabilities to address soon
+            </p>
+            <div className="text-xs text-gray-600 mt-2">
+              CVSS Score: 4.0-6.9
+            </div>
+          </div>
+
+          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+            <h3 className="font-bold text-green-700 mb-2">🟢 Low</h3>
+            <p className="text-sm text-gray-700">
+              Minor vulnerabilities, lower priority
+            </p>
+            <div className="text-xs text-gray-600 mt-2">
+              CVSS Score: 0.1-3.9
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-indigo-50 p-4 rounded-lg border-2 border-indigo-300">
+          <h4 className="font-semibold text-indigo-900 mb-2">📊 Reading the CVE Pie Chart</h4>
+          <p className="text-sm text-gray-700">
+            View the "CVEs Pie Chart" widget to see the breakdown of your vulnerabilities by severity, helping you prioritize remediation efforts
+          </p>
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: "Rescan & Updates",
+    subtitle: "Keeping Your Security Data Fresh",
+    content: (
+      <div className="space-y-4">
+        <div className="bg-blue-50 p-5 rounded-lg border-2 border-blue-300">
+          <h4 className="font-semibold text-blue-900 mb-3 text-lg">
+            🔄 What is Rescanning?
+          </h4>
+          <p className="text-gray-700 mb-3">
+            Rescanning re-analyzes your assets to discover new vulnerabilities, verify if previously found issues still exist, and update your risk profile after applying patches or upgrades.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+            <h4 className="font-semibold text-purple-900 mb-2">
+              ⏱️ After Updates
+            </h4>
+            <p className="text-sm text-gray-700">
+              Rescan after upgrading technologies to confirm vulnerabilities are resolved
+            </p>
+          </div>
+          <div className="bg-cyan-50 p-4 rounded-lg border border-cyan-200">
+            <h4 className="font-semibold text-cyan-900 mb-2">
+              📆 Regular Schedule
+            </h4>
+            <p className="text-sm text-gray-700">
+              Run weekly or monthly scans to catch newly discovered vulnerabilities
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-green-50 p-4 rounded-lg border-2 border-green-300">
+          <h4 className="font-semibold text-green-900 mb-2">✅ Rescan Benefits</h4>
+          <ul className="text-sm text-gray-700 space-y-1 ml-4">
+            <li>✓ Discover newly published CVEs</li>
+            <li>✓ Verify patch effectiveness</li>
+            <li>✓ Track remediation progress</li>
+            <li>✓ Maintain current security posture</li>
+          </ul>
+        </div>
+
+        <div className="bg-orange-50 p-4 rounded-lg border-2 border-orange-300">
+          <h4 className="font-semibold text-orange-900 mb-2">💡 Best Practice</h4>
+          <p className="text-sm text-gray-700">
+            Rescan at least monthly, or immediately after any technology upgrades or patches
+          </p>
+        </div>
+      </div>
+    ),
+  },
+  {
     title: "Key Metrics & Analytics",
     subtitle: "What You Can Monitor",
     content: (
