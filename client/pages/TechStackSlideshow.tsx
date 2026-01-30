@@ -12,741 +12,132 @@ interface Slide {
 
 const slides: Slide[] = [
   {
-    title: "Tech Stack Inventory Management",
-    subtitle: "Comprehensive Asset Tracking & Dependency Analysis",
-    content: (
-      <div className="space-y-6 text-center">
-        <div className="text-6xl mb-4">📚</div>
-        <p className="text-2xl text-gray-700">
-          Stay in Control of Your Technology Dependencies
-        </p>
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 text-left mt-6">
-          <p className="text-gray-700">
-            A comprehensive platform to monitor, analyze, and manage your tech
-            stacks, identify vulnerabilities, and track end-of-life software
-          </p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "Key Features",
-    subtitle: "What You Can Do",
-    content: (
-      <div className="grid grid-cols-2 gap-6">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
-          <div className="text-3xl mb-2">📊</div>
-          <h3 className="text-lg font-semibold mb-2 text-gray-900">
-            Inventory Management
-          </h3>
-          <p className="text-sm text-gray-700">
-            Track all tech stacks and assets across your organization
-          </p>
-        </div>
-
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200">
-          <div className="text-3xl mb-2">🔗</div>
-          <h3 className="text-lg font-semibold mb-2 text-gray-900">
-            Dependency Visualization
-          </h3>
-          <p className="text-sm text-gray-700">
-            See how technologies are interconnected and related
-          </p>
-        </div>
-
-        <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-lg border border-red-200">
-          <div className="text-3xl mb-2">🚨</div>
-          <h3 className="text-lg font-semibold mb-2 text-gray-900">
-            Vulnerability Detection
-          </h3>
-          <p className="text-sm text-gray-700">
-            Identify CVEs and security risks in your dependencies
-          </p>
-        </div>
-
-        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-lg border border-yellow-200">
-          <div className="text-3xl mb-2">⏳</div>
-          <h3 className="text-lg font-semibold mb-2 text-gray-900">
-            EOL Tracking
-          </h3>
-          <p className="text-sm text-gray-700">
-            Monitor end-of-life dates for your technologies
-          </p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "Core Capabilities",
-    subtitle: "What Makes This Platform Powerful",
+    title: "Tech Stack Management",
+    subtitle: "What It Does & Why It Matters",
     content: (
       <div className="space-y-4">
-        <div className="flex gap-4">
-          <div className="flex-shrink-0">
-            <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
-              1
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-1">
-              Advanced Filtering & Sorting
-            </h4>
-            <p className="text-gray-700">
-              Filter by tech stack, asset type, vulnerability status, and more
-            </p>
-          </div>
-        </div>
-
-        <div className="flex gap-4">
-          <div className="flex-shrink-0">
-            <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
-              2
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-1">
-              Multiple View Options
-            </h4>
-            <p className="text-gray-700">
-              Switch between card view and table view for different use cases
-            </p>
-          </div>
-        </div>
-
-        <div className="flex gap-4">
-          <div className="flex-shrink-0">
-            <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
-              3
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-1">
-              Interactive Dependency Graphs
-            </h4>
-            <p className="text-gray-700">
-              Visualize complex relationships and dependencies in real-time
-            </p>
-          </div>
-        </div>
-
-        <div className="flex gap-4">
-          <div className="flex-shrink-0">
-            <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
-              4
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-1">
-              Data Export & Reporting
-            </h4>
-            <p className="text-gray-700">
-              Export data in multiple formats (CSV, JSON, PDF) for reporting
-            </p>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "Benefits & Value",
-    subtitle: "Why Your Team Needs This",
-    content: (
-      <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white border-2 border-green-200 p-6 rounded-lg">
-          <h3 className="text-lg font-semibold text-green-700 mb-3">
-            🛡️ Risk Mitigation
-          </h3>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li>✓ Identify security vulnerabilities early</li>
-            <li>✓ Stay compliant with security standards</li>
-            <li>✓ Reduce exposure to CVEs</li>
-          </ul>
-        </div>
-
-        <div className="bg-white border-2 border-blue-200 p-6 rounded-lg">
-          <h3 className="text-lg font-semibold text-blue-700 mb-3">
-            ⚡ Operational Efficiency
-          </h3>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li>✓ Centralized inventory management</li>
-            <li>✓ Quick dependency lookups</li>
-            <li>✓ Automated risk assessment</li>
-          </ul>
-        </div>
-
-        <div className="bg-white border-2 border-purple-200 p-6 rounded-lg">
-          <h3 className="text-lg font-semibold text-purple-700 mb-3">
-            👥 Team Collaboration
-          </h3>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li>✓ Shared visibility across teams</li>
-            <li>✓ Easy documentation sharing</li>
-            <li>✓ Data-driven decisions</li>
-          </ul>
-        </div>
-
-        <div className="bg-white border-2 border-orange-200 p-6 rounded-lg">
-          <h3 className="text-lg font-semibold text-orange-700 mb-3">
-            💰 Cost Savings
-          </h3>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li>✓ Avoid security incidents</li>
-            <li>✓ Plan tech upgrades better</li>
-            <li>✓ Optimize your tech stack</li>
-          </ul>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "Tech Stack Management for CISOs",
-    subtitle: "Enterprise-Level Security & Compliance Leadership",
-    content: (
-      <div className="space-y-3 max-h-96 overflow-y-auto">
-        {/* What is Tech Stack Page */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-lg border-2 border-blue-800">
-          <h4 className="text-lg font-bold mb-2">📊 What is the Tech Stack Page?</h4>
-          <p className="text-sm mb-2">
-            A unified, enriched view of all technologies, frameworks, and services running on each asset (IP, subdomain, or web application).
+        {/* Problem & Solution */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-lg border-2 border-blue-800">
+          <h4 className="text-lg font-bold mb-3">🎯 The Challenge</h4>
+          <p className="mb-3">
+            Organizations struggle to answer: <span className="italic font-semibold">"What's running on our assets, is it safe, and what should we do about it?"</span>
           </p>
-          <p className="text-sm font-semibold">Answers the critical question:</p>
-          <p className="text-sm italic ml-2">
-            "What exactly is running here, is it safe, and what should I do about it?"
+          <p className="text-sm">
+            Without unified visibility into tech stacks, you can't identify outdated technologies, correlate CVEs with components, or prioritize remediation effectively.
           </p>
         </div>
 
-        {/* Key Problems Solved */}
-        <div className="bg-red-50 border-2 border-red-300 p-4 rounded-lg">
-          <h4 className="font-bold text-red-900 mb-2">⚠️ Problems We Solve</h4>
-          <ul className="text-xs text-gray-700 space-y-1 ml-3">
-            <li>✓ See complete tech stack on every asset (no blind spots)</li>
-            <li>✓ Identify outdated & end-of-life (EOL) technologies</li>
-            <li>✓ Correlate tech components with CVEs & misconfigurations</li>
-            <li>✓ Track stack changes over time (upgrades, additions, removals)</li>
-            <li>✓ Prioritize remediation with clear context</li>
-          </ul>
+        {/* Business Value */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg">
+            <h5 className="font-bold text-green-900 mb-2">📊 Business Value</h5>
+            <ul className="text-sm text-gray-700 space-y-1">
+              <li>✓ Reduce breach risk by 90%+</li>
+              <li>✓ Meet compliance (SOC 2, ISO, HIPAA, PCI-DSS)</li>
+              <li>✓ Quantifiable security ROI</li>
+              <li>✓ Executive dashboards & PDF reports</li>
+            </ul>
+          </div>
+
+          <div className="bg-purple-50 border-2 border-purple-300 p-4 rounded-lg">
+            <h5 className="font-bold text-purple-900 mb-2">👨‍💻 DevSecOps Benefits</h5>
+            <ul className="text-sm text-gray-700 space-y-1">
+              <li>✓ See complete tech stack per asset</li>
+              <li>✓ Identify EOL & vulnerable tech</li>
+              <li>✓ Correlate tech with CVEs</li>
+              <li>✓ Track changes over time</li>
+            </ul>
+          </div>
         </div>
 
-        {/* Organizational Control */}
+        {/* CISO & Enterprise Features */}
         <div className="bg-slate-900 text-white p-4 rounded-lg border-2 border-slate-700">
-          <h4 className="font-bold mb-2">🏢 Organizational Control & Visibility</h4>
-          <div className="grid grid-cols-3 gap-2">
+          <h5 className="font-bold mb-2">🏢 Enterprise Capabilities</h5>
+          <div className="grid grid-cols-3 gap-3">
             <div className="bg-slate-800 p-2 rounded text-center">
-              <p className="font-semibold text-xs mb-1">Overall Risk</p>
-              <p className="text-xs">Enterprise-wide scoring</p>
-            </div>
-            <div className="bg-slate-800 p-2 rounded text-center">
-              <p className="font-semibold text-xs mb-1">Domain Level</p>
-              <p className="text-xs">Team/unit scoring</p>
+              <p className="text-xs font-semibold">Overall Risk Scoring</p>
+              <p className="text-xs mt-1">Enterprise-wide assessment</p>
             </div>
             <div className="bg-slate-800 p-2 rounded text-center">
-              <p className="font-semibold text-xs mb-1">PDF Export</p>
-              <p className="text-xs">Compliance reports</p>
+              <p className="text-xs font-semibold">Domain-Level Scoring</p>
+              <p className="text-xs mt-1">Granular by team/dept</p>
+            </div>
+            <div className="bg-slate-800 p-2 rounded text-center">
+              <p className="text-xs font-semibold">Highest Accuracy</p>
+              <p className="text-xs mt-1">Zero false positives</p>
             </div>
           </div>
         </div>
 
-        {/* Core Capabilities - Compact */}
-        <div className="grid grid-cols-2 gap-2">
-          <div className="bg-green-50 p-3 rounded-lg border border-green-300">
-            <h5 className="font-bold text-green-900 text-xs mb-1">🎯 Highest Accuracy</h5>
-            <p className="text-xs text-gray-700">Zero false positives on all metrics</p>
-          </div>
-
-          <div className="bg-blue-50 p-3 rounded-lg border border-blue-300">
-            <h5 className="font-bold text-blue-900 text-xs mb-1">⚡ Developer Enabled</h5>
-            <p className="text-xs text-gray-700">IDE integration, no friction</p>
-          </div>
-
-          <div className="bg-purple-50 p-3 rounded-lg border border-purple-300">
-            <h5 className="font-bold text-purple-900 text-xs mb-1">🔍 Smart Priority</h5>
-            <p className="text-xs text-gray-700">Focus on what matters</p>
-          </div>
-
-          <div className="bg-red-50 p-3 rounded-lg border border-red-300">
-            <h5 className="font-bold text-red-900 text-xs mb-1">🛡️ Industry Leading</h5>
-            <p className="text-xs text-gray-700">Threat intelligence backed</p>
-          </div>
-        </div>
-
-        {/* CISO Value */}
-        <div className="bg-indigo-50 border-2 border-indigo-400 p-3 rounded-lg">
-          <h4 className="font-bold text-indigo-900 text-sm mb-1">✅ CISO Value Proposition</h4>
-          <ul className="text-xs text-gray-700 space-y-0.5 ml-3">
-            <li>• Reduce breach risk by 90%+ with complete visibility</li>
-            <li>• Meet SOC 2, ISO 27001, HIPAA, PCI-DSS compliance</li>
-            <li>• Quantifiable security ROI metrics for board reporting</li>
-            <li>• Faster incident response with dependency context</li>
-          </ul>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "How to Get Started",
-    subtitle: "Step-by-Step Guide",
-    content: (
-      <div className="space-y-6">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            1️⃣ Access the Dashboard
-          </h3>
-          <p className="text-gray-700">
-            Navigate to the Asset Inventory section to see all your tech stacks
-            and assets
-          </p>
-        </div>
-
-        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg border border-indigo-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            2️⃣ Explore & Filter
-          </h3>
-          <p className="text-gray-700">
-            Use the filter bar to narrow down results by tech stack, status, or
-            risk level
-          </p>
-        </div>
-
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            3️⃣ View Dependencies
-          </h3>
-          <p className="text-gray-700">
-            Click on any tech stack to see its dependencies and relationships in
-            an interactive graph
-          </p>
-        </div>
-
-        <div className="bg-gradient-to-r from-pink-50 to-rose-50 p-6 rounded-lg border border-pink-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            4️⃣ Export & Share
-          </h3>
-          <p className="text-gray-700">
-            Export data in your preferred format (CSV, JSON, or PDF) for
-            reporting and sharing
+        {/* Key Outcome */}
+        <div className="bg-indigo-50 border-2 border-indigo-400 p-4 rounded-lg">
+          <h5 className="font-bold text-indigo-900 mb-2">🚀 The Outcome</h5>
+          <p className="text-sm text-gray-700">
+            A unified view of all technologies running on your assets with automated risk scoring, compliance readiness, and actionable remediation guidance.
           </p>
         </div>
       </div>
     ),
   },
   {
-    title: "Scanning Assets",
-    subtitle: "How to Identify Vulnerabilities",
+    title: "Key Features & Capabilities",
+    subtitle: "What You Get",
     content: (
       <div className="space-y-4">
-        <div className="bg-blue-50 p-5 rounded-lg border-2 border-blue-300">
-          <h4 className="font-semibold text-blue-900 mb-3 text-lg">
-            🔍 What is Asset Scanning?
-          </h4>
-          <p className="text-gray-700 mb-3">
-            Scanning is the process of analyzing your technology assets to identify known security vulnerabilities (CVEs), check for deprecated versions, and assess overall risk.
-          </p>
-          <ul className="text-sm text-gray-700 space-y-1 ml-4">
-            <li>✓ Detects known CVEs in your tech stack</li>
-            <li>✓ Identifies end-of-life (EOL) versions</li>
-            <li>✓ Assesses security risk levels</li>
-            <li>✓ Generates vulnerability reports</li>
-          </ul>
-        </div>
-
+        {/* Core Features */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-            <h4 className="font-semibold text-red-900 mb-2">Scanned Assets</h4>
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-lg border-2 border-blue-300">
+            <h4 className="font-bold text-blue-900 mb-2">📚 Complete Inventory</h4>
             <p className="text-sm text-gray-700">
-              Complete analysis performed with known vulnerabilities identified
+              Unified view of all technologies, frameworks, and services running on every asset
             </p>
           </div>
-          <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-            <h4 className="font-semibold text-yellow-900 mb-2">Unscanned Assets</h4>
+
+          <div className="bg-gradient-to-br from-red-50 to-red-100 p-5 rounded-lg border-2 border-red-300">
+            <h4 className="font-bold text-red-900 mb-2">🔍 Vulnerability Detection</h4>
             <p className="text-sm text-gray-700">
-              Pending analysis - run scan to identify vulnerabilities
+              Identify CVEs, EOL versions, and security misconfigurations automatically
             </p>
           </div>
-        </div>
 
-        <div className="bg-green-50 p-4 rounded-lg border-2 border-green-300">
-          <h4 className="font-semibold text-green-900 mb-2">✨ Quick Tip</h4>
-          <p className="text-sm text-gray-700">
-            Select specific assets or scan your entire inventory at once using the "Scan Selected Assets" button
-          </p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "Understanding Scan Results",
-    subtitle: "Interpreting Vulnerability Findings",
-    content: (
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-            <h3 className="font-bold text-red-700 mb-2">🔴 Critical</h3>
+          <div className="bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-lg border-2 border-green-300">
+            <h4 className="font-bold text-green-900 mb-2">📊 Risk Scoring</h4>
             <p className="text-sm text-gray-700">
-              Severe vulnerabilities requiring immediate action
+              Enterprise and domain-level scoring with actionable prioritization
             </p>
-            <div className="text-xs text-gray-600 mt-2">
-              CVSS Score: 9.0+
-            </div>
           </div>
 
-          <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-            <h3 className="font-bold text-orange-700 mb-2">🟠 High</h3>
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-lg border-2 border-purple-300">
+            <h4 className="font-bold text-purple-900 mb-2">🔗 Dependency Mapping</h4>
             <p className="text-sm text-gray-700">
-              Serious vulnerabilities needing prompt attention
+              Visualize technology relationships and blast radius impact analysis
             </p>
-            <div className="text-xs text-gray-600 mt-2">
-              CVSS Score: 7.0-8.9
-            </div>
           </div>
 
-          <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-            <h3 className="font-bold text-yellow-700 mb-2">🟡 Medium</h3>
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-5 rounded-lg border-2 border-yellow-300">
+            <h4 className="font-bold text-yellow-900 mb-2">📈 Compliance Tracking</h4>
             <p className="text-sm text-gray-700">
-              Moderate vulnerabilities to address soon
+              Export dashboards and PDF reports for SOC 2, ISO, HIPAA, and PCI-DSS compliance
             </p>
-            <div className="text-xs text-gray-600 mt-2">
-              CVSS Score: 4.0-6.9
-            </div>
           </div>
 
-          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-            <h3 className="font-bold text-green-700 mb-2">🟢 Low</h3>
+          <div className="bg-gradient-to-br from-cyan-50 to-cyan-100 p-5 rounded-lg border-2 border-cyan-300">
+            <h4 className="font-bold text-cyan-900 mb-2">⚡ Continuous Monitoring</h4>
             <p className="text-sm text-gray-700">
-              Minor vulnerabilities, lower priority
-            </p>
-            <div className="text-xs text-gray-600 mt-2">
-              CVSS Score: 0.1-3.9
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-indigo-50 p-4 rounded-lg border-2 border-indigo-300">
-          <h4 className="font-semibold text-indigo-900 mb-2">📊 Reading the CVE Pie Chart</h4>
-          <p className="text-sm text-gray-700">
-            View the "CVEs Pie Chart" widget to see the breakdown of your vulnerabilities by severity, helping you prioritize remediation efforts
-          </p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "Rescan & Updates",
-    subtitle: "Keeping Your Security Data Fresh",
-    content: (
-      <div className="space-y-4">
-        <div className="bg-blue-50 p-5 rounded-lg border-2 border-blue-300">
-          <h4 className="font-semibold text-blue-900 mb-3 text-lg">
-            🔄 What is Rescanning?
-          </h4>
-          <p className="text-gray-700 mb-3">
-            Rescanning re-analyzes your assets to discover new vulnerabilities, verify if previously found issues still exist, and update your risk profile after applying patches or upgrades.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-            <h4 className="font-semibold text-purple-900 mb-2">
-              ⏱️ After Updates
-            </h4>
-            <p className="text-sm text-gray-700">
-              Rescan after upgrading technologies to confirm vulnerabilities are resolved
-            </p>
-          </div>
-          <div className="bg-cyan-50 p-4 rounded-lg border border-cyan-200">
-            <h4 className="font-semibold text-cyan-900 mb-2">
-              📆 Regular Schedule
-            </h4>
-            <p className="text-sm text-gray-700">
-              Run weekly or monthly scans to catch newly discovered vulnerabilities
+              Track technology changes, scan regularly, and rescan after updates
             </p>
           </div>
         </div>
 
-        <div className="bg-green-50 p-4 rounded-lg border-2 border-green-300">
-          <h4 className="font-semibold text-green-900 mb-2">✅ Rescan Benefits</h4>
-          <ul className="text-sm text-gray-700 space-y-1 ml-4">
-            <li>✓ Discover newly published CVEs</li>
-            <li>✓ Verify patch effectiveness</li>
-            <li>✓ Track remediation progress</li>
-            <li>✓ Maintain current security posture</li>
-          </ul>
-        </div>
-
-        <div className="bg-orange-50 p-4 rounded-lg border-2 border-orange-300">
-          <h4 className="font-semibold text-orange-900 mb-2">💡 Best Practice</h4>
+        {/* Why It Matters */}
+        <div className="bg-gradient-to-r from-orange-50 to-rose-50 p-5 rounded-lg border-2 border-orange-300">
+          <h5 className="font-bold text-orange-900 mb-2">💡 Why This Matters</h5>
+          <p className="text-sm text-gray-700 mb-2">
+            <span className="font-semibold">For CISOs:</span> Complete visibility to reduce breach risk, meet compliance, and demonstrate security ROI to the board.
+          </p>
           <p className="text-sm text-gray-700">
-            Rescan at least monthly, or immediately after any technology upgrades or patches
+            <span className="font-semibold">For DevSecOps:</span> Automated scanning, smart prioritization, and context-aware remediation guidance to secure your stack efficiently.
           </p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "Key Metrics & Analytics",
-    subtitle: "What You Can Monitor",
-    content: (
-      <div className="grid grid-cols-2 gap-6">
-        <div className="text-center p-6 bg-red-50 rounded-lg border border-red-200">
-          <div className="text-5xl font-bold text-red-600 mb-2">CVEs</div>
-          <p className="text-gray-700 mb-3">
-            View vulnerability distribution across your stack
-          </p>
-          <div className="text-xs text-gray-600">
-            Critical, High, Medium, Low breakdowns
-          </div>
-        </div>
-
-        <div className="text-center p-6 bg-yellow-50 rounded-lg border border-yellow-200">
-          <div className="text-5xl font-bold text-yellow-600 mb-2">EOL</div>
-          <p className="text-gray-700 mb-3">
-            Track end-of-life dates for tech components
-          </p>
-          <div className="text-xs text-gray-600">
-            Active, Warning, Critical status tracking
-          </div>
-        </div>
-
-        <div className="text-center p-6 bg-blue-50 rounded-lg border border-blue-200">
-          <div className="text-5xl font-bold text-blue-600 mb-2">Assets</div>
-          <p className="text-gray-700 mb-3">
-            Monitor your complete asset inventory
-          </p>
-          <div className="text-xs text-gray-600">
-            Total count and scan status overview
-          </div>
-        </div>
-
-        <div className="text-center p-6 bg-green-50 rounded-lg border border-green-200">
-          <div className="text-5xl font-bold text-green-600 mb-2">Graphs</div>
-          <p className="text-gray-700 mb-3">
-            Visualize complex dependency networks
-          </p>
-          <div className="text-xs text-gray-600">
-            Interactive force-layout visualization
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "Scanning Workflow",
-    subtitle: "Step-by-Step Process",
-    content: (
-      <div className="space-y-4">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-lg border border-blue-300">
-          <h4 className="text-lg font-semibold text-blue-900 mb-4">
-            How to Perform a Scan
-          </h4>
-          <ol className="space-y-3">
-            <li className="flex gap-3">
-              <span className="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                1
-              </span>
-              <div>
-                <p className="font-semibold text-gray-900">
-                  Navigate to Asset Inventory
-                </p>
-                <p className="text-sm text-gray-700">
-                  Go to the main dashboard and view your assets
-                </p>
-              </div>
-            </li>
-            <li className="flex gap-3">
-              <span className="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                2
-              </span>
-              <div>
-                <p className="font-semibold text-gray-900">
-                  Select Assets to Scan
-                </p>
-                <p className="text-sm text-gray-700">
-                  Choose individual assets or select all to scan
-                </p>
-              </div>
-            </li>
-            <li className="flex gap-3">
-              <span className="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                3
-              </span>
-              <div>
-                <p className="font-semibold text-gray-900">
-                  Click "Scan Selected Assets"
-                </p>
-                <p className="text-sm text-gray-700">
-                  Initiate the scan process
-                </p>
-              </div>
-            </li>
-            <li className="flex gap-3">
-              <span className="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                4
-              </span>
-              <div>
-                <p className="font-semibold text-gray-900">
-                  Review Scan Results
-                </p>
-                <p className="text-sm text-gray-700">
-                  Examine detected vulnerabilities and priorities
-                </p>
-              </div>
-            </li>
-            <li className="flex gap-3">
-              <span className="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                5
-              </span>
-              <div>
-                <p className="font-semibold text-gray-900">
-                  Take Action & Remediate
-                </p>
-                <p className="text-sm text-gray-700">
-                  Update, patch, or remove vulnerable components
-                </p>
-              </div>
-            </li>
-          </ol>
-        </div>
-
-        <div className="bg-purple-50 p-4 rounded-lg border-2 border-purple-300">
-          <h4 className="font-semibold text-purple-900 mb-2">📊 View Scan Metrics</h4>
-          <p className="text-sm text-gray-700">
-            After scanning, check the "Scanned vs Unscanned" metrics in your dashboard to track scan coverage
-          </p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "Viewing Dependencies in Detail",
-    subtitle: "Interactive Graph Features",
-    content: (
-      <div className="space-y-4">
-        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <h4 className="font-semibold text-blue-900 mb-2">
-            🔍 Hover for Details
-          </h4>
-          <p className="text-sm text-gray-700">
-            Hover over nodes to see detailed information about each technology
-            or dependency
-          </p>
-        </div>
-
-        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-          <h4 className="font-semibold text-purple-900 mb-2">
-            🎯 Click to Highlight
-          </h4>
-          <p className="text-sm text-gray-700">
-            Click on a node to highlight its direct relationships and impact
-            across the network
-          </p>
-        </div>
-
-        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-          <h4 className="font-semibold text-green-900 mb-2">
-            ↔️ Pan & Zoom
-          </h4>
-          <p className="text-sm text-gray-700">
-            Use mouse wheel to zoom and drag to pan around the graph for better
-            navigation
-          </p>
-        </div>
-
-        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-          <h4 className="font-semibold text-orange-900 mb-2">
-            📍 Blast Radius
-          </h4>
-          <p className="text-sm text-gray-700">
-            Identify cascading impacts when a technology is removed or updated
-          </p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "Best Practices",
-    subtitle: "Tips for Maximum Value",
-    content: (
-      <div className="space-y-4">
-        <div className="border-l-4 border-blue-500 bg-blue-50 p-4 rounded">
-          <h4 className="font-semibold text-gray-900 mb-1">
-            Scan Regularly
-          </h4>
-          <p className="text-sm text-gray-700">
-            Run weekly or monthly scans to catch newly published CVEs before they
-            become critical issues
-          </p>
-        </div>
-
-        <div className="border-l-4 border-green-500 bg-green-50 p-4 rounded">
-          <h4 className="font-semibold text-gray-900 mb-1">
-            Rescan After Updates
-          </h4>
-          <p className="text-sm text-gray-700">
-            Always rescan assets immediately after applying patches or upgrading
-            technologies to verify fixes
-          </p>
-        </div>
-
-        <div className="border-l-4 border-purple-500 bg-purple-50 p-4 rounded">
-          <h4 className="font-semibold text-gray-900 mb-1">
-            Prioritize Remediation
-          </h4>
-          <p className="text-sm text-gray-700">
-            Focus on critical and high-severity vulnerabilities first, then work
-            down the priority list
-          </p>
-        </div>
-
-        <div className="border-l-4 border-orange-500 bg-orange-50 p-4 rounded">
-          <h4 className="font-semibold text-gray-900 mb-1">
-            Export & Share Reports
-          </h4>
-          <p className="text-sm text-gray-700">
-            Use CSV, JSON, or PDF exports to share findings with security teams
-            and stakeholders
-          </p>
-        </div>
-
-        <div className="border-l-4 border-red-500 bg-red-50 p-4 rounded">
-          <h4 className="font-semibold text-gray-900 mb-1">
-            Keep Inventory Current
-          </h4>
-          <p className="text-sm text-gray-700">
-            Maintain accurate asset and tech stack records to ensure scans capture
-            everything you need to monitor
-          </p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    title: "Summary & Next Steps",
-    subtitle: "What You've Learned",
-    content: (
-      <div className="space-y-6">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4">Key Takeaways</h3>
-          <ul className="space-y-2 text-sm">
-            <li>✓ Centralize and control your tech stack inventory</li>
-            <li>✓ Scan regularly to identify and mitigate security risks</li>
-            <li>✓ Rescan after updates to verify vulnerability fixes</li>
-            <li>✓ Visualize complex dependency relationships</li>
-            <li>✓ Make data-driven technology decisions</li>
-            <li>✓ Improve organizational compliance and security</li>
-          </ul>
-        </div>
-
-        <div className="bg-gray-100 p-6 rounded-lg border-2 border-gray-300">
-          <h3 className="text-lg font-bold text-gray-900 mb-3">Ready to Start?</h3>
-          <p className="text-gray-700 mb-4">
-            Head to the Asset Inventory section and begin exploring your tech
-            stack data today!
-          </p>
-          <div className="bg-white p-3 rounded border border-gray-300">
-            <p className="text-sm text-gray-600">
-              💡 <strong>Tip:</strong> Start with the interactive dependency
-              graph to visualize your most critical technologies
-            </p>
-          </div>
         </div>
       </div>
     ),
@@ -782,7 +173,7 @@ export default function TechStackSlideshow() {
       <header className="border-b border-gray-200 bg-white shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900">
-            Tech Stack Feature Overview
+            Tech Stack Management Overview
           </h1>
           <Button
             variant="outline"
@@ -881,20 +272,17 @@ export default function TechStackSlideshow() {
         <div className="mt-8 grid grid-cols-3 gap-4">
           <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
             <p className="text-sm text-gray-700">
-              <span className="font-semibold">💡 Tip:</span> Use arrow keys or
-              buttons to navigate
+              <span className="font-semibold">Slide 1:</span> Understand what the solution does and its business impact
             </p>
           </div>
           <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
             <p className="text-sm text-gray-700">
-              <span className="font-semibold">👆 Tip:</span> Click on slide
-              numbers to jump ahead
+              <span className="font-semibold">Slide 2:</span> See all the key features and capabilities
             </p>
           </div>
           <div className="bg-purple-50 border border-purple-200 p-4 rounded-lg">
             <p className="text-sm text-gray-700">
-              <span className="font-semibold">📊 Tip:</span> All features are
-              available in the Dashboard
+              <span className="font-semibold">💡 Tip:</span> Use navigation buttons or click slide numbers
             </p>
           </div>
         </div>
