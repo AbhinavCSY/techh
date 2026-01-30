@@ -261,13 +261,9 @@ function FeatureModal({ feature, onClose }: { feature: typeof featureDetails.inv
 
         {/* Content */}
         <div className="p-6 space-y-4">
-          {/* GIF/Illustration */}
-          <div className="bg-gray-100 rounded-lg overflow-hidden">
-            <img
-              src={feature.gif}
-              alt={feature.title}
-              className="w-full h-64 object-cover"
-            />
+          {/* Illustration */}
+          <div className="bg-white rounded-lg overflow-hidden border border-gray-200">
+            <FeatureIllustration type={feature.type} />
           </div>
 
           {/* Description */}
