@@ -22,22 +22,22 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <PasswordProtection>
-          <Routes>
-            {/* Full-screen slideshow route without navigation bar */}
-            <Route
-              path="/tech-stack-slideshow"
-              element={
-                <NoNavLayout>
-                  <TechStackSlideshow />
-                </NoNavLayout>
-              }
-            />
+        <Routes>
+          {/* Full-screen slideshow route without navigation bar or password protection */}
+          <Route
+            path="/tech-stack-slideshow"
+            element={
+              <NoNavLayout>
+                <TechStackSlideshow />
+              </NoNavLayout>
+            }
+          />
 
-            {/* All other routes with navigation bar */}
-            <Route
-              path="/*"
-              element={
+          {/* All other routes with password protection and navigation bar */}
+          <Route
+            path="/*"
+            element={
+              <PasswordProtection>
                 <AppLayout>
                   <Routes>
                     <Route path="/" element={<Index />} />
@@ -50,10 +50,10 @@ const App = () => (
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </AppLayout>
-              }
-            />
-          </Routes>
-        </PasswordProtection>
+              </PasswordProtection>
+            }
+          />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
