@@ -48,35 +48,35 @@ export class ForceLayout {
   private initializeClusterPositions() {
     // Position clusters horizontally in a line with large spacing
     const clusterArray = Array.from(this.clusters.values());
-    const clusterSpacing = this.width / (clusterArray.length + 2); // More spacing
+    const clusterSpacing = this.width / (clusterArray.length + 1); // Even more spacing
 
     clusterArray.forEach((cluster, idx) => {
       // Position clusters with increased horizontal spacing
-      const cx = (idx + 1.5) * clusterSpacing;
+      const cx = (idx + 1) * clusterSpacing;
       // Centered vertically
       const cy = this.height / 2;
 
       // Get nodes in this cluster
       const clusterNodes = this.nodes.filter((n) => n.cluster === cluster.id);
 
-      // Position nodes around cluster center in a looser circle
+      // Position nodes around cluster center in a much looser circle
       if (clusterNodes.length > 0) {
-        const radius = Math.max(60, Math.min(120, clusterSpacing / 3.5)); // Larger radius
+        const radius = Math.max(100, Math.min(180, clusterSpacing / 2.5)); // Much larger radius
 
         clusterNodes.forEach((node, nodeIdx) => {
           const angle = (nodeIdx / clusterNodes.length) * Math.PI * 2;
           node.x = cx + Math.cos(angle) * radius;
-          node.y = cy + Math.sin(angle) * radius + (Math.random() - 0.5) * 50;
+          node.y = cy + Math.sin(angle) * radius + (Math.random() - 0.5) * 80;
         });
       }
     });
 
     // Position vendor nodes (non-clustered) at the bottom with more space
     const vendorNodes = this.nodes.filter((n) => !n.cluster);
-    const vendorSpacing = this.width / (vendorNodes.length + 2);
+    const vendorSpacing = this.width / (vendorNodes.length + 1);
     vendorNodes.forEach((node, idx) => {
-      node.x = (idx + 1.5) * vendorSpacing;
-      node.y = this.height - 120 + (Math.random() - 0.5) * 50;
+      node.x = (idx + 1) * vendorSpacing;
+      node.y = this.height - 120 + (Math.random() - 0.5) * 80;
     });
   }
 
@@ -112,7 +112,7 @@ export class ForceLayout {
         // Strong repulsion between clusters, mild within
         const sameCluster =
           node1.cluster && node2.cluster && node1.cluster === node2.cluster;
-        const strength = sameCluster ? 25 : 150; // Much more repulsion between different clusters
+        const strength = sameCluster ? 80 : 300; // Increased repulsion to spread nodes more
 
         const fx = (dx / dist) * (-strength / dist);
         const fy = (dy / dist) * (-strength / dist);
@@ -135,8 +135,8 @@ export class ForceLayout {
       const dy = target.y - source.y;
       const dist = Math.hypot(dx, dy) || 1;
 
-      const restLength = 180; // Increased target distance
-      const strength = 0.08; // Reduced strength
+      const restLength = 280; // Increased minimum distance between connected nodes (~2cm at screen scale)
+      const strength = 0.06; // Reduced strength to allow more spacing
 
       const fx = (dx / dist) * strength * (dist - restLength);
       const fy = (dy / dist) * strength * (dist - restLength);
@@ -147,7 +147,7 @@ export class ForceLayout {
       target.vy -= fy;
     });
 
-    // Cluster gravity - keep nodes within their cluster region (moderate)
+    // Cluster gravity - keep nodes within their cluster region (weaker to allow spreading)
     this.nodes.forEach((node) => {
       if (!node.cluster) return;
 
@@ -162,7 +162,7 @@ export class ForceLayout {
       const dy = cy - node.y;
       const dist = Math.hypot(dx, dy) || 1;
 
-      const strength = 0.1; // Moderate clustering (was 0.15)
+      const strength = 0.05; // Reduced clustering to allow more spacing
       const fx = (dx / dist) * strength;
       const fy = (dy / dist) * strength;
 
