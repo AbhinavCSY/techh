@@ -788,16 +788,15 @@ function FeatureCardsSlide() {
 
       {/* Why It Matters */}
       <div className="bg-gradient-to-r from-orange-50 to-rose-50 p-5 rounded-lg border-2 border-orange-300">
-        <h5 className="font-bold text-orange-900 mb-2">💡 Why This Matters</h5>
+        <h5 className="font-bold text-orange-900 mb-2">💡 Why This Matters for EASM</h5>
         <p className="text-sm text-gray-700 mb-2">
-          <span className="font-semibold">For CISOs:</span> Complete visibility
-          to reduce breach risk, meet compliance, and demonstrate security ROI
-          to the board.
+          <span className="font-semibold">Tech Stack ≠ Just Another Asset List:</span> It transforms asset discovery into actionable intelligence by showing exactly what's running, what's vulnerable, and what to do about it.
+        </p>
+        <p className="text-sm text-gray-700 mb-2">
+          <span className="font-semibold">For Security Teams:</span> Move beyond "we found an asset" to "here's every tech on it, here's the risk, here's what to fix."
         </p>
         <p className="text-sm text-gray-700">
-          <span className="font-semibold">For DevSecOps:</span> Automated
-          scanning, smart prioritization, and context-aware remediation guidance
-          to secure your stack efficiently.
+          <span className="font-semibold">For Customers:</span> Answer the #1 question teams ask: "What exactly is running on this asset and is it safe?"
         </p>
       </div>
 
