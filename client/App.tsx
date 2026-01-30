@@ -24,7 +24,7 @@ const App = () => (
       <BrowserRouter>
         <PasswordProtection>
           <Routes>
-            {/* Full-screen slideshow without navigation */}
+            {/* Full-screen slideshow route without navigation bar */}
             <Route
               path="/tech-stack-slideshow"
               element={
@@ -34,9 +34,9 @@ const App = () => (
               }
             />
 
-            {/* Standard routes with navigation */}
+            {/* All other routes with navigation bar */}
             <Route
-              path="*"
+              path="/*"
               element={
                 <AppLayout>
                   <Routes>
