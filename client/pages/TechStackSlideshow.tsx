@@ -445,6 +445,93 @@ const slides: Slide[] = [
     ),
   },
   {
+    title: "Scanning Workflow",
+    subtitle: "Step-by-Step Process",
+    content: (
+      <div className="space-y-4">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-lg border border-blue-300">
+          <h4 className="text-lg font-semibold text-blue-900 mb-4">
+            How to Perform a Scan
+          </h4>
+          <ol className="space-y-3">
+            <li className="flex gap-3">
+              <span className="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                1
+              </span>
+              <div>
+                <p className="font-semibold text-gray-900">
+                  Navigate to Asset Inventory
+                </p>
+                <p className="text-sm text-gray-700">
+                  Go to the main dashboard and view your assets
+                </p>
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                2
+              </span>
+              <div>
+                <p className="font-semibold text-gray-900">
+                  Select Assets to Scan
+                </p>
+                <p className="text-sm text-gray-700">
+                  Choose individual assets or select all to scan
+                </p>
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                3
+              </span>
+              <div>
+                <p className="font-semibold text-gray-900">
+                  Click "Scan Selected Assets"
+                </p>
+                <p className="text-sm text-gray-700">
+                  Initiate the scan process
+                </p>
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                4
+              </span>
+              <div>
+                <p className="font-semibold text-gray-900">
+                  Review Scan Results
+                </p>
+                <p className="text-sm text-gray-700">
+                  Examine detected vulnerabilities and priorities
+                </p>
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                5
+              </span>
+              <div>
+                <p className="font-semibold text-gray-900">
+                  Take Action & Remediate
+                </p>
+                <p className="text-sm text-gray-700">
+                  Update, patch, or remove vulnerable components
+                </p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div className="bg-purple-50 p-4 rounded-lg border-2 border-purple-300">
+          <h4 className="font-semibold text-purple-900 mb-2">📊 View Scan Metrics</h4>
+          <p className="text-sm text-gray-700">
+            After scanning, check the "Scanned vs Unscanned" metrics in your dashboard to track scan coverage
+          </p>
+        </div>
+      </div>
+    ),
+  },
+  {
     title: "Viewing Dependencies in Detail",
     subtitle: "Interactive Graph Features",
     content: (
