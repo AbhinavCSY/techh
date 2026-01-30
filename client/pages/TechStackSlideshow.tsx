@@ -962,35 +962,11 @@ export default function TechStackSlideshow() {
             ></div>
           </div>
 
-          {/* Navigation */}
-          <div className="bg-gray-50 px-12 py-6 flex items-center justify-between">
-            <Button
-              onClick={prevSlide}
-              disabled={currentSlide === 0}
-              variant="outline"
-              size="lg"
-              className="gap-2"
-            >
-              <ChevronLeft className="w-5 h-5" />
-              Previous
-            </Button>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-600">
-                Slide {currentSlide + 1} of {slides.length}
-              </span>
-            </div>
-
-            <Button
-              onClick={nextSlide}
-              disabled={currentSlide === slides.length - 1}
-              variant="outline"
-              size="lg"
-              className="gap-2"
-            >
-              Next
-              <ChevronRight className="w-5 h-5" />
-            </Button>
+          {/* Progress Indicator */}
+          <div className="bg-gray-50 px-12 py-4 flex items-center justify-center">
+            <span className="text-sm font-medium text-gray-600">
+              Slide {currentSlide + 1} of {slides.length} — Use arrow buttons or keyboard arrows to navigate
+            </span>
           </div>
 
           {/* Slide Thumbnails */}
