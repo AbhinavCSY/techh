@@ -872,7 +872,7 @@ export default function TechStackSlideshow() {
   };
 
   // Keyboard navigation
-  React.useEffect(() => {
+  useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") {
         nextSlide();
