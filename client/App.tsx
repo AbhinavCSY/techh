@@ -23,22 +23,36 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <PasswordProtection>
-          <AppLayout>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/web-apps" element={<WebApplications />} />
-              <Route
-                path="/incident/:techStackId/:cveId"
-                element={<IncidentDetails />}
-              />
-              <Route
-                path="/tech-stack-slideshow"
-                element={<TechStackSlideshow />}
-              />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AppLayout>
+          <Routes>
+            {/* Full-screen slideshow without navigation */}
+            <Route
+              path="/tech-stack-slideshow"
+              element={
+                <NoNavLayout>
+                  <TechStackSlideshow />
+                </NoNavLayout>
+              }
+            />
+
+            {/* Standard routes with navigation */}
+            <Route
+              path="*"
+              element={
+                <AppLayout>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/web-apps" element={<WebApplications />} />
+                    <Route
+                      path="/incident/:techStackId/:cveId"
+                      element={<IncidentDetails />}
+                    />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </AppLayout>
+              }
+            />
+          </Routes>
         </PasswordProtection>
       </BrowserRouter>
     </TooltipProvider>
