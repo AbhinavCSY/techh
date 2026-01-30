@@ -901,20 +901,43 @@ export default function TechStackSlideshow() {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-6 py-12">
         <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-          {/* Slide Container */}
-          <div className="min-h-96 p-12 bg-gradient-to-br from-slate-50 to-white">
-            {/* Slide Title */}
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                {slide.title}
-              </h1>
-              {slide.subtitle && (
-                <p className="text-xl text-gray-600">{slide.subtitle}</p>
-              )}
-            </div>
+          {/* Slide Container with Arrow Navigation */}
+          <div className="relative flex items-center">
+            {/* Left Arrow */}
+            <button
+              onClick={prevSlide}
+              disabled={currentSlide === 0}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 p-2 rounded-full bg-white shadow-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition"
+              title="Previous slide"
+            >
+              <ChevronLeft className="w-8 h-8 text-blue-600" />
+            </button>
 
             {/* Slide Content */}
-            <div className="mb-8">{slide.content}</div>
+            <div className="min-h-96 p-12 bg-gradient-to-br from-slate-50 to-white w-full">
+              {/* Slide Title */}
+              <div className="mb-8">
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  {slide.title}
+                </h1>
+                {slide.subtitle && (
+                  <p className="text-xl text-gray-600">{slide.subtitle}</p>
+                )}
+              </div>
+
+              {/* Slide Content */}
+              <div className="mb-8">{slide.content}</div>
+            </div>
+
+            {/* Right Arrow */}
+            <button
+              onClick={nextSlide}
+              disabled={currentSlide === slides.length - 1}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 p-2 rounded-full bg-white shadow-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition"
+              title="Next slide"
+            >
+              <ChevronRight className="w-8 h-8 text-blue-600" />
+            </button>
           </div>
 
           {/* Progress Bar */}
