@@ -10,6 +10,7 @@ import { PasswordProtection } from "@/components/PasswordProtection";
 import Index from "./pages/Index";
 import WebApplications from "./pages/WebApplications";
 import IncidentDetails from "./pages/IncidentDetails";
+import TechStackSlideshow from "./pages/TechStackSlideshow";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
