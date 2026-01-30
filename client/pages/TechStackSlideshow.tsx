@@ -994,9 +994,9 @@ export default function TechStackSlideshow() {
             </button>
 
             {/* Slide Content */}
-            <div className="min-h-96 p-12 bg-gradient-to-br from-slate-50 to-white w-full">
+            <div className="min-h-96 p-12 bg-gradient-to-br from-slate-50 to-white w-full flex flex-col items-center">
               {/* Slide Title */}
-              <div className="mb-8">
+              <div className="mb-8 w-full text-center">
                 <h1 className="text-4xl font-bold text-gray-900 mb-2">
                   {slide.title}
                 </h1>
@@ -1006,7 +1006,7 @@ export default function TechStackSlideshow() {
               </div>
 
               {/* Slide Content */}
-              <div className="mb-8">{slide.content}</div>
+              <div className="mb-8 w-full">{slide.content}</div>
             </div>
 
             {/* Right Arrow */}
