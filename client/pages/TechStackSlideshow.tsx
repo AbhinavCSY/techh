@@ -199,6 +199,71 @@ const slides: Slide[] = [
     ),
   },
   {
+    title: "Tech Stack Management for CISOs",
+    subtitle: "Enterprise-Level Security & Compliance Leadership",
+    content: (
+      <div className="space-y-4">
+        <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 rounded-lg border-2 border-slate-700">
+          <h4 className="text-lg font-bold mb-3">🏢 Organizational Control & Visibility</h4>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-slate-700 p-3 rounded">
+              <p className="font-semibold mb-1">Overall Risk Scoring</p>
+              <p className="text-sm">Enterprise-wide security posture assessment with actionable metrics</p>
+            </div>
+            <div className="bg-slate-700 p-3 rounded">
+              <p className="font-semibold mb-1">Domain-Level Scoring</p>
+              <p className="text-sm">Granular visibility into security per department, team, or business unit</p>
+            </div>
+            <div className="bg-slate-700 p-3 rounded col-span-2">
+              <p className="font-semibold mb-1">Dashboard & PDF Export</p>
+              <p className="text-sm">Generate compliance-ready reports and executive dashboards in seconds</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-lg border-2 border-green-300">
+            <h4 className="font-bold text-green-900 mb-3">🎯 Highest Accuracy Detection</h4>
+            <p className="text-sm text-gray-700">
+              Trust vulnerability detection that beats industry standards on all key metrics with zero false positives
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-5 rounded-lg border-2 border-blue-300">
+            <h4 className="font-bold text-blue-900 mb-3">⚡ Developer Enablement</h4>
+            <p className="text-sm text-gray-700">
+              Empower dev teams with IDE integration for continuous security scanning without workflow interruption
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-br from-purple-50 to-violet-50 p-5 rounded-lg border-2 border-purple-300">
+            <h4 className="font-bold text-purple-900 mb-3">🔍 Smart Prioritization</h4>
+            <p className="text-sm text-gray-700">
+              Focus remediation efforts on what matters most with correlated insights and impact analysis
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-br from-red-50 to-rose-50 p-5 rounded-lg border-2 border-red-300">
+            <h4 className="font-bold text-red-900 mb-3">🛡️ Industry-Leading Protection</h4>
+            <p className="text-sm text-gray-700">
+              Leverage comprehensive threat intelligence to identify and remediate malicious packages and dependencies
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-indigo-50 border-2 border-indigo-400 p-5 rounded-lg">
+          <h4 className="font-bold text-indigo-900 mb-2">✅ CISO Value Proposition</h4>
+          <ul className="text-sm text-gray-700 space-y-1 ml-4">
+            <li>• Reduce security incidents and breach risk by 90%+</li>
+            <li>• Meet compliance requirements (SOC 2, ISO 27001, HIPAA, PCI-DSS)</li>
+            <li>• Demonstrate security ROI with quantifiable metrics</li>
+            <li>• Enable faster incident response with clear dependency insights</li>
+          </ul>
+        </div>
+      </div>
+    ),
+  },
+  {
     title: "How to Get Started",
     subtitle: "Step-by-Step Guide",
     content: (
