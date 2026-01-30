@@ -643,7 +643,8 @@ const slides: Slide[] = [
           <h3 className="text-xl font-bold mb-4">Key Takeaways</h3>
           <ul className="space-y-2 text-sm">
             <li>✓ Centralize and control your tech stack inventory</li>
-            <li>✓ Identify and mitigate security risks proactively</li>
+            <li>✓ Scan regularly to identify and mitigate security risks</li>
+            <li>✓ Rescan after updates to verify vulnerability fixes</li>
             <li>✓ Visualize complex dependency relationships</li>
             <li>✓ Make data-driven technology decisions</li>
             <li>✓ Improve organizational compliance and security</li>
