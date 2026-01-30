@@ -627,8 +627,8 @@ const slides: Slide[] = [
     ),
   },
   {
-    title: "Key Features & Capabilities",
-    subtitle: "What You Get - Click to Expand",
+    title: "Tech Stack Features in BeVigil",
+    subtitle: "Answer Every Question About Your Assets - Click to Expand",
     content: <FeatureCardsSlide />,
   },
 ];
