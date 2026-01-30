@@ -584,50 +584,51 @@ const slides: Slide[] = [
       <div className="space-y-4">
         <div className="border-l-4 border-blue-500 bg-blue-50 p-4 rounded">
           <h4 className="font-semibold text-gray-900 mb-1">
-            Regular Reviews
+            Scan Regularly
           </h4>
           <p className="text-sm text-gray-700">
-            Review your tech stack inventory weekly to catch new vulnerabilities
-            early
+            Run weekly or monthly scans to catch newly published CVEs before they
+            become critical issues
           </p>
         </div>
 
         <div className="border-l-4 border-green-500 bg-green-50 p-4 rounded">
           <h4 className="font-semibold text-gray-900 mb-1">
-            Keep Data Updated
+            Rescan After Updates
           </h4>
           <p className="text-sm text-gray-700">
-            Ensure your inventory is current to maintain accurate risk
-            assessments
+            Always rescan assets immediately after applying patches or upgrading
+            technologies to verify fixes
           </p>
         </div>
 
         <div className="border-l-4 border-purple-500 bg-purple-50 p-4 rounded">
           <h4 className="font-semibold text-gray-900 mb-1">
-            Share Reports
+            Prioritize Remediation
           </h4>
           <p className="text-sm text-gray-700">
-            Use export features to share metrics with stakeholders and security
-            teams
+            Focus on critical and high-severity vulnerabilities first, then work
+            down the priority list
           </p>
         </div>
 
         <div className="border-l-4 border-orange-500 bg-orange-50 p-4 rounded">
           <h4 className="font-semibold text-gray-900 mb-1">
-            Plan Upgrades
+            Export & Share Reports
           </h4>
           <p className="text-sm text-gray-700">
-            Use EOL data to proactively plan technology upgrades before they
-            become critical
+            Use CSV, JSON, or PDF exports to share findings with security teams
+            and stakeholders
           </p>
         </div>
 
         <div className="border-l-4 border-red-500 bg-red-50 p-4 rounded">
           <h4 className="font-semibold text-gray-900 mb-1">
-            Act on Alerts
+            Keep Inventory Current
           </h4>
           <p className="text-sm text-gray-700">
-            Prioritize high-severity CVEs and address them immediately
+            Maintain accurate asset and tech stack records to ensure scans capture
+            everything you need to monitor
           </p>
         </div>
       </div>
