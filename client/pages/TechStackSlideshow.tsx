@@ -166,38 +166,38 @@ function CompleteFlowDiagram() {
       {/* Key insight boxes */}
       <g>
         <rect x="50" y="480" width="280" height="140" rx="8" fill="#bbdefb" stroke="#1976d2" strokeWidth="2" />
-        <text x="190" y="505" fontSize="12" fontWeight="bold" fill="#1976d2" textAnchor="middle">Per-Asset Visibility</text>
-        <text x="190" y="525" fontSize="9" fill="#0d47a1" textAnchor="middle">Each asset gets its own</text>
-        <text x="190" y="538" fontSize="9" fill="#0d47a1" textAnchor="middle">complete tech stack</text>
-        <text x="190" y="551" fontSize="9" fill="#0d47a1" textAnchor="middle">showing:</text>
-        <text x="60" y="570" fontSize="8" fill="#0d47a1">✓ All frameworks &amp; libs</text>
-        <text x="60" y="583" fontSize="8" fill="#0d47a1">✓ Versions &amp; EOL status</text>
-        <text x="60" y="596" fontSize="8" fill="#0d47a1">✓ Known CVEs</text>
-        <text x="60" y="609" fontSize="8" fill="#0d47a1">✓ Change history</text>
+        <text x="190" y="505" fontSize="14" fontWeight="bold" fill="#1976d2" textAnchor="middle">Per-Asset Visibility</text>
+        <text x="190" y="525" fontSize="11" fill="#0d47a1" textAnchor="middle">Each asset gets its own</text>
+        <text x="190" y="540" fontSize="11" fill="#0d47a1" textAnchor="middle">complete tech stack</text>
+        <text x="190" y="555" fontSize="11" fill="#0d47a1" textAnchor="middle">showing:</text>
+        <text x="60" y="575" fontSize="10" fill="#0d47a1">✓ All frameworks &amp; libs</text>
+        <text x="60" y="590" fontSize="10" fill="#0d47a1">✓ Versions &amp; EOL status</text>
+        <text x="60" y="605" fontSize="10" fill="#0d47a1">✓ Known CVEs</text>
+        <text x="60" y="620" fontSize="10" fill="#0d47a1">✓ Change history</text>
       </g>
 
       <g>
         <rect x="370" y="480" width="280" height="140" rx="8" fill="#fff9c4" stroke="#f57f17" strokeWidth="2" />
-        <text x="510" y="505" fontSize="12" fontWeight="bold" fill="#f57f17" textAnchor="middle">Risk Context</text>
-        <text x="510" y="525" fontSize="9" fill="#827717" textAnchor="middle">For each finding,</text>
-        <text x="510" y="538" fontSize="9" fill="#827717" textAnchor="middle">understand:</text>
-        <text x="510" y="551" fontSize="9" fill="#827717" textAnchor="middle" />
-        <text x="380" y="570" fontSize="8" fill="#827717">✓ Why it matters (context)</text>
-        <text x="380" y="583" fontSize="8" fill="#827717">✓ Impact on this asset</text>
-        <text x="380" y="596" fontSize="8" fill="#827717">✓ Dependency chains</text>
-        <text x="380" y="609" fontSize="8" fill="#827717">✓ What to do about it</text>
+        <text x="510" y="505" fontSize="14" fontWeight="bold" fill="#f57f17" textAnchor="middle">Risk Context</text>
+        <text x="510" y="525" fontSize="11" fill="#827717" textAnchor="middle">For each finding,</text>
+        <text x="510" y="540" fontSize="11" fill="#827717" textAnchor="middle">understand:</text>
+        <text x="510" y="555" fontSize="11" fill="#827717" textAnchor="middle" />
+        <text x="380" y="575" fontSize="10" fill="#827717">✓ Why it matters (context)</text>
+        <text x="380" y="590" fontSize="10" fill="#827717">✓ Impact on this asset</text>
+        <text x="380" y="605" fontSize="10" fill="#827717">✓ Dependency chains</text>
+        <text x="380" y="620" fontSize="10" fill="#827717">✓ What to do about it</text>
       </g>
 
       <g>
         <rect x="690" y="480" width="280" height="140" rx="8" fill="#c8e6c9" stroke="#1b5e20" strokeWidth="2" />
-        <text x="830" y="505" fontSize="12" fontWeight="bold" fill="#1b5e20" textAnchor="middle">Actionable Output</text>
-        <text x="830" y="525" fontSize="9" fill="#1b5e20" textAnchor="middle">Everything is</text>
-        <text x="830" y="538" fontSize="9" fill="#1b5e20" textAnchor="middle">ready to act on:</text>
-        <text x="830" y="551" fontSize="9" fill="#1b5e20" textAnchor="middle" />
-        <text x="700" y="570" fontSize="8" fill="#1b5e20">✓ Prioritized by risk</text>
-        <text x="700" y="583" fontSize="8" fill="#1b5e20">✓ With remediation paths</text>
-        <text x="700" y="596" fontSize="8" fill="#1b5e20">✓ Track progress over time</text>
-        <text x="700" y="609" fontSize="8" fill="#1b5e20">✓ Audit trail included</text>
+        <text x="830" y="505" fontSize="14" fontWeight="bold" fill="#1b5e20" textAnchor="middle">Actionable Output</text>
+        <text x="830" y="525" fontSize="11" fill="#1b5e20" textAnchor="middle">Everything is</text>
+        <text x="830" y="540" fontSize="11" fill="#1b5e20" textAnchor="middle">ready to act on:</text>
+        <text x="830" y="555" fontSize="11" fill="#1b5e20" textAnchor="middle" />
+        <text x="700" y="575" fontSize="10" fill="#1b5e20">✓ Prioritized by risk</text>
+        <text x="700" y="590" fontSize="10" fill="#1b5e20">✓ With remediation paths</text>
+        <text x="700" y="605" fontSize="10" fill="#1b5e20">✓ Track progress over time</text>
+        <text x="700" y="620" fontSize="10" fill="#1b5e20">✓ Audit trail included</text>
       </g>
 
       {/* Arrow markers */}
