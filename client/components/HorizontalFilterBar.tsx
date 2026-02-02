@@ -25,6 +25,7 @@ export function HorizontalFilterBar({
   viewType,
   onViewTypeChange,
   onExport,
+  grouping,
 }: HorizontalFilterBarProps) {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
 
