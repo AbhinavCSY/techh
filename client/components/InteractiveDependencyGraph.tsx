@@ -7,8 +7,8 @@ import {
 } from "@/lib/dependencyGraphTransformer";
 import { ForceLayout } from "@/lib/forceLayout";
 
-const WIDTH = 2200;
-const HEIGHT = 1200;
+const WIDTH = 3500;
+const HEIGHT = 1600;
 
 export function InteractiveDependencyGraph() {
   const [pan, setPan] = useState({ x: 100, y: 150 });
