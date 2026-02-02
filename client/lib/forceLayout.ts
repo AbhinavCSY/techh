@@ -113,7 +113,7 @@ export class ForceLayout {
         // Strong repulsion between clusters, mild within
         const sameCluster =
           node1.cluster && node2.cluster && node1.cluster === node2.cluster;
-        const strength = sameCluster ? 80 : 500; // Very strong repulsion between different clusters to ensure spacing
+        const strength = sameCluster ? 100 : 800; // Extreme repulsion between different clusters
 
         const fx = (dx / dist) * (-strength / dist);
         const fy = (dy / dist) * (-strength / dist);
