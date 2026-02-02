@@ -136,8 +136,8 @@ export class ForceLayout {
       const dy = target.y - source.y;
       const dist = Math.hypot(dx, dy) || 1;
 
-      const restLength = 280; // Increased minimum distance between connected nodes (~2cm at screen scale)
-      const strength = 0.06; // Reduced strength to allow more spacing
+      const restLength = 350; // Much larger minimum distance to ensure good spacing (~3cm at screen scale)
+      const strength = 0.05; // Slightly reduced strength to allow nodes to settle better
 
       const fx = (dx / dist) * strength * (dist - restLength);
       const fy = (dy / dist) * strength * (dist - restLength);
