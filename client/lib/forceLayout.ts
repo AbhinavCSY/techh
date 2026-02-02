@@ -48,11 +48,12 @@ export class ForceLayout {
   private initializeClusterPositions() {
     // Position clusters horizontally in a line with large spacing
     const clusterArray = Array.from(this.clusters.values());
-    const clusterSpacing = this.width / (clusterArray.length + 1); // Even more spacing
+    // Increase spacing to ensure minimum 2cm (~75px) between cluster boxes
+    const clusterSpacing = Math.max(400, this.width / (clusterArray.length + 0.5)); // More aggressive spacing
 
     clusterArray.forEach((cluster, idx) => {
       // Position clusters with increased horizontal spacing
-      const cx = (idx + 1) * clusterSpacing;
+      const cx = 200 + idx * clusterSpacing; // Start with offset and use direct multiplication
       // Centered vertically
       const cy = this.height / 2;
 
@@ -61,22 +62,22 @@ export class ForceLayout {
 
       // Position nodes around cluster center in a much looser circle
       if (clusterNodes.length > 0) {
-        const radius = Math.max(100, Math.min(180, clusterSpacing / 2.5)); // Much larger radius
+        const radius = Math.max(120, Math.min(200, clusterSpacing / 3)); // Larger radius for better spacing
 
         clusterNodes.forEach((node, nodeIdx) => {
           const angle = (nodeIdx / clusterNodes.length) * Math.PI * 2;
           node.x = cx + Math.cos(angle) * radius;
-          node.y = cy + Math.sin(angle) * radius + (Math.random() - 0.5) * 80;
+          node.y = cy + Math.sin(angle) * radius + (Math.random() - 0.5) * 100;
         });
       }
     });
 
     // Position vendor nodes (non-clustered) at the bottom with more space
     const vendorNodes = this.nodes.filter((n) => !n.cluster);
-    const vendorSpacing = this.width / (vendorNodes.length + 1);
+    const vendorSpacing = Math.max(150, this.width / (vendorNodes.length + 1));
     vendorNodes.forEach((node, idx) => {
       node.x = (idx + 1) * vendorSpacing;
-      node.y = this.height - 120 + (Math.random() - 0.5) * 80;
+      node.y = this.height - 120 + (Math.random() - 0.5) * 100;
     });
   }
 
