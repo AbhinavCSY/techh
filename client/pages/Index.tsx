@@ -139,7 +139,7 @@ export default function Index() {
                   <CVEsPieChart compact={true} />
                 </div>
                 {grouping === "asset" && (
-                  <div className="absolute inset-0 flex items-center justify-center rounded-lg group cursor-not-allowed">
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg cursor-not-allowed group">
                     <div className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                       Coming Soon
                     </div>
@@ -155,7 +155,7 @@ export default function Index() {
                   <EOLPieChart compact={true} />
                 </div>
                 {grouping === "asset" && (
-                  <div className="absolute inset-0 flex items-center justify-center rounded-lg group cursor-not-allowed">
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg cursor-not-allowed group">
                     <div className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                       Coming Soon
                     </div>
@@ -171,7 +171,7 @@ export default function Index() {
                   <TechStacksAndAssetsChart compact={true} />
                 </div>
                 {grouping === "asset" && (
-                  <div className="absolute inset-0 flex items-center justify-center rounded-lg group cursor-not-allowed">
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg cursor-not-allowed group">
                     <div className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                       Coming Soon
                     </div>
