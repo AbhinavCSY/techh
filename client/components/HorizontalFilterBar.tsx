@@ -14,6 +14,7 @@ interface HorizontalFilterBarProps {
   viewType: ViewType;
   onViewTypeChange: (view: ViewType) => void;
   onExport?: (format: "csv" | "json" | "pdf") => void;
+  grouping?: string;
 }
 
 export function HorizontalFilterBar({
