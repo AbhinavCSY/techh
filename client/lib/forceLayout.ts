@@ -165,7 +165,7 @@ export class ForceLayout {
       }
     });
 
-    // Cluster gravity - keep nodes within their cluster region (weaker to allow spreading)
+    // Cluster gravity - keep nodes within their cluster region (very weak to allow spreading)
     this.nodes.forEach((node) => {
       if (!node.cluster) return;
 
@@ -180,8 +180,8 @@ export class ForceLayout {
       const dy = cy - node.y;
       const dist = Math.hypot(dx, dy) || 1;
 
-      // Weaker clustering to respect minimum distance constraint
-      const strength = 0.02;
+      // Very weak clustering to prioritize minimum distance constraint
+      const strength = 0.008;
       const fx = (dx / dist) * strength;
       const fy = (dy / dist) * strength;
 
