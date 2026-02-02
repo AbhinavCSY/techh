@@ -46,38 +46,38 @@ export class ForceLayout {
   }
 
   private initializeClusterPositions() {
-    // Position clusters horizontally in a line with massive spacing
+    // Position clusters with massive spacing across entire canvas
     const clusterArray = Array.from(this.clusters.values());
-    // Much larger spacing - ensure clusters are far apart
-    const clusterSpacing = this.width / (clusterArray.length + 0.8); // Use most of canvas width
+    // Calculate spacing to use full canvas width
+    const clusterSpacing = this.width / (clusterArray.length + 0.5);
 
     clusterArray.forEach((cluster, idx) => {
-      // Position clusters across the full width
-      const cx = (idx + 0.5) * clusterSpacing + 100;
+      // Position clusters across the full width with large offset
+      const cx = 300 + idx * clusterSpacing;
       // Distribute vertically for more variation
-      const cy = (idx % 2 === 0) ? this.height * 0.35 : this.height * 0.65;
+      const cy = (idx % 2 === 0) ? this.height * 0.3 : this.height * 0.7;
 
       // Get nodes in this cluster
       const clusterNodes = this.nodes.filter((n) => n.cluster === cluster.id);
 
-      // Position nodes in a much larger circle for more spacing
+      // Position nodes in very large circles
       if (clusterNodes.length > 0) {
-        const radius = Math.max(150, Math.min(280, clusterSpacing / 2.5)); // Much larger radius
+        const radius = Math.max(200, clusterSpacing / 2); // Very large radius for good spacing
 
         clusterNodes.forEach((node, nodeIdx) => {
           const angle = (nodeIdx / clusterNodes.length) * Math.PI * 2;
           node.x = cx + Math.cos(angle) * radius;
-          node.y = cy + Math.sin(angle) * radius + (Math.random() - 0.5) * 120;
+          node.y = cy + Math.sin(angle) * radius + (Math.random() - 0.5) * 150;
         });
       }
     });
 
-    // Position vendor nodes (non-clustered) at the bottom with more space
+    // Position vendor nodes (non-clustered) at the bottom with even more space
     const vendorNodes = this.nodes.filter((n) => !n.cluster);
     const vendorSpacing = this.width / (vendorNodes.length + 1);
     vendorNodes.forEach((node, idx) => {
       node.x = (idx + 1) * vendorSpacing;
-      node.y = this.height - 150 + (Math.random() - 0.5) * 120;
+      node.y = this.height - 200 + (Math.random() - 0.5) * 150;
     });
   }
 
