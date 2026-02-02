@@ -223,8 +223,8 @@ export function InteractiveDependencyGraph() {
             const maxX = Math.max(...xs);
             const minY = Math.min(...ys);
             const maxY = Math.max(...ys);
-            // Increased padding to ensure minimum 2cm (≈75px) spacing between clusters
-            const padding = 150;
+            // Increased padding to ensure minimum 3cm spacing between clusters
+            const padding = 200;
 
             return (
               <g key={`cluster-${cluster.id}`}>
