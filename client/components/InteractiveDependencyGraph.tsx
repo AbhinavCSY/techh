@@ -386,10 +386,10 @@ export function InteractiveDependencyGraph() {
                   />
                 )}
 
-                {/* Node label */}
+                {/* Node label - positioned above or below to reduce overlap */}
                 <text
                   x={node.x}
-                  y={node.y + size + 14}
+                  y={node.y + (node.id.charCodeAt(0) % 2 === 0 ? size + 18 : -size - 6)}
                   textAnchor="middle"
                   fontSize={node.type === "technology" ? "10" : "8"}
                   fontWeight={node.type === "technology" ? "700" : "600"}
