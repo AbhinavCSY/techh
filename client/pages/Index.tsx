@@ -190,6 +190,7 @@ export default function Index() {
         viewType={viewType}
         onViewTypeChange={setViewType}
         onExport={handleExport}
+        grouping={grouping}
       />
 
       {/* Main Content */}
