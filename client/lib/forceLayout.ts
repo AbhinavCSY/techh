@@ -138,7 +138,7 @@ export class ForceLayout {
       }
     }
 
-    // Attractive forces for edges (weaker to let clusters spread)
+    // Attractive forces for edges (very weak to respect minimum distance)
     this.edges.forEach((edge) => {
       const source = nodeMap.get(edge.source);
       const target = nodeMap.get(edge.target);
@@ -149,17 +149,20 @@ export class ForceLayout {
       const dy = target.y - source.y;
       const dist = Math.hypot(dx, dy) || 1;
 
-      // Ensure at least 4cm (150px) minimum distance, preferably 400px apart
-      const restLength = Math.max(150, 400);
-      const strength = 0.04; // Reduced strength to respect minimum distance
+      // Prefer 450px distance to respect 220px minimum distance with safety margin
+      const restLength = 450;
+      const strength = 0.02; // Very weak to not pull nodes too close
 
-      const fx = (dx / dist) * strength * (dist - restLength);
-      const fy = (dy / dist) * strength * (dist - restLength);
+      // Only apply attraction if distance is greater than minimum
+      if (dist >= 220) {
+        const fx = (dx / dist) * strength * (dist - restLength);
+        const fy = (dy / dist) * strength * (dist - restLength);
 
-      source.vx += fx;
-      source.vy += fy;
-      target.vx -= fx;
-      target.vy -= fy;
+        source.vx += fx;
+        source.vy += fy;
+        target.vx -= fx;
+        target.vy -= fy;
+      }
     });
 
     // Cluster gravity - keep nodes within their cluster region (weaker to allow spreading)
