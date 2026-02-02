@@ -132,18 +132,51 @@ export default function Index() {
           {showWidgetPanel && (
             <div className="grid grid-cols-3 gap-2">
               {/* CVEs Pie Chart */}
-              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                <CVEsPieChart compact={true} />
+              <div className="relative bg-white rounded-lg border border-gray-200 p-1.5">
+                <div className={cn(
+                  grouping === "asset" && "opacity-50 pointer-events-none"
+                )}>
+                  <CVEsPieChart compact={true} />
+                </div>
+                {grouping === "asset" && (
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg group cursor-not-allowed">
+                    <div className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      Coming Soon
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* EOL Pie Chart */}
-              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                <EOLPieChart compact={true} />
+              <div className="relative bg-white rounded-lg border border-gray-200 p-1.5">
+                <div className={cn(
+                  grouping === "asset" && "opacity-50 pointer-events-none"
+                )}>
+                  <EOLPieChart compact={true} />
+                </div>
+                {grouping === "asset" && (
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg group cursor-not-allowed">
+                    <div className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      Coming Soon
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Tech Stacks & Assets Chart */}
-              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                <TechStacksAndAssetsChart compact={true} />
+              <div className="relative bg-white rounded-lg border border-gray-200 p-1.5">
+                <div className={cn(
+                  grouping === "asset" && "opacity-50 pointer-events-none"
+                )}>
+                  <TechStacksAndAssetsChart compact={true} />
+                </div>
+                {grouping === "asset" && (
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg group cursor-not-allowed">
+                    <div className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      Coming Soon
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
