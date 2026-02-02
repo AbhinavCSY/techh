@@ -99,6 +99,7 @@ export class ForceLayout {
 
   private applyForces() {
     const nodeMap = new Map(this.nodes.map((n) => [n.id, n]));
+    const minDistance = 150; // 4cm minimum distance between all nodes (~150px at 96 DPI)
 
     // Repulsive forces between nodes (strong to keep clusters apart)
     for (let i = 0; i < this.nodes.length; i++) {
@@ -110,18 +111,29 @@ export class ForceLayout {
         const dy = node2.y - node1.y;
         const dist = Math.hypot(dx, dy) || 1;
 
-        // Strong repulsion between clusters, mild within
-        const sameCluster =
-          node1.cluster && node2.cluster && node1.cluster === node2.cluster;
-        const strength = sameCluster ? 100 : 800; // Extreme repulsion between different clusters
+        // If nodes are closer than minimum distance, push them apart strongly
+        if (dist < minDistance) {
+          const fx = (dx / dist) * (1000 / dist); // Very strong repulsion when too close
+          const fy = (dy / dist) * (1000 / dist);
 
-        const fx = (dx / dist) * (-strength / dist);
-        const fy = (dy / dist) * (-strength / dist);
+          node1.vx -= fx;
+          node1.vy -= fy;
+          node2.vx += fx;
+          node2.vy += fy;
+        } else {
+          // Normal repulsion between clusters, mild within
+          const sameCluster =
+            node1.cluster && node2.cluster && node1.cluster === node2.cluster;
+          const strength = sameCluster ? 100 : 800; // Extreme repulsion between different clusters
 
-        node1.vx += fx;
-        node1.vy += fy;
-        node2.vx -= fx;
-        node2.vy -= fy;
+          const fx = (dx / dist) * (-strength / dist);
+          const fy = (dy / dist) * (-strength / dist);
+
+          node1.vx += fx;
+          node1.vy += fy;
+          node2.vx -= fx;
+          node2.vy -= fy;
+        }
       }
     }
 
