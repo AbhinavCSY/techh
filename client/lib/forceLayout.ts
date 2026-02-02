@@ -18,7 +18,7 @@ export class ForceLayout {
   clusters: Map<string, Cluster>;
   width: number;
   height: number;
-  iterations: number = 1200;
+  iterations: number = 2000;
   cooldown: number = 0.1;
 
   constructor(
