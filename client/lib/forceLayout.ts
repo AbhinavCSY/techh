@@ -176,7 +176,8 @@ export class ForceLayout {
       const dy = cy - node.y;
       const dist = Math.hypot(dx, dy) || 1;
 
-      const strength = 0.05; // Reduced clustering to allow more spacing
+      // Weaker clustering to respect minimum distance constraint
+      const strength = 0.02;
       const fx = (dx / dist) * strength;
       const fy = (dy / dist) * strength;
 
