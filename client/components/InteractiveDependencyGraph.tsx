@@ -277,22 +277,29 @@ export function InteractiveDependencyGraph() {
 
             if (!source || !target) return null;
 
-            const isHighlighted =
+            // Determine if edge is directly connected or transitive
+            const isDirectlyConnectedEdge =
               selectedNode &&
-              (selectedNode.id === source.id ||
-                selectedNode.id === target.id ||
-                (selectedNode.type === "technology" &&
-                  blastRadius &&
-                  (blastRadius.direct.includes(source.id) ||
-                    blastRadius.direct.includes(target.id) ||
-                    blastRadius.transitive.includes(source.id) ||
-                    blastRadius.transitive.includes(target.id))) ||
+              (selectedNode.id === source.id || selectedNode.id === target.id);
+
+            const isTransitiveEdge =
+              selectedNode &&
+              !isDirectlyConnectedEdge &&
+              ((selectedNode.type === "technology" &&
+                blastRadius &&
+                (blastRadius.direct.includes(source.id) ||
+                  blastRadius.direct.includes(target.id) ||
+                  blastRadius.transitive.includes(source.id) ||
+                  blastRadius.transitive.includes(target.id))) ||
                 (selectedNode.type === "issue" &&
                   affectedTechs &&
                   (affectedTechs.direct.includes(source.id) ||
                     affectedTechs.direct.includes(target.id) ||
                     affectedTechs.transitive.includes(source.id) ||
                     affectedTechs.transitive.includes(target.id))));
+
+            const isHighlighted = isDirectlyConnectedEdge || isTransitiveEdge;
+            const hasAnySelection = !!selectedNode;
 
             return (
               <g key={`edge-${idx}`}>
