@@ -337,9 +337,20 @@ export function InteractiveDependencyGraph() {
             const isHovered = hoveredNodeId === node.id;
             const isSelected = selectedNodeId === node.id;
 
+            // When a node is selected, highlight ALL nodes with varying intensities
+            const isDirectlyConnected =
+              selectedNode &&
+              (selectedNode.id === node.id ||
+                filteredEdges.some(
+                  (e) =>
+                    (e.source === selectedNode.id && e.target === node.id) ||
+                    (e.source === node.id && e.target === selectedNode.id),
+                ));
+
             const isAffected =
               selectedNode &&
               (selectedNode.id === node.id ||
+                isDirectlyConnected ||
                 (selectedNode.type === "technology" &&
                   blastRadius &&
                   (blastRadius.direct.includes(node.id) ||
@@ -348,6 +359,9 @@ export function InteractiveDependencyGraph() {
                   affectedTechs &&
                   (affectedTechs.direct.includes(node.id) ||
                     affectedTechs.transitive.includes(node.id))));
+
+            // All nodes should have some visual feedback when a node is selected
+            const hasAnySelection = !!selectedNode;
 
             return (
               <g
