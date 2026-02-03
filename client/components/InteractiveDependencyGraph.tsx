@@ -440,9 +440,9 @@ export function InteractiveDependencyGraph() {
                   x={node.x}
                   y={node.y + (node.id.charCodeAt(0) % 2 === 0 ? size + 18 : -size - 6)}
                   textAnchor="middle"
-                  fontSize={node.type === "technology" ? "10" : "8"}
-                  fontWeight={node.type === "technology" ? "700" : "600"}
-                  fill={isSelected ? "#1E40AF" : "#1F2937"}
+                  fontSize={node.type === "technology" ? "11" : "9"}
+                  fontWeight={isSelected ? "900" : isAffected ? "800" : "600"}
+                  fill={isSelected ? "#1E40AF" : isAffected ? "#2563EB" : "#1F2937"}
                   dominantBaseline="middle"
                   pointerEvents="none"
                   style={{
