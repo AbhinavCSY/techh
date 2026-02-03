@@ -398,10 +398,18 @@ export function InteractiveDependencyGraph() {
                     height={size * 2}
                     fill={color}
                     stroke={
-                      isSelected ? "#1E40AF" : isHovered ? "#6B7280" : color
+                      isSelected
+                        ? "#1E40AF"
+                        : isAffected
+                          ? "#3B82F6"
+                          : isHovered
+                            ? "#6B7280"
+                            : color
                     }
-                    strokeWidth={isSelected ? 3 : isHovered ? 2 : 1.5}
-                    opacity={0.85}
+                    strokeWidth={
+                      isSelected ? 4 : isAffected ? 3 : isHovered ? 2 : 1.5
+                    }
+                    opacity={0.9}
                     rx="3"
                   />
                 ) : (
@@ -411,9 +419,19 @@ export function InteractiveDependencyGraph() {
                     cy={node.y}
                     r={size}
                     fill={color}
-                    stroke={isSelected ? "#FFF" : isHovered ? "#FFF" : color}
-                    strokeWidth={isSelected ? 3 : isHovered ? 2 : 1.5}
-                    opacity={0.85}
+                    stroke={
+                      isSelected
+                        ? "#FFF"
+                        : isAffected
+                          ? "#60A5FA"
+                          : isHovered
+                            ? "#FFF"
+                            : color
+                    }
+                    strokeWidth={
+                      isSelected ? 4 : isAffected ? 3 : isHovered ? 2 : 1.5
+                    }
+                    opacity={0.9}
                   />
                 )}
 
