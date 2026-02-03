@@ -424,14 +424,28 @@ export function InteractiveDependencyGraph() {
                     stroke={
                       isSelected
                         ? "#1E40AF"
-                        : isAffected
+                        : hasAnySelection && isDirectlyConnected
                           ? "#3B82F6"
-                          : isHovered
-                            ? "#6B7280"
-                            : color
+                          : hasAnySelection && isAffected
+                            ? "#60A5FA"
+                            : hasAnySelection
+                              ? "#BFDBFE"
+                              : isHovered
+                                ? "#6B7280"
+                                : color
                     }
                     strokeWidth={
-                      isSelected ? 4 : isAffected ? 3 : isHovered ? 2 : 1.5
+                      isSelected
+                        ? 4
+                        : hasAnySelection && isDirectlyConnected
+                          ? 3
+                          : hasAnySelection && isAffected
+                            ? 2.5
+                            : hasAnySelection
+                              ? 2
+                              : isHovered
+                                ? 2
+                                : 1.5
                     }
                     opacity={0.9}
                     rx="3"
@@ -446,14 +460,28 @@ export function InteractiveDependencyGraph() {
                     stroke={
                       isSelected
                         ? "#FFF"
-                        : isAffected
+                        : hasAnySelection && isDirectlyConnected
                           ? "#60A5FA"
-                          : isHovered
-                            ? "#FFF"
-                            : color
+                          : hasAnySelection && isAffected
+                            ? "#93C5FD"
+                            : hasAnySelection
+                              ? "#DBEAFE"
+                              : isHovered
+                                ? "#FFF"
+                                : color
                     }
                     strokeWidth={
-                      isSelected ? 4 : isAffected ? 3 : isHovered ? 2 : 1.5
+                      isSelected
+                        ? 4
+                        : hasAnySelection && isDirectlyConnected
+                          ? 3
+                          : hasAnySelection && isAffected
+                            ? 2.5
+                            : hasAnySelection
+                              ? 2
+                              : isHovered
+                                ? 2
+                                : 1.5
                     }
                     opacity={0.9}
                   />
