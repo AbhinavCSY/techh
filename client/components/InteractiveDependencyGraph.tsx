@@ -496,15 +496,17 @@ export function InteractiveDependencyGraph() {
               <g
                 key={node.id}
                 style={{
-                  cursor: node.type !== "vendor" ? "pointer" : "default",
+                  cursor: draggedNodeId === node.id ? "grabbing" : node.type !== "vendor" ? "grab" : "default",
+                  pointerEvents: "auto",
                 }}
                 opacity={
                   isSelected ? 1 : hasAnySelection && isDirectlyConnected ? 1 : hasAnySelection ? 0.8 : 1
                 }
                 onMouseEnter={() => setHoveredNodeId(node.id)}
                 onMouseLeave={() => setHoveredNodeId(null)}
+                onMouseDown={(e) => handleNodeMouseDown(node.id, e)}
                 onClick={() => {
-                  if (node.type !== "vendor") {
+                  if (node.type !== "vendor" && !draggedNodeId) {
                     setSelectedNodeId(
                       selectedNodeId === node.id ? null : node.id,
                     );
