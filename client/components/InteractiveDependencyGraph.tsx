@@ -301,6 +301,23 @@ export function InteractiveDependencyGraph() {
             const isHighlighted = isDirectlyConnectedEdge || isTransitiveEdge;
             const hasAnySelection = !!selectedNode;
 
+            const midX = (source.x + target.x) / 2;
+            const midY = (source.y + target.y) / 2;
+
+            // Map edge type to display label
+            const edgeLabel =
+              edge.type === "found_in"
+                ? "Found In"
+                : edge.type === "depends_on"
+                  ? "Depends On"
+                  : edge.type === "uses"
+                    ? "Uses"
+                    : edge.type === "affects"
+                      ? "Affects"
+                      : edge.type === "requires"
+                        ? "Requires"
+                        : edge.type;
+
             return (
               <g key={`edge-${idx}`}>
                 {/* Edge glow for directly connected edges */}
@@ -373,6 +390,39 @@ export function InteractiveDependencyGraph() {
                   }
                   style={{ transition: "all 0.2s ease", pointerEvents: "none" }}
                 />
+
+                {/* Edge label */}
+                {(isDirectlyConnectedEdge || isTransitiveEdge) && (
+                  <g pointerEvents="none">
+                    {/* Background for label */}
+                    <rect
+                      x={midX - 35}
+                      y={midY - 10}
+                      width="70"
+                      height="20"
+                      fill="white"
+                      stroke={
+                        isDirectlyConnectedEdge ? "#1E40AF" : "#2563EB"
+                      }
+                      strokeWidth="1.5"
+                      rx="3"
+                      opacity={isDirectlyConnectedEdge ? 0.95 : 0.9}
+                    />
+                    {/* Label text */}
+                    <text
+                      x={midX}
+                      y={midY}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize="10"
+                      fontWeight={isDirectlyConnectedEdge ? "700" : "600"}
+                      fill={isDirectlyConnectedEdge ? "#1E40AF" : "#2563EB"}
+                      style={{ userSelect: "none", pointerEvents: "none" }}
+                    >
+                      {edgeLabel}
+                    </text>
+                  </g>
+                )}
               </g>
             );
           })}
