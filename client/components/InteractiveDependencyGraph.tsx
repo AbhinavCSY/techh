@@ -279,12 +279,14 @@ export function InteractiveDependencyGraph() {
 
             const isHighlighted =
               selectedNode &&
-              ((selectedNode.type === "technology" &&
-                blastRadius &&
-                (blastRadius.direct.includes(source.id) ||
-                  blastRadius.direct.includes(target.id) ||
-                  blastRadius.transitive.includes(source.id) ||
-                  blastRadius.transitive.includes(target.id))) ||
+              (selectedNode.id === source.id ||
+                selectedNode.id === target.id ||
+                (selectedNode.type === "technology" &&
+                  blastRadius &&
+                  (blastRadius.direct.includes(source.id) ||
+                    blastRadius.direct.includes(target.id) ||
+                    blastRadius.transitive.includes(source.id) ||
+                    blastRadius.transitive.includes(target.id))) ||
                 (selectedNode.type === "issue" &&
                   affectedTechs &&
                   (affectedTechs.direct.includes(source.id) ||
