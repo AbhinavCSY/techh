@@ -295,22 +295,38 @@ export function InteractiveDependencyGraph() {
                     affectedTechs.transitive.includes(target.id))));
 
             return (
-              <line
-                key={`edge-${idx}`}
-                x1={source.x}
-                y1={source.y}
-                x2={target.x}
-                y2={target.y}
-                stroke={isHighlighted ? "#1D4ED8" : "#94A3B8"}
-                strokeWidth={isHighlighted ? 2.5 : 1.5}
-                opacity={isHighlighted ? 0.8 : 0.3}
-                markerEnd={
-                  isHighlighted
-                    ? "url(#arrowhead-highlight)"
-                    : "url(#arrowhead-default)"
-                }
-                style={{ transition: "all 0.2s ease", pointerEvents: "none" }}
-              />
+              <g key={`edge-${idx}`}>
+                {/* Edge glow for highlighted edges */}
+                {isHighlighted && (
+                  <line
+                    x1={source.x}
+                    y1={source.y}
+                    x2={target.x}
+                    y2={target.y}
+                    stroke="#3B82F6"
+                    strokeWidth={6}
+                    opacity={0.2}
+                    pointerEvents="none"
+                    style={{ transition: "all 0.2s ease" }}
+                  />
+                )}
+                {/* Main edge */}
+                <line
+                  x1={source.x}
+                  y1={source.y}
+                  x2={target.x}
+                  y2={target.y}
+                  stroke={isHighlighted ? "#2563EB" : "#D1D5DB"}
+                  strokeWidth={isHighlighted ? 3.5 : 1.5}
+                  opacity={isHighlighted ? 1 : 0.25}
+                  markerEnd={
+                    isHighlighted
+                      ? "url(#arrowhead-highlight)"
+                      : "url(#arrowhead-default)"
+                  }
+                  style={{ transition: "all 0.2s ease", pointerEvents: "none" }}
+                />
+              </g>
             );
           })}
 
