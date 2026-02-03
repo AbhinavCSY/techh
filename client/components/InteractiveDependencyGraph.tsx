@@ -417,11 +417,7 @@ export function InteractiveDependencyGraph() {
                   cursor: node.type !== "vendor" ? "pointer" : "default",
                 }}
                 opacity={
-                  selectedNode && !isAffected && !isSelected
-                    ? 0.5
-                    : selectedNode && !isDirectlyConnected && !isSelected
-                      ? 0.7
-                      : 1
+                  isSelected ? 1 : hasAnySelection && isDirectlyConnected ? 1 : hasAnySelection ? 0.8 : 1
                 }
                 onMouseEnter={() => setHoveredNodeId(node.id)}
                 onMouseLeave={() => setHoveredNodeId(null)}
