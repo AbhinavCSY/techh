@@ -339,10 +339,11 @@ export function InteractiveDependencyGraph() {
 
             const isAffected =
               selectedNode &&
-              ((selectedNode.type === "technology" &&
-                blastRadius &&
-                (blastRadius.direct.includes(node.id) ||
-                  blastRadius.transitive.includes(node.id))) ||
+              (selectedNode.id === node.id ||
+                (selectedNode.type === "technology" &&
+                  blastRadius &&
+                  (blastRadius.direct.includes(node.id) ||
+                    blastRadius.transitive.includes(node.id))) ||
                 (selectedNode.type === "issue" &&
                   affectedTechs &&
                   (affectedTechs.direct.includes(node.id) ||
