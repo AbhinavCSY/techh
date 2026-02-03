@@ -386,14 +386,18 @@ export function InteractiveDependencyGraph() {
                   }
                 }}
               >
-                {/* Node glow for affected/selected nodes */}
-                {isAffected && (
+                {/* Node glow for all nodes when something is selected */}
+                {hasAnySelection && (
                   <circle
                     cx={node.x}
                     cy={node.y}
                     r={size + 8}
-                    fill={isSelected ? "#2563EB" : "#60A5FA"}
-                    opacity={isSelected ? 0.3 : 0.15}
+                    fill={
+                      isSelected ? "#1E40AF" : isDirectlyConnected ? "#2563EB" : "#93C5FD"
+                    }
+                    opacity={
+                      isSelected ? 0.35 : isDirectlyConnected ? 0.25 : 0.1
+                    }
                     style={{ pointerEvents: "none" }}
                   />
                 )}
