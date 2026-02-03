@@ -33,11 +33,22 @@ export function InteractiveDependencyGraph() {
       WIDTH,
       HEIGHT,
     );
-    return {
+    const result = {
       ...layout.simulate(),
       clusters: graph.clusters,
     };
-  }, []);
+
+    // Apply manually adjusted node positions
+    result.nodes = result.nodes.map((node) => {
+      const customPos = nodePositions[node.id];
+      if (customPos) {
+        return { ...node, x: customPos.x, y: customPos.y };
+      }
+      return node;
+    });
+
+    return result;
+  }, [nodePositions]);
 
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
     setIsDragging(true);
