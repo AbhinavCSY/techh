@@ -925,13 +925,13 @@ export function InteractiveDependencyGraph() {
                   • <strong>Hover</strong> - View node details
                 </p>
                 <p>
-                  • <strong>Click Tech</strong> - Highlight blast radius
+                  • <strong>Click Node</strong> - Highlight connections
                 </p>
                 <p>
-                  • <strong>Click Issue</strong> - Show affected techs
+                  • <strong>Drag Node</strong> - Adjust node position
                 </p>
                 <p>
-                  • <strong>Drag</strong> - Pan the view
+                  • <strong>Drag Canvas</strong> - Pan the view
                 </p>
                 <p>
                   • <strong>Scroll</strong> - Zoom in/out
