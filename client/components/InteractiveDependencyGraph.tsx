@@ -303,16 +303,30 @@ export function InteractiveDependencyGraph() {
 
             return (
               <g key={`edge-${idx}`}>
-                {/* Edge glow for highlighted edges */}
-                {isHighlighted && (
+                {/* Edge glow for directly connected edges */}
+                {isDirectlyConnectedEdge && (
                   <line
                     x1={source.x}
                     y1={source.y}
                     x2={target.x}
                     y2={target.y}
-                    stroke="#3B82F6"
-                    strokeWidth={6}
+                    stroke="#1E40AF"
+                    strokeWidth={8}
                     opacity={0.2}
+                    pointerEvents="none"
+                    style={{ transition: "all 0.2s ease" }}
+                  />
+                )}
+                {/* Edge glow for transitive edges */}
+                {isTransitiveEdge && (
+                  <line
+                    x1={source.x}
+                    y1={source.y}
+                    x2={target.x}
+                    y2={target.y}
+                    stroke="#60A5FA"
+                    strokeWidth={5}
+                    opacity={0.15}
                     pointerEvents="none"
                     style={{ transition: "all 0.2s ease" }}
                   />
@@ -323,13 +337,39 @@ export function InteractiveDependencyGraph() {
                   y1={source.y}
                   x2={target.x}
                   y2={target.y}
-                  stroke={isHighlighted ? "#2563EB" : "#D1D5DB"}
-                  strokeWidth={isHighlighted ? 3.5 : 1.5}
-                  opacity={isHighlighted ? 1 : 0.25}
+                  stroke={
+                    isDirectlyConnectedEdge
+                      ? "#1E40AF"
+                      : isTransitiveEdge
+                        ? "#2563EB"
+                        : hasAnySelection
+                          ? "#E0E7FF"
+                          : "#D1D5DB"
+                  }
+                  strokeWidth={
+                    isDirectlyConnectedEdge
+                      ? 4
+                      : isTransitiveEdge
+                        ? 2.5
+                        : hasAnySelection
+                          ? 1
+                          : 1.5
+                  }
+                  opacity={
+                    isDirectlyConnectedEdge
+                      ? 1
+                      : isTransitiveEdge
+                        ? 0.8
+                        : hasAnySelection
+                          ? 0.15
+                          : 0.3
+                  }
                   markerEnd={
-                    isHighlighted
+                    isDirectlyConnectedEdge
                       ? "url(#arrowhead-highlight)"
-                      : "url(#arrowhead-default)"
+                      : isTransitiveEdge
+                        ? "url(#arrowhead-default)"
+                        : "url(#arrowhead-default)"
                   }
                   style={{ transition: "all 0.2s ease", pointerEvents: "none" }}
                 />
