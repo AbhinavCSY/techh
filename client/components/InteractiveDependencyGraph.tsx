@@ -366,13 +366,25 @@ export function InteractiveDependencyGraph() {
                   }
                 }}
               >
+                {/* Node glow for affected/selected nodes */}
+                {isAffected && (
+                  <circle
+                    cx={node.x}
+                    cy={node.y}
+                    r={size + 8}
+                    fill={isSelected ? "#2563EB" : "#60A5FA"}
+                    opacity={isSelected ? 0.3 : 0.15}
+                    style={{ pointerEvents: "none" }}
+                  />
+                )}
+
                 {/* Node shadow */}
                 <circle
                   cx={node.x}
                   cy={node.y}
                   r={size + 2}
                   fill="black"
-                  opacity={isHovered || isSelected ? 0.2 : 0.05}
+                  opacity={isHovered || isSelected ? 0.3 : isAffected ? 0.15 : 0.05}
                   filter="url(#node-shadow)"
                 />
 
