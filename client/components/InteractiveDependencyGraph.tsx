@@ -653,9 +653,9 @@ export function InteractiveDependencyGraph() {
                     {/* Shadow background */}
                     <rect
                       x={node.x + size + 8}
-                      y={node.y - 32}
-                      width="200"
-                      height="66"
+                      y={node.y - 55}
+                      width="220"
+                      height="100"
                       fill="black"
                       opacity="0.15"
                       rx="6"
@@ -663,18 +663,56 @@ export function InteractiveDependencyGraph() {
                     {/* Main tooltip background */}
                     <rect
                       x={node.x + size + 10}
-                      y={node.y - 30}
-                      width="200"
-                      height="66"
+                      y={node.y - 53}
+                      width="220"
+                      height="100"
                       fill="white"
                       stroke="#2563EB"
                       strokeWidth="2"
                       rx="6"
                     />
+                    {/* Type badge */}
+                    <rect
+                      x={node.x + size + 16}
+                      y={node.y - 48}
+                      width="80"
+                      height="18"
+                      fill={
+                        node.type === "issue"
+                          ? "#FEE2E2"
+                          : node.type === "technology"
+                            ? "#DBEAFE"
+                            : "#F3E8FF"
+                      }
+                      rx="3"
+                    />
+                    <text
+                      x={node.x + size + 56}
+                      y={node.y - 39}
+                      fontSize="10"
+                      fontWeight="800"
+                      fill={
+                        node.type === "issue"
+                          ? "#DC2626"
+                          : node.type === "technology"
+                            ? "#1E40AF"
+                            : "#7C3AED"
+                      }
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      style={{ pointerEvents: "none" }}
+                    >
+                      {node.type === "technology"
+                        ? "TECH"
+                        : node.type === "issue"
+                          ? "CVE"
+                          : node.type.toUpperCase()}
+                    </text>
+
                     {/* Title */}
                     <text
                       x={node.x + size + 16}
-                      y={node.y - 16}
+                      y={node.y - 19}
                       fontSize="12"
                       fontWeight="800"
                       fill="#0F172A"
@@ -684,17 +722,19 @@ export function InteractiveDependencyGraph() {
                         ? node.label.substring(0, 17) + "..."
                         : node.label}
                     </text>
-                    {/* Type */}
+
+                    {/* Type description */}
                     <text
                       x={node.x + size + 16}
-                      y={node.y - 2}
-                      fontSize="10"
+                      y={node.y - 5}
+                      fontSize="9"
                       fontWeight="600"
-                      fill="#475569"
+                      fill="#666666"
                       style={{ pointerEvents: "none" }}
                     >
-                      {node.type.charAt(0).toUpperCase() + node.type.slice(1)}
+                      Type: {node.type.charAt(0).toUpperCase() + node.type.slice(1)}
                     </text>
+
                     {/* CVE count */}
                     {node.cveCount !== undefined && node.cveCount > 0 && (
                       <text
@@ -719,6 +759,19 @@ export function InteractiveDependencyGraph() {
                         style={{ pointerEvents: "none" }}
                       >
                         Severity: {node.severity}
+                      </text>
+                    )}
+                    {/* Version if version type */}
+                    {node.type === "version" && node.label && (
+                      <text
+                        x={node.x + size + 16}
+                        y={node.y + 27}
+                        fontSize="9"
+                        fontWeight="600"
+                        fill="#475569"
+                        style={{ pointerEvents: "none" }}
+                      >
+                        Version Info
                       </text>
                     )}
                   </g>
