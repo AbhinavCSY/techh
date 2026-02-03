@@ -50,14 +50,32 @@ export function InteractiveDependencyGraph() {
     return result;
   }, [nodePositions]);
 
+  const handleNodeMouseDown = (nodeId: string, e: React.MouseEvent) => {
+    setDraggedNodeId(nodeId);
+    e.stopPropagation();
+  };
+
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    if (!draggedNodeId) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    }
     e.preventDefault();
   };
 
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (isDragging) {
+    if (draggedNodeId && svgRef.current) {
+      // Get SVG position and apply inverse transform
+      const svg = svgRef.current;
+      const rect = svg.getBoundingClientRect();
+      const x = (e.clientX - rect.left - pan.x) / zoom;
+      const y = (e.clientY - rect.top - pan.y) / zoom;
+
+      setNodePositions((prev) => ({
+        ...prev,
+        [draggedNodeId]: { x, y },
+      }));
+    } else if (isDragging) {
       setPan({
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y,
@@ -67,6 +85,7 @@ export function InteractiveDependencyGraph() {
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    setDraggedNodeId(null);
   };
 
   const handleWheel = (e: React.WheelEvent<SVGSVGElement>) => {
