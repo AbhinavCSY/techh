@@ -56,8 +56,8 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
             <TableHead className="font-semibold">Tech Stacks</TableHead>
             <TableHead className="font-semibold">Risk Level</TableHead>
             <TableHead className="font-semibold">CVEs</TableHead>
-            <TableHead className="font-semibold">Last Seen</TableHead>
             <TableHead className="font-semibold">First Seen</TableHead>
+            <TableHead className="font-semibold">Last Seen</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -116,10 +116,10 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
                 />
               </TableCell>
               <TableCell className="text-sm text-gray-600">
-                {asset.lastSeen.toLocaleDateString()}
+                {asset.firstSeen.toLocaleDateString()}
               </TableCell>
               <TableCell className="text-sm text-gray-600">
-                {asset.firstSeen.toLocaleDateString()}
+                {asset.lastSeen.toLocaleDateString()}
               </TableCell>
             </TableRow>
           ))}

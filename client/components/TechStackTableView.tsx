@@ -74,8 +74,8 @@ export function TechStackTableView({
             <TableHead className="font-semibold">Risk</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
             <TableHead className="font-semibold">Status</TableHead>
-            <TableHead className="font-semibold">Last Seen</TableHead>
             <TableHead className="font-semibold">First Seen</TableHead>
+            <TableHead className="font-semibold">Last Seen</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -179,15 +179,15 @@ export function TechStackTableView({
                 </TableCell>
                 <TableCell>
                   <p className="text-sm text-gray-600">
-                    {techStack.lastSeen
-                      ? techStack.lastSeen.toLocaleDateString()
+                    {techStack.firstSeen
+                      ? techStack.firstSeen.toLocaleDateString()
                       : "N/A"}
                   </p>
                 </TableCell>
                 <TableCell>
                   <p className="text-sm text-gray-600">
-                    {techStack.firstSeen
-                      ? techStack.firstSeen.toLocaleDateString()
+                    {techStack.lastSeen
+                      ? techStack.lastSeen.toLocaleDateString()
                       : "N/A"}
                   </p>
                 </TableCell>
