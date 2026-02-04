@@ -1083,7 +1083,7 @@ function DetailsPanel({
                                           ).some((v) => v)
                                         }
                                         className={cn(
-                                          "w-full py-1.5 px-2 rounded text-xs font-medium transition-colors",
+                                          "w-full py-1.5 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-2",
                                           Object.values(
                                             cveAssetSelections[
                                               `scanned-${cve.id}`
@@ -1093,7 +1093,8 @@ function DetailsPanel({
                                             : "bg-gray-400 text-white cursor-not-allowed",
                                         )}
                                       >
-                                        Scan Selected Assets
+                                        <span>↻</span>
+                                        Rescan Selected Assets
                                       </button>
                                     </div>
                                   )}
