@@ -1112,7 +1112,7 @@ function DetailsPanel({
                                     </div>
                                   )}
 
-                                  {cveResults && !isScanning && (
+                                  {cve.scanningSupported && cveResults && !isScanning && (
                                     <div className="p-2 bg-blue-100 border border-blue-300 rounded">
                                       <div className="flex items-center gap-2 mb-2">
                                         <span className="text-lg">✓</span>
