@@ -62,7 +62,8 @@ export interface TechStack {
   riskLevel: "critical" | "high" | "medium" | "low";
   riskScore: number;
   createdAt: Date;
-  lastUpdated?: Date;
+  lastSeen?: Date;
+  firstSeen?: Date;
   license: string;
   effectiveLicense:
     | "MIT"
@@ -81,12 +82,14 @@ export interface TechStack {
 export interface Asset {
   id: string;
   name: string;
+  displayName?: string;
   type: "ip" | "domain" | "app" | "cloud-resource";
   riskLevel: "critical" | "high" | "medium" | "low";
   techStacks: TechStack[];
   cveCount: number;
   topCriticalCVE?: CVE;
-  lastUpdated: Date;
+  lastSeen: Date;
+  firstSeen: Date;
   isScanned: boolean;
 }
 
