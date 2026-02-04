@@ -54,8 +54,7 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
             <TableHead className="font-semibold">Asset Name</TableHead>
             <TableHead className="font-semibold">Type</TableHead>
             <TableHead className="font-semibold">Tech Stacks</TableHead>
-            <TableHead className="font-semibold">Risk Level</TableHead>
-            <TableHead className="font-semibold">CVEs</TableHead>
+            <TableHead className="font-semibold">Threat</TableHead>
             <TableHead className="font-semibold">First Seen</TableHead>
             <TableHead className="font-semibold">Last Seen</TableHead>
           </TableRow>
@@ -104,18 +103,13 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
                 </div>
               </TableCell>
               <TableCell>
-                <Badge className={getRiskColor(asset.riskLevel)}>
-                  {asset.riskLevel}
-                </Badge>
-              </TableCell>
-              <TableCell>
                 <ThreatBar
                   cves={asset.techStacks.flatMap((ts) => ts.cves)}
                   unscannedCount={asset.techStacks.reduce(
                     (sum, ts) => sum + ts.unscannedThreatsCount,
                     0,
                   )}
-                  className="w-40"
+                  className="w-56"
                 />
               </TableCell>
               <TableCell className="text-sm text-gray-600">
