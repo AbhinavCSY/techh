@@ -414,17 +414,20 @@ function DetailsPanel({
         {
           step: 1,
           title: "Upgrade to version 2.14.0 or later",
-          description: "Apply the latest security patch that addresses the SQL injection vulnerability",
+          description:
+            "Apply the latest security patch that addresses the SQL injection vulnerability",
         },
         {
           step: 2,
           title: "Use parameterized queries",
-          description: "Replace all dynamic SQL queries with parameterized prepared statements",
+          description:
+            "Replace all dynamic SQL queries with parameterized prepared statements",
         },
         {
           step: 3,
           title: "Input validation",
-          description: "Implement strict input validation for all user-supplied data",
+          description:
+            "Implement strict input validation for all user-supplied data",
         },
         {
           step: 4,
@@ -467,12 +470,14 @@ function DetailsPanel({
         {
           step: 2,
           title: "Implement path sanitization",
-          description: "Sanitize and validate all file path inputs to prevent directory traversal",
+          description:
+            "Sanitize and validate all file path inputs to prevent directory traversal",
         },
         {
           step: 3,
           title: "Use whitelisting",
-          description: "Implement whitelist-based validation for allowed upload directories",
+          description:
+            "Implement whitelist-based validation for allowed upload directories",
         },
       ],
     },
@@ -505,7 +510,8 @@ function DetailsPanel({
         {
           step: 1,
           title: "Apply rate limiting",
-          description: "Implement request rate limiting to prevent resource exhaustion attacks",
+          description:
+            "Implement request rate limiting to prevent resource exhaustion attacks",
         },
         {
           step: 2,
@@ -515,7 +521,8 @@ function DetailsPanel({
         {
           step: 3,
           title: "Monitor resource usage",
-          description: "Set up monitoring and alerts for unusual resource consumption patterns",
+          description:
+            "Set up monitoring and alerts for unusual resource consumption patterns",
         },
       ],
     },
@@ -1300,188 +1307,194 @@ function DetailsPanel({
                                   )}
 
                                   {/* Remediation Steps - Shown when scanning is not supported */}
-                                  {!cve.scanningSupported && cve.remediationSteps && (
-                                    <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
-                                      <h5 className="text-xs font-semibold text-blue-900">
-                                        📋 Remediation Steps
-                                      </h5>
-                                      <div className="space-y-2">
-                                        {cve.remediationSteps.map(
-                                          (step: any, idx: number) => (
-                                            <div
-                                              key={idx}
-                                              className="text-xs text-gray-700"
-                                            >
-                                              <p className="font-semibold text-gray-900">
-                                                Step {step.step}: {step.title}
-                                              </p>
-                                              <p className="text-gray-600 mt-1">
-                                                {step.description}
-                                              </p>
-                                            </div>
-                                          ),
-                                        )}
+                                  {!cve.scanningSupported &&
+                                    cve.remediationSteps && (
+                                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
+                                        <h5 className="text-xs font-semibold text-blue-900">
+                                          📋 Remediation Steps
+                                        </h5>
+                                        <div className="space-y-2">
+                                          {cve.remediationSteps.map(
+                                            (step: any, idx: number) => (
+                                              <div
+                                                key={idx}
+                                                className="text-xs text-gray-700"
+                                              >
+                                                <p className="font-semibold text-gray-900">
+                                                  Step {step.step}: {step.title}
+                                                </p>
+                                                <p className="text-gray-600 mt-1">
+                                                  {step.description}
+                                                </p>
+                                              </div>
+                                            ),
+                                          )}
+                                        </div>
                                       </div>
-                                    </div>
-                                  )}
+                                    )}
 
                                   {/* Asset Selection for Market CVE */}
                                   {cve.scanningSupported &&
                                     selectedCVEForAssets ===
                                       `market-${cve.id}` && (
-                                    <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
-                                      <div className="flex items-center justify-between mb-2">
-                                        <label className="text-xs font-semibold text-gray-700">
-                                          Select Assets to Scan
-                                        </label>
+                                      <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
+                                        <div className="flex items-center justify-between mb-2">
+                                          <label className="text-xs font-semibold text-gray-700">
+                                            Select Assets to Scan
+                                          </label>
+                                          <button
+                                            onClick={() => {
+                                              const allAssets =
+                                                getAssociatedAssets(item.id);
+                                              const currentSelections =
+                                                cveAssetSelections[
+                                                  `market-${cve.id}`
+                                                ] || {};
+                                              const allSelected =
+                                                allAssets.every(
+                                                  (a) =>
+                                                    currentSelections[a.id],
+                                                );
+                                              const newSelections: Record<
+                                                string,
+                                                boolean
+                                              > = {};
+                                              allAssets.forEach((a) => {
+                                                newSelections[a.id] =
+                                                  !allSelected;
+                                              });
+                                              setCVEAssetSelections((prev) => ({
+                                                ...prev,
+                                                [`market-${cve.id}`]:
+                                                  newSelections,
+                                              }));
+                                            }}
+                                            className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                                          >
+                                            {Object.values(
+                                              cveAssetSelections[
+                                                `market-${cve.id}`
+                                              ] || {},
+                                            ).every((v) => v)
+                                              ? "Deselect All"
+                                              : "Select All"}
+                                          </button>
+                                        </div>
+                                        <div className="space-y-1 max-h-32 overflow-y-auto">
+                                          {getAssociatedAssets(item.id).map(
+                                            (asset) => (
+                                              <label
+                                                key={asset.id}
+                                                className="flex items-center gap-2 cursor-pointer text-xs"
+                                              >
+                                                <input
+                                                  type="checkbox"
+                                                  checked={
+                                                    cveAssetSelections[
+                                                      `market-${cve.id}`
+                                                    ]?.[asset.id] || false
+                                                  }
+                                                  onChange={(e) => {
+                                                    setCVEAssetSelections(
+                                                      (prev) => ({
+                                                        ...prev,
+                                                        [`market-${cve.id}`]: {
+                                                          ...prev[
+                                                            `market-${cve.id}`
+                                                          ],
+                                                          [asset.id]:
+                                                            e.target.checked,
+                                                        },
+                                                      }),
+                                                    );
+                                                  }}
+                                                  className="w-4 h-4 rounded"
+                                                />
+                                                <span className="text-gray-700">
+                                                  {asset.name}
+                                                </span>
+                                              </label>
+                                            ),
+                                          )}
+                                        </div>
                                         <button
                                           onClick={() => {
-                                            const allAssets =
-                                              getAssociatedAssets(item.id);
-                                            const currentSelections =
-                                              cveAssetSelections[
-                                                `market-${cve.id}`
-                                              ] || {};
-                                            const allSelected = allAssets.every(
-                                              (a) => currentSelections[a.id],
-                                            );
-                                            const newSelections: Record<
-                                              string,
-                                              boolean
-                                            > = {};
-                                            allAssets.forEach((a) => {
-                                              newSelections[a.id] =
-                                                !allSelected;
-                                            });
-                                            setCVEAssetSelections((prev) => ({
-                                              ...prev,
-                                              [`market-${cve.id}`]:
-                                                newSelections,
-                                            }));
-                                          }}
-                                          className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                                        >
-                                          {Object.values(
-                                            cveAssetSelections[
-                                              `market-${cve.id}`
-                                            ] || {},
-                                          ).every((v) => v)
-                                            ? "Deselect All"
-                                            : "Select All"}
-                                        </button>
-                                      </div>
-                                      <div className="space-y-1 max-h-32 overflow-y-auto">
-                                        {getAssociatedAssets(item.id).map(
-                                          (asset) => (
-                                            <label
-                                              key={asset.id}
-                                              className="flex items-center gap-2 cursor-pointer text-xs"
-                                            >
-                                              <input
-                                                type="checkbox"
-                                                checked={
+                                            const selectedAssetIds =
+                                              Object.keys(
+                                                cveAssetSelections[
+                                                  `market-${cve.id}`
+                                                ] || {},
+                                              ).filter(
+                                                (id) =>
                                                   cveAssetSelections[
                                                     `market-${cve.id}`
-                                                  ]?.[asset.id] || false
-                                                }
-                                                onChange={(e) => {
-                                                  setCVEAssetSelections(
-                                                    (prev) => ({
-                                                      ...prev,
-                                                      [`market-${cve.id}`]: {
-                                                        ...prev[
-                                                          `market-${cve.id}`
-                                                        ],
-                                                        [asset.id]:
-                                                          e.target.checked,
-                                                      },
-                                                    }),
-                                                  );
-                                                }}
-                                                className="w-4 h-4 rounded"
-                                              />
-                                              <span className="text-gray-700">
-                                                {asset.name}
-                                              </span>
-                                            </label>
-                                          ),
-                                        )}
-                                      </div>
-                                      <button
-                                        onClick={() => {
-                                          const selectedAssetIds = Object.keys(
-                                            cveAssetSelections[
-                                              `market-${cve.id}`
-                                            ] || {},
-                                          ).filter(
-                                            (id) =>
+                                                  ][id],
+                                              );
+                                            if (selectedAssetIds.length > 0) {
+                                              handleScanCVE(cve.id, item.id);
+                                              setSelectedCVEForAssets(null);
+                                            }
+                                          }}
+                                          disabled={
+                                            !Object.values(
                                               cveAssetSelections[
                                                 `market-${cve.id}`
-                                              ][id],
-                                          );
-                                          if (selectedAssetIds.length > 0) {
-                                            handleScanCVE(cve.id, item.id);
-                                            setSelectedCVEForAssets(null);
+                                              ] || {},
+                                            ).some((v) => v)
                                           }
-                                        }}
-                                        disabled={
-                                          !Object.values(
-                                            cveAssetSelections[
-                                              `market-${cve.id}`
-                                            ] || {},
-                                          ).some((v) => v)
-                                        }
-                                        className={cn(
-                                          "w-full py-1.5 px-2 rounded text-xs font-medium transition-colors",
-                                          Object.values(
-                                            cveAssetSelections[
-                                              `market-${cve.id}`
-                                            ] || {},
-                                          ).some((v) => v)
-                                            ? "bg-blue-600 hover:bg-blue-700 text-white"
-                                            : "bg-gray-400 text-white cursor-not-allowed",
-                                        )}
-                                      >
-                                        Scan Selected Assets
-                                      </button>
-                                    </div>
-                                  )}
+                                          className={cn(
+                                            "w-full py-1.5 px-2 rounded text-xs font-medium transition-colors",
+                                            Object.values(
+                                              cveAssetSelections[
+                                                `market-${cve.id}`
+                                              ] || {},
+                                            ).some((v) => v)
+                                              ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                              : "bg-gray-400 text-white cursor-not-allowed",
+                                          )}
+                                        >
+                                          Scan Selected Assets
+                                        </button>
+                                      </div>
+                                    )}
 
                                   {/* Scan Results for this CVE */}
-                                  {cve.scanningSupported && cveResults && !isScanning && (
-                                    <div className="p-2 bg-blue-100 border border-blue-300 rounded">
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <span className="text-lg">✓</span>
-                                        <p className="font-semibold text-blue-900 text-xs">
-                                          Scan Complete
-                                        </p>
-                                      </div>
-                                      <div className="grid grid-cols-2 gap-2 text-xs">
-                                        <div className="bg-blue-50 rounded p-1.5">
-                                          <p className="text-gray-600 font-medium">
-                                            Assets Scanned
-                                          </p>
-                                          <p className="text-blue-900 font-bold">
-                                            {cveResults.assetsScanned}
+                                  {cve.scanningSupported &&
+                                    cveResults &&
+                                    !isScanning && (
+                                      <div className="p-2 bg-blue-100 border border-blue-300 rounded">
+                                        <div className="flex items-center gap-2 mb-2">
+                                          <span className="text-lg">✓</span>
+                                          <p className="font-semibold text-blue-900 text-xs">
+                                            Scan Complete
                                           </p>
                                         </div>
-                                        <div className="bg-red-50 rounded p-1.5">
-                                          <p className="text-gray-600 font-medium">
-                                            Affected
-                                          </p>
-                                          <p className="text-red-900 font-bold">
-                                            {cveResults.affectedAssets}
-                                          </p>
+                                        <div className="grid grid-cols-2 gap-2 text-xs">
+                                          <div className="bg-blue-50 rounded p-1.5">
+                                            <p className="text-gray-600 font-medium">
+                                              Assets Scanned
+                                            </p>
+                                            <p className="text-blue-900 font-bold">
+                                              {cveResults.assetsScanned}
+                                            </p>
+                                          </div>
+                                          <div className="bg-red-50 rounded p-1.5">
+                                            <p className="text-gray-600 font-medium">
+                                              Affected
+                                            </p>
+                                            <p className="text-red-900 font-bold">
+                                              {cveResults.affectedAssets}
+                                            </p>
+                                          </div>
                                         </div>
+                                        {cveResults.affectedAssets > 0 && (
+                                          <p className="text-xs text-red-700 mt-2 font-semibold">
+                                            ⚠️ {cveResults.affectedAssets}{" "}
+                                            asset(s) are vulnerable
+                                          </p>
+                                        )}
                                       </div>
-                                      {cveResults.affectedAssets > 0 && (
-                                        <p className="text-xs text-red-700 mt-2 font-semibold">
-                                          ⚠️ {cveResults.affectedAssets}{" "}
-                                          asset(s) are vulnerable
-                                        </p>
-                                      )}
-                                    </div>
-                                  )}
+                                    )}
                                 </div>
                               )}
                             </div>
