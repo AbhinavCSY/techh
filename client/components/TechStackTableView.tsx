@@ -125,15 +125,13 @@ export function TechStackTableView({
                 <TableCell>
                   <div className="flex flex-wrap gap-1 items-center">
                     {associatedAssets.slice(0, 2).map((asset) => (
-                      <Badge
-                        key={asset.id}
-                        className="bg-purple-100 text-purple-800 text-xs py-0.5 px-1.5"
-                        title={asset.name}
-                      >
-                        {asset.name.length > 12
-                          ? `${asset.name.substring(0, 12)}...`
-                          : asset.name}
-                      </Badge>
+                      <span key={asset.id} title={asset.name} className="cursor-help">
+                        <Badge className="bg-purple-100 text-purple-800 text-xs py-0.5 px-1.5">
+                          {asset.name.length > 12
+                            ? `${asset.name.substring(0, 12)}...`
+                            : asset.name}
+                        </Badge>
+                      </span>
                     ))}
                     {associatedAssets.length > 2 && (
                       <Badge className="bg-gray-200 text-gray-800 text-xs py-0.5 px-1.5 font-semibold">
