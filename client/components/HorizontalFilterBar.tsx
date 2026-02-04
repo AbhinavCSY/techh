@@ -163,11 +163,144 @@ export function HorizontalFilterBar({
                   </div>
                 </div>
 
+                {/* Time Filter */}
+                <div>
+                  <label className="text-xs font-medium text-gray-700 block mb-2">
+                    Time Period
+                  </label>
+                  <div className="space-y-2">
+                    {[
+                      { value: "week", label: "📅 This Week" },
+                      { value: "month", label: "📆 This Month" },
+                      { value: "quarter", label: "📊 This Quarter" },
+                    ].map(({ value, label }) => (
+                      <button
+                        key={value}
+                        onClick={() => {
+                          onFilterChange({ timeFilter: value as any });
+                          setSelectedDateRange({});
+                        }}
+                        className={cn(
+                          "w-full px-3 py-2 rounded text-xs font-medium text-left transition-colors",
+                          filters.timeFilter === value
+                            ? "bg-blue-500 text-white"
+                            : "bg-white border border-gray-300 text-gray-700 hover:border-blue-500",
+                        )}
+                      >
+                        {label}
+                      </button>
+                    ))}
+
+                    {/* Custom Date Range */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button
+                          className={cn(
+                            "w-full px-3 py-2 rounded text-xs font-medium text-left transition-colors",
+                            filters.timeFilter === "custom"
+                              ? "bg-blue-500 text-white"
+                              : "bg-white border border-gray-300 text-gray-700 hover:border-blue-500",
+                          )}
+                        >
+                          <CalendarIcon className="w-3 h-3 inline mr-1" />
+                          Custom Range
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <div className="p-4 space-y-4">
+                          <div>
+                            <label className="text-xs font-medium text-gray-700 block mb-2">
+                              {dateRangeStep === "from"
+                                ? "Select Start Date"
+                                : "Select End Date"}
+                            </label>
+                            <Calendar
+                              mode="single"
+                              selected={
+                                dateRangeStep === "from"
+                                  ? selectedDateRange.from
+                                  : selectedDateRange.to
+                              }
+                              onSelect={(date) => {
+                                if (dateRangeStep === "from") {
+                                  setSelectedDateRange({
+                                    ...selectedDateRange,
+                                    from: date,
+                                  });
+                                  setDateRangeStep("to");
+                                } else {
+                                  setSelectedDateRange({
+                                    ...selectedDateRange,
+                                    to: date,
+                                  });
+                                }
+                              }}
+                              disabled={(date) => {
+                                if (dateRangeStep === "to" && selectedDateRange.from) {
+                                  return date < selectedDateRange.from;
+                                }
+                                return date > new Date();
+                              }}
+                            />
+                          </div>
+
+                          {selectedDateRange.from && selectedDateRange.to && (
+                            <div className="space-y-2">
+                              <p className="text-xs text-gray-600">
+                                <strong>From:</strong>{" "}
+                                {format(selectedDateRange.from, "MMM d, yyyy")}
+                              </p>
+                              <p className="text-xs text-gray-600">
+                                <strong>To:</strong>{" "}
+                                {format(selectedDateRange.to, "MMM d, yyyy")}
+                              </p>
+                              <button
+                                onClick={() => {
+                                  onFilterChange({
+                                    timeFilter: "custom",
+                                    customDateRange: [
+                                      selectedDateRange.from!,
+                                      selectedDateRange.to!,
+                                    ],
+                                  });
+                                  setShowFilterPanel(false);
+                                }}
+                                className="w-full py-1.5 px-2 rounded text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                              >
+                                Apply Custom Range
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setSelectedDateRange({});
+                                  setDateRangeStep("from");
+                                }}
+                                className="w-full py-1.5 px-2 rounded text-xs font-medium bg-gray-200 hover:bg-gray-300 text-gray-700 transition-colors"
+                              >
+                                Clear Selection
+                              </button>
+                            </div>
+                          )}
+
+                          {dateRangeStep === "to" && selectedDateRange.from && (
+                            <button
+                              onClick={() => setDateRangeStep("from")}
+                              className="w-full py-1.5 px-2 rounded text-xs font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                            >
+                              Change Start Date
+                            </button>
+                          )}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
                 {hasActiveFilters && (
                   <Button
                     onClick={() => {
                       onClearFilters();
                       setShowFilterPanel(false);
+                      setSelectedDateRange({});
                     }}
                     variant="outline"
                     size="sm"
