@@ -31,6 +31,15 @@ export function HorizontalFilterBar({
   grouping,
 }: HorizontalFilterBarProps) {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [selectedDateRange, setSelectedDateRange] = useState<{
+    from?: Date;
+    to?: Date;
+  }>(
+    filters.customDateRange
+      ? { from: filters.customDateRange[0], to: filters.customDateRange[1] }
+      : {},
+  );
+  const [dateRangeStep, setDateRangeStep] = useState<"from" | "to">("from");
 
   return (
     <div className="sticky top-16 z-30 bg-white border-b border-gray-200 shadow-sm">
