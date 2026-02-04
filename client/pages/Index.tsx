@@ -396,6 +396,7 @@ function DetailsPanel({
       affected: "v2.0.0 - v2.14.0",
       cwe: "CWE-94: Improper Control of Generation of Code",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-1086"],
+      scanningSupported: true,
     },
     {
       id: "CVE-2024-2156",
@@ -408,6 +409,29 @@ function DetailsPanel({
       affected: "v2.0.0 - v2.13.5",
       cwe: "CWE-89: SQL Injection",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-2156"],
+      scanningSupported: false,
+      remediationSteps: [
+        {
+          step: 1,
+          title: "Upgrade to version 2.14.0 or later",
+          description: "Apply the latest security patch that addresses the SQL injection vulnerability",
+        },
+        {
+          step: 2,
+          title: "Use parameterized queries",
+          description: "Replace all dynamic SQL queries with parameterized prepared statements",
+        },
+        {
+          step: 3,
+          title: "Input validation",
+          description: "Implement strict input validation for all user-supplied data",
+        },
+        {
+          step: 4,
+          title: "Security testing",
+          description: "Conduct thorough security testing after applying fixes",
+        },
+      ],
     },
     {
       id: "CVE-2024-3421",
@@ -420,6 +444,7 @@ function DetailsPanel({
       affected: "v2.0.0 - v2.12.0",
       cwe: "CWE-79: Cross-site Scripting (XSS)",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-3421"],
+      scanningSupported: true,
     },
     {
       id: "CVE-2024-4567",
@@ -432,6 +457,24 @@ function DetailsPanel({
       affected: "v2.5.0 - v2.14.0",
       cwe: "CWE-22: Improper Limitation of a Pathname",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-4567"],
+      scanningSupported: false,
+      remediationSteps: [
+        {
+          step: 1,
+          title: "Update to version 2.15.0 or newer",
+          description: "Contains fixes for directory traversal vulnerability",
+        },
+        {
+          step: 2,
+          title: "Implement path sanitization",
+          description: "Sanitize and validate all file path inputs to prevent directory traversal",
+        },
+        {
+          step: 3,
+          title: "Use whitelisting",
+          description: "Implement whitelist-based validation for allowed upload directories",
+        },
+      ],
     },
     {
       id: "CVE-2024-5678",
@@ -444,6 +487,7 @@ function DetailsPanel({
       affected: "v2.3.0 - v2.14.0",
       cwe: "CWE-502: Deserialization of Untrusted Data",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-5678"],
+      scanningSupported: true,
     },
     {
       id: "CVE-2024-6789",
@@ -456,6 +500,24 @@ function DetailsPanel({
       affected: "v2.0.0 - v2.13.0",
       cwe: "CWE-400: Uncontrolled Resource Consumption",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-6789"],
+      scanningSupported: false,
+      remediationSteps: [
+        {
+          step: 1,
+          title: "Apply rate limiting",
+          description: "Implement request rate limiting to prevent resource exhaustion attacks",
+        },
+        {
+          step: 2,
+          title: "Update to version 2.14.0",
+          description: "Contains optimizations for resource handling",
+        },
+        {
+          step: 3,
+          title: "Monitor resource usage",
+          description: "Set up monitoring and alerts for unusual resource consumption patterns",
+        },
+      ],
     },
   ];
 
