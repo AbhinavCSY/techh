@@ -68,10 +68,9 @@ export function TechStackTableView({
         <TableHeader className="bg-gray-50">
           <TableRow>
             <TableHead className="font-semibold">Tech Stack</TableHead>
-            <TableHead className="font-semibold">Version</TableHead>
             <TableHead className="font-semibold">License</TableHead>
             <TableHead className="font-semibold">Associated Assets</TableHead>
-            <TableHead className="font-semibold">Last Updated</TableHead>
+            <TableHead className="font-semibold">Last Seen</TableHead>
             <TableHead className="font-semibold">Risk</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
             <TableHead className="font-semibold">Status</TableHead>
@@ -106,17 +105,15 @@ export function TechStackTableView({
                         )}
                       </div>
                       <p className="text-xs text-gray-500">{techStack.type}</p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <p className="text-xs font-medium text-gray-700">v{techStack.version}</p>
+                        {techStack.secureVersion && techStack.secureVersion !== techStack.version && (
+                          <p className="text-xs text-green-600 font-medium">
+                            → v{techStack.secureVersion}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div>
-                    <p className="font-medium">v{techStack.version}</p>
-                    {techStack.secureVersion && (
-                      <p className="text-xs text-green-600">
-                        → v{techStack.secureVersion}
-                      </p>
-                    )}
                   </div>
                 </TableCell>
                 <TableCell>
@@ -146,8 +143,8 @@ export function TechStackTableView({
                 </TableCell>
                 <TableCell>
                   <p className="text-sm text-gray-600">
-                    {techStack.lastUpdated
-                      ? techStack.lastUpdated.toLocaleDateString()
+                    {techStack.lastSeen
+                      ? techStack.lastSeen.toLocaleDateString()
                       : "N/A"}
                   </p>
                 </TableCell>
