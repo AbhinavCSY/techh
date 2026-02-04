@@ -3,6 +3,9 @@ export interface CVE {
   severity: "critical" | "high" | "medium" | "low";
   title: string;
   score: number;
+  affected?: string;
+  cwe?: string;
+  published?: string;
 }
 
 export interface VersionHistory {
