@@ -1708,7 +1708,7 @@ const techStackDatabase: TechStack[] = [
     isEOL: false,
     isUpgradable: false,
     cves: [],
-    unscannedThreatsCount: 0,
+    unscannedThreatsCount: 5,
     riskLevel: "low",
     riskScore: 2.1,
     createdAt: new Date("2024-02-01"),
