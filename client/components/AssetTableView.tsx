@@ -56,7 +56,8 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
             <TableHead className="font-semibold">Tech Stacks</TableHead>
             <TableHead className="font-semibold">Risk Level</TableHead>
             <TableHead className="font-semibold">CVEs</TableHead>
-            <TableHead className="font-semibold">Last Updated</TableHead>
+            <TableHead className="font-semibold">Last Seen</TableHead>
+            <TableHead className="font-semibold">First Seen</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -71,7 +72,9 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
                   <span className="text-xl">
                     {getAssetTypeIcon(asset.type)}
                   </span>
-                  <span className="truncate">{asset.name}</span>
+                  <span className="truncate" title={asset.displayName || asset.name}>
+                    {asset.name}
+                  </span>
                 </div>
               </TableCell>
               <TableCell>
@@ -113,7 +116,10 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
                 />
               </TableCell>
               <TableCell className="text-sm text-gray-600">
-                {asset.lastUpdated.toLocaleDateString()}
+                {asset.lastSeen.toLocaleDateString()}
+              </TableCell>
+              <TableCell className="text-sm text-gray-600">
+                {asset.firstSeen.toLocaleDateString()}
               </TableCell>
             </TableRow>
           ))}
