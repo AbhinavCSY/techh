@@ -63,37 +63,6 @@ export function HorizontalFilterBar({
 
             {showFilterPanel && (
               <div className="absolute left-0 mt-0 w-96 bg-white border border-gray-200 rounded-lg shadow-lg p-4 space-y-4 z-50">
-                {/* Risk Level */}
-                <div>
-                  <label className="text-xs font-medium text-gray-700 block mb-2">
-                    Risk Level
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { value: "critical", color: "bg-red-100 text-red-800" },
-                      { value: "high", color: "bg-orange-100 text-orange-800" },
-                      {
-                        value: "medium",
-                        color: "bg-yellow-100 text-yellow-800",
-                      },
-                      { value: "low", color: "bg-green-100 text-green-800" },
-                    ].map(({ value, color }) => (
-                      <button
-                        key={value}
-                        onClick={() => toggleArrayFilter("riskLevels", value)}
-                        className={cn(
-                          "px-3 py-1 rounded-full text-xs font-medium transition-colors",
-                          filters.riskLevels.includes(value)
-                            ? `${color} ring-2 ring-gray-400`
-                            : "bg-white border border-gray-300 text-gray-700 hover:border-gray-400",
-                        )}
-                      >
-                        {value}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Tech Stack Type */}
                 <div>
                   <label className="text-xs font-medium text-gray-700 block mb-2">
@@ -294,17 +263,6 @@ export function HorizontalFilterBar({
               onRemove={() => onFilterChange({ searchTerm: "" })}
             />
           )}
-          {filters.riskLevels.map((level) => (
-            <FilterChip
-              key={`risk-${level}`}
-              label={level}
-              onRemove={() =>
-                onFilterChange({
-                  riskLevels: filters.riskLevels.filter((r) => r !== level),
-                })
-              }
-            />
-          ))}
           {filters.techStackTypes.map((type) => (
             <FilterChip
               key={`type-${type}`}
