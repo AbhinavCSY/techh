@@ -961,11 +961,11 @@ function DetailsPanel({
                                       }}
                                       className="flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white"
                                     >
-                                      <span>🔍</span>
+                                      <span>↻</span>
                                       {selectedCVEForAssets ===
                                       `scanned-${cve.id}`
                                         ? "Hide Assets"
-                                        : `Scan ${getAssociatedAssets(item.id).length} Assets`}
+                                        : `Rescan ${getAssociatedAssets(item.id).length} Assets`}
                                     </button>
                                     <button
                                       onClick={() =>
