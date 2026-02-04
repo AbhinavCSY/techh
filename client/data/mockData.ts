@@ -1385,7 +1385,7 @@ const techStackDatabase: TechStack[] = [
         score: 10.0,
       },
     ],
-    unscannedThreatsCount: 0,
+    unscannedThreatsCount: 4,
     riskLevel: "critical",
     riskScore: 10.0,
     createdAt: new Date("2024-01-20"),
