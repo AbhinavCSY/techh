@@ -576,8 +576,12 @@ function DetailsPanel({
                     value={item.techStacks.length}
                   />
                   <DetailRow
-                    label="Last Updated"
-                    value={item.lastUpdated.toLocaleDateString()}
+                    label="Last Seen"
+                    value={item.lastSeen.toLocaleDateString()}
+                  />
+                  <DetailRow
+                    label="First Seen"
+                    value={item.firstSeen.toLocaleDateString()}
                   />
                 </div>
 
@@ -1537,9 +1541,15 @@ function DetailsPanel({
                                   </span>
                                 </p>
                                 <p>
-                                  Last Updated:{" "}
+                                  Last Seen:{" "}
                                   <span className="font-medium text-gray-700">
-                                    {asset.lastUpdated.toLocaleDateString()}
+                                    {asset.lastSeen.toLocaleDateString()}
+                                  </span>
+                                </p>
+                                <p>
+                                  First Seen:{" "}
+                                  <span className="font-medium text-gray-700">
+                                    {asset.firstSeen.toLocaleDateString()}
                                   </span>
                                 </p>
                                 {asset.isScanned && (

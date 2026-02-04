@@ -9,6 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 interface TechStackTableViewProps {
   techStacks: TechStack[];
@@ -68,13 +73,13 @@ export function TechStackTableView({
         <TableHeader className="bg-gray-50">
           <TableRow>
             <TableHead className="font-semibold">Tech Stack</TableHead>
-            <TableHead className="font-semibold">Version</TableHead>
             <TableHead className="font-semibold">License</TableHead>
             <TableHead className="font-semibold">Associated Assets</TableHead>
-            <TableHead className="font-semibold">Last Updated</TableHead>
             <TableHead className="font-semibold">Risk</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
             <TableHead className="font-semibold">Status</TableHead>
+            <TableHead className="font-semibold">First Seen</TableHead>
+            <TableHead className="font-semibold">Last Seen</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -106,17 +111,18 @@ export function TechStackTableView({
                         )}
                       </div>
                       <p className="text-xs text-gray-500">{techStack.type}</p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <p className="text-xs font-medium text-gray-700">
+                          v{techStack.version}
+                        </p>
+                        {techStack.secureVersion &&
+                          techStack.secureVersion !== techStack.version && (
+                            <p className="text-xs text-green-600 font-medium">
+                              → v{techStack.secureVersion}
+                            </p>
+                          )}
+                      </div>
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div>
-                    <p className="font-medium">v{techStack.version}</p>
-                    {techStack.secureVersion && (
-                      <p className="text-xs text-green-600">
-                        → v{techStack.secureVersion}
-                      </p>
-                    )}
                   </div>
                 </TableCell>
                 <TableCell>
@@ -127,15 +133,18 @@ export function TechStackTableView({
                 <TableCell>
                   <div className="flex flex-wrap gap-1 items-center">
                     {associatedAssets.slice(0, 2).map((asset) => (
-                      <Badge
-                        key={asset.id}
-                        className="bg-purple-100 text-purple-800 text-xs py-0.5 px-1.5"
-                        title={asset.name}
-                      >
-                        {asset.name.length > 12
-                          ? `${asset.name.substring(0, 12)}...`
-                          : asset.name}
-                      </Badge>
+                      <Tooltip key={asset.id}>
+                        <TooltipTrigger asChild>
+                          <Badge className="bg-purple-100 text-purple-800 text-xs py-0.5 px-1.5 cursor-help">
+                            {asset.name.length > 12
+                              ? `${asset.name.substring(0, 12)}...`
+                              : asset.name}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{asset.name}</p>
+                        </TooltipContent>
+                      </Tooltip>
                     ))}
                     {associatedAssets.length > 2 && (
                       <Badge className="bg-gray-200 text-gray-800 text-xs py-0.5 px-1.5 font-semibold">
@@ -143,13 +152,6 @@ export function TechStackTableView({
                       </Badge>
                     )}
                   </div>
-                </TableCell>
-                <TableCell>
-                  <p className="text-sm text-gray-600">
-                    {techStack.lastUpdated
-                      ? techStack.lastUpdated.toLocaleDateString()
-                      : "N/A"}
-                  </p>
                 </TableCell>
                 <TableCell>
                   <Badge className={getRiskColor(techStack.riskLevel)}>
@@ -181,6 +183,20 @@ export function TechStackTableView({
                       </Badge>
                     )}
                   </div>
+                </TableCell>
+                <TableCell>
+                  <p className="text-sm text-gray-600">
+                    {techStack.firstSeen
+                      ? techStack.firstSeen.toLocaleDateString()
+                      : "N/A"}
+                  </p>
+                </TableCell>
+                <TableCell>
+                  <p className="text-sm text-gray-600">
+                    {techStack.lastSeen
+                      ? techStack.lastSeen.toLocaleDateString()
+                      : "N/A"}
+                  </p>
                 </TableCell>
               </TableRow>
             );

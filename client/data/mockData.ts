@@ -62,7 +62,8 @@ export interface TechStack {
   riskLevel: "critical" | "high" | "medium" | "low";
   riskScore: number;
   createdAt: Date;
-  lastUpdated?: Date;
+  lastSeen?: Date;
+  firstSeen?: Date;
   license: string;
   effectiveLicense:
     | "MIT"
@@ -81,12 +82,14 @@ export interface TechStack {
 export interface Asset {
   id: string;
   name: string;
+  displayName?: string;
   type: "ip" | "domain" | "app" | "cloud-resource";
   riskLevel: "critical" | "high" | "medium" | "low";
   techStacks: TechStack[];
   cveCount: number;
   topCriticalCVE?: CVE;
-  lastUpdated: Date;
+  lastSeen: Date;
+  firstSeen: Date;
   isScanned: boolean;
 }
 
@@ -185,7 +188,8 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 8.5,
     createdAt: new Date("2026-01-27"),
-    lastUpdated: new Date("2026-01-27"),
+    firstSeen: new Date("2024-01-01"),
+    lastSeen: new Date("2026-01-27"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -229,7 +233,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.2,
     createdAt: new Date("2024-01-15"),
-    lastUpdated: new Date("2024-02-16"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-16"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -273,7 +279,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.0,
     createdAt: new Date("2024-01-10"),
-    lastUpdated: new Date("2024-02-15"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-15"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -309,7 +317,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 3.5,
     createdAt: new Date("2024-02-01"),
-    lastUpdated: new Date("2024-02-14"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-14"),
+    firstSeen: new Date("2024-01-01"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -345,7 +355,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.8,
     createdAt: new Date("2023-12-20"),
-    lastUpdated: new Date("2024-02-12"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-12"),
+    firstSeen: new Date("2024-01-01"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -381,7 +393,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.5,
     createdAt: new Date("2024-01-05"),
-    lastUpdated: new Date("2024-02-11"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-11"),
+    firstSeen: new Date("2024-01-01"),
     license: "PostgreSQL License",
     effectiveLicense: "PostgreSQL License",
     versionHistory: [
@@ -418,7 +432,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "medium",
     riskScore: 5.2,
     createdAt: new Date("2024-01-20"),
-    lastUpdated: new Date("2024-02-13"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-13"),
+    firstSeen: new Date("2024-01-01"),
     license: "BSD License",
     effectiveLicense: "BSD 3",
     versionHistory: [
@@ -454,7 +470,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.5,
     createdAt: new Date("2024-01-25"),
-    lastUpdated: new Date("2024-02-10"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-10"),
+    firstSeen: new Date("2024-01-01"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -490,7 +508,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 2.1,
     createdAt: new Date("2024-02-05"),
-    lastUpdated: new Date("2024-02-16"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-16"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -529,7 +549,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 1.8,
     createdAt: new Date("2024-02-10"),
-    lastUpdated: new Date("2024-02-15"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-15"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -556,7 +578,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "medium",
     riskScore: 4.2,
     createdAt: new Date("2024-01-30"),
-    lastUpdated: new Date("2024-02-09"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-09"),
+    firstSeen: new Date("2024-01-01"),
     license: "SSPL/Community",
     effectiveLicense: "Other",
     versionHistory: [
@@ -611,7 +635,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.8,
     createdAt: new Date("2024-01-20"),
-    lastUpdated: new Date("2024-02-08"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-08"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -661,7 +687,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 8.9,
     createdAt: new Date("2024-01-18"),
-    lastUpdated: new Date("2024-02-07"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-07"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -710,7 +738,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.2,
     createdAt: new Date("2024-01-12"),
-    lastUpdated: new Date("2024-02-06"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-06"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -753,7 +783,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.5,
     createdAt: new Date("2024-01-08"),
-    lastUpdated: new Date("2024-02-05"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-05"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -802,7 +834,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 6.8,
     createdAt: new Date("2024-01-10"),
-    lastUpdated: new Date("2024-02-12"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-12"),
+    firstSeen: new Date("2024-01-01"),
     license: "BSD License",
     effectiveLicense: "BSD 3",
     versionHistory: [
@@ -857,7 +891,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 8.9,
     createdAt: new Date("2023-12-15"),
-    lastUpdated: new Date("2024-02-04"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-04"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -906,7 +942,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.8,
     createdAt: new Date("2023-11-20"),
-    lastUpdated: new Date("2024-02-03"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-03"),
+    firstSeen: new Date("2024-01-01"),
     license: "GPL",
     effectiveLicense: "Other",
     versionHistory: [
@@ -949,7 +987,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "medium",
     riskScore: 5.5,
     createdAt: new Date("2024-01-05"),
-    lastUpdated: new Date("2024-02-14"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-14"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -998,7 +1038,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.2,
     createdAt: new Date("2023-10-01"),
-    lastUpdated: new Date("2024-02-01"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-01"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -1041,7 +1083,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 6.5,
     createdAt: new Date("2024-01-12"),
-    lastUpdated: new Date("2024-02-13"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-13"),
+    firstSeen: new Date("2024-01-01"),
     license: "BSD License",
     effectiveLicense: "BSD 3",
     versionHistory: [
@@ -1084,7 +1128,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.4,
     createdAt: new Date("2024-01-08"),
-    lastUpdated: new Date("2024-02-11"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-11"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -1133,7 +1179,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 9.5,
     createdAt: new Date("2023-12-10"),
-    lastUpdated: new Date("2024-02-10"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-10"),
+    firstSeen: new Date("2024-01-01"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -1182,7 +1230,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 6.8,
     createdAt: new Date("2024-01-15"),
-    lastUpdated: new Date("2024-02-09"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-09"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -1231,7 +1281,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "medium",
     riskScore: 5.2,
     createdAt: new Date("2024-01-22"),
-    lastUpdated: new Date("2024-02-12"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-12"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -1273,7 +1325,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.0,
     createdAt: new Date("2023-08-10"),
-    lastUpdated: new Date("2026-01-27"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2026-01-27"),
+    firstSeen: new Date("2024-01-01"),
     license: "AWS Proprietary",
     effectiveLicense: "Other",
     versionHistory: [
@@ -1335,7 +1389,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "critical",
     riskScore: 10.0,
     createdAt: new Date("2024-01-20"),
-    lastUpdated: new Date("2024-02-18"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -1433,7 +1489,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.2,
     createdAt: new Date("2024-02-01"),
-    lastUpdated: new Date("2024-02-18"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     license: "Python Software Foundation",
     effectiveLicense: "Other",
     versionHistory: [
@@ -1477,7 +1535,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.8,
     createdAt: new Date("2023-12-15"),
-    lastUpdated: new Date("2024-02-18"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     license: "BSD",
     effectiveLicense: "BSD 3",
     versionHistory: [
@@ -1522,7 +1582,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.6,
     createdAt: new Date("2023-11-20"),
-    lastUpdated: new Date("2024-02-18"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     license: "NVIDIA Proprietary",
     effectiveLicense: "Other",
     versionHistory: [
@@ -1567,7 +1629,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.5,
     createdAt: new Date("2024-01-10"),
-    lastUpdated: new Date("2024-02-18"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -1611,7 +1675,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "high",
     riskScore: 7.4,
     createdAt: new Date("2024-01-15"),
-    lastUpdated: new Date("2024-02-18"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     license: "LGPL/Ubuntu License",
     effectiveLicense: "LGPL",
     versionHistory: [
@@ -1646,7 +1712,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 2.1,
     createdAt: new Date("2024-02-01"),
-    lastUpdated: new Date("2024-02-18"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -1674,7 +1742,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "medium",
     riskScore: 4.2,
     createdAt: new Date("2024-01-25"),
-    lastUpdated: new Date("2024-02-18"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -1711,7 +1781,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 1.5,
     createdAt: new Date("2024-02-05"),
-    lastUpdated: new Date("2024-02-18"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     license: "Apache License 2.0",
     effectiveLicense: "Apache",
     versionHistory: [
@@ -1739,7 +1811,9 @@ const techStackDatabase: TechStack[] = [
     riskLevel: "low",
     riskScore: 1.8,
     createdAt: new Date("2024-01-20"),
-    lastUpdated: new Date("2024-02-18"),
+    firstSeen: new Date("2025-12-01"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     license: "MIT",
     effectiveLicense: "MIT",
     versionHistory: [
@@ -1785,7 +1859,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 3,
     topCriticalCVE: techStackDatabase[27].cves[0],
-    lastUpdated: new Date("2024-02-18"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1801,7 +1876,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 3,
     topCriticalCVE: techStackDatabase[29].cves[0],
-    lastUpdated: new Date("2024-02-18"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1818,7 +1894,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 5,
     topCriticalCVE: techStackDatabase[29].cves[0],
-    lastUpdated: new Date("2024-02-18"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1837,7 +1914,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 8,
     topCriticalCVE: techStackDatabase[0].cves[0],
-    lastUpdated: new Date("2024-02-15"),
+    lastSeen: new Date("2024-02-15"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1853,7 +1931,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 5,
     topCriticalCVE: techStackDatabase[3].cves[0],
-    lastUpdated: new Date("2024-02-14"),
+    lastSeen: new Date("2024-02-14"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1867,7 +1946,8 @@ const assetDatabase: Asset[] = [
       techStackDatabase[8],
     ],
     cveCount: 0,
-    lastUpdated: new Date("2024-02-13"),
+    lastSeen: new Date("2024-02-13"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1882,7 +1962,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 2,
     topCriticalCVE: techStackDatabase[4].cves[0],
-    lastUpdated: new Date("2024-02-12"),
+    lastSeen: new Date("2024-02-12"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1899,7 +1980,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 4,
     topCriticalCVE: techStackDatabase[1].cves[0],
-    lastUpdated: new Date("2024-02-11"),
+    lastSeen: new Date("2024-02-11"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1910,7 +1992,8 @@ const assetDatabase: Asset[] = [
     techStacks: [techStackDatabase[6], techStackDatabase[3]],
     cveCount: 2,
     topCriticalCVE: techStackDatabase[6].cves[0],
-    lastUpdated: new Date("2024-02-10"),
+    lastSeen: new Date("2024-02-10"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: false,
   },
   {
@@ -1927,7 +2010,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 6,
     topCriticalCVE: techStackDatabase[25].cves[0],
-    lastUpdated: new Date("2024-02-18"),
+    lastSeen: new Date("2024-02-18"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1942,7 +2026,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 6,
     topCriticalCVE: techStackDatabase[15].cves[0],
-    lastUpdated: new Date("2024-02-16"),
+    lastSeen: new Date("2024-02-16"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1952,7 +2037,8 @@ const assetDatabase: Asset[] = [
     riskLevel: "high",
     techStacks: [techStackDatabase[17], techStackDatabase[18]],
     cveCount: 3,
-    lastUpdated: new Date("2024-02-15"),
+    lastSeen: new Date("2024-02-15"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1963,7 +2049,8 @@ const assetDatabase: Asset[] = [
     techStacks: [techStackDatabase[16]],
     cveCount: 4,
     topCriticalCVE: techStackDatabase[16].cves[0],
-    lastUpdated: new Date("2024-02-14"),
+    lastSeen: new Date("2024-02-14"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1974,7 +2061,8 @@ const assetDatabase: Asset[] = [
     techStacks: [techStackDatabase[19]],
     cveCount: 2,
     topCriticalCVE: techStackDatabase[19].cves[0],
-    lastUpdated: new Date("2024-02-13"),
+    lastSeen: new Date("2024-02-13"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -1990,7 +2078,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 5,
     topCriticalCVE: techStackDatabase[20].cves[0],
-    lastUpdated: new Date("2024-02-15"),
+    lastSeen: new Date("2024-02-15"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -2000,7 +2089,8 @@ const assetDatabase: Asset[] = [
     riskLevel: "medium",
     techStacks: [techStackDatabase[3], techStackDatabase[17]],
     cveCount: 1,
-    lastUpdated: new Date("2024-02-14"),
+    lastSeen: new Date("2024-02-14"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -2010,7 +2100,8 @@ const assetDatabase: Asset[] = [
     riskLevel: "low",
     techStacks: [techStackDatabase[17]],
     cveCount: 0,
-    lastUpdated: new Date("2024-02-16"),
+    lastSeen: new Date("2024-02-16"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -2029,7 +2120,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 10,
     topCriticalCVE: techStackDatabase[1].cves[0],
-    lastUpdated: new Date("2024-02-16"),
+    lastSeen: new Date("2024-02-16"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -2046,7 +2138,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 4,
     topCriticalCVE: techStackDatabase[15].cves[0],
-    lastUpdated: new Date("2024-02-15"),
+    lastSeen: new Date("2024-02-15"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -2061,7 +2154,8 @@ const assetDatabase: Asset[] = [
       techStackDatabase[21],
     ],
     cveCount: 2,
-    lastUpdated: new Date("2024-02-14"),
+    lastSeen: new Date("2024-02-14"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: false,
   },
   {
@@ -2075,7 +2169,8 @@ const assetDatabase: Asset[] = [
       techStackDatabase[18],
     ],
     cveCount: 2,
-    lastUpdated: new Date("2024-02-14"),
+    lastSeen: new Date("2024-02-14"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: false,
   },
   {
@@ -2093,7 +2188,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 6,
     topCriticalCVE: techStackDatabase[16].cves[0],
-    lastUpdated: new Date("2024-02-15"),
+    lastSeen: new Date("2024-02-15"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -2110,7 +2206,8 @@ const assetDatabase: Asset[] = [
       techStackDatabase[23], // Swagger Doc added
     ],
     cveCount: 5,
-    lastUpdated: new Date("2024-02-15"),
+    lastSeen: new Date("2024-02-15"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -2129,7 +2226,8 @@ const assetDatabase: Asset[] = [
     ],
     cveCount: 7,
     topCriticalCVE: techStackDatabase[15].cves[0],
-    lastUpdated: new Date("2024-02-14"),
+    lastSeen: new Date("2024-02-14"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
   {
@@ -2143,7 +2241,8 @@ const assetDatabase: Asset[] = [
       techStackDatabase[21],
     ],
     cveCount: 3,
-    lastUpdated: new Date("2024-02-13"),
+    lastSeen: new Date("2024-02-13"),
+    firstSeen: new Date("2024-01-01"),
     isScanned: true,
   },
 ];
