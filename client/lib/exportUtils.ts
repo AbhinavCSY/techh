@@ -13,9 +13,9 @@ export function exportAsCSV(
       csv += `"${item.name}","v${item.version}","${item.type}","${item.riskLevel}",${item.cves.length},"${item.isEOL ? 'Yes' : 'No'}","${item.isUpgradable ? 'Yes' : 'No'}"\n`;
     });
   } else {
-    csv = 'Name,Type,Risk Level,Tech Stack Count,CVE Count,Last Updated\n';
+    csv = 'Name,Type,Risk Level,Tech Stack Count,CVE Count,Last Seen,First Seen\n';
     (data as Asset[]).forEach((item) => {
-      csv += `"${item.name}","${item.type}","${item.riskLevel}",${item.techStacks.length},${item.cveCount},"${item.lastUpdated.toLocaleDateString()}"\n`;
+      csv += `"${item.name}","${item.type}","${item.riskLevel}",${item.techStacks.length},${item.cveCount},"${item.lastSeen.toLocaleDateString()}","${item.firstSeen.toLocaleDateString()}"\n`;
     });
   }
 
@@ -95,7 +95,8 @@ export function exportAsPDF(
           <th>Risk Level</th>
           <th>Tech Stacks</th>
           <th>CVEs</th>
-          <th>Last Updated</th>
+          <th>Last Seen</th>
+          <th>First Seen</th>
         </tr>
       </thead>
       <tbody>
@@ -108,7 +109,8 @@ export function exportAsPDF(
           <td class="${item.riskLevel}">${item.riskLevel}</td>
           <td>${item.techStacks.length}</td>
           <td>${item.cveCount}</td>
-          <td>${item.lastUpdated.toLocaleDateString()}</td>
+          <td>${item.lastSeen.toLocaleDateString()}</td>
+          <td>${item.firstSeen.toLocaleDateString()}</td>
         </tr>
       `;
     });
