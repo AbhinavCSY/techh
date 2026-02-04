@@ -1211,51 +1211,62 @@ function DetailsPanel({
                                   </div>
 
                                   {/* Action Buttons */}
-                                  <div className="flex gap-2 pt-2">
-                                    <button
-                                      onClick={() => {
-                                        if (
-                                          selectedCVEForAssets ===
-                                          `market-${cve.id}`
-                                        ) {
-                                          setSelectedCVEForAssets(null);
-                                        } else {
-                                          setSelectedCVEForAssets(
-                                            `market-${cve.id}`,
-                                          );
-                                          const assets = getAssociatedAssets(
-                                            item.id,
-                                          );
-                                          const selections: Record<
-                                            string,
-                                            boolean
-                                          > = {};
-                                          assets.forEach((a) => {
-                                            selections[a.id] = true;
-                                          });
-                                          setCVEAssetSelections((prev) => ({
-                                            ...prev,
-                                            [`market-${cve.id}`]: selections,
-                                          }));
+                                  {cve.scanningSupported ? (
+                                    <div className="flex gap-2 pt-2">
+                                      <button
+                                        onClick={() => {
+                                          if (
+                                            selectedCVEForAssets ===
+                                            `market-${cve.id}`
+                                          ) {
+                                            setSelectedCVEForAssets(null);
+                                          } else {
+                                            setSelectedCVEForAssets(
+                                              `market-${cve.id}`,
+                                            );
+                                            const assets = getAssociatedAssets(
+                                              item.id,
+                                            );
+                                            const selections: Record<
+                                              string,
+                                              boolean
+                                            > = {};
+                                            assets.forEach((a) => {
+                                              selections[a.id] = true;
+                                            });
+                                            setCVEAssetSelections((prev) => ({
+                                              ...prev,
+                                              [`market-${cve.id}`]: selections,
+                                            }));
+                                          }
+                                        }}
+                                        className="flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white"
+                                      >
+                                        <span>🔍</span>
+                                        {selectedCVEForAssets ===
+                                        `market-${cve.id}`
+                                          ? "Hide Assets"
+                                          : `Scan ${getAssociatedAssets(item.id).length} Assets`}
+                                      </button>
+                                      <button
+                                        onClick={() =>
+                                          onNavigateToIncident(item.id, cve.id)
                                         }
-                                      }}
-                                      className="flex-1 py-2 px-2 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white"
-                                    >
-                                      <span>🔍</span>
-                                      {selectedCVEForAssets ===
-                                      `market-${cve.id}`
-                                        ? "Hide Assets"
-                                        : `Scan ${getAssociatedAssets(item.id).length} Assets`}
-                                    </button>
+                                        className="flex-1 py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                                      >
+                                        Full Details
+                                      </button>
+                                    </div>
+                                  ) : (
                                     <button
                                       onClick={() =>
                                         onNavigateToIncident(item.id, cve.id)
                                       }
-                                      className="flex-1 py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                                      className="w-full py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
                                     >
                                       Full Details
                                     </button>
-                                  </div>
+                                  )}
 
                                   {/* Asset Selection for Market CVE */}
                                   {selectedCVEForAssets ===
