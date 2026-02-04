@@ -445,6 +445,22 @@ export function HorizontalFilterBar({
               }
             />
           ))}
+          {filters.timeFilter !== "month" && (
+            <FilterChip
+              label={
+                filters.timeFilter === "custom" && filters.customDateRange
+                  ? `${format(filters.customDateRange[0], "MMM d")} - ${format(filters.customDateRange[1], "MMM d")}`
+                  : filters.timeFilter === "week"
+                    ? "This Week"
+                    : filters.timeFilter === "quarter"
+                      ? "This Quarter"
+                      : "Custom"
+              }
+              onRemove={() =>
+                onFilterChange({ timeFilter: "month", customDateRange: undefined })
+              }
+            />
+          )}
         </div>
       )}
     </div>
