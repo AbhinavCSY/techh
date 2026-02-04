@@ -177,96 +177,58 @@ export function CVEsPieChart({ compact = false }: CVEsPieChartProps) {
               <Maximize2 className="w-4 h-4 text-gray-500 hover:text-gray-700" />
             </button>
           </div>
-          <div className="flex items-center gap-3 flex-1 overflow-hidden">
-            {/* Pie Chart - Left Side (Compact) */}
-            <div className="flex-shrink-0 relative w-32 h-32">
-              <svg viewBox="0 0 120 120" className="w-full h-full">
-                {/* Outer ring - Unscanned */}
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="45"
-                  fill="none"
-                  stroke="#fbbf24"
-                  strokeWidth="10"
-                  strokeDasharray={`${(unscannedPercent / 100) * 282.7} 282.7`}
-                  transform="rotate(-90 60 60)"
-                  onMouseEnter={() => setHoveredSegment("unscanned")}
-                  onMouseLeave={() => setHoveredSegment(null)}
-                  className="cursor-pointer transition-opacity hover:opacity-70"
-                />
-                {/* Outer ring - Scanned */}
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="45"
-                  fill="none"
-                  stroke="#ef4444"
-                  strokeWidth="10"
-                  strokeDasharray={`${(scannedPercent / 100) * 282.7} 282.7`}
-                  strokeDashoffset={`${-((unscannedPercent / 100) * 282.7)}`}
-                  transform="rotate(-90 60 60)"
-                  onMouseEnter={() => setHoveredSegment("scanned")}
-                  onMouseLeave={() => setHoveredSegment(null)}
-                  className="cursor-pointer transition-opacity hover:opacity-70"
-                />
-
-                {/* Center text */}
-                <text
-                  x="60"
-                  y="60"
-                  textAnchor="middle"
-                  dy="0.3em"
-                  className="text-lg font-bold fill-gray-900"
-                  fontSize="18"
-                >
-                  {totalCVEs}
-                </text>
-              </svg>
-
-              {/* Hover Tooltip */}
-              {hoveredSegment && (
-                <div className="absolute top-1/2 left-full transform -translate-y-1/2 ml-2 bg-gray-900 text-white text-xs px-3 py-2 rounded shadow-lg z-50 whitespace-nowrap">
-                  {hoveredSegment === "scanned"
-                    ? `📊 Scanned: ${scannedCVEs}`
-                    : `⚠️ Unscanned: ${unscannedCVEs}`}
+          <div className="flex-1 space-y-2">
+            {/* Scanned Bar */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></div>
+                  <span className="text-gray-700 font-medium">Scanned</span>
                 </div>
-              )}
+                <span className="font-bold text-gray-900">{scannedCVEs}</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-4">
+                <div
+                  className="bg-red-500 h-4 rounded-full transition-all"
+                  style={{ width: `${scannedPercent}%` }}
+                />
+              </div>
             </div>
 
-            {/* Legend - Right Side */}
-            <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-medium">
-                <div className="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></div>
-                <span className="text-gray-700 flex-1">
-                  Scanned: {scannedCVEs}
-                </span>
+            {/* Unscanned Bar */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></div>
+                  <span className="text-gray-700 font-medium">Unscanned</span>
+                </div>
+                <span className="font-bold text-gray-900">{unscannedCVEs}</span>
               </div>
-              <div className="flex items-center gap-2 text-xs font-medium">
-                <div className="w-3 h-3 rounded-full bg-amber-400 flex-shrink-0"></div>
-                <span className="text-gray-700 flex-1">
-                  Unscanned: {unscannedCVEs}
-                </span>
+              <div className="w-full bg-gray-200 rounded-full h-4">
+                <div
+                  className="bg-amber-400 h-4 rounded-full transition-all"
+                  style={{ width: `${unscannedPercent}%` }}
+                />
               </div>
+            </div>
 
-              {/* Severity Breakdown */}
-              <div className="text-xs text-gray-600 mt-2 grid grid-cols-2 gap-1.5 pt-1.5 border-t border-gray-200">
-                <div className="flex gap-1.5 items-center">
-                  <div className="w-2 h-2 rounded-full bg-red-600 flex-shrink-0"></div>
-                  <span>Critical: {severityBreakdown.critical}</span>
-                </div>
-                <div className="flex gap-1.5 items-center">
-                  <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0"></div>
-                  <span>High: {severityBreakdown.high}</span>
-                </div>
-                <div className="flex gap-1.5 items-center">
-                  <div className="w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0"></div>
-                  <span>Medium: {severityBreakdown.medium}</span>
-                </div>
-                <div className="flex gap-1.5 items-center">
-                  <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
-                  <span>Low: {severityBreakdown.low}</span>
-                </div>
+            {/* Severity Breakdown */}
+            <div className="text-xs pt-2 border-t border-gray-200 space-y-1">
+              <div className="flex gap-1.5 items-center text-gray-600">
+                <div className="w-2 h-2 rounded-full bg-red-600 flex-shrink-0"></div>
+                <span className="flex-1">Critical: {severityBreakdown.critical}</span>
+              </div>
+              <div className="flex gap-1.5 items-center text-gray-600">
+                <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0"></div>
+                <span className="flex-1">High: {severityBreakdown.high}</span>
+              </div>
+              <div className="flex gap-1.5 items-center text-gray-600">
+                <div className="w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0"></div>
+                <span className="flex-1">Medium: {severityBreakdown.medium}</span>
+              </div>
+              <div className="flex gap-1.5 items-center text-gray-600">
+                <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
+                <span className="flex-1">Low: {severityBreakdown.low}</span>
               </div>
             </div>
           </div>
