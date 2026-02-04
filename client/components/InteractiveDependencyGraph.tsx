@@ -7,12 +7,12 @@ import {
 } from "@/lib/dependencyGraphTransformer";
 import { ForceLayout } from "@/lib/forceLayout";
 
-const WIDTH = 2200;
-const HEIGHT = 1200;
+const WIDTH = 5000;
+const HEIGHT = 2200;
 
 export function InteractiveDependencyGraph() {
-  const [pan, setPan] = useState({ x: 100, y: 150 });
-  const [zoom, setZoom] = useState(0.75);
+  const [pan, setPan] = useState({ x: 0, y: 50 });
+  const [zoom, setZoom] = useState(0.35);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
@@ -20,6 +20,8 @@ export function InteractiveDependencyGraph() {
   const [expandedClusters, setExpandedClusters] = useState(new Set<string>());
   const [showLegend, setShowLegend] = useState(false);
   const [showOnlyCritical, setShowOnlyCritical] = useState(false);
+  const [draggedNodeId, setDraggedNodeId] = useState<string | null>(null);
+  const [nodePositions, setNodePositions] = useState<Record<string, { x: number; y: number }>>({});
   const svgRef = useRef<SVGSVGElement>(null);
 
   const layoutResult = useMemo(() => {
@@ -31,20 +33,49 @@ export function InteractiveDependencyGraph() {
       WIDTH,
       HEIGHT,
     );
-    return {
+    const result = {
       ...layout.simulate(),
       clusters: graph.clusters,
     };
-  }, []);
+
+    // Apply manually adjusted node positions
+    result.nodes = result.nodes.map((node) => {
+      const customPos = nodePositions[node.id];
+      if (customPos) {
+        return { ...node, x: customPos.x, y: customPos.y };
+      }
+      return node;
+    });
+
+    return result;
+  }, [nodePositions]);
+
+  const handleNodeMouseDown = (nodeId: string, e: React.MouseEvent) => {
+    setDraggedNodeId(nodeId);
+    e.stopPropagation();
+  };
 
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    if (!draggedNodeId) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    }
     e.preventDefault();
   };
 
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (isDragging) {
+    if (draggedNodeId && svgRef.current) {
+      // Get SVG position and apply inverse transform
+      const svg = svgRef.current;
+      const rect = svg.getBoundingClientRect();
+      const x = (e.clientX - rect.left - pan.x) / zoom;
+      const y = (e.clientY - rect.top - pan.y) / zoom;
+
+      setNodePositions((prev) => ({
+        ...prev,
+        [draggedNodeId]: { x, y },
+      }));
+    } else if (isDragging) {
       setPan({
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y,
@@ -54,6 +85,7 @@ export function InteractiveDependencyGraph() {
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    setDraggedNodeId(null);
   };
 
   const handleWheel = (e: React.WheelEvent<SVGSVGElement>) => {
@@ -66,8 +98,8 @@ export function InteractiveDependencyGraph() {
   const zoomIn = () => setZoom((z) => Math.min(z + 0.1, 3));
   const zoomOut = () => setZoom((z) => Math.max(z - 0.1, 0.3));
   const resetView = () => {
-    setPan({ x: 100, y: 150 });
-    setZoom(0.75);
+    setPan({ x: 0, y: 50 });
+    setZoom(0.35);
   };
 
   const getNodeColor = (node: (typeof layoutResult.nodes)[0]) => {
@@ -223,7 +255,8 @@ export function InteractiveDependencyGraph() {
             const maxX = Math.max(...xs);
             const minY = Math.min(...ys);
             const maxY = Math.max(...ys);
-            const padding = 100;
+            // Padding to ensure proper spacing with 220px minimum distance
+            const padding = 250;
 
             return (
               <g key={`cluster-${cluster.id}`}>
@@ -276,8 +309,14 @@ export function InteractiveDependencyGraph() {
 
             if (!source || !target) return null;
 
-            const isHighlighted =
+            // Determine if edge is directly connected or transitive
+            const isDirectlyConnectedEdge =
               selectedNode &&
+              (selectedNode.id === source.id || selectedNode.id === target.id);
+
+            const isTransitiveEdge =
+              selectedNode &&
+              !isDirectlyConnectedEdge &&
               ((selectedNode.type === "technology" &&
                 blastRadius &&
                 (blastRadius.direct.includes(source.id) ||
@@ -291,23 +330,132 @@ export function InteractiveDependencyGraph() {
                     affectedTechs.transitive.includes(source.id) ||
                     affectedTechs.transitive.includes(target.id))));
 
+            const isHighlighted = isDirectlyConnectedEdge || isTransitiveEdge;
+            const hasAnySelection = !!selectedNode;
+
+            const midX = (source.x + target.x) / 2;
+            const midY = (source.y + target.y) / 2;
+
+            // Map edge type to display label
+            const edgeLabel =
+              edge.type === "found_in"
+                ? "Found In"
+                : edge.type === "depends_on"
+                  ? "Depends On"
+                  : edge.type === "uses"
+                    ? "Uses"
+                    : edge.type === "affects"
+                      ? "Affects"
+                      : edge.type === "requires"
+                        ? "Requires"
+                        : edge.type;
+
             return (
-              <line
-                key={`edge-${idx}`}
-                x1={source.x}
-                y1={source.y}
-                x2={target.x}
-                y2={target.y}
-                stroke={isHighlighted ? "#1D4ED8" : "#94A3B8"}
-                strokeWidth={isHighlighted ? 2.5 : 1.5}
-                opacity={isHighlighted ? 0.8 : 0.3}
-                markerEnd={
-                  isHighlighted
-                    ? "url(#arrowhead-highlight)"
-                    : "url(#arrowhead-default)"
-                }
-                style={{ transition: "all 0.2s ease", pointerEvents: "none" }}
-              />
+              <g key={`edge-${idx}`}>
+                {/* Edge glow for directly connected edges */}
+                {isDirectlyConnectedEdge && (
+                  <line
+                    x1={source.x}
+                    y1={source.y}
+                    x2={target.x}
+                    y2={target.y}
+                    stroke="#1E40AF"
+                    strokeWidth={8}
+                    opacity={0.2}
+                    pointerEvents="none"
+                    style={{ transition: "all 0.2s ease" }}
+                  />
+                )}
+                {/* Edge glow for transitive edges */}
+                {isTransitiveEdge && (
+                  <line
+                    x1={source.x}
+                    y1={source.y}
+                    x2={target.x}
+                    y2={target.y}
+                    stroke="#60A5FA"
+                    strokeWidth={5}
+                    opacity={0.15}
+                    pointerEvents="none"
+                    style={{ transition: "all 0.2s ease" }}
+                  />
+                )}
+                {/* Main edge */}
+                <line
+                  x1={source.x}
+                  y1={source.y}
+                  x2={target.x}
+                  y2={target.y}
+                  stroke={
+                    isDirectlyConnectedEdge
+                      ? "#1E40AF"
+                      : isTransitiveEdge
+                        ? "#2563EB"
+                        : hasAnySelection
+                          ? "#E0E7FF"
+                          : "#D1D5DB"
+                  }
+                  strokeWidth={
+                    isDirectlyConnectedEdge
+                      ? 4
+                      : isTransitiveEdge
+                        ? 2.5
+                        : hasAnySelection
+                          ? 1
+                          : 1.5
+                  }
+                  opacity={
+                    isDirectlyConnectedEdge
+                      ? 1
+                      : isTransitiveEdge
+                        ? 0.8
+                        : hasAnySelection
+                          ? 0.15
+                          : 0.3
+                  }
+                  markerEnd={
+                    isDirectlyConnectedEdge
+                      ? "url(#arrowhead-highlight)"
+                      : isTransitiveEdge
+                        ? "url(#arrowhead-default)"
+                        : "url(#arrowhead-default)"
+                  }
+                  style={{ transition: "all 0.2s ease", pointerEvents: "none" }}
+                />
+
+                {/* Edge label */}
+                {(isDirectlyConnectedEdge || isTransitiveEdge) && (
+                  <g pointerEvents="none">
+                    {/* Background for label */}
+                    <rect
+                      x={midX - 35}
+                      y={midY - 10}
+                      width="70"
+                      height="20"
+                      fill="white"
+                      stroke={
+                        isDirectlyConnectedEdge ? "#1E40AF" : "#2563EB"
+                      }
+                      strokeWidth="1.5"
+                      rx="3"
+                      opacity={isDirectlyConnectedEdge ? 0.95 : 0.9}
+                    />
+                    {/* Label text */}
+                    <text
+                      x={midX}
+                      y={midY}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize="10"
+                      fontWeight={isDirectlyConnectedEdge ? "700" : "600"}
+                      fill={isDirectlyConnectedEdge ? "#1E40AF" : "#2563EB"}
+                      style={{ userSelect: "none", pointerEvents: "none" }}
+                    >
+                      {edgeLabel}
+                    </text>
+                  </g>
+                )}
+              </g>
             );
           })}
 
@@ -318,41 +466,76 @@ export function InteractiveDependencyGraph() {
             const isHovered = hoveredNodeId === node.id;
             const isSelected = selectedNodeId === node.id;
 
+            // When a node is selected, highlight ALL nodes with varying intensities
+            const isDirectlyConnected =
+              selectedNode &&
+              (selectedNode.id === node.id ||
+                filteredEdges.some(
+                  (e) =>
+                    (e.source === selectedNode.id && e.target === node.id) ||
+                    (e.source === node.id && e.target === selectedNode.id),
+                ));
+
             const isAffected =
               selectedNode &&
-              ((selectedNode.type === "technology" &&
-                blastRadius &&
-                (blastRadius.direct.includes(node.id) ||
-                  blastRadius.transitive.includes(node.id))) ||
+              (selectedNode.id === node.id ||
+                isDirectlyConnected ||
+                (selectedNode.type === "technology" &&
+                  blastRadius &&
+                  (blastRadius.direct.includes(node.id) ||
+                    blastRadius.transitive.includes(node.id))) ||
                 (selectedNode.type === "issue" &&
                   affectedTechs &&
                   (affectedTechs.direct.includes(node.id) ||
                     affectedTechs.transitive.includes(node.id))));
 
+            // All nodes should have some visual feedback when a node is selected
+            const hasAnySelection = !!selectedNode;
+
             return (
               <g
                 key={node.id}
                 style={{
-                  cursor: node.type !== "vendor" ? "pointer" : "default",
+                  cursor: draggedNodeId === node.id ? "grabbing" : node.type !== "vendor" ? "grab" : "default",
+                  pointerEvents: "auto",
                 }}
-                opacity={selectedNode && !isAffected && !isSelected ? 0.2 : 1}
+                opacity={
+                  isSelected ? 1 : hasAnySelection && isDirectlyConnected ? 1 : hasAnySelection ? 0.8 : 1
+                }
                 onMouseEnter={() => setHoveredNodeId(node.id)}
                 onMouseLeave={() => setHoveredNodeId(null)}
+                onMouseDown={(e) => handleNodeMouseDown(node.id, e)}
                 onClick={() => {
-                  if (node.type !== "vendor") {
+                  if (node.type !== "vendor" && !draggedNodeId) {
                     setSelectedNodeId(
                       selectedNodeId === node.id ? null : node.id,
                     );
                   }
                 }}
               >
+                {/* Node glow for all nodes when something is selected */}
+                {hasAnySelection && (
+                  <circle
+                    cx={node.x}
+                    cy={node.y}
+                    r={size + 8}
+                    fill={
+                      isSelected ? "#1E40AF" : isDirectlyConnected ? "#2563EB" : "#93C5FD"
+                    }
+                    opacity={
+                      isSelected ? 0.35 : isDirectlyConnected ? 0.25 : 0.1
+                    }
+                    style={{ pointerEvents: "none" }}
+                  />
+                )}
+
                 {/* Node shadow */}
                 <circle
                   cx={node.x}
                   cy={node.y}
                   r={size + 2}
                   fill="black"
-                  opacity={isHovered || isSelected ? 0.2 : 0.05}
+                  opacity={isHovered || isSelected ? 0.3 : isAffected ? 0.15 : 0.05}
                   filter="url(#node-shadow)"
                 />
 
@@ -366,10 +549,32 @@ export function InteractiveDependencyGraph() {
                     height={size * 2}
                     fill={color}
                     stroke={
-                      isSelected ? "#1E40AF" : isHovered ? "#6B7280" : color
+                      isSelected
+                        ? "#1E40AF"
+                        : hasAnySelection && isDirectlyConnected
+                          ? "#3B82F6"
+                          : hasAnySelection && isAffected
+                            ? "#60A5FA"
+                            : hasAnySelection
+                              ? "#BFDBFE"
+                              : isHovered
+                                ? "#6B7280"
+                                : color
                     }
-                    strokeWidth={isSelected ? 3 : isHovered ? 2 : 1.5}
-                    opacity={0.85}
+                    strokeWidth={
+                      isSelected
+                        ? 4
+                        : hasAnySelection && isDirectlyConnected
+                          ? 3
+                          : hasAnySelection && isAffected
+                            ? 2.5
+                            : hasAnySelection
+                              ? 2
+                              : isHovered
+                                ? 2
+                                : 1.5
+                    }
+                    opacity={0.9}
                     rx="3"
                   />
                 ) : (
@@ -379,20 +584,62 @@ export function InteractiveDependencyGraph() {
                     cy={node.y}
                     r={size}
                     fill={color}
-                    stroke={isSelected ? "#FFF" : isHovered ? "#FFF" : color}
-                    strokeWidth={isSelected ? 3 : isHovered ? 2 : 1.5}
-                    opacity={0.85}
+                    stroke={
+                      isSelected
+                        ? "#FFF"
+                        : hasAnySelection && isDirectlyConnected
+                          ? "#60A5FA"
+                          : hasAnySelection && isAffected
+                            ? "#93C5FD"
+                            : hasAnySelection
+                              ? "#DBEAFE"
+                              : isHovered
+                                ? "#FFF"
+                                : color
+                    }
+                    strokeWidth={
+                      isSelected
+                        ? 4
+                        : hasAnySelection && isDirectlyConnected
+                          ? 3
+                          : hasAnySelection && isAffected
+                            ? 2.5
+                            : hasAnySelection
+                              ? 2
+                              : isHovered
+                                ? 2
+                                : 1.5
+                    }
+                    opacity={0.9}
                   />
                 )}
 
-                {/* Node label */}
+                {/* Node label - positioned above or below to reduce overlap */}
                 <text
                   x={node.x}
-                  y={node.y + size + 14}
+                  y={node.y + (node.id.charCodeAt(0) % 2 === 0 ? size + 18 : -size - 6)}
                   textAnchor="middle"
-                  fontSize={node.type === "technology" ? "10" : "8"}
-                  fontWeight={node.type === "technology" ? "700" : "600"}
-                  fill={isSelected ? "#1E40AF" : "#1F2937"}
+                  fontSize={node.type === "technology" ? "11" : "9"}
+                  fontWeight={
+                    isSelected
+                      ? "900"
+                      : hasAnySelection && isDirectlyConnected
+                        ? "800"
+                        : hasAnySelection
+                          ? "700"
+                          : "600"
+                  }
+                  fill={
+                    isSelected
+                      ? "#1E40AF"
+                      : hasAnySelection && isDirectlyConnected
+                        ? "#2563EB"
+                        : hasAnySelection && isAffected
+                          ? "#3B82F6"
+                          : hasAnySelection
+                            ? "#60A5FA"
+                            : "#1F2937"
+                  }
                   dominantBaseline="middle"
                   pointerEvents="none"
                   style={{
@@ -440,9 +687,9 @@ export function InteractiveDependencyGraph() {
                     {/* Shadow background */}
                     <rect
                       x={node.x + size + 8}
-                      y={node.y - 32}
-                      width="200"
-                      height="66"
+                      y={node.y - 55}
+                      width="220"
+                      height="100"
                       fill="black"
                       opacity="0.15"
                       rx="6"
@@ -450,18 +697,56 @@ export function InteractiveDependencyGraph() {
                     {/* Main tooltip background */}
                     <rect
                       x={node.x + size + 10}
-                      y={node.y - 30}
-                      width="200"
-                      height="66"
+                      y={node.y - 53}
+                      width="220"
+                      height="100"
                       fill="white"
                       stroke="#2563EB"
                       strokeWidth="2"
                       rx="6"
                     />
+                    {/* Type badge */}
+                    <rect
+                      x={node.x + size + 16}
+                      y={node.y - 48}
+                      width="80"
+                      height="18"
+                      fill={
+                        node.type === "issue"
+                          ? "#FEE2E2"
+                          : node.type === "technology"
+                            ? "#DBEAFE"
+                            : "#F3E8FF"
+                      }
+                      rx="3"
+                    />
+                    <text
+                      x={node.x + size + 56}
+                      y={node.y - 39}
+                      fontSize="10"
+                      fontWeight="800"
+                      fill={
+                        node.type === "issue"
+                          ? "#DC2626"
+                          : node.type === "technology"
+                            ? "#1E40AF"
+                            : "#7C3AED"
+                      }
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      style={{ pointerEvents: "none" }}
+                    >
+                      {node.type === "technology"
+                        ? "TECH"
+                        : node.type === "issue"
+                          ? "CVE"
+                          : node.type.toUpperCase()}
+                    </text>
+
                     {/* Title */}
                     <text
                       x={node.x + size + 16}
-                      y={node.y - 16}
+                      y={node.y - 19}
                       fontSize="12"
                       fontWeight="800"
                       fill="#0F172A"
@@ -471,17 +756,19 @@ export function InteractiveDependencyGraph() {
                         ? node.label.substring(0, 17) + "..."
                         : node.label}
                     </text>
-                    {/* Type */}
+
+                    {/* Type description */}
                     <text
                       x={node.x + size + 16}
-                      y={node.y - 2}
-                      fontSize="10"
+                      y={node.y - 5}
+                      fontSize="9"
                       fontWeight="600"
-                      fill="#475569"
+                      fill="#666666"
                       style={{ pointerEvents: "none" }}
                     >
-                      {node.type.charAt(0).toUpperCase() + node.type.slice(1)}
+                      Type: {node.type.charAt(0).toUpperCase() + node.type.slice(1)}
                     </text>
+
                     {/* CVE count */}
                     {node.cveCount !== undefined && node.cveCount > 0 && (
                       <text
@@ -506,6 +793,19 @@ export function InteractiveDependencyGraph() {
                         style={{ pointerEvents: "none" }}
                       >
                         Severity: {node.severity}
+                      </text>
+                    )}
+                    {/* Version if version type */}
+                    {node.type === "version" && node.label && (
+                      <text
+                        x={node.x + size + 16}
+                        y={node.y + 27}
+                        fontSize="9"
+                        fontWeight="600"
+                        fill="#475569"
+                        style={{ pointerEvents: "none" }}
+                      >
+                        Version Info
                       </text>
                     )}
                   </g>
@@ -625,13 +925,13 @@ export function InteractiveDependencyGraph() {
                   • <strong>Hover</strong> - View node details
                 </p>
                 <p>
-                  • <strong>Click Tech</strong> - Highlight blast radius
+                  • <strong>Click Node</strong> - Highlight connections
                 </p>
                 <p>
-                  • <strong>Click Issue</strong> - Show affected techs
+                  • <strong>Drag Node</strong> - Adjust node position
                 </p>
                 <p>
-                  • <strong>Drag</strong> - Pan the view
+                  • <strong>Drag Canvas</strong> - Pan the view
                 </p>
                 <p>
                   • <strong>Scroll</strong> - Zoom in/out
