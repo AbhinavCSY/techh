@@ -901,6 +901,36 @@ function DetailsPanel({
                                     </p>
                                   </div>
 
+                                  {/* Affected Versions */}
+                                  <div>
+                                    <p className="text-xs font-semibold text-gray-700 mb-1">
+                                      Affected Versions
+                                    </p>
+                                    <p className="text-xs bg-white bg-opacity-70 rounded px-2 py-1 font-mono text-gray-700">
+                                      {cve.affected || "N/A"}
+                                    </p>
+                                  </div>
+
+                                  {/* CWE and Published Date */}
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div>
+                                      <p className="text-xs font-semibold text-gray-700 mb-1">
+                                        CWE
+                                      </p>
+                                      <p className="text-xs text-gray-600">
+                                        {cve.cwe || "N/A"}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <p className="text-xs font-semibold text-gray-700 mb-1">
+                                        Published
+                                      </p>
+                                      <p className="text-xs text-gray-600">
+                                        {cve.published || "N/A"}
+                                      </p>
+                                    </div>
+                                  </div>
+
                                   <div className="flex gap-2 pt-2">
                                     <button
                                       onClick={() => {
