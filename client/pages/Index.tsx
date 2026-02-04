@@ -1148,10 +1148,15 @@ function DetailsPanel({
                                   <p className="text-xs text-gray-700 mt-1">
                                     {cve.title}
                                   </p>
-                                  <div className="flex gap-2 mt-1">
+                                  <div className="flex gap-2 mt-1 flex-wrap">
                                     <Badge className="bg-amber-200 text-amber-800 text-xs">
                                       ⚠️ UNSCANNED
                                     </Badge>
+                                    {!cve.scanningSupported && (
+                                      <Badge className="bg-gray-400 text-white text-xs">
+                                        🔒 Scanning Not Supported
+                                      </Badge>
+                                    )}
                                     <span className="text-xs text-gray-700">
                                       CVSS: {cve.score.toFixed(1)} •{" "}
                                       {cve.severity.toUpperCase()}
