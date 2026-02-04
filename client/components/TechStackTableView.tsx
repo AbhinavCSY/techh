@@ -143,20 +143,6 @@ export function TechStackTableView({
                   </div>
                 </TableCell>
                 <TableCell>
-                  <p className="text-sm text-gray-600">
-                    {techStack.lastSeen
-                      ? techStack.lastSeen.toLocaleDateString()
-                      : "N/A"}
-                  </p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-sm text-gray-600">
-                    {techStack.firstSeen
-                      ? techStack.firstSeen.toLocaleDateString()
-                      : "N/A"}
-                  </p>
-                </TableCell>
-                <TableCell>
                   <Badge className={getRiskColor(techStack.riskLevel)}>
                     {techStack.riskLevel}
                   </Badge>
