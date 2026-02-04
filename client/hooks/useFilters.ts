@@ -189,7 +189,7 @@ export function filterAssets(items: Asset[], filters: FilterState): Asset[] {
 
     // Time filter
     if (filters.timeFilter !== "month") {
-      const itemDate = new Date(item.lastUpdated);
+      const itemDate = new Date(item.lastSeen);
       const now = new Date();
       const diffDays =
         (now.getTime() - itemDate.getTime()) / (1000 * 60 * 60 * 24);
@@ -274,8 +274,8 @@ export function sortAssets(
         bVal = b.cveCount;
         break;
       case "recency":
-        aVal = new Date(a.lastUpdated).getTime();
-        bVal = new Date(b.lastUpdated).getTime();
+        aVal = new Date(a.lastSeen).getTime();
+        bVal = new Date(b.lastSeen).getTime();
         break;
       default:
         return 0;
