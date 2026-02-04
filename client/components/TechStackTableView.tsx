@@ -70,11 +70,11 @@ export function TechStackTableView({
             <TableHead className="font-semibold">Tech Stack</TableHead>
             <TableHead className="font-semibold">License</TableHead>
             <TableHead className="font-semibold">Associated Assets</TableHead>
-            <TableHead className="font-semibold">Last Seen</TableHead>
-            <TableHead className="font-semibold">First Seen</TableHead>
             <TableHead className="font-semibold">Risk</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
             <TableHead className="font-semibold">Status</TableHead>
+            <TableHead className="font-semibold">Last Seen</TableHead>
+            <TableHead className="font-semibold">First Seen</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
