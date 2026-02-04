@@ -171,6 +171,9 @@ const commonCVEs: Record<string, CVE[]> = {
       severity: "high",
       title: "HTTP Request Smuggling",
       score: 8.1,
+      affected: "v18.0.0 - v18.17.0, v19.0.0 - v19.9.0, v20.0.0 - v20.5.0",
+      cwe: "CWE-444: Inconsistent Interpretation of HTTP Requests",
+      published: "2023-05-30",
     },
   ],
   PostgreSQL: [
@@ -179,6 +182,9 @@ const commonCVEs: Record<string, CVE[]> = {
       severity: "high",
       title: "Logical Replication XSS",
       score: 7.5,
+      affected: "v12.0 - v12.12, v13.0 - v13.8, v14.0 - v14.5",
+      cwe: "CWE-79: Cross-site Scripting (XSS)",
+      published: "2022-10-13",
     },
   ],
   Django: [
@@ -187,6 +193,9 @@ const commonCVEs: Record<string, CVE[]> = {
       severity: "medium",
       title: "Regex DoS",
       score: 5.3,
+      affected: "v3.2.0 - v3.2.17, v4.0.0 - v4.1.6",
+      cwe: "CWE-1333: Inefficient Regular Expression Complexity",
+      published: "2023-02-01",
     },
   ],
   "Express.js": [
@@ -195,6 +204,9 @@ const commonCVEs: Record<string, CVE[]> = {
       severity: "high",
       title: "Query Parser DoS",
       score: 7.5,
+      affected: "v4.0.0 - v4.17.3",
+      cwe: "CWE-400: Uncontrolled Resource Consumption",
+      published: "2022-04-28",
     },
   ],
 };
