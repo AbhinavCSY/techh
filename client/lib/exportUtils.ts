@@ -1,39 +1,37 @@
-import { TechStack, Asset } from '@/data/mockData';
+import { TechStack, Asset } from "@/data/mockData";
 
 export function exportAsCSV(
   data: TechStack[] | Asset[],
   filename: string,
-  isTechStack: boolean
+  isTechStack: boolean,
 ) {
-  let csv = '';
+  let csv = "";
 
   if (isTechStack) {
-    csv = 'Name,Version,Type,Risk Level,CVE Count,EOL,Upgradable\n';
+    csv = "Name,Version,Type,Risk Level,CVE Count,EOL,Upgradable\n";
     (data as TechStack[]).forEach((item) => {
-      csv += `"${item.name}","v${item.version}","${item.type}","${item.riskLevel}",${item.cves.length},"${item.isEOL ? 'Yes' : 'No'}","${item.isUpgradable ? 'Yes' : 'No'}"\n`;
+      csv += `"${item.name}","v${item.version}","${item.type}","${item.riskLevel}",${item.cves.length},"${item.isEOL ? "Yes" : "No"}","${item.isUpgradable ? "Yes" : "No"}"\n`;
     });
   } else {
-    csv = 'Name,Type,Risk Level,Tech Stack Count,CVE Count,Last Seen,First Seen\n';
+    csv =
+      "Name,Type,Risk Level,Tech Stack Count,CVE Count,Last Seen,First Seen\n";
     (data as Asset[]).forEach((item) => {
       csv += `"${item.name}","${item.type}","${item.riskLevel}",${item.techStacks.length},${item.cveCount},"${item.lastSeen.toLocaleDateString()}","${item.firstSeen.toLocaleDateString()}"\n`;
     });
   }
 
-  downloadFile(csv, filename, 'text/csv');
+  downloadFile(csv, filename, "text/csv");
 }
 
-export function exportAsJSON(
-  data: TechStack[] | Asset[],
-  filename: string
-) {
+export function exportAsJSON(data: TechStack[] | Asset[], filename: string) {
   const json = JSON.stringify(data, null, 2);
-  downloadFile(json, filename, 'application/json');
+  downloadFile(json, filename, "application/json");
 }
 
 export function exportAsPDF(
   data: TechStack[] | Asset[],
   filename: string,
-  isTechStack: boolean
+  isTechStack: boolean,
 ) {
   // Simple PDF generation using basic HTML to PDF approach
   let html = `
@@ -55,7 +53,7 @@ export function exportAsPDF(
       </style>
     </head>
     <body>
-      <h1>${isTechStack ? 'Tech Stack Inventory' : 'Asset Inventory'}</h1>
+      <h1>${isTechStack ? "Tech Stack Inventory" : "Asset Inventory"}</h1>
       <p>Generated on ${new Date().toLocaleDateString()}</p>
       <table>
   `;
@@ -82,7 +80,7 @@ export function exportAsPDF(
           <td>${item.type}</td>
           <td class="${item.riskLevel}">${item.riskLevel}</td>
           <td>${item.cves.length}</td>
-          <td>${item.isEOL ? 'EOL' : item.isUpgradable ? 'Upgradable' : 'Current'}</td>
+          <td>${item.isEOL ? "EOL" : item.isUpgradable ? "Upgradable" : "Current"}</td>
         </tr>
       `;
     });
@@ -123,17 +121,13 @@ export function exportAsPDF(
     </html>
   `;
 
-  downloadFile(html, filename, 'application/pdf');
+  downloadFile(html, filename, "application/pdf");
 }
 
-function downloadFile(
-  content: string,
-  filename: string,
-  mimeType: string
-) {
+function downloadFile(content: string, filename: string, mimeType: string) {
   const blob = new Blob([content], { type: mimeType });
   const url = window.URL.createObjectURL(blob);
-  const link = document.createElement('a');
+  const link = document.createElement("a");
   link.href = url;
   link.download = filename;
   document.body.appendChild(link);

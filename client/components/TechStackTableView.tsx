@@ -9,7 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 interface TechStackTableViewProps {
   techStacks: TechStack[];
@@ -108,12 +112,15 @@ export function TechStackTableView({
                       </div>
                       <p className="text-xs text-gray-500">{techStack.type}</p>
                       <div className="flex items-center gap-1 mt-1">
-                        <p className="text-xs font-medium text-gray-700">v{techStack.version}</p>
-                        {techStack.secureVersion && techStack.secureVersion !== techStack.version && (
-                          <p className="text-xs text-green-600 font-medium">
-                            → v{techStack.secureVersion}
-                          </p>
-                        )}
+                        <p className="text-xs font-medium text-gray-700">
+                          v{techStack.version}
+                        </p>
+                        {techStack.secureVersion &&
+                          techStack.secureVersion !== techStack.version && (
+                            <p className="text-xs text-green-600 font-medium">
+                              → v{techStack.secureVersion}
+                            </p>
+                          )}
                       </div>
                     </div>
                   </div>

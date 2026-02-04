@@ -72,7 +72,10 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
                   <span className="text-xl">
                     {getAssetTypeIcon(asset.type)}
                   </span>
-                  <span className="truncate" title={asset.displayName || asset.name}>
+                  <span
+                    className="truncate"
+                    title={asset.displayName || asset.name}
+                  >
                     {asset.name}
                   </span>
                 </div>
