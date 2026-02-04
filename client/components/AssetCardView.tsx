@@ -147,10 +147,13 @@ export function AssetCardView({ assets, onSelectCard }: AssetCardViewProps) {
             </div>
           </div>
 
-          {/* Last Updated */}
-          <div className="pt-3 border-t border-gray-200">
+          {/* Last Seen / First Seen */}
+          <div className="pt-3 border-t border-gray-200 space-y-1">
             <p className="text-xs text-gray-500">
-              Updated {asset.lastUpdated.toLocaleDateString()}
+              Last Seen {asset.lastSeen.toLocaleDateString()}
+            </p>
+            <p className="text-xs text-gray-500">
+              First Seen {asset.firstSeen.toLocaleDateString()}
             </p>
           </div>
         </div>
