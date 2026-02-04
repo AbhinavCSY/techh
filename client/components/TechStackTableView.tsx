@@ -31,21 +31,6 @@ export function TechStackTableView({
     return new Date(createdAt) > oneDayAgo;
   };
 
-  const getRiskColor = (level: string) => {
-    switch (level) {
-      case "critical":
-        return "bg-red-100 text-red-800";
-      case "high":
-        return "bg-orange-100 text-orange-800";
-      case "medium":
-        return "bg-yellow-100 text-yellow-800";
-      case "low":
-        return "bg-green-100 text-green-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
   const getCVEColor = (severity: string) => {
     switch (severity) {
       case "critical":
@@ -75,7 +60,6 @@ export function TechStackTableView({
             <TableHead className="font-semibold">Tech Stack</TableHead>
             <TableHead className="font-semibold">License</TableHead>
             <TableHead className="font-semibold">Associated Assets</TableHead>
-            <TableHead className="font-semibold">Risk</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
             <TableHead className="font-semibold">Status</TableHead>
             <TableHead className="font-semibold">First Seen</TableHead>
@@ -154,15 +138,10 @@ export function TechStackTableView({
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge className={getRiskColor(techStack.riskLevel)}>
-                    {techStack.riskLevel}
-                  </Badge>
-                </TableCell>
-                <TableCell>
                   <ThreatBar
                     cves={techStack.cves}
                     unscannedCount={techStack.unscannedThreatsCount}
-                    className="w-24"
+                    className="w-48"
                   />
                 </TableCell>
                 <TableCell>

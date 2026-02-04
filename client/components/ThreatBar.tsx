@@ -28,10 +28,10 @@ export function ThreatBar({
     );
   }
 
-  const criticalPercent = (criticalCount / total) * 100 || 0;
-  const highPercent = (highCount / total) * 100 || 0;
-  const mediumPercent = (mediumCount / total) * 100 || 0;
-  const lowPercent = (lowCount / total) * 100 || 0;
+  const criticalPercent = (criticalCount / totalWithUnscanned) * 100 || 0;
+  const highPercent = (highCount / totalWithUnscanned) * 100 || 0;
+  const mediumPercent = (mediumCount / totalWithUnscanned) * 100 || 0;
+  const lowPercent = (lowCount / totalWithUnscanned) * 100 || 0;
   const unscannedPercent = (unscannedCount / totalWithUnscanned) * 100 || 0;
 
   return (
