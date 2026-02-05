@@ -1,4 +1,6 @@
 import { TechStack, Asset } from "@/data/mockData";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export function exportAsCSV(
   data: TechStack[] | Asset[],
