@@ -111,6 +111,18 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Scanning Banner */}
+      {scanningProject && (
+        <div className="bg-blue-50 border-b border-blue-200 py-3 px-6">
+          <div className="max-w-7xl mx-auto flex items-center gap-3">
+            <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium text-blue-900">
+              🔍 Scanning <strong>{scanningProject}</strong> - Scanning assets ({scannedAssets.size}% complete)
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="border-b border-gray-200 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-2">
