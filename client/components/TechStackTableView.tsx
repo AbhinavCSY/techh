@@ -149,23 +149,39 @@ export function TechStackTableView({
                   />
                 </TableCell>
                 <TableCell>
-                  <div className="flex flex-nowrap gap-1 whitespace-nowrap">
-                    {techStack.isEOL && (
-                      <Badge className="bg-red-200 text-red-800 text-xs">
-                        EOL
-                      </Badge>
-                    )}
-                    {techStack.isUpgradable && (
-                      <Badge className="bg-blue-200 text-blue-800 text-xs">
-                        Upgradable
-                      </Badge>
-                    )}
-                    {!techStack.isEOL && !techStack.isUpgradable && (
-                      <Badge className="bg-green-200 text-green-800 text-xs">
-                        Current
-                      </Badge>
-                    )}
-                  </div>
+                  {scanningProject ? (
+                    <div className="flex items-center gap-2">
+                      {associatedAssets.some((asset) => scannedAssets.has(asset.id)) ? (
+                        <>
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-sm text-green-700 font-medium">Scanned</span>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                          <span className="text-sm text-blue-700 font-medium">Scanning</span>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex flex-nowrap gap-1 whitespace-nowrap">
+                      {techStack.isEOL && (
+                        <Badge className="bg-red-200 text-red-800 text-xs">
+                          EOL
+                        </Badge>
+                      )}
+                      {techStack.isUpgradable && (
+                        <Badge className="bg-blue-200 text-blue-800 text-xs">
+                          Upgradable
+                        </Badge>
+                      )}
+                      {!techStack.isEOL && !techStack.isUpgradable && (
+                        <Badge className="bg-green-200 text-green-800 text-xs">
+                          Current
+                        </Badge>
+                      )}
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell>
                   <p className="text-sm text-gray-600">
