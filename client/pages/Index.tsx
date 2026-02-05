@@ -1840,6 +1840,7 @@ function DetailRowClickable({
 interface NewProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onStartScan: (projectName: string) => void;
 }
 
 function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
