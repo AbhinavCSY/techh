@@ -80,9 +80,16 @@ export function AssetCardView({ assets, onSelectCard, scanningProject, scannedAs
                 </p>
               </div>
             </div>
-            <Badge className={getRiskBadgeColor(asset.riskLevel)}>
-              {asset.riskLevel}
-            </Badge>
+            <div className="flex flex-col gap-2">
+              {scanningProject && (
+                <Badge className={scannedAssets.has(asset.id) ? "bg-green-200 text-green-800" : "bg-blue-200 text-blue-800"}>
+                  {scannedAssets.has(asset.id) ? "Scanned" : "Scanning"}
+                </Badge>
+              )}
+              <Badge className={getRiskBadgeColor(asset.riskLevel)}>
+                {asset.riskLevel}
+              </Badge>
+            </div>
           </div>
 
           {/* Threat Summary */}
