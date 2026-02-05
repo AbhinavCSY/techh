@@ -100,6 +100,21 @@ export function AssetTableView({ assets, onSelectRow, scanningProject, scannedAs
                   className="w-56"
                 />
               </TableCell>
+              <TableCell>
+                {scanningProject && scannedAssets.has(asset.id) ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-green-700 font-medium">Scanned</span>
+                  </div>
+                ) : scanningProject && !scannedAssets.has(asset.id) ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm text-blue-700 font-medium">Scanning</span>
+                  </div>
+                ) : (
+                  <span className="text-sm text-gray-600">-</span>
+                )}
+              </TableCell>
               <TableCell className="text-sm text-gray-600">
                 {asset.firstSeen.toLocaleDateString()}
               </TableCell>
