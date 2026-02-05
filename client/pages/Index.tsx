@@ -285,6 +285,8 @@ export default function Index() {
                           setSelectedItem(asset);
                           setShowDetails(true);
                         }}
+                        scanningProject={scanningProject}
+                        scannedAssets={scannedAssets}
                       />
                     )}
                   </>
