@@ -42,6 +42,7 @@ export function AssetTableView({ assets, onSelectRow, scanningProject, scannedAs
             <TableHead className="font-semibold">Type</TableHead>
             <TableHead className="font-semibold">Tech Stacks</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
+            <TableHead className="font-semibold">Status</TableHead>
             <TableHead className="font-semibold">First Seen</TableHead>
             <TableHead className="font-semibold">Last Seen</TableHead>
           </TableRow>
