@@ -30,87 +30,79 @@ export function exportAsJSON(data: TechStack[] | Asset[], filename: string) {
   downloadFile(json, filename, "application/json");
 }
 
-export function exportAsPDF(
+export async function exportAsPDF(
   data: TechStack[] | Asset[],
   filename: string,
   isTechStack: boolean,
 ) {
-  // Simple PDF generation using basic HTML to PDF approach
+  // Create a temporary container for PDF generation
+  const container = document.createElement("div");
+  container.style.position = "absolute";
+  container.style.left = "-9999px";
+  container.style.width = "800px";
+  container.style.backgroundColor = "white";
+  container.style.padding = "20px";
+
   let html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>${filename}</title>
-      <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { background-color: #f0f0f0; border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold; }
-        td { border: 1px solid #ddd; padding: 10px; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        .critical { color: #dc2626; font-weight: bold; }
-        .high { color: #ea580c; font-weight: bold; }
-        .medium { color: #ca8a04; font-weight: bold; }
-        .low { color: #16a34a; font-weight: bold; }
-      </style>
-    </head>
-    <body>
-      <h1>${isTechStack ? "Tech Stack Inventory" : "Asset Inventory"}</h1>
-      <p>Generated on ${new Date().toLocaleDateString()}</p>
-      <table>
+    <div style="font-family: Arial, sans-serif;">
+      <h1 style="color: #333; margin-bottom: 10px;">${isTechStack ? "Tech Stack Inventory" : "Asset Inventory"}</h1>
+      <p style="color: #666; margin-bottom: 20px;">Generated on ${new Date().toLocaleDateString()}</p>
+      <table style="width: 100%; border-collapse: collapse;">
   `;
 
   if (isTechStack) {
     html += `
       <thead>
-        <tr>
-          <th>Name</th>
-          <th>Version</th>
-          <th>Type</th>
-          <th>Risk Level</th>
-          <th>CVEs</th>
-          <th>Status</th>
+        <tr style="background-color: #f0f0f0;">
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">Name</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">Version</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">Type</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">Risk Level</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">CVEs</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">Status</th>
         </tr>
       </thead>
       <tbody>
     `;
-    (data as TechStack[]).forEach((item) => {
+    (data as TechStack[]).forEach((item, index) => {
+      const bgColor = index % 2 === 0 ? "#ffffff" : "#f9f9f9";
       html += `
-        <tr>
-          <td>${item.name}</td>
-          <td>v${item.version}</td>
-          <td>${item.type}</td>
-          <td class="${item.riskLevel}">${item.riskLevel}</td>
-          <td>${item.cves.length}</td>
-          <td>${item.isEOL ? "EOL" : item.isUpgradable ? "Upgradable" : "Current"}</td>
+        <tr style="background-color: ${bgColor};">
+          <td style="border: 1px solid #ddd; padding: 10px;">${item.name}</td>
+          <td style="border: 1px solid #ddd; padding: 10px;">v${item.version}</td>
+          <td style="border: 1px solid #ddd; padding: 10px;">${item.type}</td>
+          <td style="border: 1px solid #ddd; padding: 10px; font-weight: bold; color: ${getRiskColor(item.riskLevel)};">${item.riskLevel}</td>
+          <td style="border: 1px solid #ddd; padding: 10px;">${item.cves.length}</td>
+          <td style="border: 1px solid #ddd; padding: 10px;">${item.isEOL ? "EOL" : item.isUpgradable ? "Upgradable" : "Current"}</td>
         </tr>
       `;
     });
   } else {
     html += `
       <thead>
-        <tr>
-          <th>Asset Name</th>
-          <th>Type</th>
-          <th>Risk Level</th>
-          <th>Tech Stacks</th>
-          <th>CVEs</th>
-          <th>Last Seen</th>
-          <th>First Seen</th>
+        <tr style="background-color: #f0f0f0;">
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">Asset Name</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">Type</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">Risk Level</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">Tech Stacks</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">CVEs</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">Last Seen</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left; font-weight: bold;">First Seen</th>
         </tr>
       </thead>
       <tbody>
     `;
-    (data as Asset[]).forEach((item) => {
+    (data as Asset[]).forEach((item, index) => {
+      const bgColor = index % 2 === 0 ? "#ffffff" : "#f9f9f9";
       html += `
-        <tr>
-          <td>${item.name}</td>
-          <td>${item.type}</td>
-          <td class="${item.riskLevel}">${item.riskLevel}</td>
-          <td>${item.techStacks.length}</td>
-          <td>${item.cveCount}</td>
-          <td>${item.lastSeen.toLocaleDateString()}</td>
-          <td>${item.firstSeen.toLocaleDateString()}</td>
+        <tr style="background-color: ${bgColor};">
+          <td style="border: 1px solid #ddd; padding: 10px;">${item.name}</td>
+          <td style="border: 1px solid #ddd; padding: 10px;">${item.type}</td>
+          <td style="border: 1px solid #ddd; padding: 10px; font-weight: bold; color: ${getRiskColor(item.riskLevel)};">${item.riskLevel}</td>
+          <td style="border: 1px solid #ddd; padding: 10px;">${item.techStacks.length}</td>
+          <td style="border: 1px solid #ddd; padding: 10px;">${item.cveCount}</td>
+          <td style="border: 1px solid #ddd; padding: 10px;">${item.lastSeen.toLocaleDateString()}</td>
+          <td style="border: 1px solid #ddd; padding: 10px;">${item.firstSeen.toLocaleDateString()}</td>
         </tr>
       `;
     });
@@ -119,11 +111,65 @@ export function exportAsPDF(
   html += `
       </tbody>
       </table>
-    </body>
-    </html>
+    </div>
   `;
 
-  downloadFile(html, filename, "application/pdf");
+  container.innerHTML = html;
+  document.body.appendChild(container);
+
+  try {
+    // Convert HTML to canvas
+    const canvas = await html2canvas(container, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+    });
+
+    // Create PDF from canvas
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF({
+      orientation: "landscape",
+      unit: "mm",
+      format: "a4",
+    });
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pdfWidth;
+    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pdfHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+    }
+
+    pdf.save(filename);
+  } finally {
+    document.body.removeChild(container);
+  }
+}
+
+function getRiskColor(riskLevel: string): string {
+  switch (riskLevel) {
+    case "critical":
+      return "#dc2626";
+    case "high":
+      return "#ea580c";
+    case "medium":
+      return "#ca8a04";
+    case "low":
+      return "#16a34a";
+    default:
+      return "#000000";
+  }
 }
 
 function downloadFile(content: string, filename: string, mimeType: string) {
