@@ -554,8 +554,10 @@ export function InteractiveDependencyGraph() {
                       }
                       return newSet;
                     });
-                    // Clear selection when expanding/collapsing
-                    setSelectedNodeId(null);
+                    // Also allow selection for edge highlighting
+                    setSelectedNodeId(
+                      selectedNodeId === node.id ? null : node.id,
+                    );
                   } else if (node.type !== "vendor") {
                     // For other node types, allow selection
                     setSelectedNodeId(
