@@ -1036,10 +1036,10 @@ export function InteractiveDependencyGraph() {
                   • <strong>Hover</strong> - View node details
                 </p>
                 <p>
-                  • <strong>Click Tech Node</strong> - Expand to show dependencies & vulnerabilities
+                  • <strong>Click Tech Node</strong> - Expand to show dependencies & vulnerabilities, plus highlight all connected edges
                 </p>
                 <p>
-                  • <strong>Click Other Nodes</strong> - Highlight connections
+                  • <strong>Click Other Nodes</strong> - Highlight connections and edges
                 </p>
                 <p>
                   • <strong>Drag Node</strong> - Adjust node position
