@@ -1016,6 +1016,18 @@ export function InteractiveDependencyGraph() {
             </div>
 
             <div className="pt-3 border-t border-gray-300">
+              <p className="font-semibold text-gray-700 mb-2">Tech Node Indicators:</p>
+              <div className="space-y-1 ml-2 text-gray-600">
+                <p>
+                  • <strong>Plus icon (+)</strong> - Click to expand and show dependencies & vulnerabilities
+                </p>
+                <p>
+                  • <strong>Minus icon (-)</strong> - Click to collapse and hide dependencies & vulnerabilities
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-gray-300">
               <p className="font-semibold text-gray-700 mb-2">Interactions:</p>
               <div className="space-y-1 ml-2 text-gray-600">
                 <p>
