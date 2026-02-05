@@ -144,30 +144,64 @@ export function InteractiveDependencyGraph() {
     }
   };
 
-  // Filter nodes for critical issues
+  // Filter nodes - hide vulnerability nodes initially, show them only when tech node is expanded
   const filteredNodes = useMemo(() => {
-    if (!showOnlyCritical) return layoutResult.nodes;
+    let nodes = layoutResult.nodes;
 
-    const criticalIssueIds = new Set(
-      layoutResult.nodes
-        .filter((n) => n.type === "issue" && n.severity === "critical")
-        .map((n) => n.id),
-    );
+    // Always hide issue nodes initially, unless a tech node is expanded
+    if (expandedTechNodes.size === 0) {
+      nodes = nodes.filter((n) => n.type !== "issue");
+    } else {
+      // When tech nodes are expanded, show all nodes including issues related to expanded techs
+      const relatedNodeIds = new Set<string>();
+      layoutResult.edges.forEach((edge) => {
+        // If source or target is an expanded tech node, include both nodes in the view
+        if (expandedTechNodes.has(edge.source) || expandedTechNodes.has(edge.target)) {
+          relatedNodeIds.add(edge.source);
+          relatedNodeIds.add(edge.target);
+        }
+      });
 
-    const affectedTechIds = new Set<string>();
-    layoutResult.edges.forEach((edge) => {
-      if (criticalIssueIds.has(edge.source) && edge.type === "found_in") {
-        affectedTechIds.add(edge.target);
-      }
-    });
+      // Filter to show: expanded tech nodes, their related nodes, and all issues related to expanded techs
+      nodes = nodes.filter((n) => {
+        if (expandedTechNodes.has(n.id)) return true;
+        if (n.type === "issue") {
+          // Show issues that are related to expanded tech nodes
+          return layoutResult.edges.some(
+            (edge) =>
+              (edge.type === "found_in" && expandedTechNodes.has(edge.target)) ||
+              (edge.source === n.id && expandedTechNodes.has(edge.target)),
+          );
+        }
+        return relatedNodeIds.has(n.id);
+      });
+    }
 
-    return layoutResult.nodes.filter(
-      (n) =>
-        (n.type === "issue" && n.severity === "critical") ||
-        affectedTechIds.has(n.id) ||
-        (n.type === "technology" && n.cveCount && n.cveCount > 0),
-    );
-  }, [showOnlyCritical, layoutResult.nodes, layoutResult.edges]);
+    // Apply critical filter if enabled
+    if (showOnlyCritical) {
+      const criticalIssueIds = new Set(
+        nodes
+          .filter((n) => n.type === "issue" && n.severity === "critical")
+          .map((n) => n.id),
+      );
+
+      const affectedTechIds = new Set<string>();
+      layoutResult.edges.forEach((edge) => {
+        if (criticalIssueIds.has(edge.source) && edge.type === "found_in") {
+          affectedTechIds.add(edge.target);
+        }
+      });
+
+      return nodes.filter(
+        (n) =>
+          (n.type === "issue" && n.severity === "critical") ||
+          affectedTechIds.has(n.id) ||
+          (n.type === "technology" && n.cveCount && n.cveCount > 0),
+      );
+    }
+
+    return nodes;
+  }, [showOnlyCritical, layoutResult.nodes, layoutResult.edges, expandedTechNodes]);
 
   // Filter edges based on visible nodes
   const filteredEdges = useMemo(() => {
