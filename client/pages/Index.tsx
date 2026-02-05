@@ -1843,7 +1843,7 @@ interface NewProjectModalProps {
   onStartScan: (projectName: string) => void;
 }
 
-function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
+function NewProjectModal({ isOpen, onClose, onStartScan }: NewProjectModalProps) {
   const [activeStep, setActiveStep] = useState<
     "options" | "sourceCode" | "selectScanners"
   >("options");
