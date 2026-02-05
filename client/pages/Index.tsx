@@ -277,6 +277,8 @@ export default function Index() {
                           setSelectedItem(ts);
                           setShowDetails(true);
                         }}
+                        scanningProject={scanningProject}
+                        scannedAssets={scannedAssets}
                       />
                     ) : (
                       <AssetTableView
