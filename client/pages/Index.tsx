@@ -1681,6 +1681,40 @@ function DetailsPanel({
                       </div>
                     </div>
 
+                    {/* All Info in One Line - Type, Risk Score, License, Effective License, EOL Status, Secure Version */}
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="flex flex-wrap items-center gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-600 font-medium">Type:</span>
+                          <span className="text-gray-900">{item.type}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-600 font-medium">Risk Score:</span>
+                          <span className="text-gray-900 font-semibold">{item.riskScore}/10</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-600 font-medium">License:</span>
+                          <span className="text-gray-900">{item.license}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-600 font-medium">Effective:</span>
+                          <span className="text-gray-900">{item.effectiveLicense}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-600 font-medium">EOL:</span>
+                          <span className={item.isEOL ? "text-red-600 font-semibold" : "text-green-600 font-semibold"}>
+                            {item.isEOL ? "⚠️ End of Life" : "✓ Active"}
+                          </span>
+                        </div>
+                        {item.secureVersion && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-600 font-medium">Secure:</span>
+                            <span className="text-green-600 font-semibold">v{item.secureVersion}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
                     {/* Remediations */}
                     {item.remediations && item.remediations.length > 0 && (
                       <div>
