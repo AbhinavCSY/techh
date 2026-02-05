@@ -531,7 +531,7 @@ export function InteractiveDependencyGraph() {
               <g
                 key={node.id}
                 style={{
-                  cursor: draggedNodeId === node.id ? "grabbing" : node.type !== "vendor" ? "grab" : "default",
+                  cursor: draggedNodeId === node.id ? "grabbing" : node.type === "technology" ? "pointer" : node.type !== "vendor" ? "grab" : "default",
                   pointerEvents: "auto",
                 }}
                 opacity={
