@@ -78,6 +78,25 @@ export default function Index() {
     }
   };
 
+  const handleStartScan = (projectName: string) => {
+    setScanningProject(projectName);
+    setShowNewProjectModal(false);
+    setGrouping("asset");
+
+    // Simulate scanning - mark all assets as scanned after random intervals
+    const assetIds = assetDatabase.map((a) => a.id);
+    assetIds.forEach((assetId, index) => {
+      setTimeout(() => {
+        setScannedAssets((prev) => new Set([...prev, assetId]));
+      }, (index + 1) * 800); // Stagger the scanning
+    });
+
+    // Clear scanning state after all assets are scanned
+    setTimeout(() => {
+      setScanningProject(null);
+    }, assetIds.length * 800 + 2000);
+  };
+
   const getMetrics = () => {
     const totalTechStacks = techStackDatabase.length;
     const assetsScanned = assetDatabase.filter((a) => a.isScanned).length;
