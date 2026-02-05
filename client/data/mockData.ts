@@ -3,6 +3,9 @@ export interface CVE {
   severity: "critical" | "high" | "medium" | "low";
   title: string;
   score: number;
+  affected?: string;
+  cwe?: string;
+  published?: string;
 }
 
 export interface VersionHistory {
@@ -100,18 +103,27 @@ const commonCVEs: Record<string, CVE[]> = {
       severity: "critical",
       title: "vLLm Remote Code Execution",
       score: 9.8,
+      affected: "v0.1.0 - v0.4.1",
+      cwe: "CWE-94: Improper Control of Generation of Code",
+      published: "2024-01-15",
     },
     {
       id: "CVE-2024-0002",
       severity: "high",
       title: "vLLm Model Poisoning",
       score: 8.5,
+      affected: "v0.2.0 - v0.4.0",
+      cwe: "CWE-94: Improper Control of Generation of Code",
+      published: "2024-01-20",
     },
     {
       id: "CVE-2024-0003",
       severity: "high",
       title: "vLLm Memory Leak",
       score: 7.2,
+      affected: "v0.1.0 - v0.3.5",
+      cwe: "CWE-400: Uncontrolled Resource Consumption",
+      published: "2024-02-01",
     },
   ],
   Log4j: [
@@ -120,12 +132,18 @@ const commonCVEs: Record<string, CVE[]> = {
       severity: "critical",
       title: "Log4j RCE",
       score: 10.0,
+      affected: "v2.0.0 - v2.14.1",
+      cwe: "CWE-94: Improper Control of Generation of Code",
+      published: "2021-12-10",
     },
     {
       id: "CVE-2021-45046",
       severity: "critical",
       title: "Log4j Bypass",
       score: 9.8,
+      affected: "v2.0.0 - v2.16.0",
+      cwe: "CWE-94: Improper Control of Generation of Code",
+      published: "2021-12-13",
     },
   ],
   "Spring Framework": [
@@ -134,10 +152,21 @@ const commonCVEs: Record<string, CVE[]> = {
       severity: "critical",
       title: "Spring4Shell RCE",
       score: 9.8,
+      affected: "v5.3.0 - v5.3.17, v6.0.0 - v6.0.4",
+      cwe: "CWE-94: Improper Control of Generation of Code",
+      published: "2022-03-31",
     },
   ],
   React: [
-    { id: "CVE-2020-5902", severity: "high", title: "DOM XSS", score: 8.2 },
+    {
+      id: "CVE-2020-5902",
+      severity: "high",
+      title: "DOM XSS",
+      score: 8.2,
+      affected: "v16.0.0 - v16.13.0",
+      cwe: "CWE-79: Cross-site Scripting (XSS)",
+      published: "2020-06-15",
+    },
   ],
   "Node.js": [
     {
@@ -145,6 +174,9 @@ const commonCVEs: Record<string, CVE[]> = {
       severity: "high",
       title: "HTTP Request Smuggling",
       score: 8.1,
+      affected: "v18.0.0 - v18.17.0, v19.0.0 - v19.9.0, v20.0.0 - v20.5.0",
+      cwe: "CWE-444: Inconsistent Interpretation of HTTP Requests",
+      published: "2023-05-30",
     },
   ],
   PostgreSQL: [
@@ -153,6 +185,9 @@ const commonCVEs: Record<string, CVE[]> = {
       severity: "high",
       title: "Logical Replication XSS",
       score: 7.5,
+      affected: "v12.0 - v12.12, v13.0 - v13.8, v14.0 - v14.5",
+      cwe: "CWE-79: Cross-site Scripting (XSS)",
+      published: "2022-10-13",
     },
   ],
   Django: [
@@ -161,6 +196,9 @@ const commonCVEs: Record<string, CVE[]> = {
       severity: "medium",
       title: "Regex DoS",
       score: 5.3,
+      affected: "v3.2.0 - v3.2.17, v4.0.0 - v4.1.6",
+      cwe: "CWE-1333: Inefficient Regular Expression Complexity",
+      published: "2023-02-01",
     },
   ],
   "Express.js": [
@@ -169,6 +207,9 @@ const commonCVEs: Record<string, CVE[]> = {
       severity: "high",
       title: "Query Parser DoS",
       score: 7.5,
+      affected: "v4.0.0 - v4.17.3",
+      cwe: "CWE-400: Uncontrolled Resource Consumption",
+      published: "2022-04-28",
     },
   ],
 };
