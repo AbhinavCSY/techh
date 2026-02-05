@@ -7,12 +7,16 @@ interface TechStackCardViewProps {
   techStacks: TechStack[];
   allAssets: Asset[];
   onSelectCard?: (techStack: TechStack) => void;
+  scanningProject?: string | null;
+  scannedAssets?: Set<string>;
 }
 
 export function TechStackCardView({
   techStacks,
   allAssets,
   onSelectCard,
+  scanningProject,
+  scannedAssets = new Set(),
 }: TechStackCardViewProps) {
   const isNewTechStack = (createdAt: Date) => {
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
