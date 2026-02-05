@@ -704,12 +704,58 @@ export function InteractiveDependencyGraph() {
                     : node.label}
                 </text>
 
+                {/* Expansion indicator for technology nodes */}
+                {node.type === "technology" && (
+                  <g
+                    transform={`translate(${node.x + size + 5}, ${node.y - size - 2})`}
+                  >
+                    {expandedTechNodes.has(node.id) ? (
+                      <>
+                        {/* Minus icon for expanded state */}
+                        <circle cx="0" cy="0" r="7" fill="#3B82F6" opacity="0.9" />
+                        <line
+                          x1="-3"
+                          y1="0"
+                          x2="3"
+                          y2="0"
+                          stroke="white"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {/* Plus icon for collapsed state */}
+                        <circle cx="0" cy="0" r="7" fill="#6B7280" opacity="0.7" />
+                        <line
+                          x1="-3"
+                          y1="0"
+                          x2="3"
+                          y2="0"
+                          stroke="white"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                        <line
+                          x1="0"
+                          y1="-3"
+                          x2="0"
+                          y2="3"
+                          stroke="white"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </>
+                    )}
+                  </g>
+                )}
+
                 {/* CVE badge for technology nodes */}
                 {node.type === "technology" &&
                   node.cveCount &&
                   node.cveCount > 0 && (
                     <g
-                      transform={`translate(${node.x + size + 5}, ${node.y - size - 2})`}
+                      transform={`translate(${node.x - size - 5}, ${node.y - size - 2})`}
                     >
                       <circle
                         cx="0"
