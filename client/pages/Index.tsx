@@ -46,6 +46,8 @@ export default function Index() {
   const [showDetails, setShowDetails] = useState(false);
   const [showWidgetPanel, setShowWidgetPanel] = useState(true);
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [scanningProject, setScanningProject] = useState<string | null>(null);
+  const [scannedAssets, setScannedAssets] = useState<Set<string>>(new Set());
 
   // Filter and sort data - must be called before any early returns
   const filteredTechStacks = useMemo(() => {
