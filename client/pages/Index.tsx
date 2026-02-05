@@ -256,6 +256,8 @@ export default function Index() {
                           setSelectedItem(ts);
                           setShowDetails(true);
                         }}
+                        scanningProject={scanningProject}
+                        scannedAssets={scannedAssets}
                       />
                     ) : (
                       <AssetCardView
@@ -264,6 +266,8 @@ export default function Index() {
                           setSelectedItem(asset);
                           setShowDetails(true);
                         }}
+                        scanningProject={scanningProject}
+                        scannedAssets={scannedAssets}
                       />
                     )}
                   </>
