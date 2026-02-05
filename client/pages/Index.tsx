@@ -760,48 +760,17 @@ function DetailsPanel({
                           </h3>
                           <p className="text-sm text-gray-600">
                             v{item.version}
+                            {item.secureVersion && item.secureVersion !== item.version && (
+                              <span className="ml-3 text-green-600 font-medium">
+                                → v{item.secureVersion} available
+                              </span>
+                            )}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    {/* Basic Information */}
-                    <div className="space-y-3">
-                      <DetailRowClickable
-                        label="Type"
-                        value={item.type}
-                        isClickable={false}
-                      />
-                      <DetailRowClickable
-                        label="Risk Score"
-                        value={`${item.riskScore}/10 (${item.riskLevel.toUpperCase()})`}
-                        isClickable={false}
-                      />
-                      <DetailRowClickable
-                        label="License"
-                        value={item.license}
-                        isClickable={false}
-                      />
-                      <DetailRowClickable
-                        label="Effective License"
-                        value={item.effectiveLicense}
-                        isClickable={false}
-                      />
-                      <DetailRowClickable
-                        label="EOL Status"
-                        value={item.isEOL ? "⚠️ End of Life" : "✓ Active"}
-                        isClickable={false}
-                      />
-                      {item.secureVersion && (
-                        <DetailRowClickable
-                          label="Secure Version"
-                          value={`v${item.secureVersion}`}
-                          isClickable={false}
-                        />
-                      )}
-                    </div>
-
-                    {/* Package Reliability Indicators */}
+                    {/* Package Reliability Indicators - Moved to Top */}
                     {item.reliabilityIndicators && (
                       <PackageReliabilityCard
                         indicators={item.reliabilityIndicators}
@@ -809,48 +778,7 @@ function DetailsPanel({
                       />
                     )}
 
-                    {/* Version History */}
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">
-                        Version
-                      </h4>
-                      <div className="space-y-2">
-                        {/* Current Version */}
-                        <div className="p-3 rounded-lg border bg-blue-50 border-blue-200 ring-1 ring-blue-200">
-                          <div className="flex items-center justify-between">
-                            <span className="font-semibold text-sm">
-                              v{item.version}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {item.createdAt.toLocaleDateString()}
-                            </span>
-                          </div>
-                          <Badge className="mt-2 bg-blue-100 text-blue-800 text-xs">
-                            Current
-                          </Badge>
-                        </div>
-
-                        {/* Latest Available Version (if different from current) */}
-                        {item.secureVersion &&
-                          item.secureVersion !== item.version && (
-                            <div className="p-3 rounded-lg border bg-green-50 border-green-200">
-                              <div className="flex items-center justify-between">
-                                <span className="font-semibold text-sm">
-                                  v{item.secureVersion}
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  Latest Available
-                                </span>
-                              </div>
-                              <Badge className="mt-2 bg-green-100 text-green-800 text-xs">
-                                Upgrade Available
-                              </Badge>
-                            </div>
-                          )}
-                      </div>
-                    </div>
-
-                    {/* Unified Threat Intel Section */}
+                    {/* Unified Threat Intel Section - Moved to Top */}
                     <div className="mb-6">
                       <h4 className="font-semibold text-gray-900 mb-3">
                         🛡️ Threat Intel
