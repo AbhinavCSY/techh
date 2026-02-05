@@ -19,12 +19,16 @@ interface TechStackTableViewProps {
   techStacks: TechStack[];
   allAssets: Asset[];
   onSelectRow?: (techStack: TechStack) => void;
+  scanningProject?: string | null;
+  scannedAssets?: Set<string>;
 }
 
 export function TechStackTableView({
   techStacks,
   allAssets,
   onSelectRow,
+  scanningProject,
+  scannedAssets = new Set(),
 }: TechStackTableViewProps) {
   const isNewTechStack = (createdAt: Date) => {
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
