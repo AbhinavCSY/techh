@@ -58,7 +58,7 @@ export default function Index() {
     return sortAssets(filtered, filters.sortBy, filters.sortOrder);
   }, [filters]);
 
-  const handleExport = (format: "csv" | "json" | "pdf") => {
+  const handleExport = async (format: "csv" | "json" | "pdf") => {
     const dataToExport =
       grouping === "tech-stack" ? filteredTechStacks : filteredAssets;
     const filename = `${grouping}-inventory-${new Date().toISOString().split("T")[0]}`;
@@ -71,7 +71,7 @@ export default function Index() {
         exportAsJSON(dataToExport, `${filename}.json`);
         break;
       case "pdf":
-        exportAsPDF(dataToExport, `${filename}.pdf`, grouping === "tech-stack");
+        await exportAsPDF(dataToExport, `${filename}.pdf`, grouping === "tech-stack");
         break;
     }
   };
