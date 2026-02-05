@@ -13,9 +13,11 @@ import {
 interface AssetTableViewProps {
   assets: Asset[];
   onSelectRow?: (asset: Asset) => void;
+  scanningProject?: string | null;
+  scannedAssets?: Set<string>;
 }
 
-export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
+export function AssetTableView({ assets, onSelectRow, scanningProject, scannedAssets = new Set() }: AssetTableViewProps) {
   const getAssetTypeIcon = (type: string) => {
     switch (type) {
       case "ip":
