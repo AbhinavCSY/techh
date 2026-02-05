@@ -541,7 +541,23 @@ export function InteractiveDependencyGraph() {
                 onMouseLeave={() => setHoveredNodeId(null)}
                 onMouseDown={(e) => handleNodeMouseDown(node.id, e)}
                 onClick={() => {
-                  if (node.type !== "vendor" && !draggedNodeId) {
+                  if (draggedNodeId) return;
+
+                  if (node.type === "technology") {
+                    // Toggle expansion for tech nodes
+                    setExpandedTechNodes((prev) => {
+                      const newSet = new Set(prev);
+                      if (newSet.has(node.id)) {
+                        newSet.delete(node.id);
+                      } else {
+                        newSet.add(node.id);
+                      }
+                      return newSet;
+                    });
+                    // Clear selection when expanding/collapsing
+                    setSelectedNodeId(null);
+                  } else if (node.type !== "vendor") {
+                    // For other node types, allow selection
                     setSelectedNodeId(
                       selectedNodeId === node.id ? null : node.id,
                     );
