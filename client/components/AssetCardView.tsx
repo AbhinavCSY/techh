@@ -6,9 +6,11 @@ import { cn } from "@/lib/utils";
 interface AssetCardViewProps {
   assets: Asset[];
   onSelectCard?: (asset: Asset) => void;
+  scanningProject?: string | null;
+  scannedAssets?: Set<string>;
 }
 
-export function AssetCardView({ assets, onSelectCard }: AssetCardViewProps) {
+export function AssetCardView({ assets, onSelectCard, scanningProject, scannedAssets = new Set() }: AssetCardViewProps) {
   const getRiskColor = (level: string) => {
     switch (level) {
       case "critical":
