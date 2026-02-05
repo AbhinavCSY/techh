@@ -1917,7 +1917,8 @@ function NewProjectModal({ isOpen, onClose, onStartScan }: NewProjectModalProps)
 
   const handleFinish = () => {
     console.log("Finishing scan setup:", formData);
-    onClose();
+    // Call onStartScan with the project name
+    onStartScan(formData.projectName);
     setActiveStep("options");
     setFormData({
       projectName: "",
