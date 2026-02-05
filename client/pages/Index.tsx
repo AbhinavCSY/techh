@@ -316,6 +316,7 @@ export default function Index() {
         <NewProjectModal
           isOpen={showNewProjectModal}
           onClose={() => setShowNewProjectModal(false)}
+          onStartScan={handleStartScan}
         />
       )}
     </div>
