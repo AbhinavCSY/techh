@@ -783,35 +783,35 @@ function DetailsPanel({
                       </div>
                     </div>
 
-                    {/* All Info in One Line - Type, Risk Score, License, Effective License, EOL Status, Secure Version - MOVED TO TOP */}
+                    {/* All Info in Stacked Layout - Type, Risk Score, License, Effective License, EOL Status, Secure Version - MOVED TO TOP */}
                     <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                      <div className="flex flex-wrap items-center gap-4 text-sm">
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-600 font-medium">Type:</span>
-                          <span className="text-gray-900">{item.type}</span>
+                      <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
+                        <div>
+                          <p className="text-xs font-bold text-gray-900 mb-1">Type</p>
+                          <p className="text-sm text-gray-700">{item.type}</p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-600 font-medium">Risk Score:</span>
-                          <span className="text-gray-900 font-semibold">{item.riskScore}/10</span>
+                        <div>
+                          <p className="text-xs font-bold text-gray-900 mb-1">Risk Score</p>
+                          <p className="text-sm font-semibold text-gray-900">{item.riskScore}/10</p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-600 font-medium">License:</span>
-                          <span className="text-gray-900">{item.license}</span>
+                        <div>
+                          <p className="text-xs font-bold text-gray-900 mb-1">License</p>
+                          <p className="text-sm text-gray-700">{item.license}</p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-600 font-medium">Effective:</span>
-                          <span className="text-gray-900">{item.effectiveLicense}</span>
+                        <div>
+                          <p className="text-xs font-bold text-gray-900 mb-1">Effective</p>
+                          <p className="text-sm text-gray-700">{item.effectiveLicense}</p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-600 font-medium">EOL:</span>
-                          <span className={item.isEOL ? "text-red-600 font-semibold" : "text-green-600 font-semibold"}>
+                        <div>
+                          <p className="text-xs font-bold text-gray-900 mb-1">EOL Status</p>
+                          <p className={item.isEOL ? "text-sm text-red-600 font-semibold" : "text-sm text-green-600 font-semibold"}>
                             {item.isEOL ? "⚠️ End of Life" : "✓ Active"}
-                          </span>
+                          </p>
                         </div>
                         {item.secureVersion && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-gray-600 font-medium">Secure:</span>
-                            <span className="text-green-600 font-semibold">v{item.secureVersion}</span>
+                          <div>
+                            <p className="text-xs font-bold text-gray-900 mb-1">Secure Version</p>
+                            <p className="text-sm text-green-600 font-semibold">v{item.secureVersion}</p>
                           </div>
                         )}
                       </div>
