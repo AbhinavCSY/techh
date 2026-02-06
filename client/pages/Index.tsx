@@ -656,7 +656,20 @@ function DetailsPanel({
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
-            <h2 className="text-lg font-bold text-gray-900">Details</h2>
+            {isAssetItem ? (
+              <h2 className="text-lg font-bold text-gray-900">
+                {item.name}
+              </h2>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{item.logo}</span>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900">
+                    {item.name} v{item.version}
+                  </h2>
+                </div>
+              </div>
+            )}
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700"
