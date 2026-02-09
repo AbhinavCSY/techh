@@ -5,7 +5,9 @@ interface RiskByTechnologiesChartProps {
   compact?: boolean;
 }
 
-export function RiskByTechnologiesChart({ compact = false }: RiskByTechnologiesChartProps) {
+export function RiskByTechnologiesChart({
+  compact = false,
+}: RiskByTechnologiesChartProps) {
   // Technology vulnerability data
   const technologyData = [
     { name: "Java", vulnerabilities: 68200, color: "#3b82f6" },
@@ -20,7 +22,7 @@ export function RiskByTechnologiesChart({ compact = false }: RiskByTechnologiesC
 
   const total = useMemo(
     () => technologyData.reduce((sum, tech) => sum + tech.vulnerabilities, 0),
-    []
+    [],
   );
 
   const chartData = useMemo(() => {
@@ -47,7 +49,7 @@ export function RiskByTechnologiesChart({ compact = false }: RiskByTechnologiesC
     radius: number,
     innerRadius: number,
     startAngle: number,
-    endAngle: number
+    endAngle: number,
   ) => {
     const toRad = (deg: number) => (deg * Math.PI) / 180;
     const cos = Math.cos;
@@ -72,18 +74,32 @@ export function RiskByTechnologiesChart({ compact = false }: RiskByTechnologiesC
     <div className="flex flex-col gap-6">
       {/* Title */}
       <div>
-        <h4 className="font-semibold text-gray-900 text-sm">Risk by Technologies</h4>
+        <h4 className="font-semibold text-gray-900 text-sm">
+          Risk by Technologies
+        </h4>
       </div>
 
       {/* Chart and Legend Container */}
       <div className="flex items-start gap-6">
         {/* Donut Chart */}
         <div className="flex-shrink-0">
-          <svg width="200" height="200" viewBox="0 0 200 200" className="drop-shadow-sm">
+          <svg
+            width="200"
+            height="200"
+            viewBox="0 0 200 200"
+            className="drop-shadow-sm"
+          >
             {chartData.map((slice, index) => (
               <path
                 key={index}
-                d={createDonutSlice(100, 100, 70, 45, slice.startAngle, slice.endAngle)}
+                d={createDonutSlice(
+                  100,
+                  100,
+                  70,
+                  45,
+                  slice.startAngle,
+                  slice.endAngle,
+                )}
                 fill={slice.color}
                 stroke="white"
                 strokeWidth="2"
@@ -113,7 +129,10 @@ export function RiskByTechnologiesChart({ compact = false }: RiskByTechnologiesC
         <div className="flex-1">
           <div className="grid grid-cols-1 gap-2">
             {chartData.map((tech, index) => (
-              <div key={index} className="flex items-center justify-between text-xs">
+              <div
+                key={index}
+                className="flex items-center justify-between text-xs"
+              >
                 <div className="flex items-center gap-2">
                   <div
                     className="w-3 h-3 rounded-full flex-shrink-0"

@@ -5,12 +5,16 @@ interface LicenseDistributionWidgetProps {
   compact?: boolean;
 }
 
-export function LicenseDistributionWidget({ compact = false }: LicenseDistributionWidgetProps) {
+export function LicenseDistributionWidget({
+  compact = false,
+}: LicenseDistributionWidgetProps) {
   // Calculate license distribution
   const licenseStats = {
-    noLicense: techStackDatabase.filter((ts) => !ts.license || ts.license === "Unknown").length,
-    multipleLicenses: techStackDatabase.filter((ts) => 
-      ts.license && ts.license.includes("/")
+    noLicense: techStackDatabase.filter(
+      (ts) => !ts.license || ts.license === "Unknown",
+    ).length,
+    multipleLicenses: techStackDatabase.filter(
+      (ts) => ts.license && ts.license.includes("/"),
     ).length,
   };
 
@@ -35,12 +39,18 @@ export function LicenseDistributionWidget({ compact = false }: LicenseDistributi
         {/* License Statistics */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-700">Libraries without license</span>
-            <span className="text-lg font-bold text-gray-900">{licenseStats.noLicense}</span>
+            <span className="text-sm text-gray-700">
+              Libraries without license
+            </span>
+            <span className="text-lg font-bold text-gray-900">
+              {licenseStats.noLicense}
+            </span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-700">Multiple licenses</span>
-            <span className="text-lg font-bold text-gray-900">{licenseStats.multipleLicenses}</span>
+            <span className="text-lg font-bold text-gray-900">
+              {licenseStats.multipleLicenses}
+            </span>
           </div>
         </div>
 
@@ -52,28 +62,36 @@ export function LicenseDistributionWidget({ compact = false }: LicenseDistributi
               {licenseRisk.high > 0 && (
                 <div
                   className="bg-red-500"
-                  style={{ width: `${(licenseRisk.high / (licenseRisk.high + licenseRisk.medium + licenseRisk.low + licenseRisk.unknown)) * 100}%` }}
+                  style={{
+                    width: `${(licenseRisk.high / (licenseRisk.high + licenseRisk.medium + licenseRisk.low + licenseRisk.unknown)) * 100}%`,
+                  }}
                 />
               )}
               {/* Medium Risk */}
               {licenseRisk.medium > 0 && (
                 <div
                   className="bg-orange-500"
-                  style={{ width: `${(licenseRisk.medium / (licenseRisk.high + licenseRisk.medium + licenseRisk.low + licenseRisk.unknown)) * 100}%` }}
+                  style={{
+                    width: `${(licenseRisk.medium / (licenseRisk.high + licenseRisk.medium + licenseRisk.low + licenseRisk.unknown)) * 100}%`,
+                  }}
                 />
               )}
               {/* Low Risk */}
               {licenseRisk.low > 0 && (
                 <div
                   className="bg-green-500"
-                  style={{ width: `${(licenseRisk.low / (licenseRisk.high + licenseRisk.medium + licenseRisk.low + licenseRisk.unknown)) * 100}%` }}
+                  style={{
+                    width: `${(licenseRisk.low / (licenseRisk.high + licenseRisk.medium + licenseRisk.low + licenseRisk.unknown)) * 100}%`,
+                  }}
                 />
               )}
               {/* Unknown Risk */}
               {licenseRisk.unknown > 0 && (
                 <div
                   className="bg-gray-400"
-                  style={{ width: `${(licenseRisk.unknown / (licenseRisk.high + licenseRisk.medium + licenseRisk.low + licenseRisk.unknown)) * 100}%` }}
+                  style={{
+                    width: `${(licenseRisk.unknown / (licenseRisk.high + licenseRisk.medium + licenseRisk.low + licenseRisk.unknown)) * 100}%`,
+                  }}
                 />
               )}
             </div>
@@ -93,7 +111,9 @@ export function LicenseDistributionWidget({ compact = false }: LicenseDistributi
             </div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-              <span className="text-gray-600">Unknown {licenseRisk.unknown}</span>
+              <span className="text-gray-600">
+                Unknown {licenseRisk.unknown}
+              </span>
             </div>
           </div>
         </div>

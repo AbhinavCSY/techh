@@ -76,7 +76,11 @@ export default function Index() {
         exportAsJSON(dataToExport, `${filename}.json`);
         break;
       case "pdf":
-        await exportAsPDF(dataToExport, `${filename}.pdf`, grouping === "tech-stack");
+        await exportAsPDF(
+          dataToExport,
+          `${filename}.pdf`,
+          grouping === "tech-stack",
+        );
         break;
     }
   };
@@ -89,15 +93,21 @@ export default function Index() {
     // Simulate scanning - mark all assets as scanned after random intervals
     const assetIds = assetDatabase.map((a) => a.id);
     assetIds.forEach((assetId, index) => {
-      setTimeout(() => {
-        setScannedAssets((prev) => new Set([...prev, assetId]));
-      }, (index + 1) * 800); // Stagger the scanning
+      setTimeout(
+        () => {
+          setScannedAssets((prev) => new Set([...prev, assetId]));
+        },
+        (index + 1) * 800,
+      ); // Stagger the scanning
     });
 
     // Clear scanning state after all assets are scanned
-    setTimeout(() => {
-      setScanningProject(null);
-    }, assetIds.length * 800 + 2000);
+    setTimeout(
+      () => {
+        setScanningProject(null);
+      },
+      assetIds.length * 800 + 2000,
+    );
   };
 
   const getMetrics = () => {
@@ -120,7 +130,8 @@ export default function Index() {
           <div className="max-w-7xl mx-auto flex items-center gap-3">
             <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
             <span className="text-sm font-medium text-blue-900">
-              🔍 Scanning <strong>{scanningProject}</strong> - Scanning assets ({scannedAssets.size}% complete)
+              🔍 Scanning <strong>{scanningProject}</strong> - Scanning assets (
+              {scannedAssets.size}% complete)
             </span>
           </div>
         </div>
@@ -676,9 +687,7 @@ function DetailsPanel({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
             {isAssetItem ? (
-              <h2 className="text-lg font-bold text-gray-900">
-                {item.name}
-              </h2>
+              <h2 className="text-lg font-bold text-gray-900">{item.name}</h2>
             ) : (
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{item.logo}</span>
@@ -797,11 +806,12 @@ function DetailsPanel({
                               </h3>
                               <p className="text-sm text-gray-600">
                                 v{item.version}
-                                {item.secureVersion && item.secureVersion !== item.version && (
-                                  <span className="ml-3 text-green-600 font-medium">
-                                    → v{item.secureVersion} available
-                                  </span>
-                                )}
+                                {item.secureVersion &&
+                                  item.secureVersion !== item.version && (
+                                    <span className="ml-3 text-green-600 font-medium">
+                                      → v{item.secureVersion} available
+                                    </span>
+                                  )}
                               </p>
                             </div>
                           </div>
@@ -810,31 +820,57 @@ function DetailsPanel({
                         {/* Metadata - All Info Inline - Type, Risk Score, License, Effective License, EOL Status, Secure Version */}
                         <div className="grid grid-cols-3 gap-6">
                           <div>
-                            <p className="text-xs font-bold text-gray-900 mb-1">Type</p>
+                            <p className="text-xs font-bold text-gray-900 mb-1">
+                              Type
+                            </p>
                             <p className="text-sm text-gray-700">{item.type}</p>
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-gray-900 mb-1">Risk Score</p>
-                            <p className="text-sm font-semibold text-gray-900">{item.riskScore}/10</p>
+                            <p className="text-xs font-bold text-gray-900 mb-1">
+                              Risk Score
+                            </p>
+                            <p className="text-sm font-semibold text-gray-900">
+                              {item.riskScore}/10
+                            </p>
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-gray-900 mb-1">License</p>
-                            <p className="text-sm text-gray-700">{item.license}</p>
+                            <p className="text-xs font-bold text-gray-900 mb-1">
+                              License
+                            </p>
+                            <p className="text-sm text-gray-700">
+                              {item.license}
+                            </p>
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-gray-900 mb-1">Effective</p>
-                            <p className="text-sm text-gray-700">{item.effectiveLicense}</p>
+                            <p className="text-xs font-bold text-gray-900 mb-1">
+                              Effective
+                            </p>
+                            <p className="text-sm text-gray-700">
+                              {item.effectiveLicense}
+                            </p>
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-gray-900 mb-1">EOL Status</p>
-                            <p className={item.isEOL ? "text-sm text-red-600 font-semibold" : "text-sm text-green-600 font-semibold"}>
+                            <p className="text-xs font-bold text-gray-900 mb-1">
+                              EOL Status
+                            </p>
+                            <p
+                              className={
+                                item.isEOL
+                                  ? "text-sm text-red-600 font-semibold"
+                                  : "text-sm text-green-600 font-semibold"
+                              }
+                            >
                               {item.isEOL ? "⚠️ End of Life" : "✓ Active"}
                             </p>
                           </div>
                           {item.secureVersion && (
                             <div>
-                              <p className="text-xs font-bold text-gray-900 mb-1">Secure Version</p>
-                              <p className="text-sm text-green-600 font-semibold">v{item.secureVersion}</p>
+                              <p className="text-xs font-bold text-gray-900 mb-1">
+                                Secure Version
+                              </p>
+                              <p className="text-sm text-green-600 font-semibold">
+                                v{item.secureVersion}
+                              </p>
                             </div>
                           )}
                         </div>
@@ -1860,7 +1896,11 @@ interface NewProjectModalProps {
   onStartScan: (projectName: string) => void;
 }
 
-function NewProjectModal({ isOpen, onClose, onStartScan }: NewProjectModalProps) {
+function NewProjectModal({
+  isOpen,
+  onClose,
+  onStartScan,
+}: NewProjectModalProps) {
   const [activeStep, setActiveStep] = useState<
     "options" | "sourceCode" | "selectScanners"
   >("options");
@@ -2481,7 +2521,9 @@ function NewProjectModal({ isOpen, onClose, onStartScan }: NewProjectModalProps)
                             <p className="font-semibold text-gray-900">
                               OSSF Scorecard
                             </p>
-                            <span className="text-gray-400 cursor-help">ℹ</span>
+                            <span className="text-gray-400 cursor-help">
+                              ℹ
+                            </span>
                           </div>
                           <p className="text-xs text-gray-600">
                             Identify risk factors throughout your project's
@@ -2512,7 +2554,9 @@ function NewProjectModal({ isOpen, onClose, onStartScan }: NewProjectModalProps)
                             <p className="font-semibold text-gray-900">
                               Secret Detection
                             </p>
-                            <span className="text-gray-400 cursor-help">ℹ</span>
+                            <span className="text-gray-400 cursor-help">
+                              ℹ
+                            </span>
                           </div>
                           <p className="text-xs text-gray-600">
                             Detect unencrypted secrets in your project
