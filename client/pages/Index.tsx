@@ -165,10 +165,15 @@ export default function Index() {
 
           {/* Key Metrics Panel - Collapsible & Compact - All in One Row */}
           {showWidgetPanel && (
-            <div className="grid grid-cols-3 gap-2">
-              {/* CVEs Pie Chart */}
-              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                <CVEsPieChart compact={true} />
+            <div className="grid grid-cols-2 gap-2">
+              {/* Vulnerable Libraries Widget */}
+              <div className="bg-white rounded-lg border border-gray-200 p-3">
+                <VulnerableLibrariesWidget compact={true} />
+              </div>
+
+              {/* License Distribution Widget */}
+              <div className="bg-white rounded-lg border border-gray-200 p-3">
+                <LicenseDistributionWidget compact={true} />
               </div>
 
               {/* EOL Pie Chart */}
