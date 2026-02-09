@@ -763,67 +763,74 @@ function DetailsPanel({
                     </TabsTrigger>
                   </TabsList>
 
-                  <TabsContent value="overview" className="space-y-6 p-6">
-                    <div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-4xl">{item.logo}</span>
+                  <TabsContent value="overview" className="p-6">
+                    {/* Two Column Layout - Metadata on Left, Package Reliability on Right */}
+                    <div className="grid grid-cols-3 gap-8">
+                      {/* Left Column - Name, Version, and Metadata */}
+                      <div className="col-span-2 space-y-6">
+                        {/* Name and Version Header */}
                         <div>
-                          <h3 className="text-2xl font-bold text-gray-900">
-                            {item.name}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            v{item.version}
-                            {item.secureVersion && item.secureVersion !== item.version && (
-                              <span className="ml-3 text-green-600 font-medium">
-                                → v{item.secureVersion} available
-                              </span>
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* All Info in Stacked Layout - Type, Risk Score, License, Effective License, EOL Status, Secure Version - MOVED TO TOP */}
-                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                      <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
-                        <div>
-                          <p className="text-xs font-bold text-gray-900 mb-1">Type</p>
-                          <p className="text-sm text-gray-700">{item.type}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-gray-900 mb-1">Risk Score</p>
-                          <p className="text-sm font-semibold text-gray-900">{item.riskScore}/10</p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-gray-900 mb-1">License</p>
-                          <p className="text-sm text-gray-700">{item.license}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-gray-900 mb-1">Effective</p>
-                          <p className="text-sm text-gray-700">{item.effectiveLicense}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-gray-900 mb-1">EOL Status</p>
-                          <p className={item.isEOL ? "text-sm text-red-600 font-semibold" : "text-sm text-green-600 font-semibold"}>
-                            {item.isEOL ? "⚠️ End of Life" : "✓ Active"}
-                          </p>
-                        </div>
-                        {item.secureVersion && (
-                          <div>
-                            <p className="text-xs font-bold text-gray-900 mb-1">Secure Version</p>
-                            <p className="text-sm text-green-600 font-semibold">v{item.secureVersion}</p>
+                          <div className="flex items-center gap-3">
+                            <span className="text-4xl">{item.logo}</span>
+                            <div>
+                              <h3 className="text-2xl font-bold text-gray-900">
+                                {item.name}
+                              </h3>
+                              <p className="text-sm text-gray-600">
+                                v{item.version}
+                                {item.secureVersion && item.secureVersion !== item.version && (
+                                  <span className="ml-3 text-green-600 font-medium">
+                                    → v{item.secureVersion} available
+                                  </span>
+                                )}
+                              </p>
+                            </div>
                           </div>
-                        )}
-                      </div>
-                    </div>
+                        </div>
 
-                    {/* Package Reliability Indicators - Moved to Top */}
-                    {item.reliabilityIndicators && (
-                      <PackageReliabilityCard
-                        indicators={item.reliabilityIndicators}
-                        compact={true}
-                      />
-                    )}
+                        {/* Metadata - All Info Inline - Type, Risk Score, License, Effective License, EOL Status, Secure Version */}
+                        <div className="grid grid-cols-3 gap-6">
+                          <div>
+                            <p className="text-xs font-bold text-gray-900 mb-1">Type</p>
+                            <p className="text-sm text-gray-700">{item.type}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-gray-900 mb-1">Risk Score</p>
+                            <p className="text-sm font-semibold text-gray-900">{item.riskScore}/10</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-gray-900 mb-1">License</p>
+                            <p className="text-sm text-gray-700">{item.license}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-gray-900 mb-1">Effective</p>
+                            <p className="text-sm text-gray-700">{item.effectiveLicense}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-gray-900 mb-1">EOL Status</p>
+                            <p className={item.isEOL ? "text-sm text-red-600 font-semibold" : "text-sm text-green-600 font-semibold"}>
+                              {item.isEOL ? "⚠️ End of Life" : "✓ Active"}
+                            </p>
+                          </div>
+                          {item.secureVersion && (
+                            <div>
+                              <p className="text-xs font-bold text-gray-900 mb-1">Secure Version</p>
+                              <p className="text-sm text-green-600 font-semibold">v{item.secureVersion}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Right Column - Package Reliability Pie Charts */}
+                      {item.reliabilityIndicators && (
+                        <div className="col-span-1">
+                          <PackageReliabilityCard
+                            indicators={item.reliabilityIndicators}
+                            compact={true}
+                          />
+                        </div>
+                      )}
+                    </div>
 
                     {/* Unified Threat Intel Section - Moved to Top */}
                     <div className="mb-6">
