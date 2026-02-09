@@ -833,8 +833,8 @@ function DetailsPanel({
                     </div>
 
                     {/* Unified Threat Intel Section - Moved to Top */}
-                    <div className="mb-6">
-                      <h4 className="font-semibold text-gray-900 mb-3">
+                    <div className="mt-8 space-y-6">
+                      <h4 className="font-semibold text-gray-900">
                         🛡️ Threat Intel
                       </h4>
 
