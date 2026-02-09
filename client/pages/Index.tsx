@@ -164,27 +164,38 @@ export default function Index() {
             </button>
           </div>
 
-          {/* Key Metrics Panel - Collapsible & Compact - All in One Row */}
+          {/* Key Metrics Panel - Collapsible & Compact */}
           {showWidgetPanel && (
-            <div className="grid grid-cols-2 gap-2">
-              {/* Vulnerable Libraries Widget */}
-              <div className="bg-white rounded-lg border border-gray-200 p-3">
-                <VulnerableLibrariesWidget compact={true} />
+            <div className="space-y-2">
+              {/* First Row - Vulnerable Libraries and License Distribution */}
+              <div className="grid grid-cols-2 gap-2">
+                {/* Vulnerable Libraries Widget */}
+                <div className="bg-white rounded-lg border border-gray-200 p-3">
+                  <VulnerableLibrariesWidget compact={true} />
+                </div>
+
+                {/* License Distribution Widget */}
+                <div className="bg-white rounded-lg border border-gray-200 p-3">
+                  <LicenseDistributionWidget compact={true} />
+                </div>
               </div>
 
-              {/* License Distribution Widget */}
-              <div className="bg-white rounded-lg border border-gray-200 p-3">
-                <LicenseDistributionWidget compact={true} />
+              {/* Second Row - Risk by Technologies (Full Width) */}
+              <div className="bg-white rounded-lg border border-gray-200 p-4">
+                <RiskByTechnologiesChart compact={true} />
               </div>
 
-              {/* EOL Pie Chart */}
-              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                <EOLPieChart compact={true} />
-              </div>
+              {/* Third Row - EOL and Tech Stacks & Assets */}
+              <div className="grid grid-cols-2 gap-2">
+                {/* EOL Pie Chart */}
+                <div className="bg-white rounded-lg border border-gray-200 p-1.5">
+                  <EOLPieChart compact={true} />
+                </div>
 
-              {/* Tech Stacks & Assets Chart */}
-              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                <TechStacksAndAssetsChart compact={true} />
+                {/* Tech Stacks & Assets Chart */}
+                <div className="bg-white rounded-lg border border-gray-200 p-1.5">
+                  <TechStacksAndAssetsChart compact={true} />
+                </div>
               </div>
             </div>
           )}
