@@ -17,6 +17,9 @@ import { PackageReliabilityCard } from "@/components/PackageReliabilityCard";
 import { CVEsPieChart } from "@/components/CVEsPieChart";
 import { EOLPieChart } from "@/components/EOLPieChart";
 import { TechStacksAndAssetsChart } from "@/components/TechStacksAndAssetsChart";
+import { VulnerableLibrariesWidget } from "@/components/VulnerableLibrariesWidget";
+import { LicenseDistributionWidget } from "@/components/LicenseDistributionWidget";
+import { RiskByTechnologiesChart } from "@/components/RiskByTechnologiesChart";
 import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from "lucide-react";
@@ -46,6 +49,8 @@ export default function Index() {
   const [showDetails, setShowDetails] = useState(false);
   const [showWidgetPanel, setShowWidgetPanel] = useState(true);
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [scanningProject, setScanningProject] = useState<string | null>(null);
+  const [scannedAssets, setScannedAssets] = useState<Set<string>>(new Set());
 
   // Filter and sort data - must be called before any early returns
   const filteredTechStacks = useMemo(() => {
@@ -58,7 +63,7 @@ export default function Index() {
     return sortAssets(filtered, filters.sortBy, filters.sortOrder);
   }, [filters]);
 
-  const handleExport = (format: "csv" | "json" | "pdf") => {
+  const handleExport = async (format: "csv" | "json" | "pdf") => {
     const dataToExport =
       grouping === "tech-stack" ? filteredTechStacks : filteredAssets;
     const filename = `${grouping}-inventory-${new Date().toISOString().split("T")[0]}`;
@@ -71,9 +76,38 @@ export default function Index() {
         exportAsJSON(dataToExport, `${filename}.json`);
         break;
       case "pdf":
-        exportAsPDF(dataToExport, `${filename}.pdf`, grouping === "tech-stack");
+        await exportAsPDF(
+          dataToExport,
+          `${filename}.pdf`,
+          grouping === "tech-stack",
+        );
         break;
     }
+  };
+
+  const handleStartScan = (projectName: string) => {
+    setScanningProject(projectName);
+    setShowNewProjectModal(false);
+    setGrouping("asset");
+
+    // Simulate scanning - mark all assets as scanned after random intervals
+    const assetIds = assetDatabase.map((a) => a.id);
+    assetIds.forEach((assetId, index) => {
+      setTimeout(
+        () => {
+          setScannedAssets((prev) => new Set([...prev, assetId]));
+        },
+        (index + 1) * 800,
+      ); // Stagger the scanning
+    });
+
+    // Clear scanning state after all assets are scanned
+    setTimeout(
+      () => {
+        setScanningProject(null);
+      },
+      assetIds.length * 800 + 2000,
+    );
   };
 
   const getMetrics = () => {
@@ -90,6 +124,19 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Scanning Banner */}
+      {scanningProject && (
+        <div className="bg-blue-50 border-b border-blue-200 py-3 px-6">
+          <div className="max-w-7xl mx-auto flex items-center gap-3">
+            <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium text-blue-900">
+              🔍 Scanning <strong>{scanningProject}</strong> - Scanning assets (
+              {scannedAssets.size}% complete)
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="border-b border-gray-200 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-2">
@@ -128,22 +175,38 @@ export default function Index() {
             </button>
           </div>
 
-          {/* Key Metrics Panel - Collapsible & Compact - All in One Row */}
+          {/* Key Metrics Panel - Collapsible & Compact */}
           {showWidgetPanel && (
-            <div className="grid grid-cols-3 gap-2">
-              {/* CVEs Pie Chart */}
-              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                <CVEsPieChart compact={true} />
+            <div className="space-y-2">
+              {/* First Row - Vulnerable Libraries and License Distribution */}
+              <div className="grid grid-cols-2 gap-2">
+                {/* Vulnerable Libraries Widget */}
+                <div className="bg-white rounded-lg border border-gray-200 p-3">
+                  <VulnerableLibrariesWidget compact={true} />
+                </div>
+
+                {/* License Distribution Widget */}
+                <div className="bg-white rounded-lg border border-gray-200 p-3">
+                  <LicenseDistributionWidget compact={true} />
+                </div>
               </div>
 
-              {/* EOL Pie Chart */}
-              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                <EOLPieChart compact={true} />
+              {/* Second Row - Risk by Technologies (Full Width) */}
+              <div className="bg-white rounded-lg border border-gray-200 p-4">
+                <RiskByTechnologiesChart compact={true} />
               </div>
 
-              {/* Tech Stacks & Assets Chart */}
-              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                <TechStacksAndAssetsChart compact={true} />
+              {/* Third Row - EOL and Tech Stacks & Assets */}
+              <div className="grid grid-cols-2 gap-2">
+                {/* EOL Pie Chart */}
+                <div className="bg-white rounded-lg border border-gray-200 p-1.5">
+                  <EOLPieChart compact={true} />
+                </div>
+
+                {/* Tech Stacks & Assets Chart */}
+                <div className="bg-white rounded-lg border border-gray-200 p-1.5">
+                  <TechStacksAndAssetsChart compact={true} />
+                </div>
               </div>
             </div>
           )}
@@ -235,6 +298,8 @@ export default function Index() {
                           setSelectedItem(ts);
                           setShowDetails(true);
                         }}
+                        scanningProject={scanningProject}
+                        scannedAssets={scannedAssets}
                       />
                     ) : (
                       <AssetCardView
@@ -243,6 +308,8 @@ export default function Index() {
                           setSelectedItem(asset);
                           setShowDetails(true);
                         }}
+                        scanningProject={scanningProject}
+                        scannedAssets={scannedAssets}
                       />
                     )}
                   </>
@@ -256,6 +323,8 @@ export default function Index() {
                           setSelectedItem(ts);
                           setShowDetails(true);
                         }}
+                        scanningProject={scanningProject}
+                        scannedAssets={scannedAssets}
                       />
                     ) : (
                       <AssetTableView
@@ -264,6 +333,8 @@ export default function Index() {
                           setSelectedItem(asset);
                           setShowDetails(true);
                         }}
+                        scanningProject={scanningProject}
+                        scannedAssets={scannedAssets}
                       />
                     )}
                   </>
@@ -295,6 +366,7 @@ export default function Index() {
         <NewProjectModal
           isOpen={showNewProjectModal}
           onClose={() => setShowNewProjectModal(false)}
+          onStartScan={handleStartScan}
         />
       )}
     </div>
@@ -614,7 +686,18 @@ function DetailsPanel({
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
-            <h2 className="text-lg font-bold text-gray-900">Details</h2>
+            {isAssetItem ? (
+              <h2 className="text-lg font-bold text-gray-900">{item.name}</h2>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{item.logo}</span>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900">
+                    {item.name} v{item.version}
+                  </h2>
+                </div>
+              </div>
+            )}
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700"
@@ -708,109 +791,105 @@ function DetailsPanel({
                     </TabsTrigger>
                   </TabsList>
 
-                  <TabsContent value="overview" className="space-y-6 p-6">
-                    <div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-4xl">{item.logo}</span>
+                  <TabsContent value="overview" className="p-6">
+                    {/* Two Column Layout - Metadata on Left, Package Reliability on Right */}
+                    <div className="grid grid-cols-3 gap-8">
+                      {/* Left Column - Name, Version, and Metadata */}
+                      <div className="col-span-2 space-y-6">
+                        {/* Name and Version Header */}
                         <div>
-                          <h3 className="text-2xl font-bold text-gray-900">
-                            {item.name}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            v{item.version}
-                          </p>
+                          <div className="flex items-center gap-3">
+                            <span className="text-4xl">{item.logo}</span>
+                            <div>
+                              <h3 className="text-2xl font-bold text-gray-900">
+                                {item.name}
+                              </h3>
+                              <p className="text-sm text-gray-600">
+                                v{item.version}
+                                {item.secureVersion &&
+                                  item.secureVersion !== item.version && (
+                                    <span className="ml-3 text-green-600 font-medium">
+                                      → v{item.secureVersion} available
+                                    </span>
+                                  )}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Metadata - All Info Inline - Type, Risk Score, License, Effective License, EOL Status, Secure Version */}
+                        <div className="grid grid-cols-3 gap-6">
+                          <div>
+                            <p className="text-xs font-bold text-gray-900 mb-1">
+                              Type
+                            </p>
+                            <p className="text-sm text-gray-700">{item.type}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-gray-900 mb-1">
+                              Risk Score
+                            </p>
+                            <p className="text-sm font-semibold text-gray-900">
+                              {item.riskScore}/10
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-gray-900 mb-1">
+                              License
+                            </p>
+                            <p className="text-sm text-gray-700">
+                              {item.license}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-gray-900 mb-1">
+                              Effective
+                            </p>
+                            <p className="text-sm text-gray-700">
+                              {item.effectiveLicense}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-gray-900 mb-1">
+                              EOL Status
+                            </p>
+                            <p
+                              className={
+                                item.isEOL
+                                  ? "text-sm text-red-600 font-semibold"
+                                  : "text-sm text-green-600 font-semibold"
+                              }
+                            >
+                              {item.isEOL ? "⚠️ End of Life" : "✓ Active"}
+                            </p>
+                          </div>
+                          {item.secureVersion && (
+                            <div>
+                              <p className="text-xs font-bold text-gray-900 mb-1">
+                                Secure Version
+                              </p>
+                              <p className="text-sm text-green-600 font-semibold">
+                                v{item.secureVersion}
+                              </p>
+                            </div>
+                          )}
                         </div>
                       </div>
-                    </div>
 
-                    {/* Basic Information */}
-                    <div className="space-y-3">
-                      <DetailRowClickable
-                        label="Type"
-                        value={item.type}
-                        isClickable={false}
-                      />
-                      <DetailRowClickable
-                        label="Risk Score"
-                        value={`${item.riskScore}/10 (${item.riskLevel.toUpperCase()})`}
-                        isClickable={false}
-                      />
-                      <DetailRowClickable
-                        label="License"
-                        value={item.license}
-                        isClickable={false}
-                      />
-                      <DetailRowClickable
-                        label="Effective License"
-                        value={item.effectiveLicense}
-                        isClickable={false}
-                      />
-                      <DetailRowClickable
-                        label="EOL Status"
-                        value={item.isEOL ? "⚠️ End of Life" : "✓ Active"}
-                        isClickable={false}
-                      />
-                      {item.secureVersion && (
-                        <DetailRowClickable
-                          label="Secure Version"
-                          value={`v${item.secureVersion}`}
-                          isClickable={false}
-                        />
+                      {/* Right Column - Package Reliability Pie Charts */}
+                      {item.reliabilityIndicators && (
+                        <div className="col-span-1">
+                          <PackageReliabilityCard
+                            indicators={item.reliabilityIndicators}
+                            compact={true}
+                          />
+                        </div>
                       )}
                     </div>
 
-                    {/* Package Reliability Indicators */}
-                    {item.reliabilityIndicators && (
-                      <PackageReliabilityCard
-                        indicators={item.reliabilityIndicators}
-                        compact={true}
-                      />
-                    )}
-
-                    {/* Version History */}
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">
-                        Version
-                      </h4>
-                      <div className="space-y-2">
-                        {/* Current Version */}
-                        <div className="p-3 rounded-lg border bg-blue-50 border-blue-200 ring-1 ring-blue-200">
-                          <div className="flex items-center justify-between">
-                            <span className="font-semibold text-sm">
-                              v{item.version}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {item.createdAt.toLocaleDateString()}
-                            </span>
-                          </div>
-                          <Badge className="mt-2 bg-blue-100 text-blue-800 text-xs">
-                            Current
-                          </Badge>
-                        </div>
-
-                        {/* Latest Available Version (if different from current) */}
-                        {item.secureVersion &&
-                          item.secureVersion !== item.version && (
-                            <div className="p-3 rounded-lg border bg-green-50 border-green-200">
-                              <div className="flex items-center justify-between">
-                                <span className="font-semibold text-sm">
-                                  v{item.secureVersion}
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  Latest Available
-                                </span>
-                              </div>
-                              <Badge className="mt-2 bg-green-100 text-green-800 text-xs">
-                                Upgrade Available
-                              </Badge>
-                            </div>
-                          )}
-                      </div>
-                    </div>
-
-                    {/* Unified Threat Intel Section */}
-                    <div className="mb-6">
-                      <h4 className="font-semibold text-gray-900 mb-3">
+                    {/* Unified Threat Intel Section - Moved to Top */}
+                    <div className="mt-8 space-y-6">
+                      <h4 className="font-semibold text-gray-900">
                         🛡️ Threat Intel
                       </h4>
 
@@ -1814,9 +1893,14 @@ function DetailRowClickable({
 interface NewProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onStartScan: (projectName: string) => void;
 }
 
-function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
+function NewProjectModal({
+  isOpen,
+  onClose,
+  onStartScan,
+}: NewProjectModalProps) {
   const [activeStep, setActiveStep] = useState<
     "options" | "sourceCode" | "selectScanners"
   >("options");
@@ -1890,7 +1974,8 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
 
   const handleFinish = () => {
     console.log("Finishing scan setup:", formData);
-    onClose();
+    // Call onStartScan with the project name
+    onStartScan(formData.projectName);
     setActiveStep("options");
     setFormData({
       projectName: "",
@@ -2436,7 +2521,9 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                             <p className="font-semibold text-gray-900">
                               OSSF Scorecard
                             </p>
-                            <span className="text-gray-400 cursor-help">ℹ</span>
+                            <span className="text-gray-400 cursor-help">
+                              ℹ
+                            </span>
                           </div>
                           <p className="text-xs text-gray-600">
                             Identify risk factors throughout your project's
@@ -2467,7 +2554,9 @@ function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                             <p className="font-semibold text-gray-900">
                               Secret Detection
                             </p>
-                            <span className="text-gray-400 cursor-help">ℹ</span>
+                            <span className="text-gray-400 cursor-help">
+                              ℹ
+                            </span>
                           </div>
                           <p className="text-xs text-gray-600">
                             Detect unencrypted secrets in your project

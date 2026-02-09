@@ -22,6 +22,7 @@ export function InteractiveDependencyGraph() {
   const [showOnlyCritical, setShowOnlyCritical] = useState(false);
   const [draggedNodeId, setDraggedNodeId] = useState<string | null>(null);
   const [nodePositions, setNodePositions] = useState<Record<string, { x: number; y: number }>>({});
+  const [expandedTechNodes, setExpandedTechNodes] = useState<Set<string>>(new Set());
   const svgRef = useRef<SVGSVGElement>(null);
 
   const layoutResult = useMemo(() => {
@@ -143,30 +144,64 @@ export function InteractiveDependencyGraph() {
     }
   };
 
-  // Filter nodes for critical issues
+  // Filter nodes - hide vulnerability nodes initially, show them only when tech node is expanded
   const filteredNodes = useMemo(() => {
-    if (!showOnlyCritical) return layoutResult.nodes;
+    let nodes = layoutResult.nodes;
 
-    const criticalIssueIds = new Set(
-      layoutResult.nodes
-        .filter((n) => n.type === "issue" && n.severity === "critical")
-        .map((n) => n.id),
-    );
+    // Always hide issue nodes initially, unless a tech node is expanded
+    if (expandedTechNodes.size === 0) {
+      nodes = nodes.filter((n) => n.type !== "issue");
+    } else {
+      // When tech nodes are expanded, show all nodes including issues related to expanded techs
+      const relatedNodeIds = new Set<string>();
+      layoutResult.edges.forEach((edge) => {
+        // If source or target is an expanded tech node, include both nodes in the view
+        if (expandedTechNodes.has(edge.source) || expandedTechNodes.has(edge.target)) {
+          relatedNodeIds.add(edge.source);
+          relatedNodeIds.add(edge.target);
+        }
+      });
 
-    const affectedTechIds = new Set<string>();
-    layoutResult.edges.forEach((edge) => {
-      if (criticalIssueIds.has(edge.source) && edge.type === "found_in") {
-        affectedTechIds.add(edge.target);
-      }
-    });
+      // Filter to show: expanded tech nodes, their related nodes, and all issues related to expanded techs
+      nodes = nodes.filter((n) => {
+        if (expandedTechNodes.has(n.id)) return true;
+        if (n.type === "issue") {
+          // Show issues that are related to expanded tech nodes
+          return layoutResult.edges.some(
+            (edge) =>
+              (edge.type === "found_in" && expandedTechNodes.has(edge.target)) ||
+              (edge.source === n.id && expandedTechNodes.has(edge.target)),
+          );
+        }
+        return relatedNodeIds.has(n.id);
+      });
+    }
 
-    return layoutResult.nodes.filter(
-      (n) =>
-        (n.type === "issue" && n.severity === "critical") ||
-        affectedTechIds.has(n.id) ||
-        (n.type === "technology" && n.cveCount && n.cveCount > 0),
-    );
-  }, [showOnlyCritical, layoutResult.nodes, layoutResult.edges]);
+    // Apply critical filter if enabled
+    if (showOnlyCritical) {
+      const criticalIssueIds = new Set(
+        nodes
+          .filter((n) => n.type === "issue" && n.severity === "critical")
+          .map((n) => n.id),
+      );
+
+      const affectedTechIds = new Set<string>();
+      layoutResult.edges.forEach((edge) => {
+        if (criticalIssueIds.has(edge.source) && edge.type === "found_in") {
+          affectedTechIds.add(edge.target);
+        }
+      });
+
+      return nodes.filter(
+        (n) =>
+          (n.type === "issue" && n.severity === "critical") ||
+          affectedTechIds.has(n.id) ||
+          (n.type === "technology" && n.cveCount && n.cveCount > 0),
+      );
+    }
+
+    return nodes;
+  }, [showOnlyCritical, layoutResult.nodes, layoutResult.edges, expandedTechNodes]);
 
   // Filter edges based on visible nodes
   const filteredEdges = useMemo(() => {
@@ -496,7 +531,7 @@ export function InteractiveDependencyGraph() {
               <g
                 key={node.id}
                 style={{
-                  cursor: draggedNodeId === node.id ? "grabbing" : node.type !== "vendor" ? "grab" : "default",
+                  cursor: draggedNodeId === node.id ? "grabbing" : node.type === "technology" ? "pointer" : node.type !== "vendor" ? "grab" : "default",
                   pointerEvents: "auto",
                 }}
                 opacity={
@@ -506,7 +541,25 @@ export function InteractiveDependencyGraph() {
                 onMouseLeave={() => setHoveredNodeId(null)}
                 onMouseDown={(e) => handleNodeMouseDown(node.id, e)}
                 onClick={() => {
-                  if (node.type !== "vendor" && !draggedNodeId) {
+                  if (draggedNodeId) return;
+
+                  if (node.type === "technology") {
+                    // Toggle expansion for tech nodes
+                    setExpandedTechNodes((prev) => {
+                      const newSet = new Set(prev);
+                      if (newSet.has(node.id)) {
+                        newSet.delete(node.id);
+                      } else {
+                        newSet.add(node.id);
+                      }
+                      return newSet;
+                    });
+                    // Also allow selection for edge highlighting
+                    setSelectedNodeId(
+                      selectedNodeId === node.id ? null : node.id,
+                    );
+                  } else if (node.type !== "vendor") {
+                    // For other node types, allow selection
                     setSelectedNodeId(
                       selectedNodeId === node.id ? null : node.id,
                     );
@@ -653,12 +706,58 @@ export function InteractiveDependencyGraph() {
                     : node.label}
                 </text>
 
+                {/* Expansion indicator for technology nodes */}
+                {node.type === "technology" && (
+                  <g
+                    transform={`translate(${node.x + size + 5}, ${node.y - size - 2})`}
+                  >
+                    {expandedTechNodes.has(node.id) ? (
+                      <>
+                        {/* Minus icon for expanded state */}
+                        <circle cx="0" cy="0" r="7" fill="#3B82F6" opacity="0.9" />
+                        <line
+                          x1="-3"
+                          y1="0"
+                          x2="3"
+                          y2="0"
+                          stroke="white"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {/* Plus icon for collapsed state */}
+                        <circle cx="0" cy="0" r="7" fill="#6B7280" opacity="0.7" />
+                        <line
+                          x1="-3"
+                          y1="0"
+                          x2="3"
+                          y2="0"
+                          stroke="white"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                        <line
+                          x1="0"
+                          y1="-3"
+                          x2="0"
+                          y2="3"
+                          stroke="white"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </>
+                    )}
+                  </g>
+                )}
+
                 {/* CVE badge for technology nodes */}
                 {node.type === "technology" &&
                   node.cveCount &&
                   node.cveCount > 0 && (
                     <g
-                      transform={`translate(${node.x + size + 5}, ${node.y - size - 2})`}
+                      transform={`translate(${node.x - size - 5}, ${node.y - size - 2})`}
                     >
                       <circle
                         cx="0"
@@ -919,13 +1018,28 @@ export function InteractiveDependencyGraph() {
             </div>
 
             <div className="pt-3 border-t border-gray-300">
+              <p className="font-semibold text-gray-700 mb-2">Tech Node Indicators:</p>
+              <div className="space-y-1 ml-2 text-gray-600">
+                <p>
+                  • <strong>Plus icon (+)</strong> - Click to expand and show dependencies & vulnerabilities
+                </p>
+                <p>
+                  • <strong>Minus icon (-)</strong> - Click to collapse and hide dependencies & vulnerabilities
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-gray-300">
               <p className="font-semibold text-gray-700 mb-2">Interactions:</p>
               <div className="space-y-1 ml-2 text-gray-600">
                 <p>
                   • <strong>Hover</strong> - View node details
                 </p>
                 <p>
-                  • <strong>Click Node</strong> - Highlight connections
+                  • <strong>Click Tech Node</strong> - Expand to show dependencies & vulnerabilities, plus highlight all connected edges
+                </p>
+                <p>
+                  • <strong>Click Other Nodes</strong> - Highlight connections and edges
                 </p>
                 <p>
                   • <strong>Drag Node</strong> - Adjust node position

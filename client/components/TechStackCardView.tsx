@@ -7,12 +7,16 @@ interface TechStackCardViewProps {
   techStacks: TechStack[];
   allAssets: Asset[];
   onSelectCard?: (techStack: TechStack) => void;
+  scanningProject?: string | null;
+  scannedAssets?: Set<string>;
 }
 
 export function TechStackCardView({
   techStacks,
   allAssets,
   onSelectCard,
+  scanningProject,
+  scannedAssets = new Set(),
 }: TechStackCardViewProps) {
   const isNewTechStack = (createdAt: Date) => {
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -107,9 +111,16 @@ export function TechStackCardView({
                   <p className="text-xs text-gray-500">v{techStack.version}</p>
                 </div>
               </div>
-              <Badge className={getRiskBadgeColor(techStack.riskLevel)}>
-                {techStack.riskLevel}
-              </Badge>
+              <div className="flex flex-col gap-2">
+                {scanningProject && (
+                  <Badge className={associatedAssets.some((asset) => scannedAssets.has(asset.id)) ? "bg-green-200 text-green-800" : "bg-blue-200 text-blue-800"}>
+                    {associatedAssets.some((asset) => scannedAssets.has(asset.id)) ? "Scanned" : "Scanning"}
+                  </Badge>
+                )}
+                <Badge className={getRiskBadgeColor(techStack.riskLevel)}>
+                  {techStack.riskLevel}
+                </Badge>
+              </div>
             </div>
 
             {/* Type and License */}

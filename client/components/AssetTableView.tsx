@@ -13,9 +13,11 @@ import {
 interface AssetTableViewProps {
   assets: Asset[];
   onSelectRow?: (asset: Asset) => void;
+  scanningProject?: string | null;
+  scannedAssets?: Set<string>;
 }
 
-export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
+export function AssetTableView({ assets, onSelectRow, scanningProject, scannedAssets = new Set() }: AssetTableViewProps) {
   const getAssetTypeIcon = (type: string) => {
     switch (type) {
       case "ip":
@@ -40,6 +42,7 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
             <TableHead className="font-semibold">Type</TableHead>
             <TableHead className="font-semibold">Tech Stacks</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
+            <TableHead className="font-semibold">Status</TableHead>
             <TableHead className="font-semibold">First Seen</TableHead>
             <TableHead className="font-semibold">Last Seen</TableHead>
           </TableRow>
@@ -96,6 +99,21 @@ export function AssetTableView({ assets, onSelectRow }: AssetTableViewProps) {
                   )}
                   className="w-56"
                 />
+              </TableCell>
+              <TableCell>
+                {scanningProject && scannedAssets.has(asset.id) ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-green-700 font-medium">Scanned</span>
+                  </div>
+                ) : scanningProject && !scannedAssets.has(asset.id) ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm text-blue-700 font-medium">Scanning</span>
+                  </div>
+                ) : (
+                  <span className="text-sm text-gray-600">-</span>
+                )}
               </TableCell>
               <TableCell className="text-sm text-gray-600">
                 {asset.firstSeen.toLocaleDateString()}
