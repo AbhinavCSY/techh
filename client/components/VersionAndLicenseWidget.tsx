@@ -69,104 +69,105 @@ export function VersionAndLicenseWidget({
   });
 
   const CompactContent = () => (
-    <div className="flex gap-3 h-full min-h-0">
-      {/* Version Summary - Left */}
-      <div className="flex flex-col items-center flex-1 min-w-0">
-        <p className="text-xs font-semibold text-gray-700 mb-1">Version</p>
-        <div className="relative w-20 h-20 mb-1 flex-shrink-0">
-          <svg viewBox="0 0 120 120" className="w-full h-full">
-            {/* EOL ring */}
-            <circle
-              cx="60"
-              cy="60"
-              r="45"
-              fill="none"
-              stroke="#ef4444"
-              strokeWidth="10"
-              strokeDasharray={`${(eolPercent / 100) * 282.7} 282.7`}
-              transform="rotate(-90 60 60)"
-            />
-            {/* Non-EOL ring */}
-            <circle
-              cx="60"
-              cy="60"
-              r="45"
-              fill="none"
-              stroke="#22c55e"
-              strokeWidth="10"
-              strokeDasharray={`${(nonEolPercent / 100) * 282.7} 282.7`}
-              strokeDashoffset={`${-((eolPercent / 100) * 282.7)}`}
-              transform="rotate(-90 60 60)"
-            />
-            <text
-              x="60"
-              y="60"
-              textAnchor="middle"
-              dy="0.3em"
-              className="text-xs font-bold fill-gray-900"
-              fontSize="12"
-            >
-              {totalTechStacks}
-            </text>
-          </svg>
-        </div>
-        <div className="space-y-1 text-xs w-full text-center">
-          <div className="flex items-center justify-center gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-            <span className="text-gray-600 text-xs">EOL: {eolTechStacks}</span>
+    <div className="space-y-1">
+      {/* Version Summary */}
+      <div className="flex items-center gap-2">
+        <div className="flex flex-col items-center flex-shrink-0">
+          <p className="text-xs font-semibold text-gray-700 mb-1">Version</p>
+          <div className="relative w-16 h-16">
+            <svg viewBox="0 0 120 120" className="w-full h-full">
+              {/* EOL ring */}
+              <circle
+                cx="60"
+                cy="60"
+                r="45"
+                fill="none"
+                stroke="#ef4444"
+                strokeWidth="10"
+                strokeDasharray={`${(eolPercent / 100) * 282.7} 282.7`}
+                transform="rotate(-90 60 60)"
+              />
+              {/* Non-EOL ring */}
+              <circle
+                cx="60"
+                cy="60"
+                r="45"
+                fill="none"
+                stroke="#22c55e"
+                strokeWidth="10"
+                strokeDasharray={`${(nonEolPercent / 100) * 282.7} 282.7`}
+                strokeDashoffset={`${-((eolPercent / 100) * 282.7)}`}
+                transform="rotate(-90 60 60)"
+              />
+              <text
+                x="60"
+                y="60"
+                textAnchor="middle"
+                dy="0.3em"
+                className="text-xs font-bold fill-gray-900"
+                fontSize="10"
+              >
+                {totalTechStacks}
+              </text>
+            </svg>
           </div>
-          <div className="flex items-center justify-center gap-1">
+        </div>
+        <div className="space-y-0.5 text-xs">
+          <div className="flex items-center gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+            <span className="text-gray-600 text-xs">EOL {eolTechStacks}</span>
+          </div>
+          <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-            <span className="text-gray-600 text-xs">Active: {nonEolTechStacks}</span>
+            <span className="text-gray-600 text-xs">Act {nonEolTechStacks}</span>
           </div>
         </div>
       </div>
 
-      {/* License Risk - Right with scrollable legends */}
-      <div className="flex flex-col items-center flex-1 min-w-0">
-        <p className="text-xs font-semibold text-gray-700 mb-1">License</p>
-        <div className="relative w-20 h-20 mb-1 flex-shrink-0">
-          <svg
-            viewBox="0 0 200 200"
-            className="drop-shadow-sm w-full h-full"
-          >
-            {licenseChartData.map((slice, index) => (
-              <path
-                key={index}
-                d={createDonutSlice(
-                  100,
-                  100,
-                  70,
-                  45,
-                  slice.startAngle,
-                  slice.endAngle,
-                )}
-                fill={slice.color}
-                stroke="white"
-                strokeWidth="1.5"
-              />
-            ))}
-            <text
-              x="100"
-              y="105"
-              textAnchor="middle"
-              className="text-xs font-bold fill-gray-900"
-              fontSize="10"
-            >
-              {licenseRiskTotal}
-            </text>
-          </svg>
+      {/* License Risk */}
+      <div className="flex items-center gap-2">
+        <div className="flex flex-col items-center flex-shrink-0">
+          <p className="text-xs font-semibold text-gray-700 mb-1">License</p>
+          <div className="relative w-16 h-16">
+            <svg viewBox="0 0 200 200" className="drop-shadow-sm w-full h-full">
+              {licenseChartData.map((slice, index) => (
+                <path
+                  key={index}
+                  d={createDonutSlice(
+                    100,
+                    100,
+                    70,
+                    45,
+                    slice.startAngle,
+                    slice.endAngle,
+                  )}
+                  fill={slice.color}
+                  stroke="white"
+                  strokeWidth="1"
+                />
+              ))}
+              <text
+                x="100"
+                y="105"
+                textAnchor="middle"
+                className="text-xs font-bold fill-gray-900"
+                fontSize="9"
+              >
+                {licenseRiskTotal}
+              </text>
+            </svg>
+          </div>
         </div>
-        <div className="space-y-0.5 text-xs w-full overflow-y-auto max-h-16">
-          <div className="flex items-center gap-1 justify-center">
+        <div className="space-y-0.5 text-xs overflow-y-auto max-h-20">
+          <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0"></div>
             <span className="text-gray-600 text-xs">H: {licenseRisk.high}</span>
           </div>
-          <div className="flex items-center gap-1 justify-center">
+          <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></div>
             <span className="text-gray-600 text-xs">M: {licenseRisk.medium}</span>
           </div>
-          <div className="flex items-center gap-1 justify-center">
+          <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div>
             <span className="text-gray-600 text-xs">L: {licenseRisk.low}</span>
           </div>
