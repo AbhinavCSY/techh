@@ -20,6 +20,7 @@ import { TechStacksAndAssetsChart } from "@/components/TechStacksAndAssetsChart"
 import { VulnerableLibrariesWidget } from "@/components/VulnerableLibrariesWidget";
 import { LicenseDistributionWidget } from "@/components/LicenseDistributionWidget";
 import { RiskByTechnologiesChart } from "@/components/RiskByTechnologiesChart";
+import { VersionAndLicenseWidget } from "@/components/VersionAndLicenseWidget";
 import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from "lucide-react";
