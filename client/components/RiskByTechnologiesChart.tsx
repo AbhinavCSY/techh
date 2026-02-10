@@ -71,21 +71,21 @@ export function RiskByTechnologiesChart({
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-2 h-full">
       {/* Title */}
-      <div>
+      <div className="flex-shrink-0">
         <h4 className="font-semibold text-gray-900 text-sm">
           Risk by Tech Stacks
         </h4>
       </div>
 
-      {/* Chart and Legend Container */}
-      <div className="flex flex-col items-center gap-4">
+      {/* Chart and Legend Container - Side by Side */}
+      <div className="flex items-start gap-3 flex-1 min-h-0">
         {/* Donut Chart */}
         <div className="flex-shrink-0">
           <svg
-            width="140"
-            height="140"
+            width="100"
+            height="100"
             viewBox="0 0 200 200"
             className="drop-shadow-sm"
           >
@@ -118,29 +118,29 @@ export function RiskByTechnologiesChart({
               x="100"
               y="110"
               textAnchor="middle"
-              className="text-lg font-bold fill-gray-900"
+              className="text-xs font-bold fill-gray-900"
             >
               {(total / 1000).toFixed(0)}K
             </text>
           </svg>
         </div>
 
-        {/* Legend */}
-        <div className="w-full">
-          <div className="grid grid-cols-2 gap-2">
+        {/* Scrollable Legend */}
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          <div className="space-y-1">
             {chartData.map((tech, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between text-xs px-2 py-1"
+                className="flex items-center justify-between text-xs px-2 py-1 whitespace-nowrap"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <div
-                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                    className="w-2 h-2 rounded-full flex-shrink-0"
                     style={{ backgroundColor: tech.color }}
                   />
-                  <span className="text-gray-700 font-medium text-xs">{tech.name}</span>
+                  <span className="text-gray-700 font-medium text-xs truncate">{tech.name}</span>
                 </div>
-                <span className="text-gray-900 font-semibold text-xs">
+                <span className="text-gray-900 font-semibold text-xs flex-shrink-0 ml-1">
                   {(tech.vulnerabilities / 1000).toFixed(1)}K
                 </span>
               </div>
