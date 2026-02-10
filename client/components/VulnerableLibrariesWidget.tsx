@@ -1,5 +1,6 @@
 import { techStackDatabase } from "@/data/mockData";
 import { Shield } from "lucide-react";
+import { useState } from "react";
 
 interface VulnerableLibrariesWidgetProps {
   compact?: boolean;
@@ -8,6 +9,7 @@ interface VulnerableLibrariesWidgetProps {
 export function VulnerableLibrariesWidget({
   compact = false,
 }: VulnerableLibrariesWidgetProps) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   // Calculate vulnerable libraries by severity
   const vulnerableByType = {
     critical: techStackDatabase.filter((ts) =>
