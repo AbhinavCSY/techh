@@ -106,12 +106,12 @@ export function VulnerableLibrariesWidget({
       {/* Open Issues Line Chart */}
       <div className="border-t border-gray-200 pt-0.5">
         <h5 className="text-xs font-semibold text-gray-700 mb-0.5">Open Issues</h5>
-        <div className="h-12 w-full">
+        <div className="h-16 w-full bg-gray-50 rounded">
           <svg
             width="100%"
             height="100%"
             viewBox={`0 0 ${width} ${height}`}
-            preserveAspectRatio="xMidYMid slice"
+            preserveAspectRatio="xMidYMid meet"
           >
             {/* Grid lines */}
             <line
