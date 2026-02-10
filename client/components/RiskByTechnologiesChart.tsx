@@ -71,21 +71,19 @@ export function RiskByTechnologiesChart({
   };
 
   return (
-    <div className="flex flex-col gap-2 h-full">
+    <div className="space-y-1">
       {/* Title */}
-      <div className="flex-shrink-0">
-        <h4 className="font-semibold text-gray-900 text-sm">
-          Risk by Tech Stacks
-        </h4>
-      </div>
+      <h4 className="font-semibold text-gray-900 text-xs">
+        Risk by Tech Stacks
+      </h4>
 
       {/* Chart and Legend Container - Side by Side */}
-      <div className="flex items-start gap-3 flex-1 min-h-0">
+      <div className="flex items-start gap-2">
         {/* Donut Chart */}
         <div className="flex-shrink-0">
           <svg
-            width="100"
-            height="100"
+            width="90"
+            height="90"
             viewBox="0 0 200 200"
             className="drop-shadow-sm"
           >
