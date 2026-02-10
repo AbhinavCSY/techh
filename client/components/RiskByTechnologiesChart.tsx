@@ -126,21 +126,21 @@ export function RiskByTechnologiesChart({
         </div>
 
         {/* Legend */}
-        <div className="flex-1">
-          <div className="grid grid-cols-1 gap-2">
+        <div className="w-full">
+          <div className="grid grid-cols-2 gap-2">
             {chartData.map((tech, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between text-xs"
+                className="flex items-center justify-between text-xs px-2 py-1"
               >
                 <div className="flex items-center gap-2">
                   <div
-                    className="w-3 h-3 rounded-full flex-shrink-0"
+                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                     style={{ backgroundColor: tech.color }}
                   />
-                  <span className="text-gray-700 font-medium">{tech.name}</span>
+                  <span className="text-gray-700 font-medium text-xs">{tech.name}</span>
                 </div>
-                <span className="text-gray-900 font-semibold">
+                <span className="text-gray-900 font-semibold text-xs">
                   {(tech.vulnerabilities / 1000).toFixed(1)}K
                 </span>
               </div>
