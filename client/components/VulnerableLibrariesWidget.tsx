@@ -34,7 +34,7 @@ export function VulnerableLibrariesWidget({
       <div className="flex items-center gap-2 mb-3">
         <Shield className="w-4 h-4 text-gray-600" />
         <h4 className="font-semibold text-gray-900 text-sm">
-          Vulnerable Libraries ({totalVulnerable})
+          Vulnerable Tech Stacks ({totalVulnerable})
         </h4>
       </div>
 
