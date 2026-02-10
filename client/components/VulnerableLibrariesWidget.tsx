@@ -106,14 +106,15 @@ export function VulnerableLibrariesWidget({
       </div>
 
       {/* Open Issues Line Chart */}
-      <div className="border-t border-gray-200 pt-0.5">
+      <div className="border-t border-gray-200 pt-0.5 relative">
         <h5 className="text-xs font-semibold text-gray-700 mb-0.5">Open Issues</h5>
-        <div className="h-16 w-full bg-gray-50 rounded">
+        <div className="h-16 w-full bg-gray-50 rounded relative">
           <svg
             width="100%"
             height="100%"
             viewBox={`0 0 ${width} ${height}`}
             preserveAspectRatio="xMidYMid meet"
+            className="cursor-pointer"
           >
             {/* Grid lines */}
             <line
@@ -135,17 +136,45 @@ export function VulnerableLibrariesWidget({
               strokeLinejoin="round"
             />
 
-            {/* Data points */}
+            {/* Data points with hover interaction */}
             {points.map((point, index) => (
-              <circle
-                key={index}
-                cx={point.x}
-                cy={point.y}
-                r="0.8"
-                fill="#3b82f6"
-              />
+              <g key={index}>
+                {/* Invisible larger circle for better hover area */}
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r="4"
+                  fill="transparent"
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  className="cursor-pointer"
+                />
+                {/* Visible data point */}
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r={hoveredIndex === index ? "2.5" : "0.8"}
+                  fill={hoveredIndex === index ? "#1d4ed8" : "#3b82f6"}
+                  className="transition-all duration-200"
+                />
+              </g>
             ))}
           </svg>
+
+          {/* Tooltip on hover */}
+          {hoveredIndex !== null && (
+            <div
+              className="absolute bg-gray-900 text-white px-2 py-1 rounded text-xs whitespace-nowrap z-10"
+              style={{
+                left: `${(points[hoveredIndex].x / width) * 100}%`,
+                top: `${(points[hoveredIndex].y / height) * 100 - 10}%`,
+                transform: 'translateX(-50%)',
+              }}
+            >
+              <div className="font-semibold">{issuesData[hoveredIndex].issues} issues</div>
+              <div className="text-gray-300 text-xs">{issuesData[hoveredIndex].date}</div>
+            </div>
+          )}
         </div>
         <div className="flex justify-between text-xs text-gray-500">
           <span>29 May</span>
