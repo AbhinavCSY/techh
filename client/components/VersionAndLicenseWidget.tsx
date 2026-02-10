@@ -69,11 +69,11 @@ export function VersionAndLicenseWidget({
   });
 
   const CompactContent = () => (
-    <div className="flex gap-4">
-      {/* Version Summary - Left Side */}
-      <div className="flex-1 flex flex-col items-center">
+    <div className="flex flex-col gap-4">
+      {/* Version Summary - Top */}
+      <div className="flex flex-col items-center">
         <p className="text-xs font-semibold text-gray-700 mb-2">Version Status</p>
-        <div className="relative w-24 h-24 mb-2">
+        <div className="relative w-28 h-28 mb-2">
           <svg viewBox="0 0 120 120" className="w-full h-full">
             {/* EOL ring */}
             <circle
