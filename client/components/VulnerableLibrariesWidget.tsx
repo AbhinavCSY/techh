@@ -93,9 +93,9 @@ export function VulnerableLibrariesWidget({
       </div>
 
       {/* Open Issues Line Chart */}
-      <div className="pt-1 border-t border-gray-200">
-        <h5 className="text-xs font-semibold text-gray-700 mb-1">Open Issues</h5>
-        <div className="h-24">
+      <div className="border-t border-gray-200">
+        <h5 className="text-xs font-semibold text-gray-700 mb-0.5 mt-1">Open Issues</h5>
+        <div className="h-14">
           <svg
             width="100%"
             height="100%"
@@ -117,7 +117,7 @@ export function VulnerableLibrariesWidget({
               d={pathData}
               fill="none"
               stroke="#3b82f6"
-              strokeWidth="2"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -128,13 +128,13 @@ export function VulnerableLibrariesWidget({
                 key={index}
                 cx={point.x}
                 cy={point.y}
-                r="1.5"
+                r="1"
                 fill="#3b82f6"
               />
             ))}
           </svg>
         </div>
-        <div className="flex justify-between text-xs text-gray-500 mt-1 flex-shrink-0">
+        <div className="flex justify-between text-xs text-gray-500 mt-0.5">
           <span>29 May</span>
           <span>12 Jun</span>
         </div>
