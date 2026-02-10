@@ -328,7 +328,7 @@ export function VersionAndLicenseWidget({
   if (compact) {
     return (
       <>
-        <div className="bg-white rounded-lg border border-gray-200 p-3 flex flex-col overflow-hidden">
+        <div className="bg-white rounded-lg border border-gray-200 p-2 flex flex-col h-full min-h-0">
           <div className="flex items-center justify-between mb-2">
             <p className="text-xs font-semibold text-gray-700">
               📋 Version & License
