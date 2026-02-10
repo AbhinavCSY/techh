@@ -176,12 +176,12 @@ export function VersionAndLicenseWidget({
   );
 
   const ExpandedContent = () => (
-    <div className="flex flex-col gap-8">
+    <div className="flex gap-8">
       {/* Version Summary Section */}
-      <div className="flex flex-col items-center">
+      <div className="flex-1 flex flex-col items-center">
         <h4 className="font-semibold text-gray-900 text-sm mb-4">Version Status</h4>
         <div className="flex flex-col items-center">
-          <div className="relative w-56 h-56 mb-4">
+          <div className="relative w-40 h-40 mb-4">
             <svg viewBox="0 0 120 120" className="w-full h-full">
               {/* EOL ring */}
               <circle
