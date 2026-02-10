@@ -180,19 +180,19 @@ export default function Index() {
           {showWidgetPanel && (
             <div className="space-y-2">
               {/* First Row - Three widgets in single row */}
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-2 h-40">
                 {/* Vulnerable Tech Stacks Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-3">
+                <div className="bg-white rounded-lg border border-gray-200 p-2 flex flex-col overflow-hidden">
                   <VulnerableLibrariesWidget compact={true} />
                 </div>
 
                 {/* Risk by Tech Stacks Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-3">
+                <div className="bg-white rounded-lg border border-gray-200 p-2 flex flex-col overflow-hidden">
                   <RiskByTechnologiesChart compact={true} />
                 </div>
 
                 {/* Version & License Widget (Merged) */}
-                <div className="bg-white rounded-lg border border-gray-200 p-3">
+                <div className="bg-white rounded-lg border border-gray-200 p-2 flex flex-col overflow-hidden">
                   <VersionAndLicenseWidget compact={true} />
                 </div>
               </div>
