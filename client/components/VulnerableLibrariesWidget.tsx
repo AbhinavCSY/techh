@@ -58,49 +58,49 @@ export function VulnerableLibrariesWidget({
     .join(" ");
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-3">
-        <Shield className="w-4 h-4 text-gray-600" />
-        <h4 className="font-semibold text-gray-900 text-sm">
+    <div className="space-y-2 flex flex-col h-full">
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <Shield className="w-3.5 h-3.5 text-gray-600" />
+        <h4 className="font-semibold text-gray-900 text-xs">
           Vulnerable Tech Stacks ({totalVulnerable})
         </h4>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2 flex-shrink-0">
         {/* High Severity */}
         <div className="flex flex-col items-center">
-          <span className="text-2xl font-bold text-red-600">
+          <span className="text-lg font-bold text-red-600">
             {vulnerableByType.high}
           </span>
-          <span className="text-xs text-gray-600 mt-1">High</span>
+          <span className="text-xs text-gray-600">High</span>
         </div>
 
         {/* Medium Severity */}
         <div className="flex flex-col items-center">
-          <span className="text-2xl font-bold text-orange-600">
+          <span className="text-lg font-bold text-orange-600">
             {vulnerableByType.medium}
           </span>
-          <span className="text-xs text-gray-600 mt-1">Medium</span>
+          <span className="text-xs text-gray-600">Medium</span>
         </div>
 
         {/* Low Severity */}
         <div className="flex flex-col items-center">
-          <span className="text-2xl font-bold text-yellow-600">
+          <span className="text-lg font-bold text-yellow-600">
             {vulnerableByType.low}
           </span>
-          <span className="text-xs text-gray-600 mt-1">Low</span>
+          <span className="text-xs text-gray-600">Low</span>
         </div>
       </div>
 
       {/* Open Issues Line Chart */}
-      <div className="mt-4 pt-3 border-t border-gray-200">
-        <h5 className="text-xs font-semibold text-gray-700 mb-2">Open Issues</h5>
-        <div className="flex items-end justify-between h-20">
+      <div className="flex-1 min-h-0 flex flex-col pt-2 border-t border-gray-200">
+        <h5 className="text-xs font-semibold text-gray-700 mb-1 flex-shrink-0">Open Issues</h5>
+        <div className="flex-1 min-h-0 flex items-end justify-between">
           <svg
             width="100%"
-            height="100"
+            height="100%"
             viewBox={`0 0 ${width} ${height}`}
-            preserveAspectRatio="none"
+            preserveAspectRatio="xMidYMid meet"
             className="flex-1"
           >
             {/* Grid lines */}
@@ -129,13 +129,13 @@ export function VulnerableLibrariesWidget({
                 key={index}
                 cx={point.x}
                 cy={point.y}
-                r="2"
+                r="1.5"
                 fill="#3b82f6"
               />
             ))}
           </svg>
         </div>
-        <div className="flex justify-between text-xs text-gray-500 mt-1">
+        <div className="flex justify-between text-xs text-gray-500 mt-1 flex-shrink-0">
           <span>29 May</span>
           <span>12 Jun</span>
         </div>
