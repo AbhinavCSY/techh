@@ -270,10 +270,10 @@ export function VersionAndLicenseWidget({
       </div>
 
       {/* License Risk Section */}
-      <div>
+      <div className="flex flex-col items-center">
         <h4 className="font-semibold text-gray-900 text-sm mb-4">License Risk Distribution</h4>
         <div className="flex flex-col items-center">
-          <div className="relative w-48 h-48 mb-4">
+          <div className="relative w-56 h-56 mb-4">
             <svg
               width="192"
               height="192"
