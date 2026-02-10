@@ -41,15 +41,26 @@ export function VulnerableLibrariesWidget({
 
   const minIssues = Math.min(...issuesData.map((d) => d.issues));
   const maxIssues = Math.max(...issuesData.map((d) => d.issues));
-  const range = maxIssues - minIssues;
+  let range = maxIssues - minIssues;
+
+  // Ensure minimum range for better visualization
+  if (range < 50) {
+    range = 50;
+  }
 
   // Create SVG path for the line chart
   const width = 200;
   const height = 80;
   const padding = 10;
+
+  // Calculate midpoint for centering small ranges
+  const midPoint = (minIssues + maxIssues) / 2;
+  const displayMin = midPoint - range / 2;
+  const displayMax = midPoint + range / 2;
+
   const points = issuesData.map((data, index) => {
     const x = padding + (index / (issuesData.length - 1)) * (width - 2 * padding);
-    const y = height - padding - ((data.issues - minIssues) / range) * (height - 2 * padding);
+    const y = height - padding - ((data.issues - displayMin) / (displayMax - displayMin)) * (height - 2 * padding);
     return { x, y };
   });
 
