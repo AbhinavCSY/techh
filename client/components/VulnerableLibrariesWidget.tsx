@@ -58,34 +58,34 @@ export function VulnerableLibrariesWidget({
     .join(" ");
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-0.5">
       <div className="flex items-center gap-2">
-        <Shield className="w-3.5 h-3.5 text-gray-600" />
+        <Shield className="w-3 h-3 text-gray-600" />
         <h4 className="font-semibold text-gray-900 text-xs">
           Vulnerable Tech Stacks ({totalVulnerable})
         </h4>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-1">
         {/* High Severity */}
-        <div className="flex flex-col items-center py-1">
-          <span className="text-lg font-bold text-red-600">
+        <div className="flex flex-col items-center">
+          <span className="text-sm font-bold text-red-600">
             {vulnerableByType.high}
           </span>
           <span className="text-xs text-gray-600">High</span>
         </div>
 
         {/* Medium Severity */}
-        <div className="flex flex-col items-center py-1">
-          <span className="text-lg font-bold text-orange-600">
+        <div className="flex flex-col items-center">
+          <span className="text-sm font-bold text-orange-600">
             {vulnerableByType.medium}
           </span>
           <span className="text-xs text-gray-600">Medium</span>
         </div>
 
         {/* Low Severity */}
-        <div className="flex flex-col items-center py-1">
-          <span className="text-lg font-bold text-yellow-600">
+        <div className="flex flex-col items-center">
+          <span className="text-sm font-bold text-yellow-600">
             {vulnerableByType.low}
           </span>
           <span className="text-xs text-gray-600">Low</span>
@@ -93,9 +93,9 @@ export function VulnerableLibrariesWidget({
       </div>
 
       {/* Open Issues Line Chart */}
-      <div className="border-t border-gray-200">
-        <h5 className="text-xs font-semibold text-gray-700 mb-0.5 mt-1">Open Issues</h5>
-        <div className="h-14">
+      <div className="border-t border-gray-200 pt-0.5">
+        <h5 className="text-xs font-semibold text-gray-700 mb-0.5">Open Issues</h5>
+        <div className="h-12 w-full">
           <svg
             width="100%"
             height="100%"
@@ -128,13 +128,13 @@ export function VulnerableLibrariesWidget({
                 key={index}
                 cx={point.x}
                 cy={point.y}
-                r="1"
+                r="0.8"
                 fill="#3b82f6"
               />
             ))}
           </svg>
         </div>
-        <div className="flex justify-between text-xs text-gray-500 mt-0.5">
+        <div className="flex justify-between text-xs text-gray-500">
           <span>29 May</span>
           <span>12 Jun</span>
         </div>
