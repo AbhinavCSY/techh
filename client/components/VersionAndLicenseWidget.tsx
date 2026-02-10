@@ -69,11 +69,11 @@ export function VersionAndLicenseWidget({
   });
 
   const CompactContent = () => (
-    <div className="flex flex-col gap-4">
-      {/* Version Summary - Top */}
-      <div className="flex flex-col items-center">
-        <p className="text-xs font-semibold text-gray-700 mb-2">Version Status</p>
-        <div className="relative w-28 h-28 mb-2">
+    <div className="flex gap-3 h-full min-h-0">
+      {/* Version Summary - Left */}
+      <div className="flex flex-col items-center flex-1 min-w-0">
+        <p className="text-xs font-semibold text-gray-700 mb-1">Version</p>
+        <div className="relative w-20 h-20 mb-1 flex-shrink-0">
           <svg viewBox="0 0 120 120" className="w-full h-full">
             {/* EOL ring */}
             <circle
@@ -103,40 +103,32 @@ export function VersionAndLicenseWidget({
               y="60"
               textAnchor="middle"
               dy="0.3em"
-              className="text-sm font-bold fill-gray-900"
-              fontSize="14"
+              className="text-xs font-bold fill-gray-900"
+              fontSize="12"
             >
               {totalTechStacks}
             </text>
           </svg>
         </div>
-        <div className="space-y-1 text-xs w-full">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-red-500"></div>
-              <span className="text-gray-600">EOL</span>
-            </div>
-            <span className="font-semibold">{eolTechStacks}</span>
+        <div className="space-y-1 text-xs w-full text-center">
+          <div className="flex items-center justify-center gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+            <span className="text-gray-600 text-xs">EOL: {eolTechStacks}</span>
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-green-500"></div>
-              <span className="text-gray-600">Active</span>
-            </div>
-            <span className="font-semibold">{nonEolTechStacks}</span>
+          <div className="flex items-center justify-center gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+            <span className="text-gray-600 text-xs">Active: {nonEolTechStacks}</span>
           </div>
         </div>
       </div>
 
-      {/* License Risk - Bottom */}
-      <div className="flex flex-col items-center">
-        <p className="text-xs font-semibold text-gray-700 mb-2">License Risk</p>
-        <div className="relative w-28 h-28 mb-2">
+      {/* License Risk - Right with scrollable legends */}
+      <div className="flex flex-col items-center flex-1 min-w-0">
+        <p className="text-xs font-semibold text-gray-700 mb-1">License</p>
+        <div className="relative w-20 h-20 mb-1 flex-shrink-0">
           <svg
-            width="96"
-            height="96"
             viewBox="0 0 200 200"
-            className="drop-shadow-sm"
+            className="drop-shadow-sm w-full h-full"
           >
             {licenseChartData.map((slice, index) => (
               <path
@@ -151,48 +143,32 @@ export function VersionAndLicenseWidget({
                 )}
                 fill={slice.color}
                 stroke="white"
-                strokeWidth="2"
+                strokeWidth="1.5"
               />
             ))}
             <text
               x="100"
-              y="95"
+              y="105"
               textAnchor="middle"
               className="text-xs font-bold fill-gray-900"
-            >
-              Risk
-            </text>
-            <text
-              x="100"
-              y="110"
-              textAnchor="middle"
-              className="text-xs font-bold fill-gray-900"
+              fontSize="10"
             >
               {licenseRiskTotal}
             </text>
           </svg>
         </div>
-        <div className="space-y-1 text-xs w-full">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-red-500"></div>
-              <span className="text-gray-600">High</span>
-            </div>
-            <span className="font-semibold">{licenseRisk.high}</span>
+        <div className="space-y-0.5 text-xs w-full overflow-y-auto max-h-16">
+          <div className="flex items-center gap-1 justify-center">
+            <div className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0"></div>
+            <span className="text-gray-600 text-xs">H: {licenseRisk.high}</span>
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-orange-500"></div>
-              <span className="text-gray-600">Medium</span>
-            </div>
-            <span className="font-semibold">{licenseRisk.medium}</span>
+          <div className="flex items-center gap-1 justify-center">
+            <div className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></div>
+            <span className="text-gray-600 text-xs">M: {licenseRisk.medium}</span>
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-green-500"></div>
-              <span className="text-gray-600">Low</span>
-            </div>
-            <span className="font-semibold">{licenseRisk.low}</span>
+          <div className="flex items-center gap-1 justify-center">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div>
+            <span className="text-gray-600 text-xs">L: {licenseRisk.low}</span>
           </div>
         </div>
       </div>
