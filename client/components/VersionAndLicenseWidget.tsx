@@ -329,22 +329,20 @@ export function VersionAndLicenseWidget({
   if (compact) {
     return (
       <>
-        <div className="bg-white rounded-lg border border-gray-200 p-2 flex flex-col">
-          <div className="flex items-center justify-between mb-2">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center justify-between">
             <p className="text-xs font-semibold text-gray-700">
               📋 Version & License
             </p>
             <button
               onClick={() => setIsExpanded(true)}
-              className="p-1 hover:bg-gray-100 rounded transition-colors"
+              className="p-0.5 hover:bg-gray-100 rounded transition-colors"
               title="Expand"
             >
-              <Maximize2 className="w-4 h-4 text-gray-500 hover:text-gray-700" />
+              <Maximize2 className="w-3 h-3 text-gray-500 hover:text-gray-700" />
             </button>
           </div>
-          <div className="flex-1 overflow-hidden">
-            <CompactContent />
-          </div>
+          <CompactContent />
         </div>
 
         {/* Expanded Modal */}
