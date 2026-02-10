@@ -124,21 +124,21 @@ export function RiskByTechnologiesChart({
         </div>
 
         {/* Scrollable Legend */}
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <div className="space-y-1">
+        <div className="flex-1 overflow-y-auto max-h-24">
+          <div className="space-y-0.5">
             {chartData.map((tech, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between text-xs px-2 py-1 whitespace-nowrap"
+                className="flex items-center justify-between text-xs px-1 py-0.5 whitespace-nowrap"
               >
-                <div className="flex items-center gap-2 min-w-0">
+                <div className="flex items-center gap-1.5 min-w-0">
                   <div
                     className="w-2 h-2 rounded-full flex-shrink-0"
                     style={{ backgroundColor: tech.color }}
                   />
                   <span className="text-gray-700 font-medium text-xs truncate">{tech.name}</span>
                 </div>
-                <span className="text-gray-900 font-semibold text-xs flex-shrink-0 ml-1">
+                <span className="text-gray-900 font-semibold text-xs flex-shrink-0 ml-0.5">
                   {(tech.vulnerabilities / 1000).toFixed(1)}K
                 </span>
               </div>
