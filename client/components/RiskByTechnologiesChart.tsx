@@ -75,7 +75,7 @@ export function RiskByTechnologiesChart({
       {/* Title */}
       <div>
         <h4 className="font-semibold text-gray-900 text-sm">
-          Risk by Technologies
+          Risk by Tech Stacks
         </h4>
       </div>
 
