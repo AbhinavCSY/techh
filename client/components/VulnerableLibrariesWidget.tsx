@@ -58,17 +58,17 @@ export function VulnerableLibrariesWidget({
     .join(" ");
 
   return (
-    <div className="space-y-2 flex flex-col h-full">
-      <div className="flex items-center gap-2 flex-shrink-0">
+    <div className="space-y-1">
+      <div className="flex items-center gap-2">
         <Shield className="w-3.5 h-3.5 text-gray-600" />
         <h4 className="font-semibold text-gray-900 text-xs">
           Vulnerable Tech Stacks ({totalVulnerable})
         </h4>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 flex-shrink-0">
+      <div className="grid grid-cols-3 gap-2">
         {/* High Severity */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center py-1">
           <span className="text-lg font-bold text-red-600">
             {vulnerableByType.high}
           </span>
@@ -76,7 +76,7 @@ export function VulnerableLibrariesWidget({
         </div>
 
         {/* Medium Severity */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center py-1">
           <span className="text-lg font-bold text-orange-600">
             {vulnerableByType.medium}
           </span>
@@ -84,7 +84,7 @@ export function VulnerableLibrariesWidget({
         </div>
 
         {/* Low Severity */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center py-1">
           <span className="text-lg font-bold text-yellow-600">
             {vulnerableByType.low}
           </span>
@@ -93,15 +93,14 @@ export function VulnerableLibrariesWidget({
       </div>
 
       {/* Open Issues Line Chart */}
-      <div className="flex-1 min-h-0 flex flex-col pt-2 border-t border-gray-200">
-        <h5 className="text-xs font-semibold text-gray-700 mb-1 flex-shrink-0">Open Issues</h5>
-        <div className="flex-1 min-h-0 flex items-end justify-between">
+      <div className="pt-1 border-t border-gray-200">
+        <h5 className="text-xs font-semibold text-gray-700 mb-1">Open Issues</h5>
+        <div className="h-24">
           <svg
             width="100%"
             height="100%"
             viewBox={`0 0 ${width} ${height}`}
-            preserveAspectRatio="xMidYMid meet"
-            className="flex-1"
+            preserveAspectRatio="xMidYMid slice"
           >
             {/* Grid lines */}
             <line
