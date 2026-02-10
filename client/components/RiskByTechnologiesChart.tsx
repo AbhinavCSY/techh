@@ -80,12 +80,12 @@ export function RiskByTechnologiesChart({
       </div>
 
       {/* Chart and Legend Container */}
-      <div className="flex items-start gap-6">
+      <div className="flex flex-col items-center gap-4">
         {/* Donut Chart */}
         <div className="flex-shrink-0">
           <svg
-            width="200"
-            height="200"
+            width="140"
+            height="140"
             viewBox="0 0 200 200"
             className="drop-shadow-sm"
           >
