@@ -2128,7 +2128,7 @@ function NewProjectModal({
                         : "text-gray-600",
                     )}
                   >
-                    Source Code
+                    Select Source
                   </p>
                 </div>
               </div>
