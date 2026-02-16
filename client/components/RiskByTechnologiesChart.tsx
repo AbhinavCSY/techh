@@ -71,19 +71,19 @@ export function RiskByTechnologiesChart({
   };
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-2">
       {/* Title */}
       <h4 className="font-semibold text-gray-900 text-xs">
         Risk by Tech Stacks
       </h4>
 
-      {/* Chart and Legend Container - Side by Side */}
-      <div className="flex items-start gap-2">
+      {/* Chart Container */}
+      <div className="flex flex-col items-center">
         {/* Donut Chart */}
         <div className="flex-shrink-0">
           <svg
-            width="90"
-            height="90"
+            width="130"
+            height="130"
             viewBox="0 0 200 200"
             className="drop-shadow-sm"
           >
@@ -123,22 +123,23 @@ export function RiskByTechnologiesChart({
           </svg>
         </div>
 
-        {/* Scrollable Legend */}
-        <div className="flex-1 overflow-y-auto max-h-24">
+        {/* Scrollable Legend Below */}
+        <div className="w-full mt-2 max-h-28 overflow-y-auto">
           <div className="space-y-0.5">
             {chartData.map((tech, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between text-xs px-1 py-0.5 whitespace-nowrap"
+                className="flex items-center justify-between px-1 py-0.5 whitespace-nowrap"
+                style={{ fontSize: '11px' }}
               >
-                <div className="flex items-center gap-1.5 min-w-0">
+                <div className="flex items-center gap-1 min-w-0">
                   <div
-                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                     style={{ backgroundColor: tech.color }}
                   />
-                  <span className="text-gray-700 font-medium text-xs truncate">{tech.name}</span>
+                  <span className="text-gray-600 font-medium truncate">{tech.name}</span>
                 </div>
-                <span className="text-gray-900 font-semibold text-xs flex-shrink-0 ml-0.5">
+                <span className="text-gray-800 font-semibold flex-shrink-0 ml-1">
                   {(tech.vulnerabilities / 1000).toFixed(1)}K
                 </span>
               </div>
