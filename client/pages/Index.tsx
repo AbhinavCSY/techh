@@ -2279,41 +2279,6 @@ function NewProjectModal({
                     )}
                   </div>
 
-                  {/* Checkboxes */}
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.incrementalScan}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            incrementalScan: e.target.checked,
-                          })
-                        }
-                        className="w-4 h-4 rounded border-gray-300"
-                      />
-                      <span className="text-sm text-gray-700 font-medium">
-                        Incremental Scan
-                      </span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.saveAsDefault}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            saveAsDefault: e.target.checked,
-                          })
-                        }
-                        className="w-4 h-4 rounded border-gray-300"
-                      />
-                      <span className="text-sm text-gray-700 font-medium">
-                        Save as default repository for the project
-                      </span>
-                    </label>
-                  </div>
                 </>
               )}
 
