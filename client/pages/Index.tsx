@@ -51,6 +51,7 @@ export default function Index() {
   const [showWidgetPanel, setShowWidgetPanel] = useState(true);
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [showAutomaticScanModal, setShowAutomaticScanModal] = useState(false);
   const [scanningProject, setScanningProject] = useState<string | null>(null);
   const [scannedAssets, setScannedAssets] = useState<Set<string>>(new Set());
 
@@ -357,6 +358,10 @@ export default function Index() {
           onClose={() => setShowNewProjectModal(false)}
           onStartScan={handleStartScan}
           onOpenImport={() => setShowImportModal(true)}
+          onOpenAutomaticScan={() => {
+            setShowNewProjectModal(false);
+            setShowAutomaticScanModal(true);
+          }}
         />
       )}
 
@@ -365,6 +370,14 @@ export default function Index() {
         <ImportFromModal
           isOpen={showImportModal}
           onClose={() => setShowImportModal(false)}
+        />
+      )}
+
+      {/* Automatic Scan Modal */}
+      {showAutomaticScanModal && (
+        <AutomaticScanModal
+          isOpen={showAutomaticScanModal}
+          onClose={() => setShowAutomaticScanModal(false)}
         />
       )}
     </div>
@@ -1977,6 +1990,7 @@ interface NewProjectModalProps {
   onClose: () => void;
   onStartScan: (projectName: string) => void;
   onOpenImport?: () => void;
+  onOpenAutomaticScan?: () => void;
 }
 
 function NewProjectModal({
@@ -1984,6 +1998,7 @@ function NewProjectModal({
   onClose,
   onStartScan,
   onOpenImport,
+  onOpenAutomaticScan,
 }: NewProjectModalProps) {
   const [activeStep, setActiveStep] = useState<
     "options" | "sourceCode" | "selectScanners"
@@ -2022,6 +2037,13 @@ function NewProjectModal({
       icon: "📤",
       title: "New Project - Code Repository Integration",
       description: "Import your code repositories from your SCM",
+      active: true,
+    },
+    {
+      id: "automatic-scan",
+      icon: "⚙️",
+      title: "New Scan - Automatic Scan",
+      description: "Push the SBOM/CBOM on every gh action trigger",
       active: true,
     },
     {
@@ -2693,6 +2715,8 @@ function NewProjectModal({
                   if (option.active) {
                     if (option.id === "code-repo") {
                       onOpenImport?.();
+                    } else if (option.id === "automatic-scan") {
+                      onOpenAutomaticScan?.();
                     } else {
                       setActiveStep("sourceCode");
                     }
@@ -2733,6 +2757,195 @@ function NewProjectModal({
               )}
             </div>
           ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface AutomaticScanModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
+  const [projectName, setProjectName] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const ghActionScript = `name: SonarQube Scan + SBOM Upload
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  scan-and-upload:
+    runs-on: ubuntu-latest
+
+    env:
+      SONAR_HOST_URL: \${{ secrets.SONAR_HOST_URL }}
+      SONAR_TOKEN: \${{ secrets.SONAR_TOKEN }}
+
+      API_TOKEN: \${{ secrets.API_TOKEN }}
+      TENANT_ID: \${{ secrets.TENANT_ID }}
+
+    steps:
+
+      # ✅ Checkout repo
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # ✅ Setup Java (required for SonarQube scanner)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # ✅ SonarQube Scan
+      - name: Run SonarQube Scan
+        run: |
+          sonar-scanner \\
+            -Dsonar.projectKey=my-project \\
+            -Dsonar.sources=. \\
+            -Dsonar.host.url=\$SONAR_HOST_URL \\
+            -Dsonar.login=\$SONAR_TOKEN
+
+      # OPTIONAL: Wait for quality gate result
+      - name: SonarQube Quality Gate Check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        env:
+          SONAR_TOKEN: \${{ secrets.SONAR_TOKEN }}
+
+      # ✅ Generate SBOM (example using Syft — replace if you already generate SBOM)
+      - name: Generate SBOM
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
+          syft dir:. -o cyclonedx-json > sbom.json
+
+      # ✅ Upload SBOM via API
+      - name: Upload SBOM Artifact
+        run: |
+          curl -X POST "https://api.example.com/artifact/upload" \\
+            -H "Authorization: Bearer \$API_TOKEN" \\
+            -H "X-Tenant-Id: \$TENANT_ID" \\
+            -F "data-type=sbom" \\
+            -F "file=@sbom.json"`;
+
+  const handleCopyScript = () => {
+    navigator.clipboard.writeText(ghActionScript);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-3xl">⚙️</span>
+          <h2 className="text-lg font-bold text-gray-900">Automatic Scan Setup</h2>
+        </div>
+
+        <div className="space-y-6">
+          {/* Project Name Input */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">
+              Select Project Name <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <select
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
+              >
+                <option value="">Select project</option>
+                <option value="as">as</option>
+                <option value="new-project">New Project</option>
+                <option value="project-3">Project 3</option>
+                <option value="project-4">Project 4</option>
+              </select>
+              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                ▼
+              </span>
+            </div>
+          </div>
+
+          {/* Script Display */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-semibold text-gray-900">
+                GitHub Actions Script
+              </label>
+              <button
+                onClick={handleCopyScript}
+                className={cn(
+                  "px-3 py-1 rounded text-xs font-medium transition-all",
+                  copied
+                    ? "bg-green-100 text-green-700"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                )}
+              >
+                {copied ? "✓ Copied" : "Copy"}
+              </button>
+            </div>
+            <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto max-h-96 overflow-y-auto border border-gray-700">
+              <pre className="text-gray-100 font-mono text-xs whitespace-pre-wrap break-words">
+                {ghActionScript}
+              </pre>
+            </div>
+          </div>
+
+          {/* Instructions */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-blue-900 mb-2">
+              <span className="font-semibold">📌 Instructions:</span>
+            </p>
+            <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
+              <li>Copy the script above</li>
+              <li>Create a new workflow file in your repository: `.github/workflows/sbom-scan.yml`</li>
+              <li>Paste the script into that file</li>
+              <li>Configure the required secrets in your GitHub repository settings:
+                <ul className="list-disc list-inside ml-4 mt-1">
+                  <li>SONAR_HOST_URL</li>
+                  <li>SONAR_TOKEN</li>
+                  <li>API_TOKEN</li>
+                  <li>TENANT_ID</li>
+                </ul>
+              </li>
+              <li>Push the changes to trigger the workflow</li>
+            </ol>
+          </div>
+        </div>
+
+        {/* Footer Buttons */}
+        <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+          <button
+            onClick={onClose}
+            className="flex-1 px-4 py-2 rounded-lg font-medium text-sm border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            disabled={!projectName}
+            className={cn(
+              "flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-colors",
+              projectName
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            )}
+          >
+            Configure
+          </button>
         </div>
       </div>
     </div>
