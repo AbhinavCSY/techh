@@ -952,9 +952,12 @@ function DetailsPanel({
                                   <p className="text-xs text-red-700 mt-1">
                                     {cve.title}
                                   </p>
-                                  <div className="flex gap-2 mt-1">
+                                  <div className="flex gap-2 mt-1 flex-wrap">
                                     <Badge className="bg-red-200 text-red-800 text-xs">
                                       ✓ SCANNED
+                                    </Badge>
+                                    <Badge className="bg-blue-200 text-blue-800 text-xs">
+                                      🔍 Agent Scan
                                     </Badge>
                                     <span className="text-xs text-red-700">
                                       CVSS: {cve.score.toFixed(1)} •{" "}
@@ -1262,11 +1265,9 @@ function DetailsPanel({
                                     <Badge className="bg-amber-200 text-amber-800 text-xs">
                                       ⚠️ UNSCANNED
                                     </Badge>
-                                    {!cve.scanningSupported && (
-                                      <Badge className="bg-gray-400 text-white text-xs">
-                                        🔒 Scanning Not Supported
-                                      </Badge>
-                                    )}
+                                    <Badge className="bg-purple-200 text-purple-800 text-xs">
+                                      📡 Threat Intelligence
+                                    </Badge>
                                     <span className="text-xs text-gray-700">
                                       CVSS: {cve.score.toFixed(1)} •{" "}
                                       {cve.severity.toUpperCase()}
