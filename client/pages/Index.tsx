@@ -182,17 +182,17 @@ export default function Index() {
               {/* First Row - Three widgets in single row */}
               <div className="grid grid-cols-3 gap-2">
                 {/* Vulnerable Tech Stacks Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5">
+                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
                   <VulnerableLibrariesWidget compact={true} />
                 </div>
 
                 {/* Risk by Tech Stacks Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5">
+                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
                   <RiskByTechnologiesChart compact={true} />
                 </div>
 
                 {/* Version & License Widget (Merged) */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5">
+                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
                   <VersionAndLicenseWidget compact={true} />
                 </div>
               </div>
