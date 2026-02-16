@@ -146,7 +146,7 @@ export default function Index() {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
               <h1 className="text-lg font-bold text-gray-900">
-                Tech Stack
+                Asset Inventory
               </h1>
               <Button
                 onClick={() => setShowNewProjectModal(true)}

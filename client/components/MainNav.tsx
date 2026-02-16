@@ -19,7 +19,7 @@ const navProducts: NavProduct[] = [
   { id: "xvigil", label: "Xvigil" },
   { id: "bevigil", label: "BeVigil" },
   { id: "svigil", label: "SVigil" },
-  { id: "asset-inv", label: "Tech Stack" },
+  { id: "asset-inv", label: "Asset Inventory" },
   { id: "threat-intel", label: "Threat Intel" },
 ];
 
