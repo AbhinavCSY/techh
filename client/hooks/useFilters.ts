@@ -35,7 +35,7 @@ const defaultFilterState: FilterState = {
 export function useFilters() {
   const [viewType, setViewType] = usePersistentState<ViewType>(
     "viewType",
-    "card",
+    "table",
   );
   const [grouping, setGrouping] = usePersistentState<GroupingType>(
     "grouping",

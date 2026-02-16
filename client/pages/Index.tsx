@@ -51,6 +51,7 @@ export default function Index() {
   const [showWidgetPanel, setShowWidgetPanel] = useState(true);
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [showAutomaticScanModal, setShowAutomaticScanModal] = useState(false);
   const [scanningProject, setScanningProject] = useState<string | null>(null);
   const [scannedAssets, setScannedAssets] = useState<Set<string>>(new Set());
 
@@ -357,6 +358,10 @@ export default function Index() {
           onClose={() => setShowNewProjectModal(false)}
           onStartScan={handleStartScan}
           onOpenImport={() => setShowImportModal(true)}
+          onOpenAutomaticScan={() => {
+            setShowNewProjectModal(false);
+            setShowAutomaticScanModal(true);
+          }}
         />
       )}
 
@@ -365,6 +370,14 @@ export default function Index() {
         <ImportFromModal
           isOpen={showImportModal}
           onClose={() => setShowImportModal(false)}
+        />
+      )}
+
+      {/* Automatic Scan Modal */}
+      {showAutomaticScanModal && (
+        <AutomaticScanModal
+          isOpen={showAutomaticScanModal}
+          onClose={() => setShowAutomaticScanModal(false)}
         />
       )}
     </div>
@@ -1977,6 +1990,7 @@ interface NewProjectModalProps {
   onClose: () => void;
   onStartScan: (projectName: string) => void;
   onOpenImport?: () => void;
+  onOpenAutomaticScan?: () => void;
 }
 
 function NewProjectModal({
@@ -1984,6 +1998,7 @@ function NewProjectModal({
   onClose,
   onStartScan,
   onOpenImport,
+  onOpenAutomaticScan,
 }: NewProjectModalProps) {
   const [activeStep, setActiveStep] = useState<
     "options" | "sourceCode" | "selectScanners"
@@ -2022,6 +2037,13 @@ function NewProjectModal({
       icon: "📤",
       title: "New Project - Code Repository Integration",
       description: "Import your code repositories from your SCM",
+      active: true,
+    },
+    {
+      id: "automatic-scan",
+      icon: "⚙️",
+      title: "New Scan - Automatic Scan",
+      description: "Push the SBOM/CBOM on every gh action trigger",
       active: true,
     },
     {
@@ -2693,6 +2715,8 @@ function NewProjectModal({
                   if (option.active) {
                     if (option.id === "code-repo") {
                       onOpenImport?.();
+                    } else if (option.id === "automatic-scan") {
+                      onOpenAutomaticScan?.();
                     } else {
                       setActiveStep("sourceCode");
                     }
@@ -2733,6 +2757,396 @@ function NewProjectModal({
               )}
             </div>
           ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface AutomaticScanModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
+  const [step, setStep] = useState<"config" | "tool" | "ghAction" | "script">("config");
+  const [projectName, setProjectName] = useState("");
+  const [sbomTool, setSbomTool] = useState("syft");
+  const [ghActionOption, setGhActionOption] = useState("new");
+  const [copied, setCopied] = useState(false);
+
+  const sbomTools = [
+    { id: "syft", label: "Syft", description: "Anchore Syft for comprehensive SBOM generation" },
+    { id: "cyclonedx", label: "CycloneDX", description: "CycloneDX maven plugin for Java projects" },
+    { id: "cyclonedx-npm", label: "CycloneDX NPM", description: "CycloneDX for Node.js projects" },
+    { id: "spdx", label: "SPDX", description: "SPDX format for open standard SBOM" },
+  ];
+
+  const ghActionOptions = [
+    { id: "new", icon: "📄", label: "New GitHub Action", description: "Create a new workflow file" },
+    { id: "manual", icon: "✏️", label: "Manual GH Action", description: "Copy and paste the configuration manually" },
+    { id: "existing", icon: "🔗", label: "Add to Existing GH Action", description: "Add this snippet to your existing workflow" },
+  ];
+
+  const generateScript = () => {
+    const sbomGenCommand = {
+      syft: `curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
+          syft dir:. -o cyclonedx-json > sbom.json`,
+      cyclonedx: `mvn org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom -DoutputFile=sbom.xml`,
+      "cyclonedx-npm": `npm install -g @cyclonedx/npm
+          cyclonedx-npm --output-file sbom.json`,
+      spdx: `curl -sSfL https://repo1.maven.org/maven2/org/spdx/tools/spdx-tools-0.8/spdx-tools-0.8-jar-with-dependencies.jar -o spdx-tools.jar
+          java -jar spdx-tools.jar convert --input sbom.json --output sbom.spdx`,
+    };
+
+    if (ghActionOption === "new") {
+      return `name: SonarQube Scan + SBOM Upload
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  scan-and-upload:
+    runs-on: ubuntu-latest
+
+    env:
+      SONAR_HOST_URL: \${{ secrets.SONAR_HOST_URL }}
+      SONAR_TOKEN: \${{ secrets.SONAR_TOKEN }}
+      API_TOKEN: \${{ secrets.API_TOKEN }}
+      TENANT_ID: \${{ secrets.TENANT_ID }}
+
+    steps:
+      # ✅ Checkout repo
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # ✅ Setup Java (required for SonarQube scanner)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # ✅ SonarQube Scan
+      - name: Run SonarQube Scan
+        run: |
+          sonar-scanner \\
+            -Dsonar.projectKey=my-project \\
+            -Dsonar.sources=. \\
+            -Dsonar.host.url=\$SONAR_HOST_URL \\
+            -Dsonar.login=\$SONAR_TOKEN
+
+      # ✅ Generate SBOM
+      - name: Generate SBOM
+        run: |
+          ${sbomGenCommand[sbomTool as keyof typeof sbomGenCommand]}
+
+      # ✅ Upload SBOM via API
+      - name: Upload SBOM Artifact
+        run: |
+          curl -X POST "https://api.example.com/artifact/upload" \\
+            -H "Authorization: Bearer \$API_TOKEN" \\
+            -H "X-Tenant-Id: \$TENANT_ID" \\
+            -F "data-type=sbom" \\
+            -F "file=@sbom.json"`;
+    } else if (ghActionOption === "existing") {
+      return `# Add this step to your existing GitHub Actions workflow
+
+      # ✅ Generate SBOM using ${sbomTools.find(t => t.id === sbomTool)?.label}
+      - name: Generate SBOM
+        run: |
+          ${sbomGenCommand[sbomTool as keyof typeof sbomGenCommand]}
+
+      # ✅ Upload SBOM via API
+      - name: Upload SBOM Artifact
+        run: |
+          curl -X POST "https://api.example.com/artifact/upload" \\
+            -H "Authorization: Bearer \${{ secrets.API_TOKEN }}" \\
+            -H "X-Tenant-Id: \${{ secrets.TENANT_ID }}" \\
+            -F "data-type=sbom" \\
+            -F "file=@sbom.json"`;
+    } else {
+      return `# SonarQube Scan + SBOM Generation (Manual Configuration)
+
+## 1. Install sonar-scanner
+curl https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip -o sonar-scanner.zip
+unzip sonar-scanner.zip
+
+## 2. Run SonarQube Scan
+./sonar-scanner/bin/sonar-scanner \\
+  -Dsonar.projectKey=my-project \\
+  -Dsonar.sources=. \\
+  -Dsonar.host.url=\${SONAR_HOST_URL} \\
+  -Dsonar.login=\${SONAR_TOKEN}
+
+## 3. Generate SBOM
+${sbomGenCommand[sbomTool as keyof typeof sbomGenCommand]}
+
+## 4. Upload SBOM
+curl -X POST "https://api.example.com/artifact/upload" \\
+  -H "Authorization: Bearer \${API_TOKEN}" \\
+  -H "X-Tenant-Id: \${TENANT_ID}" \\
+  -F "data-type=sbom" \\
+  -F "file=@sbom.json"`;
+    }
+  };
+
+  const script = generateScript();
+
+  const handleCopyScript = () => {
+    navigator.clipboard.writeText(script);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleNext = () => {
+    if (step === "config" && projectName) setStep("tool");
+    else if (step === "tool") setStep("ghAction");
+    else if (step === "ghAction") setStep("script");
+  };
+
+  const handleBack = () => {
+    if (step === "script") setStep("ghAction");
+    else if (step === "ghAction") setStep("tool");
+    else if (step === "tool") setStep("config");
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-3xl">⚙️</span>
+          <h2 className="text-lg font-bold text-gray-900">Automatic Scan Setup</h2>
+        </div>
+
+        {/* Step Indicators */}
+        <div className="flex items-center justify-between mb-6">
+          {["config", "tool", "ghAction", "script"].map((s, idx) => (
+            <div key={s} className="flex items-center">
+              <div
+                className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold",
+                  step === s
+                    ? "bg-blue-600 text-white"
+                    : ["config", "tool", "ghAction", "script"].indexOf(step) > idx
+                    ? "bg-green-600 text-white"
+                    : "bg-gray-300 text-gray-600"
+                )}
+              >
+                {["config", "tool", "ghAction", "script"].indexOf(step) > idx ? "✓" : idx + 1}
+              </div>
+              {idx < 3 && (
+                <div
+                  className={cn(
+                    "h-1 w-12 mx-2",
+                    ["config", "tool", "ghAction", "script"].indexOf(step) > idx
+                      ? "bg-green-600"
+                      : "bg-gray-300"
+                  )}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="space-y-6">
+          {/* Step 1: Project Name */}
+          {step === "config" && (
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Select Project Name <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <select
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
+                >
+                  <option value="">Select project</option>
+                  <option value="as">as</option>
+                  <option value="new-project">New Project</option>
+                  <option value="project-3">Project 3</option>
+                  <option value="project-4">Project 4</option>
+                </select>
+                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                  ▼
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: SBOM Tool Selection */}
+          {step === "tool" && (
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-3">
+                Select SBOM Generator Tool <span className="text-red-500">*</span>
+              </label>
+              <div className="space-y-2">
+                {sbomTools.map((tool) => (
+                  <label
+                    key={tool.id}
+                    className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                  >
+                    <input
+                      type="radio"
+                      name="sbom-tool"
+                      value={tool.id}
+                      checked={sbomTool === tool.id}
+                      onChange={(e) => setSbomTool(e.target.value)}
+                      className="mt-1"
+                    />
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900 text-sm">{tool.label}</p>
+                      <p className="text-xs text-gray-600">{tool.description}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: GitHub Action Option */}
+          {step === "ghAction" && (
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-3">
+                GitHub Action Configuration <span className="text-red-500">*</span>
+              </label>
+              <div className="space-y-2">
+                {ghActionOptions.map((option) => (
+                  <label
+                    key={option.id}
+                    className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                  >
+                    <input
+                      type="radio"
+                      name="gh-action"
+                      value={option.id}
+                      checked={ghActionOption === option.id}
+                      onChange={(e) => setGhActionOption(e.target.value)}
+                      className="mt-1"
+                    />
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900 text-sm">
+                        <span className="mr-2">{option.icon}</span>
+                        {option.label}
+                      </p>
+                      <p className="text-xs text-gray-600">{option.description}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Script Display */}
+          {step === "script" && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-semibold text-gray-900">
+                  {ghActionOption === "new" ? "GitHub Actions Script" : "Code Snippet"}
+                </label>
+                <button
+                  onClick={handleCopyScript}
+                  className={cn(
+                    "px-3 py-1 rounded text-xs font-medium transition-all",
+                    copied
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  )}
+                >
+                  {copied ? "✓ Copied" : "Copy"}
+                </button>
+              </div>
+              <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto max-h-96 overflow-y-auto border border-gray-700">
+                <pre className="text-gray-100 font-mono text-xs whitespace-pre-wrap break-words">
+                  {script}
+                </pre>
+              </div>
+
+              {/* Instructions */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                <p className="text-sm text-blue-900 mb-2 font-semibold">📌 Instructions:</p>
+                {ghActionOption === "new" && (
+                  <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
+                    <li>Copy the script above</li>
+                    <li>Create a new workflow file: `.github/workflows/sbom-scan.yml`</li>
+                    <li>Paste the script into that file</li>
+                    <li>Configure required secrets in GitHub: SONAR_HOST_URL, SONAR_TOKEN, API_TOKEN, TENANT_ID</li>
+                    <li>Push the changes to trigger the workflow</li>
+                  </ol>
+                )}
+                {ghActionOption === "existing" && (
+                  <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
+                    <li>Copy the snippet above</li>
+                    <li>Open your existing GitHub Actions workflow file</li>
+                    <li>Add the steps to your job after other build steps</li>
+                    <li>Ensure the required secrets are configured</li>
+                    <li>Push the changes</li>
+                  </ol>
+                )}
+                {ghActionOption === "manual" && (
+                  <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
+                    <li>Follow the manual steps provided in the code snippet</li>
+                    <li>Replace placeholders with your actual values</li>
+                    <li>Ensure all required tools are installed in your environment</li>
+                    <li>Configure environment variables or GitHub secrets as needed</li>
+                    <li>Run the commands in your CI/CD pipeline</li>
+                  </ol>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer Buttons */}
+        <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+          <button
+            onClick={onClose}
+            className="flex-1 px-4 py-2 rounded-lg font-medium text-sm border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          {step !== "config" && (
+            <button
+              onClick={handleBack}
+              className="flex-1 px-4 py-2 rounded-lg font-medium text-sm border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              Back
+            </button>
+          )}
+          {step !== "script" && (
+            <button
+              onClick={handleNext}
+              disabled={step === "config" ? !projectName : false}
+              className={cn(
+                "flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-colors",
+                step === "config" && !projectName
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700 text-white"
+              )}
+            >
+              Next
+            </button>
+          )}
+          {step === "script" && (
+            <button
+              onClick={onClose}
+              className="flex-1 px-4 py-2 rounded-lg font-medium text-sm bg-green-600 hover:bg-green-700 text-white transition-colors"
+            >
+              Done
+            </button>
+          )}
         </div>
       </div>
     </div>
