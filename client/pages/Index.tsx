@@ -50,6 +50,7 @@ export default function Index() {
   const [showDetails, setShowDetails] = useState(false);
   const [showWidgetPanel, setShowWidgetPanel] = useState(true);
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [scanningProject, setScanningProject] = useState<string | null>(null);
   const [scannedAssets, setScannedAssets] = useState<Set<string>>(new Set());
 
@@ -355,6 +356,15 @@ export default function Index() {
           isOpen={showNewProjectModal}
           onClose={() => setShowNewProjectModal(false)}
           onStartScan={handleStartScan}
+          onOpenImport={() => setShowImportModal(true)}
+        />
+      )}
+
+      {/* Import From Modal */}
+      {showImportModal && (
+        <ImportFromModal
+          isOpen={showImportModal}
+          onClose={() => setShowImportModal(false)}
         />
       )}
     </div>
@@ -1966,12 +1976,14 @@ interface NewProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
   onStartScan: (projectName: string) => void;
+  onOpenImport?: () => void;
 }
 
 function NewProjectModal({
   isOpen,
   onClose,
   onStartScan,
+  onOpenImport,
 }: NewProjectModalProps) {
   const [activeStep, setActiveStep] = useState<
     "options" | "sourceCode" | "selectScanners"
@@ -2010,7 +2022,7 @@ function NewProjectModal({
       icon: "📤",
       title: "New Project - Code Repository Integration",
       description: "Import your code repositories from your SCM",
-      active: false,
+      active: true,
     },
     {
       id: "new-app",
@@ -2679,7 +2691,11 @@ function NewProjectModal({
               <button
                 onClick={() => {
                   if (option.active) {
-                    setActiveStep("sourceCode");
+                    if (option.id === "code-repo") {
+                      onOpenImport?.();
+                    } else {
+                      setActiveStep("sourceCode");
+                    }
                   }
                 }}
                 disabled={!option.active}
@@ -2717,6 +2733,221 @@ function NewProjectModal({
               )}
             </div>
           ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface ImportFromModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
+  const [activeStep, setActiveStep] = useState<
+    "selectService" | "selectOrganization" | "selectRepositories" | "repositoriesSettings" | "selectBranches" | "scanUponCreation"
+  >("selectService");
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+
+  if (!isOpen) return null;
+
+  const services = [
+    { id: "github", label: "GitHub", icon: "🐙" },
+    { id: "github-app", label: "GitHub App", icon: "🐙" },
+    { id: "gitlab", label: "GitLab", icon: "🦊" },
+    { id: "azure", label: "Azure", icon: "☁️" },
+    { id: "bitbucket", label: "Bitbucket", icon: "🪣" },
+  ];
+
+  const steps = [
+    { id: 1, label: "Select Service" },
+    { id: 2, label: "Select Organization" },
+    { id: 3, label: "Select Repositories" },
+    { id: 4, label: "Repositories Settings" },
+    { id: 5, label: "Select Branches" },
+    { id: 6, label: "Scan Upon Creation" },
+  ];
+
+  const handleServiceSelect = (serviceId: string) => {
+    setSelectedService(serviceId);
+    setActiveStep("selectOrganization");
+  };
+
+  const handleBack = () => {
+    if (activeStep === "selectService") {
+      onClose();
+    } else if (activeStep === "selectOrganization") {
+      setActiveStep("selectService");
+      setSelectedService(null);
+    } else {
+      const stepOrder: typeof activeStep[] = [
+        "selectService",
+        "selectOrganization",
+        "selectRepositories",
+        "repositoriesSettings",
+        "selectBranches",
+        "scanUponCreation",
+      ];
+      const currentIndex = stepOrder.indexOf(activeStep);
+      if (currentIndex > 0) {
+        setActiveStep(stepOrder[currentIndex - 1]);
+      }
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 flex max-h-[90vh] overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Left Sidebar */}
+        <div className="bg-gray-50 w-56 p-6 flex flex-col border-r border-gray-200">
+          <div className="flex items-center gap-3 mb-8">
+            <span className="text-2xl">⚙️</span>
+            <h2 className="text-lg font-bold text-gray-900">Import From</h2>
+          </div>
+
+          {/* Steps */}
+          <div className="space-y-4 flex-1">
+            {steps.map((step) => (
+              <div key={step.id} className="flex items-start gap-3">
+                <div
+                  className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white",
+                    activeStep === steps[step.id - 1].id
+                      ? "bg-blue-600"
+                      : steps.findIndex((s) => s.id === activeStep) >= step.id - 1
+                        ? "bg-green-600"
+                        : "bg-gray-400",
+                  )}
+                >
+                  {step.id}
+                </div>
+                <div>
+                  <p
+                    className={cn(
+                      "font-semibold text-sm",
+                      activeStep === steps[step.id - 1].id
+                        ? "text-gray-900"
+                        : "text-gray-600",
+                    )}
+                  >
+                    {step.label}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={handleBack}
+            className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+          >
+            ← Back
+          </button>
+        </div>
+
+        {/* Right Content */}
+        <div className="flex-1 p-8 overflow-y-auto flex flex-col">
+          {activeStep === "selectService" && (
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-6">
+                Select service
+              </h3>
+              <div className="space-y-4">
+                <div className="flex gap-4 mb-6">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="hosting"
+                      value="cloud"
+                      defaultChecked
+                      className="w-4 h-4"
+                    />
+                    <span className="text-sm font-medium">Cloud-Hosted</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="hosting"
+                      value="self"
+                      className="w-4 h-4"
+                    />
+                    <span className="text-sm font-medium">Self-Hosted</span>
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                  {services.map((service) => (
+                    <button
+                      key={service.id}
+                      onClick={() => handleServiceSelect(service.id)}
+                      className="flex items-center gap-2 p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
+                    >
+                      <span className="text-2xl">{service.icon}</span>
+                      <span className="text-sm font-medium text-gray-900">
+                        {service.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeStep !== "selectService" && (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center text-gray-600">
+                <p className="text-lg font-semibold mb-2">
+                  {activeStep === "selectOrganization" &&
+                    "Select Organization"}
+                  {activeStep === "selectRepositories" &&
+                    "Select Repositories"}
+                  {activeStep === "repositoriesSettings" &&
+                    "Repositories Settings"}
+                  {activeStep === "selectBranches" && "Select Branches"}
+                  {activeStep === "scanUponCreation" && "Scan Upon Creation"}
+                </p>
+                <p className="text-sm">This step is coming soon...</p>
+              </div>
+            </div>
+          )}
+
+          {/* Navigation Buttons */}
+          <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+            <button
+              onClick={onClose}
+              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            {activeStep !== "selectService" && (
+              <button
+                onClick={() => {
+                  const stepOrder: typeof activeStep[] = [
+                    "selectService",
+                    "selectOrganization",
+                    "selectRepositories",
+                    "repositoriesSettings",
+                    "selectBranches",
+                    "scanUponCreation",
+                  ];
+                  const currentIndex = stepOrder.indexOf(activeStep);
+                  if (currentIndex < stepOrder.length - 1) {
+                    setActiveStep(stepOrder[currentIndex + 1]);
+                  }
+                }}
+                className="ml-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+              >
+                Next
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
