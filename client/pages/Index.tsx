@@ -196,11 +196,6 @@ export default function Index() {
                   <VersionAndLicenseWidget compact={true} />
                 </div>
               </div>
-
-              {/* Second Row - Tech Stacks & Assets */}
-              <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                <TechStacksAndAssetsChart compact={true} />
-              </div>
             </div>
           )}
         </div>
@@ -885,6 +880,34 @@ function DetailsPanel({
                       <h4 className="font-semibold text-gray-900">
                         🛡️ Threat Intel
                       </h4>
+
+                      {/* Summary Stats */}
+                      <div className="grid grid-cols-3 gap-2 mb-4">
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-2 text-center">
+                          <p className="text-xs text-gray-600 font-medium">
+                            Scanned
+                          </p>
+                          <p className="text-lg font-bold text-red-900">
+                            {item.cves.length}
+                          </p>
+                        </div>
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-2 text-center">
+                          <p className="text-xs text-gray-600 font-medium">
+                            Unscanned
+                          </p>
+                          <p className="text-lg font-bold text-amber-900">
+                            {marketCVEs.length}
+                          </p>
+                        </div>
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-center">
+                          <p className="text-xs text-gray-600 font-medium">
+                            Total
+                          </p>
+                          <p className="text-lg font-bold text-blue-900">
+                            {item.cves.length + marketCVEs.length}
+                          </p>
+                        </div>
+                      </div>
 
                       {/* Threats List - Combined Scanned and Unscanned */}
                       <div className="space-y-2 max-h-96 overflow-y-auto">
