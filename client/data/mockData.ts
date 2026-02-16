@@ -204,9 +204,9 @@ const commonCVEs: Record<string, CVE[]> = {
   "Express.js": [
     {
       id: "CVE-2022-24999",
-      severity: "high",
+      severity: "low",
       title: "Query Parser DoS",
-      score: 7.5,
+      score: 3.2,
       affected: "v4.0.0 - v4.17.3",
       cwe: "CWE-400: Uncontrolled Resource Consumption",
       published: "2022-04-28",
