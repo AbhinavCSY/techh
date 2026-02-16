@@ -1748,8 +1748,8 @@ function DetailsPanel({
                         >
                           <span>{isScanning ? "⏳" : "🔍"}</span>
                           {isScanning
-                            ? "Scanning Against Each CVEs..."
-                            : `Scan Against Each CVEs for Threat Intel`}
+                            ? "Scanning Against Each Scannable CVEs..."
+                            : `Scan Against Each Scannable CVEs`}
                         </button>
                       </div>
                     </div>
