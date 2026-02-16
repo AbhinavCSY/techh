@@ -50,6 +50,32 @@ export function TechStackTableView({
     }
   };
 
+  const getHighestRiskLevel = (cves: any[]) => {
+    if (cves.length === 0) return "None";
+    const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+    const highest = cves.reduce((prev, current) => {
+      const prevOrder = severityOrder[prev.severity as keyof typeof severityOrder] ?? 4;
+      const currentOrder = severityOrder[current.severity as keyof typeof severityOrder] ?? 4;
+      return currentOrder < prevOrder ? current : prev;
+    });
+    return highest.severity.charAt(0).toUpperCase() + highest.severity.slice(1);
+  };
+
+  const getRiskLevelColor = (riskLevel: string) => {
+    switch (riskLevel.toLowerCase()) {
+      case "critical":
+        return "bg-red-100 text-red-800";
+      case "high":
+        return "bg-orange-100 text-orange-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   const getAssociatedAssets = (techStackId: string) => {
     return allAssets.filter((asset) =>
       asset.techStacks.some((ts) => ts.id === techStackId),
@@ -64,6 +90,7 @@ export function TechStackTableView({
             <TableHead className="font-semibold">Tech Stack</TableHead>
             <TableHead className="font-semibold">License</TableHead>
             <TableHead className="font-semibold">Associated Assets</TableHead>
+            <TableHead className="font-semibold">Risk Level</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
             <TableHead className="font-semibold">Status</TableHead>
             <TableHead className="font-semibold">First Seen</TableHead>
@@ -140,6 +167,11 @@ export function TechStackTableView({
                       </Badge>
                     )}
                   </div>
+                </TableCell>
+                <TableCell>
+                  <Badge className={`text-xs font-semibold ${getRiskLevelColor(getHighestRiskLevel(techStack.cves))}`}>
+                    {getHighestRiskLevel(techStack.cves)}
+                  </Badge>
                 </TableCell>
                 <TableCell>
                   <ThreatBar

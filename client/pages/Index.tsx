@@ -20,6 +20,7 @@ import { TechStacksAndAssetsChart } from "@/components/TechStacksAndAssetsChart"
 import { VulnerableLibrariesWidget } from "@/components/VulnerableLibrariesWidget";
 import { LicenseDistributionWidget } from "@/components/LicenseDistributionWidget";
 import { RiskByTechnologiesChart } from "@/components/RiskByTechnologiesChart";
+import { VersionAndLicenseWidget } from "@/components/VersionAndLicenseWidget";
 import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, AlertTriangle, Badge as BadgeIcon } from "lucide-react";
@@ -178,34 +179,21 @@ export default function Index() {
           {/* Key Metrics Panel - Collapsible & Compact */}
           {showWidgetPanel && (
             <div className="space-y-2">
-              {/* First Row - Vulnerable Libraries and License Distribution */}
-              <div className="grid grid-cols-2 gap-2">
-                {/* Vulnerable Libraries Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-3">
+              {/* First Row - Three widgets in single row */}
+              <div className="grid grid-cols-3 gap-2">
+                {/* Vulnerable Tech Stacks Widget */}
+                <div className="bg-white rounded-lg border border-gray-200 p-1.5">
                   <VulnerableLibrariesWidget compact={true} />
                 </div>
 
-                {/* License Distribution Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-3">
-                  <LicenseDistributionWidget compact={true} />
-                </div>
-              </div>
-
-              {/* Second Row - Risk by Technologies (Full Width) */}
-              <div className="bg-white rounded-lg border border-gray-200 p-4">
-                <RiskByTechnologiesChart compact={true} />
-              </div>
-
-              {/* Third Row - EOL and Tech Stacks & Assets */}
-              <div className="grid grid-cols-2 gap-2">
-                {/* EOL Pie Chart */}
+                {/* Risk by Tech Stacks Widget */}
                 <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                  <EOLPieChart compact={true} />
+                  <RiskByTechnologiesChart compact={true} />
                 </div>
 
-                {/* Tech Stacks & Assets Chart */}
+                {/* Version & License Widget (Merged) */}
                 <div className="bg-white rounded-lg border border-gray-200 p-1.5">
-                  <TechStacksAndAssetsChart compact={true} />
+                  <VersionAndLicenseWidget compact={true} />
                 </div>
               </div>
             </div>
@@ -442,6 +430,29 @@ function DetailsPanel({
   const [cveAssetSelections, setCVEAssetSelections] = useState<
     Record<string, Record<string, boolean>>
   >({});
+
+  // Get the highest severity CVE for the panel header color
+  const getHighestSeverityCVE = () => {
+    if (isAssetItem) return null;
+    const allCVEs = [...(item.cves || []), ...marketCVEs];
+    if (allCVEs.length === 0) return null;
+    const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+    return allCVEs.reduce((prev, current) => {
+      const prevOrder = severityOrder[prev.severity as keyof typeof severityOrder] ?? 4;
+      const currentOrder = severityOrder[current.severity as keyof typeof severityOrder] ?? 4;
+      return currentOrder < prevOrder ? current : prev;
+    });
+  };
+
+  const getHeaderLineColor = () => {
+    const highestCVE = getHighestSeverityCVE();
+    if (!highestCVE) return "bg-gray-300";
+    const score = highestCVE.score || 0;
+    if (score >= 9.0) return "bg-red-600";
+    if (score >= 7.0) return "bg-orange-600";
+    if (score >= 5.0) return "bg-yellow-500";
+    return "bg-green-600";
+  };
 
   // Initialize selected assets when item changes
   const initializeSelectedAssets = () => {
@@ -681,9 +692,11 @@ function DetailsPanel({
 
         {/* Panel */}
         <div
-          className="absolute right-0 top-0 bottom-0 w-full max-w-[912px] bg-white shadow-xl transform transition-transform overflow-y-auto"
+          className="absolute right-0 top-0 bottom-0 w-full max-w-[912px] bg-white shadow-xl transform transition-transform overflow-y-auto flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Risk Level Color Bar */}
+          <div className={`h-1 ${getHeaderLineColor()} flex-shrink-0`} />
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
             {isAssetItem ? (
@@ -959,9 +972,12 @@ function DetailsPanel({
                                   <p className="text-xs text-red-700 mt-1">
                                     {cve.title}
                                   </p>
-                                  <div className="flex gap-2 mt-1">
+                                  <div className="flex gap-2 mt-1 flex-wrap">
                                     <Badge className="bg-red-200 text-red-800 text-xs">
                                       ✓ SCANNED
+                                    </Badge>
+                                    <Badge className="bg-blue-200 text-blue-800 text-xs">
+                                      🔍 Agent Scan
                                     </Badge>
                                     <span className="text-xs text-red-700">
                                       CVSS: {cve.score.toFixed(1)} •{" "}
@@ -1269,11 +1285,9 @@ function DetailsPanel({
                                     <Badge className="bg-amber-200 text-amber-800 text-xs">
                                       ⚠️ UNSCANNED
                                     </Badge>
-                                    {!cve.scanningSupported && (
-                                      <Badge className="bg-gray-400 text-white text-xs">
-                                        🔒 Scanning Not Supported
-                                      </Badge>
-                                    )}
+                                    <Badge className="bg-purple-200 text-purple-800 text-xs">
+                                      📡 Threat Intelligence
+                                    </Badge>
                                     <span className="text-xs text-gray-700">
                                       CVSS: {cve.score.toFixed(1)} •{" "}
                                       {cve.severity.toUpperCase()}
@@ -2290,41 +2304,6 @@ function NewProjectModal({
                     )}
                   </div>
 
-                  {/* Checkboxes */}
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.incrementalScan}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            incrementalScan: e.target.checked,
-                          })
-                        }
-                        className="w-4 h-4 rounded border-gray-300"
-                      />
-                      <span className="text-sm text-gray-700 font-medium">
-                        Incremental Scan
-                      </span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.saveAsDefault}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            saveAsDefault: e.target.checked,
-                          })
-                        }
-                        className="w-4 h-4 rounded border-gray-300"
-                      />
-                      <span className="text-sm text-gray-700 font-medium">
-                        Save as default repository for the project
-                      </span>
-                    </label>
-                  </div>
                 </>
               )}
 
