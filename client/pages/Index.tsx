@@ -431,6 +431,29 @@ function DetailsPanel({
     Record<string, Record<string, boolean>>
   >({});
 
+  // Get the highest severity CVE for the panel header color
+  const getHighestSeverityCVE = () => {
+    if (isAssetItem) return null;
+    const allCVEs = [...(item.cves || []), ...marketCVEs];
+    if (allCVEs.length === 0) return null;
+    const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+    return allCVEs.reduce((prev, current) => {
+      const prevOrder = severityOrder[prev.severity as keyof typeof severityOrder] ?? 4;
+      const currentOrder = severityOrder[current.severity as keyof typeof severityOrder] ?? 4;
+      return currentOrder < prevOrder ? current : prev;
+    });
+  };
+
+  const getHeaderLineColor = () => {
+    const highestCVE = getHighestSeverityCVE();
+    if (!highestCVE) return "bg-gray-300";
+    const score = highestCVE.score || 0;
+    if (score >= 9.0) return "bg-red-600";
+    if (score >= 7.0) return "bg-orange-600";
+    if (score >= 5.0) return "bg-yellow-500";
+    return "bg-green-600";
+  };
+
   // Initialize selected assets when item changes
   const initializeSelectedAssets = () => {
     if (!isAssetItem) {
@@ -669,9 +692,11 @@ function DetailsPanel({
 
         {/* Panel */}
         <div
-          className="absolute right-0 top-0 bottom-0 w-full max-w-[912px] bg-white shadow-xl transform transition-transform overflow-y-auto"
+          className="absolute right-0 top-0 bottom-0 w-full max-w-[912px] bg-white shadow-xl transform transition-transform overflow-y-auto flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Risk Level Color Bar */}
+          <div className={`h-1 ${getHeaderLineColor()} flex-shrink-0`} />
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
             {isAssetItem ? (
