@@ -66,9 +66,12 @@ export function VulnerableLibrariesWidget({
     return { x, y };
   });
 
-  const pathData = points
-    .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`)
-    .join(" ");
+  // Calculate trend colors for each segment
+  const getSegmentColor = (currentValue: number, nextValue: number) => {
+    if (nextValue > currentValue) return "#ef4444"; // Red for uptrend
+    if (nextValue < currentValue) return "#22c55e"; // Green for downtrend
+    return "#9ca3af"; // Gray for flat
+  };
 
   return (
     <div className="space-y-0.5">
@@ -105,9 +108,9 @@ export function VulnerableLibrariesWidget({
         </div>
       </div>
 
-      {/* Open Issues Line Chart */}
+      {/* Unaddressed Risks Line Chart */}
       <div className="border-t border-gray-200 pt-0.5 relative">
-        <h5 className="text-xs font-semibold text-gray-700 mb-0.5">Open Issues</h5>
+        <h5 className="text-xs font-semibold text-gray-700 mb-0.5">Unaddressed Risks</h5>
         <div className="h-16 w-full bg-gray-50 rounded relative">
           <svg
             width="100%"
@@ -126,15 +129,28 @@ export function VulnerableLibrariesWidget({
               strokeWidth="0.5"
             />
 
-            {/* Line chart path */}
-            <path
-              d={pathData}
-              fill="none"
-              stroke="#3b82f6"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+            {/* Line segments with trend-based colors */}
+            {points.map((point, index) => {
+              if (index === points.length - 1) return null;
+              const nextPoint = points[index + 1];
+              const currentValue = issuesData[index].issues;
+              const nextValue = issuesData[index + 1].issues;
+              const color = getSegmentColor(currentValue, nextValue);
+
+              return (
+                <line
+                  key={`segment-${index}`}
+                  x1={point.x}
+                  y1={point.y}
+                  x2={nextPoint.x}
+                  y2={nextPoint.y}
+                  stroke={color}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              );
+            })}
 
             {/* Data points with hover interaction */}
             {points.map((point, index) => (
@@ -149,12 +165,14 @@ export function VulnerableLibrariesWidget({
                   onMouseLeave={() => setHoveredIndex(null)}
                   className="cursor-pointer"
                 />
-                {/* Visible data point */}
+                {/* Visible data point - always visible dots */}
                 <circle
                   cx={point.x}
                   cy={point.y}
-                  r={hoveredIndex === index ? "2.5" : "0.8"}
-                  fill={hoveredIndex === index ? "#1d4ed8" : "#3b82f6"}
+                  r={hoveredIndex === index ? "2.5" : "1.5"}
+                  fill={hoveredIndex === index ? "#1d4ed8" : "#ffffff"}
+                  stroke={hoveredIndex === index ? "#1d4ed8" : "#6b7280"}
+                  strokeWidth="1.5"
                   className="transition-all duration-200"
                 />
               </g>

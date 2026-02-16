@@ -182,17 +182,17 @@ export default function Index() {
               {/* First Row - Three widgets in single row */}
               <div className="grid grid-cols-3 gap-2">
                 {/* Vulnerable Tech Stacks Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5">
+                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
                   <VulnerableLibrariesWidget compact={true} />
                 </div>
 
                 {/* Risk by Tech Stacks Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5">
+                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
                   <RiskByTechnologiesChart compact={true} />
                 </div>
 
                 {/* Version & License Widget (Merged) */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5">
+                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
                   <VersionAndLicenseWidget compact={true} />
                 </div>
               </div>
@@ -429,6 +429,9 @@ function DetailsPanel({
   >(null);
   const [cveAssetSelections, setCVEAssetSelections] = useState<
     Record<string, Record<string, boolean>>
+  >({});
+  const [expandedRemediations, setExpandedRemediations] = useState<
+    Record<string, boolean>
   >({});
 
   // Get the highest severity CVE for the panel header color
@@ -1399,30 +1402,85 @@ function DetailsPanel({
                                     </button>
                                   )}
 
-                                  {/* Remediation Steps - Shown when scanning is not supported */}
+                                  {/* Tech Intelligence Warning & Remediation Steps - Shown when scanning is not supported */}
                                   {!cve.scanningSupported &&
                                     cve.remediationSteps && (
-                                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
-                                        <h5 className="text-xs font-semibold text-blue-900">
-                                          📋 Remediation Steps
-                                        </h5>
-                                        <div className="space-y-2">
-                                          {cve.remediationSteps.map(
-                                            (step: any, idx: number) => (
-                                              <div
-                                                key={idx}
-                                                className="text-xs text-gray-700"
-                                              >
-                                                <p className="font-semibold text-gray-900">
-                                                  Step {step.step}: {step.title}
-                                                </p>
-                                                <p className="text-gray-600 mt-1">
-                                                  {step.description}
-                                                </p>
-                                              </div>
-                                            ),
-                                          )}
+                                      <div className="space-y-2">
+                                        {/* Warning Banner for Unscannable CVE */}
+                                        <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                                          <div className="flex items-start gap-2">
+                                            <span className="text-lg flex-shrink-0 mt-0.5">
+                                              ℹ️
+                                            </span>
+                                            <div className="flex-1 min-w-0">
+                                              <p className="text-xs font-semibold text-amber-900 mb-1">
+                                                Technology Intelligence Identified
+                                              </p>
+                                              <p className="text-xs text-amber-800">
+                                                This vulnerability is identified through technology intelligence based on detected software version and external vulnerability databases. Agent-based verification is not required or applicable for this finding.
+                                              </p>
+                                            </div>
+                                          </div>
                                         </div>
+
+                                        {/* Expandable Remediation Steps */}
+                                        <button
+                                          onClick={() => {
+                                            const remKey = `${cve.id}-remediation`;
+                                            setExpandedRemediations((prev) => ({
+                                              ...prev,
+                                              [remKey]: !prev[remKey],
+                                            }));
+                                          }}
+                                          className="w-full p-3 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors text-left flex items-center justify-between"
+                                        >
+                                          <div className="flex items-center gap-2 flex-1">
+                                            <span className="text-lg flex-shrink-0">
+                                              📋
+                                            </span>
+                                            <span className="text-xs font-semibold text-blue-900">
+                                              Remediation Steps
+                                            </span>
+                                          </div>
+                                          <span
+                                            className="text-gray-400 flex-shrink-0 text-lg transition-transform"
+                                            style={{
+                                              transform: expandedRemediations[
+                                                `${cve.id}-remediation`
+                                              ]
+                                                ? "rotate(180deg)"
+                                                : "rotate(0deg)",
+                                            }}
+                                          >
+                                            ▼
+                                          </span>
+                                        </button>
+
+                                        {/* Remediation Steps Content */}
+                                        {expandedRemediations[
+                                          `${cve.id}-remediation`
+                                        ] && (
+                                          <div className="p-3 bg-white border border-blue-200 border-t-0 rounded-b-lg space-y-3">
+                                            {cve.remediationSteps.map(
+                                              (step: any, idx: number) => (
+                                                <div
+                                                  key={idx}
+                                                  className="text-xs text-gray-700 pb-2 border-b border-gray-200 last:border-b-0 last:pb-0"
+                                                >
+                                                  <p className="font-semibold text-gray-900 flex items-start gap-2">
+                                                    <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs flex-shrink-0">
+                                                      {step.step}
+                                                    </span>
+                                                    {step.title}
+                                                  </p>
+                                                  <p className="text-gray-600 mt-1 ml-7">
+                                                    {step.description}
+                                                  </p>
+                                                </div>
+                                              ),
+                                            )}
+                                          </div>
+                                        )}
                                       </div>
                                     )}
 

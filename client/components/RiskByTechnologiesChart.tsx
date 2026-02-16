@@ -82,8 +82,8 @@ export function RiskByTechnologiesChart({
         {/* Donut Chart */}
         <div className="flex-shrink-0">
           <svg
-            width="130"
-            height="130"
+            width="100"
+            height="100"
             viewBox="0 0 200 200"
             className="drop-shadow-sm"
           >
@@ -124,7 +124,7 @@ export function RiskByTechnologiesChart({
         </div>
 
         {/* Scrollable Legend Below */}
-        <div className="w-full mt-2 max-h-28 overflow-y-auto">
+        <div className="w-full mt-1 max-h-24 overflow-y-auto">
           <div className="space-y-0.5">
             {chartData.map((tech, index) => (
               <div
