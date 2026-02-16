@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 import WebApplications from "./pages/WebApplications";
 import IncidentDetails from "./pages/IncidentDetails";
 import TechStackSlideshow from "./pages/TechStackSlideshow";
+import ThreatIntel from "./pages/ThreatIntel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ const App = () => (
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/web-apps" element={<WebApplications />} />
+                    <Route path="/threat-intel" element={<ThreatIntel />} />
                     <Route
                       path="/incident/:techStackId/:cveId"
                       element={<IncidentDetails />}

@@ -66,6 +66,11 @@ export function MainNav() {
           {navProducts.map((product) => (
             <button
               key={product.id}
+              onClick={() => {
+                if (product.id === "threat-intel") {
+                  navigate("/threat-intel");
+                }
+              }}
               className={cn(
                 "px-2.5 py-1 rounded text-xs font-medium transition-all whitespace-nowrap",
                 product.id === activeProduct
@@ -203,6 +208,12 @@ export function MainNav() {
                 {navProducts.map((product) => (
                   <button
                     key={product.id}
+                    onClick={() => {
+                      if (product.id === "threat-intel") {
+                        navigate("/threat-intel");
+                        setMobileOpen(false);
+                      }
+                    }}
                     className={cn(
                       "px-2 py-1 rounded text-xs font-medium transition-colors",
                       product.id === activeProduct
