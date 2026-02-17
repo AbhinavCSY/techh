@@ -434,6 +434,7 @@ function DetailsPanel({
   onNavigateToIncident,
   onSelectAsset,
 }: DetailsPanelProps) {
+  const navigate = useNavigate();
   // Dynamically determine if the current item is an asset or tech stack
   // Assets have 'techStacks' property, tech stacks have 'version' property
   const isAssetItem = item && Array.isArray(item.techStacks) && !item.version;
