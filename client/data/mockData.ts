@@ -21,6 +21,14 @@ export interface TimelineEvent {
   description: string;
 }
 
+export interface RelatedCVE {
+  id: string;
+  title: string;
+  severity: "critical" | "high" | "medium" | "low";
+  score: number;
+  description: string;
+}
+
 export interface ThreatIntelligence {
   epssScore: number;
   exploitationStatus: "Yes" | "No" | "In the Wild";
@@ -31,6 +39,8 @@ export interface ThreatIntelligence {
   trackingSources: CVETracking[];
   geographicImpact: GeographicImpact[];
   timelineEvents: TimelineEvent[];
+  relatedCVEs?: RelatedCVE[];
+  tags?: string[];
 }
 
 export interface CVE {
@@ -189,6 +199,33 @@ const commonCVEs: Record<string, CVE[]> = {
             description: "React25Shell vulnerability (CVE-2025-55182) is actively exploited in the wild. Earth Lamia and Jackpot Panda are among the threat groups launching attacks."
           },
         ],
+        relatedCVEs: [
+          {
+            id: "CVE-2024-11968",
+            title: "Improper Neutralization of Special Elements in Output Used by a Downstream Component",
+            severity: "high",
+            score: 7.3,
+            description: "Vulnerability in downstream component rendering"
+          },
+          {
+            id: "CVE-2024-36443",
+            title: "Anonymous FTP Allows File System Read Access in Swissphone DiCal-RED 4009 Devices",
+            severity: "high",
+            score: 7.5,
+            description: "Uncontrolled file system access via FTP"
+          },
+        ],
+        tags: [
+          "Issue Names - React Server Components",
+          "Vulnerability Intelligence",
+          "Software and Web App Vulnerabilities",
+          "Public Exploit Available",
+          "Active Exploitation",
+          "CVE ID - CVE-2025-55182",
+          "CVSS - 9.8",
+          "EPSS - 87",
+          "First Exploitation Date - 2026-01-15T10:36:00Z"
+        ],
       },
     },
     {
@@ -223,6 +260,24 @@ const commonCVEs: Record<string, CVE[]> = {
         timelineEvents: [
           { date: "2024-01-20", title: "CVE Disclosed", description: "Initial public disclosure of vLLm model poisoning vulnerability" },
           { date: "2024-02-01", title: "PoC Released", description: "Proof of concept exploit published online" },
+        ],
+        relatedCVEs: [
+          {
+            id: "CVE-2024-0001",
+            title: "vLLm Remote Code Execution",
+            severity: "critical",
+            score: 9.8,
+            description: "Related RCE vulnerability in same component"
+          },
+        ],
+        tags: [
+          "Issue Names - vLLm Model Poisoning",
+          "Vulnerability Intelligence",
+          "Machine Learning Vulnerabilities",
+          "Data Integrity Impact",
+          "CVE ID - CVE-2024-0002",
+          "CVSS - 8.5",
+          "EPSS - 65",
         ],
       },
     },

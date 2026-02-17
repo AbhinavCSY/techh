@@ -270,6 +270,49 @@ export default function CVEFullDetails() {
             </div>
           </div>
         )}
+
+        {/* Related Intel Section */}
+        {threatIntel && threatIntel.relatedCVEs && threatIntel.relatedCVEs.length > 0 && (
+          <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Related Intel</h3>
+            <div className="space-y-3">
+              {threatIntel.relatedCVEs.map((relatedCVE) => (
+                <div key={relatedCVE.id} className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors cursor-pointer">
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <div className="font-semibold text-gray-900 text-sm">{relatedCVE.id}</div>
+                    <Badge className={`text-xs flex-shrink-0 ${
+                      relatedCVE.severity === 'critical' ? 'bg-red-100 text-red-800' :
+                      relatedCVE.severity === 'high' ? 'bg-orange-100 text-orange-800' :
+                      relatedCVE.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-green-100 text-green-800'
+                    }`}>
+                      {relatedCVE.severity.toUpperCase()}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-gray-700 mb-1">{relatedCVE.title}</p>
+                  <p className="text-xs text-gray-600">{relatedCVE.description}</p>
+                  <div className="mt-2 flex items-center justify-between text-xs">
+                    <span className="text-gray-600">CVSS: {relatedCVE.score.toFixed(1)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tags Section */}
+        {threatIntel && threatIntel.tags && threatIntel.tags.length > 0 && (
+          <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Tags</h3>
+            <div className="flex flex-wrap gap-2">
+              {threatIntel.tags.map((tag, idx) => (
+                <span key={idx} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
