@@ -304,6 +304,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v0.1.0 - v0.3.5",
       cwe: "CWE-400: Uncontrolled Resource Consumption",
       published: "2024-02-01",
+      scanCoverage: {
+        totalAssets: 3,
+        scannedAssets: 0,
+        unscannedAssets: 3,
+      },
     },
   ],
   Log4j: [
@@ -315,6 +320,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v2.0.0 - v2.14.1",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2021-12-10",
+      scanCoverage: {
+        totalAssets: 6,
+        scannedAssets: 3,
+        unscannedAssets: 3,
+      },
       threatIntelligence: {
         epssScore: 94,
         exploitationStatus: "In the Wild",
@@ -352,6 +362,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v2.0.0 - v2.16.0",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2021-12-13",
+      scanCoverage: {
+        totalAssets: 4,
+        scannedAssets: 1,
+        unscannedAssets: 3,
+      },
     },
   ],
   "Spring Framework": [
@@ -363,6 +378,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v5.3.0 - v5.3.17, v6.0.0 - v6.0.4",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2022-03-31",
+      scanCoverage: {
+        totalAssets: 5,
+        scannedAssets: 5,
+        unscannedAssets: 0,
+      },
     },
   ],
   React: [
@@ -374,6 +394,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v16.0.0 - v16.13.0",
       cwe: "CWE-79: Cross-site Scripting (XSS)",
       published: "2020-06-15",
+      scanCoverage: {
+        totalAssets: 7,
+        scannedAssets: 0,
+        unscannedAssets: 7,
+      },
     },
   ],
   "Node.js": [
@@ -385,6 +410,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v18.0.0 - v18.17.0, v19.0.0 - v19.9.0, v20.0.0 - v20.5.0",
       cwe: "CWE-444: Inconsistent Interpretation of HTTP Requests",
       published: "2023-05-30",
+      scanCoverage: {
+        totalAssets: 5,
+        scannedAssets: 2,
+        unscannedAssets: 3,
+      },
     },
   ],
   PostgreSQL: [
@@ -396,6 +426,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v12.0 - v12.12, v13.0 - v13.8, v14.0 - v14.5",
       cwe: "CWE-79: Cross-site Scripting (XSS)",
       published: "2022-10-13",
+      scanCoverage: {
+        totalAssets: 3,
+        scannedAssets: 3,
+        unscannedAssets: 0,
+      },
     },
   ],
   Django: [
@@ -407,6 +442,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v3.2.0 - v3.2.17, v4.0.0 - v4.1.6",
       cwe: "CWE-1333: Inefficient Regular Expression Complexity",
       published: "2023-02-01",
+      scanCoverage: {
+        totalAssets: 4,
+        scannedAssets: 1,
+        unscannedAssets: 3,
+      },
     },
   ],
   "Express.js": [
@@ -418,6 +458,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v4.0.0 - v4.17.3",
       cwe: "CWE-400: Uncontrolled Resource Consumption",
       published: "2022-04-28",
+      scanCoverage: {
+        totalAssets: 2,
+        scannedAssets: 2,
+        unscannedAssets: 0,
+      },
     },
   ],
 };

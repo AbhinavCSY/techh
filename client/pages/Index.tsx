@@ -1192,9 +1192,12 @@ function DetailsPanel({
                                       </div>
                                       <div className="space-y-1 max-h-32 overflow-y-auto">
                                         {getAssociatedAssets(item.id).map(
-                                          (asset) => {
-                                            // Determine scan status - alternate between scanned and not scanned
-                                            const isAssetScanned = scannedAssets.has(asset.id);
+                                          (asset, assetIndex) => {
+                                            // Determine scan status based on scanCoverage ratio
+                                            // Mark first N assets as scanned where N = scannedAssets count
+                                            const isAssetScanned = cve.scanCoverage
+                                              ? assetIndex < cve.scanCoverage.scannedAssets
+                                              : false;
                                             return (
                                               <label
                                                 key={asset.id}
