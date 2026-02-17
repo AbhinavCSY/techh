@@ -13,6 +13,7 @@ interface RescanRecord {
   rescannedBy: string;
   rescannedOn: string;
   scanner: string;
+  severity?: "Critical" | "High" | "Medium" | "Low";
 }
 
 // Mock data for rescan history
@@ -25,6 +26,7 @@ const mockRescanHistory: RescanRecord[] = [
     rescannedBy: "Automation User 2",
     rescannedOn: "17 Feb, 2026 01:27:37 PM",
     scanner: "Network Scanner",
+    severity: "Critical",
   },
   {
     id: "RSC-828",
@@ -34,6 +36,7 @@ const mockRescanHistory: RescanRecord[] = [
     rescannedBy: "Automation User 2",
     rescannedOn: "17 Feb, 2026 01:25:33 PM",
     scanner: "Web App Scanner",
+    severity: "High",
   },
   {
     id: "RSC-827",
@@ -43,6 +46,7 @@ const mockRescanHistory: RescanRecord[] = [
     rescannedBy: "Automation User 2",
     rescannedOn: "17 Feb, 2026 01:25:32 PM",
     scanner: "Web App Scanner",
+    severity: "Medium",
   },
   {
     id: "RSC-826",
@@ -52,6 +56,7 @@ const mockRescanHistory: RescanRecord[] = [
     rescannedBy: "Mohammad Ansar",
     rescannedOn: "16 Feb, 2026 01:00:07 PM",
     scanner: "SSL Scanner",
+    severity: "High",
   },
   {
     id: "RSC-825",
@@ -61,6 +66,7 @@ const mockRescanHistory: RescanRecord[] = [
     rescannedBy: "Automation User 2",
     rescannedOn: "04 Feb, 2026 01:25:12 PM",
     scanner: "Web App Scanner",
+    severity: "Medium",
   },
   {
     id: "RSC-824",
@@ -70,6 +76,7 @@ const mockRescanHistory: RescanRecord[] = [
     rescannedBy: "Automation User 2",
     rescannedOn: "03 Feb, 2026 01:26:44 PM",
     scanner: "Web App Scanner",
+    severity: "Low",
   },
   {
     id: "RSC-823",
@@ -158,8 +165,16 @@ export default function RescanHistory() {
     }
   }, [location]);
 
+  // Filter records - only show completed ones
+  const completedRecords = rescanRecords.filter(
+    (record) => record.scanStatus === "Completed"
+  );
+
+  // Count not scanned (In Progress + Failed)
+  const notScannedCount = rescanRecords.length - completedRecords.length;
+
   // Filter records based on search term
-  const filteredRecords = rescanRecords.filter(
+  const filteredRecords = completedRecords.filter(
     (record) =>
       record.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.issueName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -194,6 +209,41 @@ export default function RescanHistory() {
           <Badge className="bg-red-100 text-red-800 flex items-center gap-1 w-fit">
             <span className="w-2 h-2 bg-red-600 rounded-full"></span>
             Failed
+          </Badge>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const getSeverityBadge = (severity?: string) => {
+    switch (severity) {
+      case "Critical":
+        return (
+          <Badge className="bg-red-100 text-red-800 flex items-center gap-1 w-fit">
+            <span className="w-2 h-2 bg-red-600 rounded-full"></span>
+            Critical
+          </Badge>
+        );
+      case "High":
+        return (
+          <Badge className="bg-orange-100 text-orange-800 flex items-center gap-1 w-fit">
+            <span className="w-2 h-2 bg-orange-600 rounded-full"></span>
+            High
+          </Badge>
+        );
+      case "Medium":
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 flex items-center gap-1 w-fit">
+            <span className="w-2 h-2 bg-yellow-600 rounded-full"></span>
+            Medium
+          </Badge>
+        );
+      case "Low":
+        return (
+          <Badge className="bg-blue-100 text-blue-800 flex items-center gap-1 w-fit">
+            <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
+            Low
           </Badge>
         );
       default:
@@ -298,10 +348,7 @@ export default function RescanHistory() {
                   Issue Name & Module
                 </th>
                 <th className="px-6 py-3 text-left font-semibold text-gray-700">
-                  Scan Status
-                </th>
-                <th className="px-6 py-3 text-left font-semibold text-gray-700">
-                  Rescanned By
+                  Threat
                 </th>
                 <th className="px-6 py-3 text-left font-semibold text-gray-700">
                   Rescanned On
@@ -309,44 +356,54 @@ export default function RescanHistory() {
               </tr>
             </thead>
             <tbody>
-              {paginatedRecords.map((record) => (
-                <tr
-                  key={record.id}
-                  className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
-                >
-                  <td className="px-6 py-3 font-medium text-gray-900">
-                    {record.id}
-                  </td>
-                  <td className="px-6 py-3">
-                    <div className="flex flex-col gap-1">
-                      <a href="#" className="text-blue-600 hover:underline">
-                        {record.issueName}
-                      </a>
-                      <span className="text-xs text-gray-500">{record.scanner}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-3">{getStatusBadge(record.scanStatus)}</td>
-                  <td className="px-6 py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center text-xs text-white">
-                        👤
+              {paginatedRecords.length > 0 ? (
+                paginatedRecords.map((record) => (
+                  <tr
+                    key={record.id}
+                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-6 py-3 font-medium text-gray-900">
+                      {record.id}
+                    </td>
+                    <td className="px-6 py-3">
+                      <div className="flex flex-col gap-1">
+                        <a href="#" className="text-blue-600 hover:underline">
+                          {record.issueName}
+                        </a>
+                        <span className="text-xs text-gray-500">{record.scanner}</span>
                       </div>
-                      <span className="text-gray-700">{record.rescannedBy}</span>
-                    </div>
+                    </td>
+                    <td className="px-6 py-3">{getSeverityBadge(record.severity)}</td>
+                    <td className="px-6 py-3 text-gray-600">{record.rescannedOn}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className="px-6 py-6 text-center text-gray-500">
+                    No scanned results found
                   </td>
-                  <td className="px-6 py-3 text-gray-600">{record.rescannedOn}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
 
         {/* Pagination */}
         <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between bg-gray-50">
-          <span className="text-sm text-gray-600">
-            {startIndex + 1}-{Math.min(endIndex, filteredRecords.length)} of{" "}
-            {filteredRecords.length}
-          </span>
+          <div className="flex-1">
+            <span className="text-sm text-gray-600">
+              {startIndex + 1}-{Math.min(endIndex, filteredRecords.length)} of{" "}
+              {filteredRecords.length}
+            </span>
+            {notScannedCount > 0 && (
+              <div className="text-xs text-gray-500 mt-2">
+                <span className="font-medium">{notScannedCount} assets Not Scanned</span>
+                <button className="text-blue-600 hover:underline ml-2">
+                  click to view details
+                </button>
+              </div>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
