@@ -263,6 +263,12 @@ export default function IncidentDetails() {
             <div className="bg-white rounded-lg border border-gray-200 p-4">
               <h3 className="font-bold text-gray-900 mb-3">Actions</h3>
               <div className="space-y-2">
+                <Button
+                  onClick={() => navigate(`/cve-details/${cve.id}`)}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Full Details
+                </Button>
                 <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
                   <AlertTriangle className="w-4 h-4 mr-2" />
                   Create Incident

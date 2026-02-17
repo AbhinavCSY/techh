@@ -11,6 +11,7 @@ import { PasswordProtection } from "@/components/PasswordProtection";
 import Index from "./pages/Index";
 import WebApplications from "./pages/WebApplications";
 import IncidentDetails from "./pages/IncidentDetails";
+import CVEFullDetails from "./pages/CVEFullDetails";
 import TechStackSlideshow from "./pages/TechStackSlideshow";
 import ThreatIntel from "./pages/ThreatIntel";
 import NotFound from "./pages/NotFound";
@@ -47,6 +48,10 @@ const App = () => (
                     <Route
                       path="/incident/:techStackId/:cveId"
                       element={<IncidentDetails />}
+                    />
+                    <Route
+                      path="/cve-details/:cveId"
+                      element={<CVEFullDetails />}
                     />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />

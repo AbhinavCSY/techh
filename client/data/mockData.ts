@@ -1,3 +1,38 @@
+export interface IOC {
+  type: string;
+  value: string;
+  source: string;
+}
+
+export interface CVETracking {
+  platform: "twitter" | "telegram" | "reddit" | "discord" | "medium" | "others";
+  count: number;
+}
+
+export interface GeographicImpact {
+  region: string;
+  count: number;
+  color?: string;
+}
+
+export interface TimelineEvent {
+  date: string;
+  title: string;
+  description: string;
+}
+
+export interface ThreatIntelligence {
+  epssScore: number;
+  exploitationStatus: "Yes" | "No" | "In the Wild";
+  iocCount: number;
+  iocs: IOC[];
+  indicatorsOfCompromise: number;
+  sourcesMentioned: number;
+  trackingSources: CVETracking[];
+  geographicImpact: GeographicImpact[];
+  timelineEvents: TimelineEvent[];
+}
+
 export interface CVE {
   id: string;
   severity: "critical" | "high" | "medium" | "low";
@@ -6,6 +41,7 @@ export interface CVE {
   affected?: string;
   cwe?: string;
   published?: string;
+  threatIntelligence?: ThreatIntelligence;
 }
 
 export interface VersionHistory {
@@ -106,6 +142,54 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v0.1.0 - v0.4.1",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2024-01-15",
+      threatIntelligence: {
+        epssScore: 87,
+        exploitationStatus: "In the Wild",
+        iocCount: 258,
+        iocs: [
+          { type: "HOSTNAME", value: "overcome-pmc-conferencing-books.trycolu...", source: "AlienVault" },
+          { type: "HOSTNAME", value: "labdu.anondns.net", source: "AlienVault" },
+          { type: "HOSTNAME", value: "kredsec.anondns.net", source: "AlienVault" },
+        ],
+        indicatorsOfCompromise: 258,
+        sourcesMentioned: 1883,
+        trackingSources: [
+          { platform: "twitter", count: 1067 },
+          { platform: "telegram", count: 721 },
+          { platform: "medium", count: 22 },
+          { platform: "reddit", count: 20 },
+          { platform: "discord", count: 9 },
+          { platform: "others", count: 44 },
+        ],
+        geographicImpact: [
+          { region: "North America", count: 450, color: "#3b82f6" },
+          { region: "Europe", count: 320, color: "#10b981" },
+          { region: "Asia Pacific", count: 280, color: "#f59e0b" },
+          { region: "Rest of World", count: 150, color: "#8b5cf6" },
+        ],
+        timelineEvents: [
+          {
+            date: "2026-01-15",
+            title: "CVE-2025-55182: React Server Components Pre-Auth RCE",
+            description: "A critical pre-authentication remote code execution vulnerability has been identified in React Server Components versions 19.0.0 - 19.1.1"
+          },
+          {
+            date: "2025-12-09",
+            title: "React25Shell Exploit Campaigns Tied to North Korean Cyber Intrusion Tactics",
+            description: "SysRog researchers observed new campaigns exploiting React25Shell, possibly linked to North Korean hackers."
+          },
+          {
+            date: "2025-12-08",
+            title: "React25Shell (CVE-2025-55182): Critical RCE in React Server Components",
+            description: "React25Shell under active exploitation in the wild. Earth Lamia and Jackpot Panda are among the threat groups launching attacks."
+          },
+          {
+            date: "2025-12-08",
+            title: "React25Shell Under Active Exploitation by China-Nexus Hackers",
+            description: "React25Shell vulnerability (CVE-2025-55182) is actively exploited in the wild. Earth Lamia and Jackpot Panda are among the threat groups launching attacks."
+          },
+        ],
+      },
     },
     {
       id: "CVE-2024-0002",
@@ -115,6 +199,32 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v0.2.0 - v0.4.0",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2024-01-20",
+      threatIntelligence: {
+        epssScore: 65,
+        exploitationStatus: "Yes",
+        iocCount: 42,
+        iocs: [
+          { type: "HOSTNAME", value: "model-poisoning.malicious.com", source: "AlienVault" },
+          { type: "IP", value: "192.168.1.100", source: "OpenPhish" },
+        ],
+        indicatorsOfCompromise: 42,
+        sourcesMentioned: 245,
+        trackingSources: [
+          { platform: "twitter", count: 150 },
+          { platform: "telegram", count: 65 },
+          { platform: "reddit", count: 20 },
+          { platform: "discord", count: 10 },
+        ],
+        geographicImpact: [
+          { region: "North America", count: 120, color: "#3b82f6" },
+          { region: "Europe", count: 80, color: "#10b981" },
+          { region: "Asia Pacific", count: 45, color: "#f59e0b" },
+        ],
+        timelineEvents: [
+          { date: "2024-01-20", title: "CVE Disclosed", description: "Initial public disclosure of vLLm model poisoning vulnerability" },
+          { date: "2024-02-01", title: "PoC Released", description: "Proof of concept exploit published online" },
+        ],
+      },
     },
     {
       id: "CVE-2024-0003",
@@ -135,6 +245,34 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v2.0.0 - v2.14.1",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2021-12-10",
+      threatIntelligence: {
+        epssScore: 94,
+        exploitationStatus: "In the Wild",
+        iocCount: 512,
+        iocs: [
+          { type: "URL", value: "http://attacker.com/payload.jar", source: "URLhaus" },
+          { type: "IP", value: "203.0.113.42", source: "AbuseIPDB" },
+        ],
+        indicatorsOfCompromise: 512,
+        sourcesMentioned: 3421,
+        trackingSources: [
+          { platform: "twitter", count: 2100 },
+          { platform: "telegram", count: 892 },
+          { platform: "medium", count: 156 },
+          { platform: "reddit", count: 273 },
+        ],
+        geographicImpact: [
+          { region: "North America", count: 800, color: "#3b82f6" },
+          { region: "Europe", count: 600, color: "#10b981" },
+          { region: "Asia Pacific", count: 520, color: "#f59e0b" },
+          { region: "Rest of World", count: 501, color: "#8b5cf6" },
+        ],
+        timelineEvents: [
+          { date: "2021-12-10", title: "CVE-2021-44228 Disclosed", description: "Critical Log4j vulnerability publicly disclosed" },
+          { date: "2021-12-13", title: "Widespread Exploitation", description: "Mass exploitation in the wild begins" },
+          { date: "2021-12-15", title: "Patch Released", description: "Patched version released" },
+        ],
+      },
     },
     {
       id: "CVE-2021-45046",
