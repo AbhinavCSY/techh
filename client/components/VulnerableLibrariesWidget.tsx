@@ -1,6 +1,7 @@
 import { techStackDatabase } from "@/data/mockData";
-import { Shield } from "lucide-react";
+import { Shield, Info } from "lucide-react";
 import { useState } from "react";
+import { techStackDatabase } from "@/data/mockData";
 
 interface VulnerableLibrariesWidgetProps {
   compact?: boolean;
@@ -10,6 +11,8 @@ export function VulnerableLibrariesWidget({
   compact = false,
 }: VulnerableLibrariesWidgetProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [showLegend, setShowLegend] = useState(false);
+
   // Calculate vulnerable libraries by severity
   const vulnerableByType = {
     critical: techStackDatabase.filter((ts) =>
@@ -29,6 +32,12 @@ export function VulnerableLibrariesWidget({
   const totalVulnerable = Object.values(vulnerableByType).reduce(
     (a, b) => a + b,
     0,
+  );
+
+  // Calculate unscanned threats count
+  const totalUnscannedThreats = techStackDatabase.reduce(
+    (sum, ts) => sum + (ts.unscannedThreatsCount || 0),
+    0
   );
 
   // Open Issues trend data
@@ -75,12 +84,49 @@ export function VulnerableLibrariesWidget({
 
   return (
     <div className="space-y-0.5">
-      <div className="flex items-center gap-2">
-        <Shield className="w-3 h-3 text-gray-600" />
-        <h4 className="font-semibold text-gray-900 text-xs">
-          Vulnerable Tech Stacks ({totalVulnerable})
-        </h4>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Shield className="w-3 h-3 text-gray-600" />
+          <h4 className="font-semibold text-gray-900 text-xs">
+            Vulnerable Tech Stacks ({totalVulnerable})
+          </h4>
+        </div>
+        <button
+          onClick={() => setShowLegend(!showLegend)}
+          className="relative"
+        >
+          <Info className="w-3.5 h-3.5 text-gray-500 hover:text-gray-700" />
+        </button>
       </div>
+
+      {/* Threat Legend */}
+      {showLegend && (
+        <div className="bg-gray-900 text-white text-xs rounded-lg p-2 space-y-1">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-red-600"></div>
+            <span>Critical: {vulnerableByType.critical}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+            <span>High: {vulnerableByType.high}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
+            <span>Medium: {vulnerableByType.medium}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+            <span>Low: {vulnerableByType.low}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-gray-400"></div>
+            <span>Unscanned: {totalUnscannedThreats}</span>
+          </div>
+          <div className="pt-1 border-t border-gray-700 text-gray-300 text-xs">
+            Total: {totalVulnerable} scanned, {totalUnscannedThreats} unscanned
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-3 gap-1">
         {/* High Severity */}

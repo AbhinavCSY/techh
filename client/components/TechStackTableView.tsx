@@ -82,8 +82,14 @@ export function TechStackTableView({
     );
   };
 
+  // Calculate total unscanned threats
+  const totalUnscannedThreats = techStacks.reduce(
+    (sum, ts) => sum + (ts.unscannedThreatsCount || 0),
+    0
+  );
+
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="border rounded-lg overflow-hidden flex flex-col">
       <Table>
         <TableHeader className="bg-gray-50">
           <TableRow>
@@ -234,6 +240,19 @@ export function TechStackTableView({
           })}
         </TableBody>
       </Table>
+
+      {/* Not Scanned Assets Note */}
+      {totalUnscannedThreats > 0 && (
+        <div className="px-6 py-3 border-t border-gray-200 bg-gray-50 flex items-center gap-2">
+          <span className="text-xs text-gray-600">
+            <span className="font-medium">{totalUnscannedThreats} assets Not Scanned</span>
+            {" "}
+            <button className="text-blue-600 hover:underline">
+              click to view details
+            </button>
+          </span>
+        </div>
+      )}
     </div>
   );
 }
