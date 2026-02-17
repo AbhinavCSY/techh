@@ -343,7 +343,7 @@ export default function Index() {
           allAssets={assetDatabase}
           onClose={() => setShowDetails(false)}
           onNavigateToIncident={(techStackId, cveId) =>
-            navigate(`/incident/${techStackId}/${cveId}`)
+            navigate(`/cve-details/${cveId}`)
           }
           onSelectAsset={(asset) => {
             setSelectedItem(asset);
@@ -1097,7 +1097,7 @@ function DetailsPanel({
                                     </button>
                                     <button
                                       onClick={() =>
-                                        navigate(`/cve-details/${cve.id}`)
+                                        onNavigateToIncident(item.id, cve.id)
                                       }
                                       className="flex-1 py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
                                     >
@@ -1407,7 +1407,7 @@ function DetailsPanel({
                                       </button>
                                       <button
                                         onClick={() =>
-                                          navigate(`/cve-details/${cve.id}`)
+                                          onNavigateToIncident(item.id, cve.id)
                                         }
                                         className="flex-1 py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
                                       >
@@ -1417,7 +1417,7 @@ function DetailsPanel({
                                   ) : (
                                     <button
                                       onClick={() =>
-                                        navigate(`/cve-details/${cve.id}`)
+                                        onNavigateToIncident(item.id, cve.id)
                                       }
                                       className="w-full py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
                                     >
