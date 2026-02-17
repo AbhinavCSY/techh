@@ -1052,27 +1052,39 @@ function DetailsPanel({
                                     {cve.title}
                                   </p>
                                   <div className="flex gap-2 mt-1 flex-wrap">
-                                    {cve.scanCoverage ? (
-                                      <>
-                                        <Badge className={`text-xs ${
-                                          cve.scanCoverage.scannedAssets === 0
-                                            ? 'bg-gray-200 text-gray-800'
-                                            : cve.scanCoverage.scannedAssets === cve.scanCoverage.totalAssets
-                                            ? 'bg-green-200 text-green-800'
-                                            : 'bg-yellow-200 text-yellow-800'
-                                        }`}>
-                                          {cve.scanCoverage.scannedAssets === 0
-                                            ? '❌ Not Scanned'
-                                            : cve.scanCoverage.scannedAssets === cve.scanCoverage.totalAssets
-                                            ? '✓ Fully Scanned'
-                                            : `⚠️ Partially Scanned (${cve.scanCoverage.scannedAssets}/${cve.scanCoverage.totalAssets})`}
-                                        </Badge>
-                                      </>
-                                    ) : (
-                                      <Badge className="bg-red-200 text-red-800 text-xs">
-                                        ✓ SCANNED
-                                      </Badge>
-                                    )}
+                                    {(() => {
+                                      const associatedAssets = getAssociatedAssets(item.id);
+                                      if (!cve.scanCoverage) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      }
+
+                                      // Calculate scanned assets for this specific tech stack
+                                      const scannedInThisStack = Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length);
+
+                                      if (scannedInThisStack === 0) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      } else if (scannedInThisStack === associatedAssets.length) {
+                                        return (
+                                          <Badge className="bg-green-200 text-green-800 text-xs">
+                                            ✓ Fully Scanned
+                                          </Badge>
+                                        );
+                                      } else {
+                                        return (
+                                          <Badge className="bg-yellow-200 text-yellow-800 text-xs">
+                                            ⚠️ Partially Scanned ({scannedInThisStack}/{associatedAssets.length})
+                                          </Badge>
+                                        );
+                                      }
+                                    })()}
                                     <Badge className="bg-blue-200 text-blue-800 text-xs">
                                       🔍 Agent Scan
                                     </Badge>
@@ -1393,25 +1405,39 @@ function DetailsPanel({
                                     {cve.title}
                                   </p>
                                   <div className="flex gap-2 mt-1 flex-wrap">
-                                    {cve.scanCoverage ? (
-                                      <Badge className={`text-xs ${
-                                        cve.scanCoverage.scannedAssets === 0
-                                          ? 'bg-gray-200 text-gray-800'
-                                          : cve.scanCoverage.scannedAssets === cve.scanCoverage.totalAssets
-                                          ? 'bg-green-200 text-green-800'
-                                          : 'bg-yellow-200 text-yellow-800'
-                                      }`}>
-                                        {cve.scanCoverage.scannedAssets === 0
-                                          ? '❌ Not Scanned'
-                                          : cve.scanCoverage.scannedAssets === cve.scanCoverage.totalAssets
-                                          ? '✓ Fully Scanned'
-                                          : `⚠️ Partially Scanned (${cve.scanCoverage.scannedAssets}/${cve.scanCoverage.totalAssets})`}
-                                      </Badge>
-                                    ) : (
-                                      <Badge className="bg-gray-200 text-gray-800 text-xs">
-                                        ❌ Not Scanned
-                                      </Badge>
-                                    )}
+                                    {(() => {
+                                      const associatedAssets = getAssociatedAssets(item.id);
+                                      if (!cve.scanCoverage) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      }
+
+                                      // Calculate scanned assets for this specific tech stack
+                                      const scannedInThisStack = Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length);
+
+                                      if (scannedInThisStack === 0) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      } else if (scannedInThisStack === associatedAssets.length) {
+                                        return (
+                                          <Badge className="bg-green-200 text-green-800 text-xs">
+                                            ✓ Fully Scanned
+                                          </Badge>
+                                        );
+                                      } else {
+                                        return (
+                                          <Badge className="bg-yellow-200 text-yellow-800 text-xs">
+                                            ⚠️ Partially Scanned ({scannedInThisStack}/{associatedAssets.length})
+                                          </Badge>
+                                        );
+                                      }
+                                    })()}
                                     <Badge className="bg-purple-200 text-purple-800 text-xs">
                                       📡 Threat Intelligence
                                     </Badge>
