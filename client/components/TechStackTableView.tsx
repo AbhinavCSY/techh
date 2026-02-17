@@ -89,7 +89,7 @@ export function TechStackTableView({
   );
 
   return (
-    <div className="border rounded-lg overflow-hidden flex flex-col">
+    <div className="border rounded-lg overflow-hidden">
       <Table>
         <TableHeader className="bg-gray-50">
           <TableRow>
