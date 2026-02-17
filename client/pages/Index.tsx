@@ -932,33 +932,56 @@ function DetailsPanel({
                         🛡️ Threat Intel
                       </h4>
 
-                      {/* Summary Stats */}
-                      <div className="grid grid-cols-3 gap-2 mb-4">
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-2 text-center">
-                          <p className="text-xs text-gray-600 font-medium">
-                            Scanned
-                          </p>
-                          <p className="text-lg font-bold text-red-900">
-                            {item.cves.length}
-                          </p>
-                        </div>
-                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-2 text-center">
-                          <p className="text-xs text-gray-600 font-medium">
-                            Unscanned
-                          </p>
-                          <p className="text-lg font-bold text-amber-900">
-                            {marketCVEs.length}
-                          </p>
-                        </div>
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-center">
-                          <p className="text-xs text-gray-600 font-medium">
-                            Total
-                          </p>
-                          <p className="text-lg font-bold text-blue-900">
-                            {item.cves.length + marketCVEs.length}
-                          </p>
-                        </div>
-                      </div>
+                      {/* Summary Stats - Updated for Scan Coverage */}
+                      {(() => {
+                        const allCVEs = [...(item.cves || []), ...marketCVEs];
+                        const fullyScanned = allCVEs.filter((cve: any) =>
+                          cve.scanCoverage ? cve.scanCoverage.scannedAssets === cve.scanCoverage.totalAssets : false
+                        ).length;
+                        const partiallyScanned = allCVEs.filter((cve: any) =>
+                          cve.scanCoverage ? (cve.scanCoverage.scannedAssets > 0 && cve.scanCoverage.scannedAssets < cve.scanCoverage.totalAssets) : false
+                        ).length;
+                        const notScanned = allCVEs.filter((cve: any) =>
+                          !cve.scanCoverage || cve.scanCoverage.scannedAssets === 0
+                        ).length;
+
+                        return (
+                          <div className="grid grid-cols-2 gap-2 mb-4">
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-2 text-center">
+                              <p className="text-xs text-gray-600 font-medium">
+                                Fully Scanned
+                              </p>
+                              <p className="text-lg font-bold text-green-900">
+                                {fullyScanned}
+                              </p>
+                            </div>
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2 text-center">
+                              <p className="text-xs text-gray-600 font-medium">
+                                Partially Scanned
+                              </p>
+                              <p className="text-lg font-bold text-yellow-900">
+                                {partiallyScanned}
+                              </p>
+                            </div>
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-2 text-center">
+                              <p className="text-xs text-gray-600 font-medium">
+                                Not Scanned
+                              </p>
+                              <p className="text-lg font-bold text-gray-900">
+                                {notScanned}
+                              </p>
+                            </div>
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-center">
+                              <p className="text-xs text-gray-600 font-medium">
+                                Total CVEs
+                              </p>
+                              <p className="text-lg font-bold text-blue-900">
+                                {allCVEs.length}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })()}
 
                       {/* Threats List - Combined Scanned and Unscanned */}
                       <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -999,9 +1022,27 @@ function DetailsPanel({
                                     {cve.title}
                                   </p>
                                   <div className="flex gap-2 mt-1 flex-wrap">
-                                    <Badge className="bg-red-200 text-red-800 text-xs">
-                                      ✓ SCANNED
-                                    </Badge>
+                                    {cve.scanCoverage ? (
+                                      <>
+                                        <Badge className={`text-xs ${
+                                          cve.scanCoverage.scannedAssets === 0
+                                            ? 'bg-gray-200 text-gray-800'
+                                            : cve.scanCoverage.scannedAssets === cve.scanCoverage.totalAssets
+                                            ? 'bg-green-200 text-green-800'
+                                            : 'bg-yellow-200 text-yellow-800'
+                                        }`}>
+                                          {cve.scanCoverage.scannedAssets === 0
+                                            ? '❌ Not Scanned'
+                                            : cve.scanCoverage.scannedAssets === cve.scanCoverage.totalAssets
+                                            ? '✓ Fully Scanned'
+                                            : `⚠️ Partially Scanned (${cve.scanCoverage.scannedAssets}/${cve.scanCoverage.totalAssets})`}
+                                        </Badge>
+                                      </>
+                                    ) : (
+                                      <Badge className="bg-red-200 text-red-800 text-xs">
+                                        ✓ SCANNED
+                                      </Badge>
+                                    )}
                                     <Badge className="bg-blue-200 text-blue-800 text-xs">
                                       🔍 Agent Scan
                                     </Badge>
@@ -1151,39 +1192,50 @@ function DetailsPanel({
                                       </div>
                                       <div className="space-y-1 max-h-32 overflow-y-auto">
                                         {getAssociatedAssets(item.id).map(
-                                          (asset) => (
-                                            <label
-                                              key={asset.id}
-                                              className="flex items-center gap-2 cursor-pointer text-xs"
-                                            >
-                                              <input
-                                                type="checkbox"
-                                                checked={
-                                                  cveAssetSelections[
-                                                    `scanned-${cve.id}`
-                                                  ]?.[asset.id] || false
-                                                }
-                                                onChange={(e) => {
-                                                  setCVEAssetSelections(
-                                                    (prev) => ({
-                                                      ...prev,
-                                                      [`scanned-${cve.id}`]: {
-                                                        ...prev[
-                                                          `scanned-${cve.id}`
-                                                        ],
-                                                        [asset.id]:
-                                                          e.target.checked,
-                                                      },
-                                                    }),
-                                                  );
-                                                }}
-                                                className="w-4 h-4 rounded"
-                                              />
-                                              <span className="text-gray-700">
-                                                {asset.name}
-                                              </span>
-                                            </label>
-                                          ),
+                                          (asset) => {
+                                            // Determine scan status - alternate between scanned and not scanned
+                                            const isAssetScanned = scannedAssets.has(asset.id);
+                                            return (
+                                              <label
+                                                key={asset.id}
+                                                className="flex items-center gap-2 cursor-pointer text-xs p-1 hover:bg-gray-100 rounded"
+                                              >
+                                                <input
+                                                  type="checkbox"
+                                                  checked={
+                                                    cveAssetSelections[
+                                                      `scanned-${cve.id}`
+                                                    ]?.[asset.id] || false
+                                                  }
+                                                  onChange={(e) => {
+                                                    setCVEAssetSelections(
+                                                      (prev) => ({
+                                                        ...prev,
+                                                        [`scanned-${cve.id}`]: {
+                                                          ...prev[
+                                                            `scanned-${cve.id}`
+                                                          ],
+                                                          [asset.id]:
+                                                            e.target.checked,
+                                                        },
+                                                      }),
+                                                    );
+                                                  }}
+                                                  className="w-4 h-4 rounded"
+                                                />
+                                                <span className="text-gray-700 flex-1">
+                                                  {asset.name}
+                                                </span>
+                                                <span className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                                                  isAssetScanned
+                                                    ? 'bg-green-100 text-green-700'
+                                                    : 'bg-gray-100 text-gray-600'
+                                                }`}>
+                                                  {isAssetScanned ? '✓ Scanned' : 'Not scanned'}
+                                                </span>
+                                              </label>
+                                            );
+                                          },
                                         )}
                                       </div>
                                       <button

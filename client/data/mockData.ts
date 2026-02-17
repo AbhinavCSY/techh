@@ -52,6 +52,11 @@ export interface CVE {
   cwe?: string;
   published?: string;
   threatIntelligence?: ThreatIntelligence;
+  scanCoverage?: {
+    totalAssets: number;
+    scannedAssets: number;
+    unscannedAssets: number;
+  };
 }
 
 export interface VersionHistory {
@@ -152,6 +157,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v0.1.0 - v0.4.1",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2024-01-15",
+      scanCoverage: {
+        totalAssets: 5,
+        scannedAssets: 2,
+        unscannedAssets: 3,
+      },
       threatIntelligence: {
         epssScore: 87,
         exploitationStatus: "In the Wild",
@@ -236,6 +246,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v0.2.0 - v0.4.0",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2024-01-20",
+      scanCoverage: {
+        totalAssets: 4,
+        scannedAssets: 4,
+        unscannedAssets: 0,
+      },
       threatIntelligence: {
         epssScore: 65,
         exploitationStatus: "Yes",
