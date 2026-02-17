@@ -1097,7 +1097,7 @@ function DetailsPanel({
                                     </button>
                                     <button
                                       onClick={() =>
-                                        onNavigateToIncident(item.id, cve.id)
+                                        navigate(`/cve-details/${cve.id}`)
                                       }
                                       className="flex-1 py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
                                     >
@@ -1407,7 +1407,7 @@ function DetailsPanel({
                                       </button>
                                       <button
                                         onClick={() =>
-                                          onNavigateToIncident(item.id, cve.id)
+                                          navigate(`/cve-details/${cve.id}`)
                                         }
                                         className="flex-1 py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
                                       >
@@ -1417,7 +1417,7 @@ function DetailsPanel({
                                   ) : (
                                     <button
                                       onClick={() =>
-                                        onNavigateToIncident(item.id, cve.id)
+                                        navigate(`/cve-details/${cve.id}`)
                                       }
                                       className="w-full py-2 px-2 rounded text-xs font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
                                     >
