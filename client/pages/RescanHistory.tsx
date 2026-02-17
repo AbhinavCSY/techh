@@ -351,6 +351,9 @@ export default function RescanHistory() {
                   Threat
                 </th>
                 <th className="px-6 py-3 text-left font-semibold text-gray-700">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left font-semibold text-gray-700">
                   Rescanned On
                 </th>
               </tr>
@@ -374,12 +377,13 @@ export default function RescanHistory() {
                       </div>
                     </td>
                     <td className="px-6 py-3">{getSeverityBadge(record.severity)}</td>
+                    <td className="px-6 py-3">{getStatusBadge(record.scanStatus)}</td>
                     <td className="px-6 py-3 text-gray-600">{record.rescannedOn}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="px-6 py-6 text-center text-gray-500">
+                  <td colSpan={5} className="px-6 py-6 text-center text-gray-500">
                     No scanned results found
                   </td>
                 </tr>
