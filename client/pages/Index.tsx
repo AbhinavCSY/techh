@@ -1054,6 +1054,16 @@ function DetailsPanel({
                                   <div className="flex gap-2 mt-1 flex-wrap">
                                     {(() => {
                                       const associatedAssets = getAssociatedAssets(item.id);
+
+                                      // If not scannable (threat intelligence only), always show "Not Scanned"
+                                      if (cve.scanningSupported === false) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      }
+
                                       if (!cve.scanCoverage) {
                                         return (
                                           <Badge className="bg-gray-200 text-gray-800 text-xs">
@@ -1421,6 +1431,16 @@ function DetailsPanel({
                                   <div className="flex gap-2 mt-1 flex-wrap">
                                     {(() => {
                                       const associatedAssets = getAssociatedAssets(item.id);
+
+                                      // If not scannable (threat intelligence only), always show "Not Scanned"
+                                      if (cve.scanningSupported === false) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      }
+
                                       if (!cve.scanCoverage) {
                                         return (
                                           <Badge className="bg-gray-200 text-gray-800 text-xs">
