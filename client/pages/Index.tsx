@@ -1191,11 +1191,23 @@ function DetailsPanel({
                                   {/* Asset Selection for Scanned CVE */}
                                   {selectedCVEForAssets ===
                                     `scanned-${cve.id}` && (
-                                    <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
+                                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
                                       <div className="flex items-center justify-between mb-2">
-                                        <label className="text-xs font-semibold text-gray-700">
-                                          Select Assets to Scan
-                                        </label>
+                                        <div>
+                                          <label className="text-xs font-semibold text-gray-900">
+                                            Assets Status
+                                          </label>
+                                          <p className="text-xs text-gray-600 mt-0.5">
+                                            {(() => {
+                                              const associatedAssets = getAssociatedAssets(item.id);
+                                              const scannedCount = cve.scanCoverage
+                                                ? Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length)
+                                                : 0;
+                                              const notScannedCount = associatedAssets.length - scannedCount;
+                                              return `${scannedCount} scanned • ${notScannedCount} not scanned`;
+                                            })()}
+                                          </p>
+                                        </div>
                                         <button
                                           onClick={() => {
                                             const allAssets =
@@ -1232,14 +1244,16 @@ function DetailsPanel({
                                             : "Select All"}
                                         </button>
                                       </div>
-                                      <div className="space-y-1 max-h-32 overflow-y-auto">
+                                      <div className="space-y-1 max-h-40 overflow-y-auto">
                                         {getAssociatedAssets(item.id).map(
                                           (asset, assetIndex) => {
                                             // Determine scan status based on scanCoverage ratio
-                                            // Mark first N assets as scanned where N = scannedAssets count
-                                            const isAssetScanned = cve.scanCoverage
-                                              ? assetIndex < cve.scanCoverage.scannedAssets
-                                              : false;
+                                            // Mark first N assets as scanned where N = Math.min(scannedAssets, totalAssociatedAssets)
+                                            const associatedAssets = getAssociatedAssets(item.id);
+                                            const scannedCount = cve.scanCoverage
+                                              ? Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length)
+                                              : 0;
+                                            const isAssetScanned = assetIndex < scannedCount;
                                             return (
                                               <label
                                                 key={asset.id}
@@ -1638,11 +1652,23 @@ function DetailsPanel({
                                   {cve.scanningSupported &&
                                     selectedCVEForAssets ===
                                       `market-${cve.id}` && (
-                                      <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
+                                      <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
                                         <div className="flex items-center justify-between mb-2">
-                                          <label className="text-xs font-semibold text-gray-700">
-                                            Select Assets to Scan
-                                          </label>
+                                          <div>
+                                            <label className="text-xs font-semibold text-gray-900">
+                                              Assets Status
+                                            </label>
+                                            <p className="text-xs text-gray-600 mt-0.5">
+                                              {(() => {
+                                                const associatedAssets = getAssociatedAssets(item.id);
+                                                const scannedCount = cve.scanCoverage
+                                                  ? Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length)
+                                                  : 0;
+                                                const notScannedCount = associatedAssets.length - scannedCount;
+                                                return `${scannedCount} scanned • ${notScannedCount} not scanned`;
+                                              })()}
+                                            </p>
+                                          </div>
                                           <button
                                             onClick={() => {
                                               const allAssets =
@@ -1681,41 +1707,56 @@ function DetailsPanel({
                                               : "Select All"}
                                           </button>
                                         </div>
-                                        <div className="space-y-1 max-h-32 overflow-y-auto">
+                                        <div className="space-y-1 max-h-40 overflow-y-auto">
                                           {getAssociatedAssets(item.id).map(
-                                            (asset) => (
-                                              <label
-                                                key={asset.id}
-                                                className="flex items-center gap-2 cursor-pointer text-xs"
-                                              >
-                                                <input
-                                                  type="checkbox"
-                                                  checked={
-                                                    cveAssetSelections[
-                                                      `market-${cve.id}`
-                                                    ]?.[asset.id] || false
-                                                  }
-                                                  onChange={(e) => {
-                                                    setCVEAssetSelections(
-                                                      (prev) => ({
-                                                        ...prev,
-                                                        [`market-${cve.id}`]: {
-                                                          ...prev[
-                                                            `market-${cve.id}`
-                                                          ],
-                                                          [asset.id]:
-                                                            e.target.checked,
-                                                        },
-                                                      }),
-                                                    );
-                                                  }}
-                                                  className="w-4 h-4 rounded"
-                                                />
-                                                <span className="text-gray-700">
-                                                  {asset.name}
-                                                </span>
-                                              </label>
-                                            ),
+                                            (asset, assetIndex) => {
+                                              const associatedAssets = getAssociatedAssets(item.id);
+                                              const scannedCount = cve.scanCoverage
+                                                ? Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length)
+                                                : 0;
+                                              const isAssetScanned = assetIndex < scannedCount;
+
+                                              return (
+                                                <label
+                                                  key={asset.id}
+                                                  className="flex items-center gap-2 cursor-pointer text-xs p-1 hover:bg-gray-100 rounded"
+                                                >
+                                                  <input
+                                                    type="checkbox"
+                                                    checked={
+                                                      cveAssetSelections[
+                                                        `market-${cve.id}`
+                                                      ]?.[asset.id] || false
+                                                    }
+                                                    onChange={(e) => {
+                                                      setCVEAssetSelections(
+                                                        (prev) => ({
+                                                          ...prev,
+                                                          [`market-${cve.id}`]: {
+                                                            ...prev[
+                                                              `market-${cve.id}`
+                                                            ],
+                                                            [asset.id]:
+                                                              e.target.checked,
+                                                          },
+                                                        }),
+                                                      );
+                                                    }}
+                                                    className="w-4 h-4 rounded"
+                                                  />
+                                                  <span className="text-gray-700 flex-1">
+                                                    {asset.name}
+                                                  </span>
+                                                  <span className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                                                    isAssetScanned
+                                                      ? 'bg-green-100 text-green-700'
+                                                      : 'bg-gray-100 text-gray-600'
+                                                  }`}>
+                                                    {isAssetScanned ? '✓ Scanned' : 'Not scanned'}
+                                                  </span>
+                                                </label>
+                                              );
+                                            }
                                           )}
                                         </div>
                                         <button
