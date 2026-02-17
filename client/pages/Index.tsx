@@ -506,6 +506,11 @@ function DetailsPanel({
       cwe: "CWE-94: Improper Control of Generation of Code",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-1086"],
       scanningSupported: true,
+      scanCoverage: {
+        totalAssets: 5,
+        scannedAssets: 0,
+        unscannedAssets: 5,
+      },
     },
     {
       id: "CVE-2024-2156",
@@ -519,6 +524,11 @@ function DetailsPanel({
       cwe: "CWE-89: SQL Injection",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-2156"],
       scanningSupported: false,
+      scanCoverage: {
+        totalAssets: 4,
+        scannedAssets: 2,
+        unscannedAssets: 2,
+      },
       remediationSteps: [
         {
           step: 1,
@@ -557,6 +567,11 @@ function DetailsPanel({
       cwe: "CWE-79: Cross-site Scripting (XSS)",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-3421"],
       scanningSupported: true,
+      scanCoverage: {
+        totalAssets: 3,
+        scannedAssets: 3,
+        unscannedAssets: 0,
+      },
     },
     {
       id: "CVE-2024-4567",
@@ -570,6 +585,11 @@ function DetailsPanel({
       cwe: "CWE-22: Improper Limitation of a Pathname",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-4567"],
       scanningSupported: false,
+      scanCoverage: {
+        totalAssets: 6,
+        scannedAssets: 1,
+        unscannedAssets: 5,
+      },
       remediationSteps: [
         {
           step: 1,
@@ -602,6 +622,11 @@ function DetailsPanel({
       cwe: "CWE-502: Deserialization of Untrusted Data",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-5678"],
       scanningSupported: true,
+      scanCoverage: {
+        totalAssets: 5,
+        scannedAssets: 4,
+        unscannedAssets: 1,
+      },
     },
     {
       id: "CVE-2024-6789",
@@ -615,6 +640,11 @@ function DetailsPanel({
       cwe: "CWE-400: Uncontrolled Resource Consumption",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-6789"],
       scanningSupported: false,
+      scanCoverage: {
+        totalAssets: 7,
+        scannedAssets: 0,
+        unscannedAssets: 7,
+      },
       remediationSteps: [
         {
           step: 1,
@@ -1363,9 +1393,25 @@ function DetailsPanel({
                                     {cve.title}
                                   </p>
                                   <div className="flex gap-2 mt-1 flex-wrap">
-                                    <Badge className="bg-amber-200 text-amber-800 text-xs">
-                                      ⚠️ UNSCANNED
-                                    </Badge>
+                                    {cve.scanCoverage ? (
+                                      <Badge className={`text-xs ${
+                                        cve.scanCoverage.scannedAssets === 0
+                                          ? 'bg-gray-200 text-gray-800'
+                                          : cve.scanCoverage.scannedAssets === cve.scanCoverage.totalAssets
+                                          ? 'bg-green-200 text-green-800'
+                                          : 'bg-yellow-200 text-yellow-800'
+                                      }`}>
+                                        {cve.scanCoverage.scannedAssets === 0
+                                          ? '❌ Not Scanned'
+                                          : cve.scanCoverage.scannedAssets === cve.scanCoverage.totalAssets
+                                          ? '✓ Fully Scanned'
+                                          : `⚠️ Partially Scanned (${cve.scanCoverage.scannedAssets}/${cve.scanCoverage.totalAssets})`}
+                                      </Badge>
+                                    ) : (
+                                      <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                        ❌ Not Scanned
+                                      </Badge>
+                                    )}
                                     <Badge className="bg-purple-200 text-purple-800 text-xs">
                                       📡 Threat Intelligence
                                     </Badge>
