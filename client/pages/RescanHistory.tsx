@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, Search, Filter } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -94,41 +94,69 @@ const mockRescanHistory: RescanRecord[] = [
 export default function RescanHistory() {
   const navigate = useNavigate();
   const location = useLocation();
+  const processedStateRef = useRef<string | null>(null);
   const [activeTab, setActiveTab] = useState<"Events" | "Incidents">("Events");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rescanRecords, setRescanRecords] = useState<RescanRecord[]>(mockRescanHistory);
   const itemsPerPage = 25;
 
-  // Handle incoming CVE from navigation state
+  // Handle incoming CVE from navigation state or localStorage
   useEffect(() => {
     const state = location.state as any;
-    if (state && state.cveId && state.cveName) {
-      const newRecord: RescanRecord = {
-        id: `RSC-${Math.random().toString().substring(2, 5)}`,
-        issueName: state.cveName,
-        module: state.scanner,
-        scanStatus: "In Progress",
-        rescannedBy: "Automation User 2",
-        rescannedOn: new Date().toLocaleString(),
-        scanner: state.scanner,
-      };
+    let cveData = state;
 
-      // Add new record to the beginning
-      setRescanRecords((prev) => [newRecord, ...prev]);
-
-      // Change status to Completed after 2 seconds
-      setTimeout(() => {
-        setRescanRecords((prev) =>
-          prev.map((record) =>
-            record.id === newRecord.id
-              ? { ...record, scanStatus: "Completed" }
-              : record
-          )
-        );
-      }, 2000);
+    // If state is not available, check localStorage
+    if (!cveData || !cveData.cveId) {
+      const storedData = localStorage.getItem("pendingCVEScan");
+      if (storedData) {
+        try {
+          cveData = JSON.parse(storedData);
+          // Clear the stored data so we don't add it multiple times
+          localStorage.removeItem("pendingCVEScan");
+        } catch (e) {
+          cveData = null;
+        }
+      }
     }
-  }, [location.state]);
+
+    if (cveData && cveData.cveId && cveData.cveName) {
+      const stateKey = `${cveData.cveId}-${cveData.timestamp || "new"}`;
+
+      // Check if we've already processed this state to avoid duplicates
+      if (processedStateRef.current !== stateKey) {
+        processedStateRef.current = stateKey;
+
+        const newRecord: RescanRecord = {
+          id: `RSC-${Math.floor(Math.random() * 10000)}`,
+          issueName: cveData.cveName,
+          module: cveData.scanner,
+          scanStatus: "In Progress",
+          rescannedBy: "Automation User 2",
+          rescannedOn: new Date().toLocaleString(),
+          scanner: cveData.scanner,
+        };
+
+        console.log("Adding new record:", newRecord);
+
+        // Add new record to the beginning
+        setRescanRecords((prev) => [newRecord, ...prev]);
+
+        // Change status to Completed after 2 seconds
+        const timeout = setTimeout(() => {
+          setRescanRecords((prev) =>
+            prev.map((record) =>
+              record.id === newRecord.id
+                ? { ...record, scanStatus: "Completed" }
+                : record
+            )
+          );
+        }, 2000);
+
+        return () => clearTimeout(timeout);
+      }
+    }
+  }, [location]);
 
   // Filter records based on search term
   const filteredRecords = rescanRecords.filter(

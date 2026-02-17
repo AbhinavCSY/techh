@@ -1325,12 +1325,15 @@ function DetailsPanel({
                                             setSelectedCVEForAssets(null);
                                             // Navigate to rescan history after scan completes
                                             setTimeout(() => {
+                                              const cveData = {
+                                                cveId: cve.id,
+                                                cveName: cve.name,
+                                                scanner: item.name,
+                                                timestamp: new Date().getTime(),
+                                              };
+                                              localStorage.setItem("pendingCVEScan", JSON.stringify(cveData));
                                               navigate("/rescan-history", {
-                                                state: {
-                                                  cveId: cve.id,
-                                                  cveName: cve.name,
-                                                  scanner: item.name,
-                                                }
+                                                state: cveData
                                               });
                                             }, 1500);
                                           }
@@ -1808,12 +1811,15 @@ function DetailsPanel({
                                               setSelectedCVEForAssets(null);
                                               // Navigate to rescan history after scan completes
                                               setTimeout(() => {
+                                                const cveData = {
+                                                  cveId: cve.id,
+                                                  cveName: cve.name,
+                                                  scanner: item.name,
+                                                  timestamp: new Date().getTime(),
+                                                };
+                                                localStorage.setItem("pendingCVEScan", JSON.stringify(cveData));
                                                 navigate("/rescan-history", {
-                                                  state: {
-                                                    cveId: cve.id,
-                                                    cveName: cve.name,
-                                                    scanner: item.name,
-                                                  }
+                                                  state: cveData
                                                 });
                                               }, 1500);
                                             }
