@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, Search, Filter } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -93,13 +93,45 @@ const mockRescanHistory: RescanRecord[] = [
 
 export default function RescanHistory() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState<"Events" | "Incidents">("Events");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [rescanRecords, setRescanRecords] = useState<RescanRecord[]>(mockRescanHistory);
   const itemsPerPage = 25;
 
+  // Handle incoming CVE from navigation state
+  useEffect(() => {
+    const state = location.state as any;
+    if (state && state.cveId && state.cveName) {
+      const newRecord: RescanRecord = {
+        id: `RSC-${Math.random().toString().substring(2, 5)}`,
+        issueName: state.cveName,
+        module: state.scanner,
+        scanStatus: "In Progress",
+        rescannedBy: "Automation User 2",
+        rescannedOn: new Date().toLocaleString(),
+        scanner: state.scanner,
+      };
+
+      // Add new record to the beginning
+      setRescanRecords((prev) => [newRecord, ...prev]);
+
+      // Change status to Completed after 2 seconds
+      setTimeout(() => {
+        setRescanRecords((prev) =>
+          prev.map((record) =>
+            record.id === newRecord.id
+              ? { ...record, scanStatus: "Completed" }
+              : record
+          )
+        );
+      }, 2000);
+    }
+  }, [location.state]);
+
   // Filter records based on search term
-  const filteredRecords = mockRescanHistory.filter(
+  const filteredRecords = rescanRecords.filter(
     (record) =>
       record.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.issueName.toLowerCase().includes(searchTerm.toLowerCase()) ||

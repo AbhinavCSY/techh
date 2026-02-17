@@ -1325,7 +1325,13 @@ function DetailsPanel({
                                             setSelectedCVEForAssets(null);
                                             // Navigate to rescan history after scan completes
                                             setTimeout(() => {
-                                              navigate("/rescan-history");
+                                              navigate("/rescan-history", {
+                                                state: {
+                                                  cveId: cve.id,
+                                                  cveName: cve.name,
+                                                  scanner: item.name,
+                                                }
+                                              });
                                             }, 1500);
                                           }
                                         }}
@@ -1802,7 +1808,13 @@ function DetailsPanel({
                                               setSelectedCVEForAssets(null);
                                               // Navigate to rescan history after scan completes
                                               setTimeout(() => {
-                                                navigate("/rescan-history");
+                                                navigate("/rescan-history", {
+                                                  state: {
+                                                    cveId: cve.id,
+                                                    cveName: cve.name,
+                                                    scanner: item.name,
+                                                  }
+                                                });
                                               }, 1500);
                                             }
                                           }}
