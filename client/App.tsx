@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 import WebApplications from "./pages/WebApplications";
 import IncidentDetails from "./pages/IncidentDetails";
 import CVEFullDetails from "./pages/CVEFullDetails";
+import RescanHistory from "./pages/RescanHistory";
 import TechStackSlideshow from "./pages/TechStackSlideshow";
 import ThreatIntel from "./pages/ThreatIntel";
 import NotFound from "./pages/NotFound";
@@ -52,6 +53,10 @@ const App = () => (
                     <Route
                       path="/cve-details/:cveId"
                       element={<CVEFullDetails />}
+                    />
+                    <Route
+                      path="/rescan-history"
+                      element={<RescanHistory />}
                     />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />

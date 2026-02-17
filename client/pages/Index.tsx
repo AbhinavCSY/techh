@@ -1322,6 +1322,10 @@ function DetailsPanel({
                                           if (selectedAssetIds.length > 0) {
                                             handleScanCVE(cve.id, item.id);
                                             setSelectedCVEForAssets(null);
+                                            // Navigate to rescan history after scan completes
+                                            setTimeout(() => {
+                                              navigate("/rescan-history");
+                                            }, 1500);
                                           }
                                         }}
                                         disabled={
@@ -1795,6 +1799,10 @@ function DetailsPanel({
                                             if (selectedAssetIds.length > 0) {
                                               handleScanCVE(cve.id, item.id);
                                               setSelectedCVEForAssets(null);
+                                              // Navigate to rescan history after scan completes
+                                              setTimeout(() => {
+                                                navigate("/rescan-history");
+                                              }, 1500);
                                             }
                                           }}
                                           disabled={
