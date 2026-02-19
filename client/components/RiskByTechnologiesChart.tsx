@@ -19,7 +19,6 @@ export function RiskByTechnologiesChart({
   compact = false,
 }: RiskByTechnologiesChartProps) {
   const [hoveredTech, setHoveredTech] = useState<string | null>(null);
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
   // Technology vulnerability data with severity breakdown
   const technologyData: TechData[] = [
@@ -94,6 +93,40 @@ export function RiskByTechnologiesChart({
       <div className="flex flex-col items-center relative">
         {/* Donut Chart */}
         <div className="flex-shrink-0 relative">
+          {/* Tooltip on hover - positioned above chart */}
+          {hoveredTech && (
+            <div className="absolute -top-32 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg p-3 w-52 shadow-lg whitespace-normal z-50">
+              {(() => {
+                const hoveredData = chartData.find((t) => t.name === hoveredTech);
+                if (!hoveredData) return null;
+                return (
+                  <div className="space-y-2">
+                    <div className="font-semibold">{hoveredData.name}</div>
+                    <div className="text-gray-300">Total: {(hoveredData.vulnerabilities / 1000).toFixed(1)}K</div>
+                    <div className="pt-1 border-t border-gray-700 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-red-600 flex-shrink-0"></div>
+                        <span>Critical: {hoveredData.critical}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0"></div>
+                        <span>High: {hoveredData.high}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-yellow-400 flex-shrink-0"></div>
+                        <span>Medium: {hoveredData.medium}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
+                        <span>Low: {hoveredData.low}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
           <svg
             width="100"
             height="100"
@@ -114,11 +147,7 @@ export function RiskByTechnologiesChart({
                   fill={slice.color}
                   stroke="white"
                   strokeWidth="2"
-                  onMouseEnter={(e) => {
-                    setHoveredTech(slice.name);
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    setTooltipPos({ x: rect.x + 50, y: rect.y - 80 });
-                  }}
+                  onMouseEnter={() => setHoveredTech(slice.name)}
                   onMouseLeave={() => setHoveredTech(null)}
                   className="cursor-pointer opacity-80 hover:opacity-100 transition-opacity"
                   style={{ filter: hoveredTech === slice.name ? "brightness(1.1)" : "none" }}
@@ -143,47 +172,6 @@ export function RiskByTechnologiesChart({
               {(total / 1000).toFixed(0)}K
             </text>
           </svg>
-
-          {/* Tooltip on hover */}
-          {hoveredTech && (
-            <div
-              className="absolute bg-gray-900 text-white text-xs rounded-lg p-3 w-48 shadow-lg pointer-events-none z-50"
-              style={{
-                left: `${tooltipPos.x}px`,
-                top: `${tooltipPos.y}px`,
-                transform: "translate(-50%, -10px)",
-              }}
-            >
-              {(() => {
-                const hoveredData = chartData.find((t) => t.name === hoveredTech);
-                if (!hoveredData) return null;
-                return (
-                  <div className="space-y-2">
-                    <div className="font-semibold">{hoveredData.name}</div>
-                    <div className="text-gray-300">Total: {(hoveredData.vulnerabilities / 1000).toFixed(1)}K</div>
-                    <div className="pt-1 border-t border-gray-700 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-red-600"></div>
-                        <span>Critical: {hoveredData.critical}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-orange-500"></div>
-                        <span>High: {hoveredData.high}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
-                        <span>Medium: {hoveredData.medium}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                        <span>Low: {hoveredData.low}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-          )}
         </div>
 
         {/* Scrollable Legend Below */}
