@@ -146,7 +146,7 @@ export default function Index() {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
               <h1 className="text-lg font-bold text-gray-900">
-                Asset Inventory
+                {grouping === "tech-stack" ? "Tech Stacks" : "Asset Inventory"}
               </h1>
               <Button
                 onClick={() => setShowNewProjectModal(true)}
@@ -163,7 +163,7 @@ export default function Index() {
           {/* Widget Panel Header with Toggle */}
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-              Overview Metrics
+              Tech Stack Overview
             </h2>
             <button
               onClick={() => setShowWidgetPanel(!showWidgetPanel)}
