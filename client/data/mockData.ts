@@ -1,3 +1,48 @@
+export interface IOC {
+  type: string;
+  value: string;
+  source: string;
+}
+
+export interface CVETracking {
+  platform: "twitter" | "telegram" | "reddit" | "discord" | "medium" | "others";
+  count: number;
+}
+
+export interface GeographicImpact {
+  region: string;
+  count: number;
+  color?: string;
+}
+
+export interface TimelineEvent {
+  date: string;
+  title: string;
+  description: string;
+}
+
+export interface RelatedCVE {
+  id: string;
+  title: string;
+  severity: "critical" | "high" | "medium" | "low";
+  score: number;
+  description: string;
+}
+
+export interface ThreatIntelligence {
+  epssScore: number;
+  exploitationStatus: "Yes" | "No" | "In the Wild";
+  iocCount: number;
+  iocs: IOC[];
+  indicatorsOfCompromise: number;
+  sourcesMentioned: number;
+  trackingSources: CVETracking[];
+  geographicImpact: GeographicImpact[];
+  timelineEvents: TimelineEvent[];
+  relatedCVEs?: RelatedCVE[];
+  tags?: string[];
+}
+
 export interface CVE {
   id: string;
   severity: "critical" | "high" | "medium" | "low";
@@ -6,6 +51,12 @@ export interface CVE {
   affected?: string;
   cwe?: string;
   published?: string;
+  threatIntelligence?: ThreatIntelligence;
+  scanCoverage?: {
+    totalAssets: number;
+    scannedAssets: number;
+    unscannedAssets: number;
+  };
 }
 
 export interface VersionHistory {
@@ -106,6 +157,86 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v0.1.0 - v0.4.1",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2024-01-15",
+      scanCoverage: {
+        totalAssets: 5,
+        scannedAssets: 2,
+        unscannedAssets: 3,
+      },
+      threatIntelligence: {
+        epssScore: 87,
+        exploitationStatus: "In the Wild",
+        iocCount: 258,
+        iocs: [
+          { type: "HOSTNAME", value: "overcome-pmc-conferencing-books.trycolu...", source: "AlienVault" },
+          { type: "HOSTNAME", value: "labdu.anondns.net", source: "AlienVault" },
+          { type: "HOSTNAME", value: "kredsec.anondns.net", source: "AlienVault" },
+        ],
+        indicatorsOfCompromise: 258,
+        sourcesMentioned: 1883,
+        trackingSources: [
+          { platform: "twitter", count: 1067 },
+          { platform: "telegram", count: 721 },
+          { platform: "medium", count: 22 },
+          { platform: "reddit", count: 20 },
+          { platform: "discord", count: 9 },
+          { platform: "others", count: 44 },
+        ],
+        geographicImpact: [
+          { region: "North America", count: 450, color: "#3b82f6" },
+          { region: "Europe", count: 320, color: "#10b981" },
+          { region: "Asia Pacific", count: 280, color: "#f59e0b" },
+          { region: "Rest of World", count: 150, color: "#8b5cf6" },
+        ],
+        timelineEvents: [
+          {
+            date: "2026-01-15",
+            title: "CVE-2025-55182: React Server Components Pre-Auth RCE",
+            description: "A critical pre-authentication remote code execution vulnerability has been identified in React Server Components versions 19.0.0 - 19.1.1"
+          },
+          {
+            date: "2025-12-09",
+            title: "React25Shell Exploit Campaigns Tied to North Korean Cyber Intrusion Tactics",
+            description: "SysRog researchers observed new campaigns exploiting React25Shell, possibly linked to North Korean hackers."
+          },
+          {
+            date: "2025-12-08",
+            title: "React25Shell (CVE-2025-55182): Critical RCE in React Server Components",
+            description: "React25Shell under active exploitation in the wild. Earth Lamia and Jackpot Panda are among the threat groups launching attacks."
+          },
+          {
+            date: "2025-12-08",
+            title: "React25Shell Under Active Exploitation by China-Nexus Hackers",
+            description: "React25Shell vulnerability (CVE-2025-55182) is actively exploited in the wild. Earth Lamia and Jackpot Panda are among the threat groups launching attacks."
+          },
+        ],
+        relatedCVEs: [
+          {
+            id: "CVE-2024-11968",
+            title: "Improper Neutralization of Special Elements in Output Used by a Downstream Component",
+            severity: "high",
+            score: 7.3,
+            description: "Vulnerability in downstream component rendering"
+          },
+          {
+            id: "CVE-2024-36443",
+            title: "Anonymous FTP Allows File System Read Access in Swissphone DiCal-RED 4009 Devices",
+            severity: "high",
+            score: 7.5,
+            description: "Uncontrolled file system access via FTP"
+          },
+        ],
+        tags: [
+          "Issue Names - React Server Components",
+          "Vulnerability Intelligence",
+          "Software and Web App Vulnerabilities",
+          "Public Exploit Available",
+          "Active Exploitation",
+          "CVE ID - CVE-2025-55182",
+          "CVSS - 9.8",
+          "EPSS - 87",
+          "First Exploitation Date - 2026-01-15T10:36:00Z"
+        ],
+      },
     },
     {
       id: "CVE-2024-0002",
@@ -115,6 +246,55 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v0.2.0 - v0.4.0",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2024-01-20",
+      scanCoverage: {
+        totalAssets: 4,
+        scannedAssets: 4,
+        unscannedAssets: 0,
+      },
+      threatIntelligence: {
+        epssScore: 65,
+        exploitationStatus: "Yes",
+        iocCount: 42,
+        iocs: [
+          { type: "HOSTNAME", value: "model-poisoning.malicious.com", source: "AlienVault" },
+          { type: "IP", value: "192.168.1.100", source: "OpenPhish" },
+        ],
+        indicatorsOfCompromise: 42,
+        sourcesMentioned: 245,
+        trackingSources: [
+          { platform: "twitter", count: 150 },
+          { platform: "telegram", count: 65 },
+          { platform: "reddit", count: 20 },
+          { platform: "discord", count: 10 },
+        ],
+        geographicImpact: [
+          { region: "North America", count: 120, color: "#3b82f6" },
+          { region: "Europe", count: 80, color: "#10b981" },
+          { region: "Asia Pacific", count: 45, color: "#f59e0b" },
+        ],
+        timelineEvents: [
+          { date: "2024-01-20", title: "CVE Disclosed", description: "Initial public disclosure of vLLm model poisoning vulnerability" },
+          { date: "2024-02-01", title: "PoC Released", description: "Proof of concept exploit published online" },
+        ],
+        relatedCVEs: [
+          {
+            id: "CVE-2024-0001",
+            title: "vLLm Remote Code Execution",
+            severity: "critical",
+            score: 9.8,
+            description: "Related RCE vulnerability in same component"
+          },
+        ],
+        tags: [
+          "Issue Names - vLLm Model Poisoning",
+          "Vulnerability Intelligence",
+          "Machine Learning Vulnerabilities",
+          "Data Integrity Impact",
+          "CVE ID - CVE-2024-0002",
+          "CVSS - 8.5",
+          "EPSS - 65",
+        ],
+      },
     },
     {
       id: "CVE-2024-0003",
@@ -124,6 +304,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v0.1.0 - v0.3.5",
       cwe: "CWE-400: Uncontrolled Resource Consumption",
       published: "2024-02-01",
+      scanCoverage: {
+        totalAssets: 3,
+        scannedAssets: 0,
+        unscannedAssets: 3,
+      },
     },
   ],
   Log4j: [
@@ -135,6 +320,39 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v2.0.0 - v2.14.1",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2021-12-10",
+      scanCoverage: {
+        totalAssets: 6,
+        scannedAssets: 3,
+        unscannedAssets: 3,
+      },
+      threatIntelligence: {
+        epssScore: 94,
+        exploitationStatus: "In the Wild",
+        iocCount: 512,
+        iocs: [
+          { type: "URL", value: "http://attacker.com/payload.jar", source: "URLhaus" },
+          { type: "IP", value: "203.0.113.42", source: "AbuseIPDB" },
+        ],
+        indicatorsOfCompromise: 512,
+        sourcesMentioned: 3421,
+        trackingSources: [
+          { platform: "twitter", count: 2100 },
+          { platform: "telegram", count: 892 },
+          { platform: "medium", count: 156 },
+          { platform: "reddit", count: 273 },
+        ],
+        geographicImpact: [
+          { region: "North America", count: 800, color: "#3b82f6" },
+          { region: "Europe", count: 600, color: "#10b981" },
+          { region: "Asia Pacific", count: 520, color: "#f59e0b" },
+          { region: "Rest of World", count: 501, color: "#8b5cf6" },
+        ],
+        timelineEvents: [
+          { date: "2021-12-10", title: "CVE-2021-44228 Disclosed", description: "Critical Log4j vulnerability publicly disclosed" },
+          { date: "2021-12-13", title: "Widespread Exploitation", description: "Mass exploitation in the wild begins" },
+          { date: "2021-12-15", title: "Patch Released", description: "Patched version released" },
+        ],
+      },
     },
     {
       id: "CVE-2021-45046",
@@ -144,6 +362,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v2.0.0 - v2.16.0",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2021-12-13",
+      scanCoverage: {
+        totalAssets: 4,
+        scannedAssets: 1,
+        unscannedAssets: 3,
+      },
     },
   ],
   "Spring Framework": [
@@ -155,6 +378,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v5.3.0 - v5.3.17, v6.0.0 - v6.0.4",
       cwe: "CWE-94: Improper Control of Generation of Code",
       published: "2022-03-31",
+      scanCoverage: {
+        totalAssets: 5,
+        scannedAssets: 5,
+        unscannedAssets: 0,
+      },
     },
   ],
   React: [
@@ -166,6 +394,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v16.0.0 - v16.13.0",
       cwe: "CWE-79: Cross-site Scripting (XSS)",
       published: "2020-06-15",
+      scanCoverage: {
+        totalAssets: 7,
+        scannedAssets: 0,
+        unscannedAssets: 7,
+      },
     },
   ],
   "Node.js": [
@@ -177,6 +410,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v18.0.0 - v18.17.0, v19.0.0 - v19.9.0, v20.0.0 - v20.5.0",
       cwe: "CWE-444: Inconsistent Interpretation of HTTP Requests",
       published: "2023-05-30",
+      scanCoverage: {
+        totalAssets: 5,
+        scannedAssets: 2,
+        unscannedAssets: 3,
+      },
     },
   ],
   PostgreSQL: [
@@ -188,6 +426,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v12.0 - v12.12, v13.0 - v13.8, v14.0 - v14.5",
       cwe: "CWE-79: Cross-site Scripting (XSS)",
       published: "2022-10-13",
+      scanCoverage: {
+        totalAssets: 3,
+        scannedAssets: 3,
+        unscannedAssets: 0,
+      },
     },
   ],
   Django: [
@@ -199,6 +442,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v3.2.0 - v3.2.17, v4.0.0 - v4.1.6",
       cwe: "CWE-1333: Inefficient Regular Expression Complexity",
       published: "2023-02-01",
+      scanCoverage: {
+        totalAssets: 4,
+        scannedAssets: 1,
+        unscannedAssets: 3,
+      },
     },
   ],
   "Express.js": [
@@ -210,6 +458,11 @@ const commonCVEs: Record<string, CVE[]> = {
       affected: "v4.0.0 - v4.17.3",
       cwe: "CWE-400: Uncontrolled Resource Consumption",
       published: "2022-04-28",
+      scanCoverage: {
+        totalAssets: 2,
+        scannedAssets: 2,
+        unscannedAssets: 0,
+      },
     },
   ],
 };

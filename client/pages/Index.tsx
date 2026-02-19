@@ -146,7 +146,7 @@ export default function Index() {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
               <h1 className="text-lg font-bold text-gray-900">
-                Asset Inventory
+                {grouping === "tech-stack" ? "Tech Stacks" : "Asset Inventory"}
               </h1>
               <Button
                 onClick={() => setShowNewProjectModal(true)}
@@ -163,7 +163,7 @@ export default function Index() {
           {/* Widget Panel Header with Toggle */}
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-              Overview Metrics
+              Tech Stack Overview
             </h2>
             <button
               onClick={() => setShowWidgetPanel(!showWidgetPanel)}
@@ -343,7 +343,7 @@ export default function Index() {
           allAssets={assetDatabase}
           onClose={() => setShowDetails(false)}
           onNavigateToIncident={(techStackId, cveId) =>
-            navigate(`/incident/${techStackId}/${cveId}`)
+            navigate(`/cve-details/${cveId}`)
           }
           onSelectAsset={(asset) => {
             setSelectedItem(asset);
@@ -434,6 +434,7 @@ function DetailsPanel({
   onNavigateToIncident,
   onSelectAsset,
 }: DetailsPanelProps) {
+  const navigate = useNavigate();
   // Dynamically determine if the current item is an asset or tech stack
   // Assets have 'techStacks' property, tech stacks have 'version' property
   const isAssetItem = item && Array.isArray(item.techStacks) && !item.version;
@@ -506,6 +507,11 @@ function DetailsPanel({
       cwe: "CWE-94: Improper Control of Generation of Code",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-1086"],
       scanningSupported: true,
+      scanCoverage: {
+        totalAssets: 5,
+        scannedAssets: 0,
+        unscannedAssets: 5,
+      },
     },
     {
       id: "CVE-2024-2156",
@@ -519,6 +525,11 @@ function DetailsPanel({
       cwe: "CWE-89: SQL Injection",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-2156"],
       scanningSupported: false,
+      scanCoverage: {
+        totalAssets: 4,
+        scannedAssets: 2,
+        unscannedAssets: 2,
+      },
       remediationSteps: [
         {
           step: 1,
@@ -557,6 +568,11 @@ function DetailsPanel({
       cwe: "CWE-79: Cross-site Scripting (XSS)",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-3421"],
       scanningSupported: true,
+      scanCoverage: {
+        totalAssets: 3,
+        scannedAssets: 3,
+        unscannedAssets: 0,
+      },
     },
     {
       id: "CVE-2024-4567",
@@ -570,6 +586,11 @@ function DetailsPanel({
       cwe: "CWE-22: Improper Limitation of a Pathname",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-4567"],
       scanningSupported: false,
+      scanCoverage: {
+        totalAssets: 6,
+        scannedAssets: 1,
+        unscannedAssets: 5,
+      },
       remediationSteps: [
         {
           step: 1,
@@ -602,6 +623,11 @@ function DetailsPanel({
       cwe: "CWE-502: Deserialization of Untrusted Data",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-5678"],
       scanningSupported: true,
+      scanCoverage: {
+        totalAssets: 5,
+        scannedAssets: 4,
+        unscannedAssets: 1,
+      },
     },
     {
       id: "CVE-2024-6789",
@@ -615,6 +641,11 @@ function DetailsPanel({
       cwe: "CWE-400: Uncontrolled Resource Consumption",
       references: ["https://nvd.nist.gov/vuln/detail/CVE-2024-6789"],
       scanningSupported: false,
+      scanCoverage: {
+        totalAssets: 7,
+        scannedAssets: 0,
+        unscannedAssets: 7,
+      },
       remediationSteps: [
         {
           step: 1,
@@ -932,33 +963,56 @@ function DetailsPanel({
                         🛡️ Threat Intel
                       </h4>
 
-                      {/* Summary Stats */}
-                      <div className="grid grid-cols-3 gap-2 mb-4">
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-2 text-center">
-                          <p className="text-xs text-gray-600 font-medium">
-                            Scanned
-                          </p>
-                          <p className="text-lg font-bold text-red-900">
-                            {item.cves.length}
-                          </p>
-                        </div>
-                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-2 text-center">
-                          <p className="text-xs text-gray-600 font-medium">
-                            Unscanned
-                          </p>
-                          <p className="text-lg font-bold text-amber-900">
-                            {marketCVEs.length}
-                          </p>
-                        </div>
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-center">
-                          <p className="text-xs text-gray-600 font-medium">
-                            Total
-                          </p>
-                          <p className="text-lg font-bold text-blue-900">
-                            {item.cves.length + marketCVEs.length}
-                          </p>
-                        </div>
-                      </div>
+                      {/* Summary Stats - Updated for Scan Coverage */}
+                      {(() => {
+                        const allCVEs = [...(item.cves || []), ...marketCVEs];
+                        const fullyScanned = allCVEs.filter((cve: any) =>
+                          cve.scanCoverage ? cve.scanCoverage.scannedAssets === cve.scanCoverage.totalAssets : false
+                        ).length;
+                        const partiallyScanned = allCVEs.filter((cve: any) =>
+                          cve.scanCoverage ? (cve.scanCoverage.scannedAssets > 0 && cve.scanCoverage.scannedAssets < cve.scanCoverage.totalAssets) : false
+                        ).length;
+                        const notScanned = allCVEs.filter((cve: any) =>
+                          !cve.scanCoverage || cve.scanCoverage.scannedAssets === 0
+                        ).length;
+
+                        return (
+                          <div className="grid grid-cols-2 gap-2 mb-4">
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-2 text-center">
+                              <p className="text-xs text-gray-600 font-medium">
+                                Fully Scanned
+                              </p>
+                              <p className="text-lg font-bold text-green-900">
+                                {fullyScanned}
+                              </p>
+                            </div>
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2 text-center">
+                              <p className="text-xs text-gray-600 font-medium">
+                                Partially Scanned
+                              </p>
+                              <p className="text-lg font-bold text-yellow-900">
+                                {partiallyScanned}
+                              </p>
+                            </div>
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-2 text-center">
+                              <p className="text-xs text-gray-600 font-medium">
+                                Not Scanned
+                              </p>
+                              <p className="text-lg font-bold text-gray-900">
+                                {notScanned}
+                              </p>
+                            </div>
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-center">
+                              <p className="text-xs text-gray-600 font-medium">
+                                Total CVEs
+                              </p>
+                              <p className="text-lg font-bold text-blue-900">
+                                {allCVEs.length}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })()}
 
                       {/* Threats List - Combined Scanned and Unscanned */}
                       <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -999,9 +1053,49 @@ function DetailsPanel({
                                     {cve.title}
                                   </p>
                                   <div className="flex gap-2 mt-1 flex-wrap">
-                                    <Badge className="bg-red-200 text-red-800 text-xs">
-                                      ✓ SCANNED
-                                    </Badge>
+                                    {(() => {
+                                      const associatedAssets = getAssociatedAssets(item.id);
+
+                                      // If not scannable (threat intelligence only), always show "Not Scanned"
+                                      if (cve.scanningSupported === false) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      }
+
+                                      if (!cve.scanCoverage) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      }
+
+                                      // Calculate scanned assets for this specific tech stack
+                                      const scannedInThisStack = Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length);
+
+                                      if (scannedInThisStack === 0) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      } else if (scannedInThisStack === associatedAssets.length) {
+                                        return (
+                                          <Badge className="bg-green-200 text-green-800 text-xs">
+                                            ✓ Fully Scanned
+                                          </Badge>
+                                        );
+                                      } else {
+                                        return (
+                                          <Badge className="bg-yellow-200 text-yellow-800 text-xs">
+                                            ⚠️ Partially Scanned ({scannedInThisStack}/{associatedAssets.length})
+                                          </Badge>
+                                        );
+                                      }
+                                    })()}
                                     <Badge className="bg-blue-200 text-blue-800 text-xs">
                                       🔍 Agent Scan
                                     </Badge>
@@ -1108,11 +1202,23 @@ function DetailsPanel({
                                   {/* Asset Selection for Scanned CVE */}
                                   {selectedCVEForAssets ===
                                     `scanned-${cve.id}` && (
-                                    <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
+                                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
                                       <div className="flex items-center justify-between mb-2">
-                                        <label className="text-xs font-semibold text-gray-700">
-                                          Select Assets to Scan
-                                        </label>
+                                        <div>
+                                          <label className="text-xs font-semibold text-gray-900">
+                                            Assets Status
+                                          </label>
+                                          <p className="text-xs text-gray-600 mt-0.5">
+                                            {(() => {
+                                              const associatedAssets = getAssociatedAssets(item.id);
+                                              const scannedCount = cve.scanCoverage
+                                                ? Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length)
+                                                : 0;
+                                              const notScannedCount = associatedAssets.length - scannedCount;
+                                              return `${scannedCount} scanned • ${notScannedCount} not scanned`;
+                                            })()}
+                                          </p>
+                                        </div>
                                         <button
                                           onClick={() => {
                                             const allAssets =
@@ -1149,41 +1255,57 @@ function DetailsPanel({
                                             : "Select All"}
                                         </button>
                                       </div>
-                                      <div className="space-y-1 max-h-32 overflow-y-auto">
+                                      <div className="space-y-1 max-h-40 overflow-y-auto">
                                         {getAssociatedAssets(item.id).map(
-                                          (asset) => (
-                                            <label
-                                              key={asset.id}
-                                              className="flex items-center gap-2 cursor-pointer text-xs"
-                                            >
-                                              <input
-                                                type="checkbox"
-                                                checked={
-                                                  cveAssetSelections[
-                                                    `scanned-${cve.id}`
-                                                  ]?.[asset.id] || false
-                                                }
-                                                onChange={(e) => {
-                                                  setCVEAssetSelections(
-                                                    (prev) => ({
-                                                      ...prev,
-                                                      [`scanned-${cve.id}`]: {
-                                                        ...prev[
-                                                          `scanned-${cve.id}`
-                                                        ],
-                                                        [asset.id]:
-                                                          e.target.checked,
-                                                      },
-                                                    }),
-                                                  );
-                                                }}
-                                                className="w-4 h-4 rounded"
-                                              />
-                                              <span className="text-gray-700">
-                                                {asset.name}
-                                              </span>
-                                            </label>
-                                          ),
+                                          (asset, assetIndex) => {
+                                            // Determine scan status based on scanCoverage ratio
+                                            // Mark first N assets as scanned where N = Math.min(scannedAssets, totalAssociatedAssets)
+                                            const associatedAssets = getAssociatedAssets(item.id);
+                                            const scannedCount = cve.scanCoverage
+                                              ? Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length)
+                                              : 0;
+                                            const isAssetScanned = assetIndex < scannedCount;
+                                            return (
+                                              <label
+                                                key={asset.id}
+                                                className="flex items-center gap-2 cursor-pointer text-xs p-1 hover:bg-gray-100 rounded"
+                                              >
+                                                <input
+                                                  type="checkbox"
+                                                  checked={
+                                                    cveAssetSelections[
+                                                      `scanned-${cve.id}`
+                                                    ]?.[asset.id] || false
+                                                  }
+                                                  onChange={(e) => {
+                                                    setCVEAssetSelections(
+                                                      (prev) => ({
+                                                        ...prev,
+                                                        [`scanned-${cve.id}`]: {
+                                                          ...prev[
+                                                            `scanned-${cve.id}`
+                                                          ],
+                                                          [asset.id]:
+                                                            e.target.checked,
+                                                        },
+                                                      }),
+                                                    );
+                                                  }}
+                                                  className="w-4 h-4 rounded"
+                                                />
+                                                <span className="text-gray-700 flex-1">
+                                                  {asset.name}
+                                                </span>
+                                                <span className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                                                  isAssetScanned
+                                                    ? 'bg-green-100 text-green-700'
+                                                    : 'bg-gray-100 text-gray-600'
+                                                }`}>
+                                                  {isAssetScanned ? '✓ Scanned' : 'Not scanned'}
+                                                </span>
+                                              </label>
+                                            );
+                                          },
                                         )}
                                       </div>
                                       <button
@@ -1201,6 +1323,19 @@ function DetailsPanel({
                                           if (selectedAssetIds.length > 0) {
                                             handleScanCVE(cve.id, item.id);
                                             setSelectedCVEForAssets(null);
+                                            // Navigate to rescan history after scan completes
+                                            setTimeout(() => {
+                                              const cveData = {
+                                                cveId: cve.id,
+                                                cveName: cve.name,
+                                                scanner: item.name,
+                                                timestamp: new Date().getTime(),
+                                              };
+                                              localStorage.setItem("pendingCVEScan", JSON.stringify(cveData));
+                                              navigate("/rescan-history", {
+                                                state: cveData
+                                              });
+                                            }, 1500);
                                           }
                                         }}
                                         disabled={
@@ -1308,9 +1443,49 @@ function DetailsPanel({
                                     {cve.title}
                                   </p>
                                   <div className="flex gap-2 mt-1 flex-wrap">
-                                    <Badge className="bg-amber-200 text-amber-800 text-xs">
-                                      ⚠️ UNSCANNED
-                                    </Badge>
+                                    {(() => {
+                                      const associatedAssets = getAssociatedAssets(item.id);
+
+                                      // If not scannable (threat intelligence only), always show "Not Scanned"
+                                      if (cve.scanningSupported === false) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      }
+
+                                      if (!cve.scanCoverage) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      }
+
+                                      // Calculate scanned assets for this specific tech stack
+                                      const scannedInThisStack = Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length);
+
+                                      if (scannedInThisStack === 0) {
+                                        return (
+                                          <Badge className="bg-gray-200 text-gray-800 text-xs">
+                                            ❌ Not Scanned
+                                          </Badge>
+                                        );
+                                      } else if (scannedInThisStack === associatedAssets.length) {
+                                        return (
+                                          <Badge className="bg-green-200 text-green-800 text-xs">
+                                            ✓ Fully Scanned
+                                          </Badge>
+                                        );
+                                      } else {
+                                        return (
+                                          <Badge className="bg-yellow-200 text-yellow-800 text-xs">
+                                            ⚠️ Partially Scanned ({scannedInThisStack}/{associatedAssets.length})
+                                          </Badge>
+                                        );
+                                      }
+                                    })()}
                                     <Badge className="bg-purple-200 text-purple-800 text-xs">
                                       📡 Threat Intelligence
                                     </Badge>
@@ -1511,11 +1686,23 @@ function DetailsPanel({
                                   {cve.scanningSupported &&
                                     selectedCVEForAssets ===
                                       `market-${cve.id}` && (
-                                      <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg space-y-2">
+                                      <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
                                         <div className="flex items-center justify-between mb-2">
-                                          <label className="text-xs font-semibold text-gray-700">
-                                            Select Assets to Scan
-                                          </label>
+                                          <div>
+                                            <label className="text-xs font-semibold text-gray-900">
+                                              Assets Status
+                                            </label>
+                                            <p className="text-xs text-gray-600 mt-0.5">
+                                              {(() => {
+                                                const associatedAssets = getAssociatedAssets(item.id);
+                                                const scannedCount = cve.scanCoverage
+                                                  ? Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length)
+                                                  : 0;
+                                                const notScannedCount = associatedAssets.length - scannedCount;
+                                                return `${scannedCount} scanned • ${notScannedCount} not scanned`;
+                                              })()}
+                                            </p>
+                                          </div>
                                           <button
                                             onClick={() => {
                                               const allAssets =
@@ -1554,41 +1741,56 @@ function DetailsPanel({
                                               : "Select All"}
                                           </button>
                                         </div>
-                                        <div className="space-y-1 max-h-32 overflow-y-auto">
+                                        <div className="space-y-1 max-h-40 overflow-y-auto">
                                           {getAssociatedAssets(item.id).map(
-                                            (asset) => (
-                                              <label
-                                                key={asset.id}
-                                                className="flex items-center gap-2 cursor-pointer text-xs"
-                                              >
-                                                <input
-                                                  type="checkbox"
-                                                  checked={
-                                                    cveAssetSelections[
-                                                      `market-${cve.id}`
-                                                    ]?.[asset.id] || false
-                                                  }
-                                                  onChange={(e) => {
-                                                    setCVEAssetSelections(
-                                                      (prev) => ({
-                                                        ...prev,
-                                                        [`market-${cve.id}`]: {
-                                                          ...prev[
-                                                            `market-${cve.id}`
-                                                          ],
-                                                          [asset.id]:
-                                                            e.target.checked,
-                                                        },
-                                                      }),
-                                                    );
-                                                  }}
-                                                  className="w-4 h-4 rounded"
-                                                />
-                                                <span className="text-gray-700">
-                                                  {asset.name}
-                                                </span>
-                                              </label>
-                                            ),
+                                            (asset, assetIndex) => {
+                                              const associatedAssets = getAssociatedAssets(item.id);
+                                              const scannedCount = cve.scanCoverage
+                                                ? Math.min(cve.scanCoverage.scannedAssets, associatedAssets.length)
+                                                : 0;
+                                              const isAssetScanned = assetIndex < scannedCount;
+
+                                              return (
+                                                <label
+                                                  key={asset.id}
+                                                  className="flex items-center gap-2 cursor-pointer text-xs p-1 hover:bg-gray-100 rounded"
+                                                >
+                                                  <input
+                                                    type="checkbox"
+                                                    checked={
+                                                      cveAssetSelections[
+                                                        `market-${cve.id}`
+                                                      ]?.[asset.id] || false
+                                                    }
+                                                    onChange={(e) => {
+                                                      setCVEAssetSelections(
+                                                        (prev) => ({
+                                                          ...prev,
+                                                          [`market-${cve.id}`]: {
+                                                            ...prev[
+                                                              `market-${cve.id}`
+                                                            ],
+                                                            [asset.id]:
+                                                              e.target.checked,
+                                                          },
+                                                        }),
+                                                      );
+                                                    }}
+                                                    className="w-4 h-4 rounded"
+                                                  />
+                                                  <span className="text-gray-700 flex-1">
+                                                    {asset.name}
+                                                  </span>
+                                                  <span className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                                                    isAssetScanned
+                                                      ? 'bg-green-100 text-green-700'
+                                                      : 'bg-gray-100 text-gray-600'
+                                                  }`}>
+                                                    {isAssetScanned ? '✓ Scanned' : 'Not scanned'}
+                                                  </span>
+                                                </label>
+                                              );
+                                            }
                                           )}
                                         </div>
                                         <button
@@ -1607,6 +1809,19 @@ function DetailsPanel({
                                             if (selectedAssetIds.length > 0) {
                                               handleScanCVE(cve.id, item.id);
                                               setSelectedCVEForAssets(null);
+                                              // Navigate to rescan history after scan completes
+                                              setTimeout(() => {
+                                                const cveData = {
+                                                  cveId: cve.id,
+                                                  cveName: cve.name,
+                                                  scanner: item.name,
+                                                  timestamp: new Date().getTime(),
+                                                };
+                                                localStorage.setItem("pendingCVEScan", JSON.stringify(cveData));
+                                                navigate("/rescan-history", {
+                                                  state: cveData
+                                                });
+                                              }, 1500);
                                             }
                                           }}
                                           disabled={

@@ -12,18 +12,10 @@ export function VulnerableLibrariesWidget({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   // Calculate vulnerable libraries by severity
   const vulnerableByType = {
-    critical: techStackDatabase.filter((ts) =>
-      ts.cves.some((c) => c.severity === "critical"),
-    ).length,
-    high: techStackDatabase.filter((ts) =>
-      ts.cves.some((c) => c.severity === "high"),
-    ).length,
-    medium: techStackDatabase.filter((ts) =>
-      ts.cves.some((c) => c.severity === "medium"),
-    ).length,
-    low: techStackDatabase.filter((ts) =>
-      ts.cves.some((c) => c.severity === "low"),
-    ).length,
+    critical: 3,
+    high: 5,
+    medium: 8,
+    low: 12,
   };
 
   const totalVulnerable = Object.values(vulnerableByType).reduce(
@@ -31,14 +23,14 @@ export function VulnerableLibrariesWidget({
     0,
   );
 
-  // Open Issues trend data
+  // Open Issues trend data with severity breakdown
   const issuesData = [
-    { date: "29 May", issues: 450 },
-    { date: "02 Jun", issues: 445 },
-    { date: "05 Jun", issues: 440 },
-    { date: "08 Jun", issues: 435 },
-    { date: "10 Jun", issues: 440 },
-    { date: "12 Jun", issues: 495 },
+    { date: "29 May", issues: 450, critical: 18, high: 67, medium: 180, low: 185 },
+    { date: "02 Jun", issues: 445, critical: 17, high: 65, medium: 178, low: 185 },
+    { date: "05 Jun", issues: 440, critical: 16, high: 63, medium: 176, low: 185 },
+    { date: "08 Jun", issues: 435, critical: 15, high: 62, medium: 174, low: 184 },
+    { date: "10 Jun", issues: 440, critical: 16, high: 63, medium: 176, low: 185 },
+    { date: "12 Jun", issues: 495, critical: 22, high: 85, medium: 198, low: 190 },
   ];
 
   const minIssues = Math.min(...issuesData.map((d) => d.issues));
@@ -182,15 +174,33 @@ export function VulnerableLibrariesWidget({
           {/* Tooltip on hover */}
           {hoveredIndex !== null && (
             <div
-              className="absolute bg-gray-900 text-white px-2 py-1 rounded text-xs whitespace-nowrap z-10"
+              className="absolute bg-gray-900 text-white px-3 py-2 rounded-lg text-xs z-10 whitespace-normal w-48 shadow-lg"
               style={{
                 left: `${(points[hoveredIndex].x / width) * 100}%`,
-                top: `${(points[hoveredIndex].y / height) * 100 - 10}%`,
-                transform: 'translateX(-50%)',
+                top: `${(points[hoveredIndex].y / height) * 100 - 20}%`,
+                transform: 'translate(-50%, -100%)',
               }}
             >
-              <div className="font-semibold">{issuesData[hoveredIndex].issues} issues</div>
-              <div className="text-gray-300 text-xs">{issuesData[hoveredIndex].date}</div>
+              <div className="font-semibold mb-1">{issuesData[hoveredIndex].date}</div>
+              <div className="text-gray-300 mb-2">Total: {issuesData[hoveredIndex].issues} issues</div>
+              <div className="space-y-1 border-t border-gray-700 pt-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-red-600 flex-shrink-0"></div>
+                  <span>Critical: {issuesData[hoveredIndex].critical}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0"></div>
+                  <span>High: {issuesData[hoveredIndex].high}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-yellow-400 flex-shrink-0"></div>
+                  <span>Medium: {issuesData[hoveredIndex].medium}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
+                  <span>Low: {issuesData[hoveredIndex].low}</span>
+                </div>
+              </div>
             </div>
           )}
         </div>
