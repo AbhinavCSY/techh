@@ -4122,17 +4122,25 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
                         </div>
 
                         {/* SCA Auto Pull Request */}
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between group relative">
                           <div className="flex items-center gap-2">
                             <label className="text-sm font-medium text-gray-900">
                               SCA Auto Pull Request
                             </label>
-                            <span
-                              className="text-gray-400 cursor-help"
-                              title="Info about SCA Auto Pull Request"
-                            >
-                              ℹ️
-                            </span>
+                            <div className="relative inline-block">
+                              <span
+                                className="text-gray-400 cursor-help hover:text-gray-600"
+                              >
+                                ℹ️
+                              </span>
+                              {/* Tooltip */}
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 pointer-events-none">
+                                <p>
+                                  By activating this feature, you are allowing CloudSEK to send PRs with remediated manifest files to your repository and close/remove those PR branches as needed.
+                                </p>
+                                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45 -mt-1"></div>
+                              </div>
+                            </div>
                           </div>
                           <button
                             onClick={() =>
