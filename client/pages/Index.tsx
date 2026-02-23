@@ -3447,6 +3447,9 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
     "selectService" | "selectOrganization" | "selectRepositories" | "repositoriesSettings" | "selectBranches" | "scanUponCreation"
   >("selectService");
   const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [orgType, setOrgType] = useState<"user" | "organization">("user");
+  const [orgSearchInput, setOrgSearchInput] = useState("");
+  const [selectedOrg, setSelectedOrg] = useState("");
 
   if (!isOpen) return null;
 
@@ -3553,57 +3556,185 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
         {/* Right Content */}
         <div className="flex-1 p-8 overflow-y-auto flex flex-col">
           {activeStep === "selectService" && (
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-6">
-                Select service
-              </h3>
-              <div className="space-y-4">
-                <div className="flex gap-4 mb-6">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="hosting"
-                      value="cloud"
-                      defaultChecked
-                      className="w-4 h-4"
-                    />
-                    <span className="text-sm font-medium">Cloud-Hosted</span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="hosting"
-                      value="self"
-                      className="w-4 h-4"
-                    />
-                    <span className="text-sm font-medium">Self-Hosted</span>
-                  </label>
-                </div>
+            <div className="flex flex-col h-full">
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-gray-900 mb-6">
+                  Select service
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex gap-4 mb-6">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="hosting"
+                        value="cloud"
+                        defaultChecked
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm font-medium">Cloud-Hosted</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="hosting"
+                        value="self"
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm font-medium">Self-Hosted</span>
+                    </label>
+                  </div>
 
-                <div className="grid grid-cols-3 gap-3">
-                  {services.map((service) => (
-                    <button
-                      key={service.id}
-                      onClick={() => handleServiceSelect(service.id)}
-                      className="flex items-center gap-2 p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
-                    >
-                      <span className="text-2xl">{service.icon}</span>
-                      <span className="text-sm font-medium text-gray-900">
-                        {service.label}
-                      </span>
-                    </button>
-                  ))}
+                  <div className="grid grid-cols-3 gap-3">
+                    {services.map((service) => (
+                      <button
+                        key={service.id}
+                        onClick={() => handleServiceSelect(service.id)}
+                        className="flex items-center gap-2 p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
+                      >
+                        <span className="text-2xl">{service.icon}</span>
+                        <span className="text-sm font-medium text-gray-900">
+                          {service.label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-3 pt-6 border-t border-gray-200">
+                <button
+                  onClick={onClose}
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           )}
 
-          {activeStep !== "selectService" && (
+          {activeStep === "selectOrganization" && (
+            <div className="flex flex-col h-full">
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-gray-900 mb-6">
+                  Select Organization
+                </h3>
+
+                {/* Organization Type Selection */}
+                <div className="space-y-4 mb-6">
+                  <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input
+                      type="radio"
+                      name="org-type"
+                      value="user"
+                      checked={orgType === "user"}
+                      onChange={(e) => {
+                        setOrgType(e.target.value as "user" | "organization");
+                        setSelectedOrg("");
+                      }}
+                      className="w-4 h-4"
+                    />
+                    <div>
+                      <p className="font-semibold text-gray-900 text-sm">
+                        User: abhinavCSYSCS
+                      </p>
+                    </div>
+                  </label>
+
+                  <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                    <input
+                      type="radio"
+                      name="org-type"
+                      value="organization"
+                      checked={orgType === "organization"}
+                      onChange={(e) => {
+                        setOrgType(e.target.value as "user" | "organization");
+                        setSelectedOrg("");
+                      }}
+                      className="w-4 h-4"
+                    />
+                    <div>
+                      <p className="font-semibold text-gray-900 text-sm">
+                        Organization
+                      </p>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Search Input */}
+                {orgType === "organization" && (
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Type the full Org name"
+                        value={orgSearchInput}
+                        onChange={(e) => setOrgSearchInput(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      />
+                    </div>
+                    <div className="flex justify-end">
+                      <a
+                        href="#"
+                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        Grant additional organizations →
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {/* Info Message */}
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <p className="text-xs text-gray-600">
+                    {orgType === "user"
+                      ? "Automatically sync with new or transferred projects in your user account."
+                      : "Automatically sync with new or transferred projects in the organization."}
+                  </p>
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-3 pt-6 border-t border-gray-200">
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => {
+                    const stepOrder: typeof activeStep[] = [
+                      "selectService",
+                      "selectOrganization",
+                      "selectRepositories",
+                      "repositoriesSettings",
+                      "selectBranches",
+                      "scanUponCreation",
+                    ];
+                    const currentIndex = stepOrder.indexOf(activeStep);
+                    if (currentIndex < stepOrder.length - 1) {
+                      setActiveStep(stepOrder[currentIndex + 1]);
+                    }
+                  }}
+                  disabled={orgType === "organization" && !orgSearchInput.trim()}
+                  className={cn(
+                    "ml-auto px-6 py-2 rounded-lg font-medium transition-colors",
+                    orgType === "organization" && !orgSearchInput.trim()
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  )}
+                >
+                  Select Organization
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeStep !== "selectService" && activeStep !== "selectOrganization" && (
             <div className="flex items-center justify-center h-full">
               <div className="text-center text-gray-600">
                 <p className="text-lg font-semibold mb-2">
-                  {activeStep === "selectOrganization" &&
-                    "Select Organization"}
                   {activeStep === "selectRepositories" &&
                     "Select Repositories"}
                   {activeStep === "repositoriesSettings" &&
@@ -3616,15 +3747,15 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
             </div>
           )}
 
-          {/* Navigation Buttons */}
-          <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
-            <button
-              onClick={onClose}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            {activeStep !== "selectService" && (
+          {/* Navigation Buttons - Only for non-selectOrganization steps */}
+          {activeStep !== "selectService" && activeStep !== "selectOrganization" && (
+            <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+              <button
+                onClick={onClose}
+                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
+              >
+                Cancel
+              </button>
               <button
                 onClick={() => {
                   const stepOrder: typeof activeStep[] = [
@@ -3644,8 +3775,8 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
               >
                 Next
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
