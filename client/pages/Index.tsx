@@ -370,10 +370,23 @@ export default function Index() {
 
       {/* Import From Modal */}
       {showImportModal && (
-        <ImportFromModal
-          isOpen={showImportModal}
-          onClose={() => setShowImportModal(false)}
-        />
+        <>
+          <div style={{position: 'fixed', top: 10, left: 10, background: 'yellow', padding: '10px', zIndex: 9999, color: 'black', fontWeight: 'bold'}}>
+            MODAL MOUNTED: showImportModal={String(showImportModal)}
+          </div>
+          <ImportFromModal
+            isOpen={showImportModal}
+            onClose={() => {
+              console.log("Closing ImportFromModal");
+              setShowImportModal(false);
+            }}
+          />
+        </>
+      )}
+      {!showImportModal && (
+        <div style={{position: 'fixed', top: 50, left: 10, background: 'red', padding: '10px', zIndex: 9999, color: 'white', fontWeight: 'bold', display: showNewProjectModal ? 'block' : 'none'}}>
+          ImportFromModal is NOT mounted. showImportModal={String(showImportModal)}, showNewProjectModal={String(showNewProjectModal)}
+        </div>
       )}
 
       {/* Automatic Scan Modal */}
@@ -2930,10 +2943,13 @@ function NewProjectModal({
                 onClick={() => {
                   if (option.active) {
                     if (option.id === "code-repo") {
+                      console.log("Code Repo button clicked, calling onOpenImport");
                       onOpenImport?.();
                     } else if (option.id === "automatic-scan") {
+                      console.log("Automatic Scan button clicked, calling onOpenAutomaticScan");
                       onOpenAutomaticScan?.();
                     } else {
+                      console.log("Manual Scan button clicked");
                       setActiveStep("sourceCode");
                     }
                   }
@@ -3682,11 +3698,11 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
+      className="fixed inset-0 z-[9999] bg-black bg-opacity-50 flex items-center justify-center"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl w-full max-w-5xl h-[90vh] mx-4 flex overflow-hidden"
+        className="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[90vh] mx-4 flex overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Left Sidebar */}
@@ -3749,7 +3765,7 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
         </div>
 
         {/* Right Content */}
-        <div className="flex-1 p-8 overflow-y-auto flex flex-col min-h-0">
+        <div className="flex-1 p-8 overflow-y-auto flex flex-col min-h-0 bg-white">
           {activeStep === "selectService" && (
             <div className="flex flex-col h-full">
               <div className="flex-1">
@@ -4724,6 +4740,21 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
           )}
 
           {/* Navigation Buttons - For selectBranches - Already included in the component above */}
+
+          {/* Fallback for unhandled activeStep */}
+          {activeStep &&
+            ![
+              "selectService",
+              "selectOrganization",
+              "selectRepositories",
+              "repositoriesSettings",
+              "selectBranches",
+              "scanUponCreation",
+            ].includes(activeStep) && (
+              <div className="text-center text-red-600 text-lg font-bold">
+                ERROR: Invalid activeStep: {activeStep}
+              </div>
+            )}
         </div>
       </div>
     </div>
