@@ -3450,6 +3450,37 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
   const [orgType, setOrgType] = useState<"user" | "organization">("user");
   const [orgSearchInput, setOrgSearchInput] = useState("");
   const [selectedOrg, setSelectedOrg] = useState("");
+  const [repoSearchInput, setRepoSearchInput] = useState("");
+  const [selectedRepos, setSelectedRepos] = useState<string[]>([]);
+
+  // Mock repositories data
+  const mockRepositories = [
+    { id: "tech", name: "tech", icon: "📁" },
+    { id: "cft", name: "cft", icon: "📁" },
+    { id: "project-alpha", name: "project-alpha", icon: "📁" },
+    { id: "project-beta", name: "project-beta", icon: "📁" },
+    { id: "utils", name: "utils", icon: "📁" },
+  ];
+
+  const filteredRepos = mockRepositories.filter((repo) =>
+    repo.name.toLowerCase().includes(repoSearchInput.toLowerCase())
+  );
+
+  const handleRepoToggle = (repoId: string) => {
+    setSelectedRepos((prev) =>
+      prev.includes(repoId)
+        ? prev.filter((id) => id !== repoId)
+        : [...prev, repoId]
+    );
+  };
+
+  const handleSelectAllRepos = () => {
+    if (selectedRepos.length === filteredRepos.length) {
+      setSelectedRepos([]);
+    } else {
+      setSelectedRepos(filteredRepos.map((repo) => repo.id));
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -3731,12 +3762,140 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
             </div>
           )}
 
-          {activeStep !== "selectService" && activeStep !== "selectOrganization" && (
+          {activeStep === "selectRepositories" && (
+            <div className="flex flex-col h-full">
+              <div className="flex-1 overflow-y-auto">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  Select Repositories
+                </h3>
+
+                {/* Info Box */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-start gap-3">
+                  <span className="text-blue-600 text-lg mt-0.5">ℹ️</span>
+                  <div className="flex-1">
+                    <p className="text-sm text-blue-900">
+                      If you are unable to see your Repositories/Projects, check your privilege definitions
+                    </p>
+                  </div>
+                  <a
+                    href="#"
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap ml-4"
+                  >
+                    More details
+                  </a>
+                </div>
+
+                {/* Search Input */}
+                <div className="mb-4 relative">
+                  <input
+                    type="text"
+                    placeholder="Find a Repository"
+                    value={repoSearchInput}
+                    onChange={(e) => setRepoSearchInput(e.target.value)}
+                    className="w-full px-3 py-2 pl-9 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  />
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    🔍
+                  </span>
+                </div>
+
+                {/* Select All Checkbox */}
+                <div className="mb-4 flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
+                  <input
+                    type="checkbox"
+                    id="select-all"
+                    checked={
+                      filteredRepos.length > 0 &&
+                      selectedRepos.length === filteredRepos.length
+                    }
+                    onChange={handleSelectAllRepos}
+                    className="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer"
+                  />
+                  <label
+                    htmlFor="select-all"
+                    className="flex-1 text-sm font-medium text-gray-900 cursor-pointer"
+                  >
+                    Select all
+                  </label>
+                </div>
+
+                {/* Repositories List */}
+                <div className="space-y-2">
+                  {filteredRepos.map((repo) => (
+                    <div
+                      key={repo.id}
+                      className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        id={`repo-${repo.id}`}
+                        checked={selectedRepos.includes(repo.id)}
+                        onChange={() => handleRepoToggle(repo.id)}
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer"
+                      />
+                      <label
+                        htmlFor={`repo-${repo.id}`}
+                        className="flex-1 flex items-center gap-2 cursor-pointer"
+                      >
+                        <span className="text-lg">{repo.icon}</span>
+                        <span className="text-sm text-gray-900 font-medium">
+                          {repo.name}
+                        </span>
+                      </label>
+                    </div>
+                  ))}
+
+                  {filteredRepos.length === 0 && repoSearchInput && (
+                    <div className="text-center py-8">
+                      <p className="text-sm text-gray-600">
+                        No repositories found matching "{repoSearchInput}"
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-3 pt-6 border-t border-gray-200">
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => {
+                    const stepOrder: typeof activeStep[] = [
+                      "selectService",
+                      "selectOrganization",
+                      "selectRepositories",
+                      "repositoriesSettings",
+                      "selectBranches",
+                      "scanUponCreation",
+                    ];
+                    const currentIndex = stepOrder.indexOf(activeStep);
+                    if (currentIndex < stepOrder.length - 1) {
+                      setActiveStep(stepOrder[currentIndex + 1]);
+                    }
+                  }}
+                  disabled={selectedRepos.length === 0}
+                  className={cn(
+                    "ml-auto px-6 py-2 rounded-lg font-medium transition-colors",
+                    selectedRepos.length === 0
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  )}
+                >
+                  Select Repositories
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeStep !== "selectService" && activeStep !== "selectOrganization" && activeStep !== "selectRepositories" && (
             <div className="flex items-center justify-center h-full">
               <div className="text-center text-gray-600">
                 <p className="text-lg font-semibold mb-2">
-                  {activeStep === "selectRepositories" &&
-                    "Select Repositories"}
                   {activeStep === "repositoriesSettings" &&
                     "Repositories Settings"}
                   {activeStep === "selectBranches" && "Select Branches"}
