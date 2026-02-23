@@ -358,35 +358,26 @@ export default function Index() {
           onClose={() => setShowNewProjectModal(false)}
           onStartScan={handleStartScan}
           onOpenImport={() => {
+            console.log("NewProjectModal onOpenImport callback called");
             setShowNewProjectModal(false);
             setShowImportModal(true);
           }}
           onOpenAutomaticScan={() => {
+            console.log("NewProjectModal onOpenAutomaticScan callback called");
             setShowNewProjectModal(false);
             setShowAutomaticScanModal(true);
           }}
+          setShowImportModal={setShowImportModal}
+          setShowNewProjectModal={setShowNewProjectModal}
         />
       )}
 
       {/* Import From Modal */}
       {showImportModal && (
-        <>
-          <div style={{position: 'fixed', top: 10, left: 10, background: 'yellow', padding: '10px', zIndex: 9999, color: 'black', fontWeight: 'bold'}}>
-            MODAL MOUNTED: showImportModal={String(showImportModal)}
-          </div>
-          <ImportFromModal
-            isOpen={showImportModal}
-            onClose={() => {
-              console.log("Closing ImportFromModal");
-              setShowImportModal(false);
-            }}
-          />
-        </>
-      )}
-      {!showImportModal && (
-        <div style={{position: 'fixed', top: 50, left: 10, background: 'red', padding: '10px', zIndex: 9999, color: 'white', fontWeight: 'bold', display: showNewProjectModal ? 'block' : 'none'}}>
-          ImportFromModal is NOT mounted. showImportModal={String(showImportModal)}, showNewProjectModal={String(showNewProjectModal)}
-        </div>
+        <ImportFromModal
+          isOpen={showImportModal}
+          onClose={() => setShowImportModal(false)}
+        />
       )}
 
       {/* Automatic Scan Modal */}
@@ -2222,6 +2213,8 @@ interface NewProjectModalProps {
   onStartScan: (projectName: string) => void;
   onOpenImport?: () => void;
   onOpenAutomaticScan?: () => void;
+  setShowImportModal?: (show: boolean) => void;
+  setShowNewProjectModal?: (show: boolean) => void;
 }
 
 function NewProjectModal({
@@ -2230,6 +2223,8 @@ function NewProjectModal({
   onStartScan,
   onOpenImport,
   onOpenAutomaticScan,
+  setShowImportModal,
+  setShowNewProjectModal,
 }: NewProjectModalProps) {
   const [activeStep, setActiveStep] = useState<
     "options" | "sourceCode" | "selectScanners"
@@ -2941,10 +2936,17 @@ function NewProjectModal({
             <div key={option.id} className="relative group">
               <button
                 onClick={() => {
+                  console.log("Button clicked:", option.id, "active:", option.active);
                   if (option.active) {
                     if (option.id === "code-repo") {
                       console.log("Code Repo button clicked, calling onOpenImport");
-                      onOpenImport?.();
+                      if (onOpenImport) {
+                        onOpenImport();
+                      } else if (setShowImportModal && setShowNewProjectModal) {
+                        console.log("Using direct state setters");
+                        setShowNewProjectModal(false);
+                        setShowImportModal(true);
+                      }
                     } else if (option.id === "automatic-scan") {
                       console.log("Automatic Scan button clicked, calling onOpenAutomaticScan");
                       onOpenAutomaticScan?.();
