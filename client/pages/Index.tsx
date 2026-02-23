@@ -3603,6 +3603,19 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
     }
   }, [selectedRepos]);
 
+  // Reset modal state when it opens
+  React.useEffect(() => {
+    if (isOpen) {
+      setActiveStep("selectService");
+      setSelectedService(null);
+      setOrgType("user");
+      setOrgSearchInput("");
+      setSelectedOrg("");
+      setRepoSearchInput("");
+      setSelectedRepos([]);
+    }
+  }, [isOpen]);
+
   const addBranch = (repo: string) => {
     const input = branchInputs[repo]?.trim();
     if (input && !selectedBranches[repo]?.includes(input)) {
@@ -3685,34 +3698,46 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
 
           {/* Steps */}
           <div className="space-y-4 flex-1">
-            {steps.map((step) => (
-              <div key={step.id} className="flex items-start gap-3">
-                <div
-                  className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white",
-                    activeStep === steps[step.id - 1].id
-                      ? "bg-blue-600"
-                      : steps.findIndex((s) => s.id === activeStep) >= step.id - 1
-                        ? "bg-green-600"
-                        : "bg-gray-400",
-                  )}
-                >
-                  {step.id}
-                </div>
-                <div>
-                  <p
+            {steps.map((step, index) => {
+              const stepNames: typeof activeStep[] = [
+                "selectService",
+                "selectOrganization",
+                "selectRepositories",
+                "repositoriesSettings",
+                "selectBranches",
+                "scanUponCreation",
+              ];
+              const currentStepIndex = stepNames.indexOf(activeStep);
+              const isCompleted = currentStepIndex > index;
+              const isCurrent = currentStepIndex === index;
+
+              return (
+                <div key={step.id} className="flex items-start gap-3">
+                  <div
                     className={cn(
-                      "font-semibold text-sm",
-                      activeStep === steps[step.id - 1].id
-                        ? "text-gray-900"
-                        : "text-gray-600",
+                      "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white",
+                      isCurrent
+                        ? "bg-blue-600"
+                        : isCompleted
+                          ? "bg-green-600"
+                          : "bg-gray-400",
                     )}
                   >
-                    {step.label}
-                  </p>
+                    {isCompleted ? "✓" : step.id}
+                  </div>
+                  <div>
+                    <p
+                      className={cn(
+                        "font-semibold text-sm",
+                        isCurrent ? "text-gray-900" : "text-gray-600",
+                      )}
+                    >
+                      {step.label}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <button
@@ -3724,7 +3749,7 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
         </div>
 
         {/* Right Content */}
-        <div className="flex-1 p-8 overflow-y-auto flex flex-col">
+        <div className="flex-1 p-8 overflow-y-auto flex flex-col min-h-0">
           {activeStep === "selectService" && (
             <div className="flex flex-col h-full">
               <div className="flex-1">
