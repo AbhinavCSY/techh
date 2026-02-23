@@ -3482,6 +3482,97 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
     }
   };
 
+  // Repositories Settings state
+  const [selectedRepo, setSelectedRepo] = useState<string>(
+    selectedRepos[0] || "abhinavCSYSCS/techh"
+  );
+  const [expandedSections, setExpandedSections] = useState<string[]>([
+    "permission",
+  ]);
+  const [repoSettings, setRepoSettings] = useState({
+    scanTrigger: { push: true, pullRequest: true },
+    pullRequestDecoration: true,
+    scaAutoPullRequest: false,
+    protectedBranches: ["main"],
+    protectedBranchInput: "",
+    sshKey: "",
+    assignGroups: [] as string[],
+    assignGroupsInput: "",
+    assignTags: [] as string[],
+    assignTagsInput: "",
+    criticalityLevel: 2,
+  });
+
+  const toggleSection = (section: string) => {
+    setExpandedSections((prev) =>
+      prev.includes(section)
+        ? prev.filter((s) => s !== section)
+        : [...prev, section]
+    );
+  };
+
+  const addProtectedBranch = () => {
+    if (repoSettings.protectedBranchInput.trim()) {
+      setRepoSettings({
+        ...repoSettings,
+        protectedBranches: [
+          ...repoSettings.protectedBranches,
+          repoSettings.protectedBranchInput.trim(),
+        ],
+        protectedBranchInput: "",
+      });
+    }
+  };
+
+  const removeProtectedBranch = (index: number) => {
+    setRepoSettings({
+      ...repoSettings,
+      protectedBranches: repoSettings.protectedBranches.filter(
+        (_, i) => i !== index
+      ),
+    });
+  };
+
+  const addGroup = () => {
+    if (repoSettings.assignGroupsInput.trim()) {
+      setRepoSettings({
+        ...repoSettings,
+        assignGroups: [
+          ...repoSettings.assignGroups,
+          repoSettings.assignGroupsInput.trim(),
+        ],
+        assignGroupsInput: "",
+      });
+    }
+  };
+
+  const removeGroup = (index: number) => {
+    setRepoSettings({
+      ...repoSettings,
+      assignGroups: repoSettings.assignGroups.filter((_, i) => i !== index),
+    });
+  };
+
+  const addTag = () => {
+    if (repoSettings.assignTagsInput.trim()) {
+      setRepoSettings({
+        ...repoSettings,
+        assignTags: [
+          ...repoSettings.assignTags,
+          repoSettings.assignTagsInput.trim(),
+        ],
+        assignTagsInput: "",
+      });
+    }
+  };
+
+  const removeTag = (index: number) => {
+    setRepoSettings({
+      ...repoSettings,
+      assignTags: repoSettings.assignTags.filter((_, i) => i !== index),
+    });
+  };
+
   if (!isOpen) return null;
 
   const services = [
@@ -3892,12 +3983,417 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
             </div>
           )}
 
-          {activeStep !== "selectService" && activeStep !== "selectOrganization" && activeStep !== "selectRepositories" && (
+          {activeStep === "repositoriesSettings" && (
+            <div className="flex h-full gap-4">
+              {/* Left Sidebar - Repositories List */}
+              <div className="w-64 border-r border-gray-200 overflow-y-auto">
+                <h4 className="text-sm font-semibold text-gray-900 p-4 sticky top-0 bg-white">
+                  Selected Repositories
+                </h4>
+                <div className="space-y-2 p-4">
+                  {selectedRepos.map((repo) => (
+                    <button
+                      key={repo}
+                      onClick={() => setSelectedRepo(repo)}
+                      className={cn(
+                        "w-full text-left px-3 py-2 rounded-lg transition-colors text-sm font-medium flex items-center gap-2",
+                        selectedRepo === repo
+                          ? "bg-blue-100 text-blue-900 border border-blue-300"
+                          : "text-gray-700 hover:bg-gray-100"
+                      )}
+                    >
+                      <span>📁</span>
+                      {repo}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right Panel - Settings */}
+              <div className="flex-1 overflow-y-auto p-6">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      Repositories Settings
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Configure setting for each repository
+                    </p>
+                  </div>
+
+                  {/* Selected Repository Display */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center gap-2">
+                    <span className="text-lg">📁</span>
+                    <span className="text-sm font-semibold text-gray-900">
+                      {selectedRepo}
+                    </span>
+                    <button className="ml-auto text-gray-400 hover:text-gray-600">
+                      ›
+                    </button>
+                  </div>
+
+                  {/* Permission Settings */}
+                  <div className="border border-gray-200 rounded-lg">
+                    <button
+                      onClick={() => toggleSection("permission")}
+                      className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            "transition-transform",
+                            expandedSections.includes("permission")
+                              ? "rotate-90"
+                              : ""
+                          )}
+                        >
+                          ›
+                        </span>
+                        <span className="font-semibold text-gray-900">
+                          Permission Settings
+                        </span>
+                      </div>
+                    </button>
+
+                    {expandedSections.includes("permission") && (
+                      <div className="p-4 border-t border-gray-200 space-y-4">
+                        {/* Scan Trigger */}
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm font-medium text-gray-900">
+                            Scan Trigger: Push, Pull request
+                          </label>
+                          <button
+                            onClick={() =>
+                              setRepoSettings({
+                                ...repoSettings,
+                                scanTrigger: {
+                                  ...repoSettings.scanTrigger,
+                                  push: !repoSettings.scanTrigger.push,
+                                },
+                              })
+                            }
+                            className={cn(
+                              "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                              repoSettings.scanTrigger.push
+                                ? "bg-blue-600"
+                                : "bg-gray-300"
+                            )}
+                          >
+                            <span
+                              className={cn(
+                                "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                                repoSettings.scanTrigger.push
+                                  ? "translate-x-6"
+                                  : "translate-x-1"
+                              )}
+                            />
+                          </button>
+                        </div>
+
+                        {/* Pull Request Decoration */}
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm font-medium text-gray-900">
+                            Pull Request Decoration
+                          </label>
+                          <button
+                            onClick={() =>
+                              setRepoSettings({
+                                ...repoSettings,
+                                pullRequestDecoration:
+                                  !repoSettings.pullRequestDecoration,
+                              })
+                            }
+                            className={cn(
+                              "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                              repoSettings.pullRequestDecoration
+                                ? "bg-blue-600"
+                                : "bg-gray-300"
+                            )}
+                          >
+                            <span
+                              className={cn(
+                                "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                                repoSettings.pullRequestDecoration
+                                  ? "translate-x-6"
+                                  : "translate-x-1"
+                              )}
+                            />
+                          </button>
+                        </div>
+
+                        {/* SCA Auto Pull Request */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <label className="text-sm font-medium text-gray-900">
+                              SCA Auto Pull Request
+                            </label>
+                            <span
+                              className="text-gray-400 cursor-help"
+                              title="Info about SCA Auto Pull Request"
+                            >
+                              ℹ️
+                            </span>
+                          </div>
+                          <button
+                            onClick={() =>
+                              setRepoSettings({
+                                ...repoSettings,
+                                scaAutoPullRequest:
+                                  !repoSettings.scaAutoPullRequest,
+                              })
+                            }
+                            className={cn(
+                              "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                              repoSettings.scaAutoPullRequest
+                                ? "bg-blue-600"
+                                : "bg-gray-300"
+                            )}
+                          >
+                            <span
+                              className={cn(
+                                "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                                repoSettings.scaAutoPullRequest
+                                  ? "translate-x-6"
+                                  : "translate-x-1"
+                              )}
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Scanner Settings */}
+                  <div className="border border-gray-200 rounded-lg">
+                    <button
+                      onClick={() => toggleSection("scanner")}
+                      className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            "transition-transform",
+                            expandedSections.includes("scanner")
+                              ? "rotate-90"
+                              : ""
+                          )}
+                        >
+                          ›
+                        </span>
+                        <span className="font-semibold text-gray-900">
+                          Scanner Settings
+                        </span>
+                      </div>
+                    </button>
+
+                    {expandedSections.includes("scanner") && (
+                      <div className="p-4 border-t border-gray-200 space-y-4">
+                        {/* Protected Branches */}
+                        <div>
+                          <h5 className="font-semibold text-gray-900 text-sm mb-2">
+                            Protected Branches
+                          </h5>
+                          <p className="text-xs text-gray-600 mb-3">
+                            Protected branches (e.g., main or release) are
+                            critical branches with enforced rules to keep
+                            production code stable.
+                          </p>
+
+                          <div className="mb-3">
+                            <label className="block text-xs font-medium text-gray-900 mb-2">
+                              Choose Branches:
+                            </label>
+                            {repoSettings.protectedBranches.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mb-2">
+                                {repoSettings.protectedBranches.map(
+                                  (branch, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full"
+                                    >
+                                      <span className="text-xs font-medium text-gray-900">
+                                        {branch}
+                                      </span>
+                                      <button
+                                        onClick={() =>
+                                          removeProtectedBranch(idx)
+                                        }
+                                        className="text-gray-400 hover:text-gray-600 ml-1"
+                                      >
+                                        ✕
+                                      </button>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* SSH Key Input */}
+                          <div className="mb-4">
+                            <label className="block text-sm font-semibold text-gray-900 mb-2">
+                              Add SSH Key
+                            </label>
+                            <textarea
+                              placeholder="Paste your SSH key here..."
+                              value={repoSettings.sshKey}
+                              onChange={(e) =>
+                                setRepoSettings({
+                                  ...repoSettings,
+                                  sshKey: e.target.value,
+                                })
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm h-24"
+                            />
+                          </div>
+
+                          {/* Assign Groups */}
+                          <div className="mb-4">
+                            <label className="block text-sm font-semibold text-gray-900 mb-2">
+                              Assign Groups
+                            </label>
+                            {repoSettings.assignGroups.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mb-2">
+                                {repoSettings.assignGroups.map((group, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="flex items-center gap-1 bg-blue-100 px-3 py-1 rounded-full"
+                                  >
+                                    <span className="text-xs font-medium text-blue-900">
+                                      {group}
+                                    </span>
+                                    <button
+                                      onClick={() => removeGroup(idx)}
+                                      className="text-blue-600 hover:text-blue-800 ml-1"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            <input
+                              type="text"
+                              placeholder="Add Groups"
+                              value={repoSettings.assignGroupsInput}
+                              onChange={(e) =>
+                                setRepoSettings({
+                                  ...repoSettings,
+                                  assignGroupsInput: e.target.value,
+                                })
+                              }
+                              onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                  addGroup();
+                                }
+                              }}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                            />
+                          </div>
+
+                          {/* Assign Tags */}
+                          <div className="mb-4">
+                            <label className="block text-sm font-semibold text-gray-900 mb-2">
+                              Assign Tags
+                            </label>
+                            {repoSettings.assignTags.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mb-2">
+                                {repoSettings.assignTags.map((tag, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="flex items-center gap-1 bg-blue-100 px-3 py-1 rounded-full"
+                                  >
+                                    <span className="text-xs font-medium text-blue-900">
+                                      {tag}
+                                    </span>
+                                    <button
+                                      onClick={() => removeTag(idx)}
+                                      className="text-blue-600 hover:text-blue-800 ml-1"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            <input
+                              type="text"
+                              placeholder="Add Tags"
+                              value={repoSettings.assignTagsInput}
+                              onChange={(e) =>
+                                setRepoSettings({
+                                  ...repoSettings,
+                                  assignTagsInput: e.target.value,
+                                })
+                              }
+                              onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                  addTag();
+                                }
+                              }}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                            />
+                          </div>
+
+                          {/* Criticality Level */}
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <label className="text-sm font-semibold text-gray-900">
+                                Set Criticality Level
+                              </label>
+                              <span
+                                className="text-gray-400 cursor-help"
+                                title="Info about Criticality Level"
+                              >
+                                ℹ️
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <input
+                                type="range"
+                                min="1"
+                                max="5"
+                                value={repoSettings.criticalityLevel}
+                                onChange={(e) =>
+                                  setRepoSettings({
+                                    ...repoSettings,
+                                    criticalityLevel: parseInt(e.target.value),
+                                  })
+                                }
+                                className="flex-1 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                              />
+                              <span className="text-sm font-medium text-gray-900 min-w-12">
+                                {repoSettings.criticalityLevel}
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-xs text-gray-600 mt-2">
+                              <span>1</span>
+                              <span>
+                                {[
+                                  "",
+                                  "Low",
+                                  "Medium",
+                                  "High",
+                                  "Critical",
+                                  "Severe",
+                                ][repoSettings.criticalityLevel]}
+                              </span>
+                              <span>5</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeStep !== "selectService" && activeStep !== "selectOrganization" && activeStep !== "selectRepositories" && activeStep !== "repositoriesSettings" && (
             <div className="flex items-center justify-center h-full">
               <div className="text-center text-gray-600">
                 <p className="text-lg font-semibold mb-2">
-                  {activeStep === "repositoriesSettings" &&
-                    "Repositories Settings"}
                   {activeStep === "selectBranches" && "Select Branches"}
                   {activeStep === "scanUponCreation" && "Scan Upon Creation"}
                 </p>
@@ -3906,14 +4402,45 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
             </div>
           )}
 
-          {/* Navigation Buttons - Only for non-selectOrganization steps */}
-          {activeStep !== "selectService" && activeStep !== "selectOrganization" && (
+          {/* Navigation Buttons - Only for non-selectOrganization and non-repositoriesSettings steps */}
+          {activeStep !== "selectService" && activeStep !== "selectOrganization" && activeStep !== "repositoriesSettings" && (
             <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
               <button
                 onClick={onClose}
                 className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
               >
                 Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const stepOrder: typeof activeStep[] = [
+                    "selectService",
+                    "selectOrganization",
+                    "selectRepositories",
+                    "repositoriesSettings",
+                    "selectBranches",
+                    "scanUponCreation",
+                  ];
+                  const currentIndex = stepOrder.indexOf(activeStep);
+                  if (currentIndex < stepOrder.length - 1) {
+                    setActiveStep(stepOrder[currentIndex + 1]);
+                  }
+                }}
+                className="ml-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+              >
+                Next
+              </button>
+            </div>
+          )}
+
+          {/* Navigation Buttons - For repositoriesSettings */}
+          {activeStep === "repositoriesSettings" && (
+            <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+              <button
+                onClick={handleBack}
+                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+              >
+                Back
               </button>
               <button
                 onClick={() => {
