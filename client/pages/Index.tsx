@@ -358,12 +358,10 @@ export default function Index() {
           onClose={() => setShowNewProjectModal(false)}
           onStartScan={handleStartScan}
           onOpenImport={() => {
-            console.log("NewProjectModal onOpenImport callback called");
             setShowNewProjectModal(false);
             setShowImportModal(true);
           }}
           onOpenAutomaticScan={() => {
-            console.log("NewProjectModal onOpenAutomaticScan callback called");
             setShowNewProjectModal(false);
             setShowAutomaticScanModal(true);
           }}
@@ -2936,22 +2934,17 @@ function NewProjectModal({
             <div key={option.id} className="relative group">
               <button
                 onClick={() => {
-                  console.log("Button clicked:", option.id, "active:", option.active);
                   if (option.active) {
                     if (option.id === "code-repo") {
-                      console.log("Code Repo button clicked, calling onOpenImport");
                       if (onOpenImport) {
                         onOpenImport();
                       } else if (setShowImportModal && setShowNewProjectModal) {
-                        console.log("Using direct state setters");
                         setShowNewProjectModal(false);
                         setShowImportModal(true);
                       }
                     } else if (option.id === "automatic-scan") {
-                      console.log("Automatic Scan button clicked, calling onOpenAutomaticScan");
                       onOpenAutomaticScan?.();
                     } else {
-                      console.log("Manual Scan button clicked");
                       setActiveStep("sourceCode");
                     }
                   }
@@ -3602,7 +3595,7 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
   const [suggestedBranches] = useState<string[]>(["main", "develop", "master", "staging", "production"]);
 
   // Initialize selected branches and branch inputs for all repositories
-  React.useEffect(() => {
+  useEffect(() => {
     const initialBranches: Record<string, string[]> = {};
     const initialInputs: Record<string, string> = {};
     selectedRepos.forEach((repo) => {
@@ -3622,7 +3615,7 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
   }, [selectedRepos]);
 
   // Reset modal state when it opens
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) {
       setActiveStep("selectService");
       setSelectedService(null);
