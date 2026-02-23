@@ -2261,13 +2261,6 @@ function NewProjectModal({
       description: "Push the SBOM/CBOM on every gh action trigger",
       active: true,
     },
-    {
-      id: "new-app",
-      icon: "📊",
-      title: "New Application",
-      description: "Create an application to organize your projects",
-      active: false,
-    },
   ];
 
   const handleAddTag = () => {
@@ -2566,6 +2559,11 @@ function NewProjectModal({
                         }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       />
+                      {formData.sourceType === "sbom" && (
+                        <p className="text-xs text-gray-600 mt-2">
+                          ℹ️ Branch information will be extracted from the SBOM file if available. Enter a default branch name if not found in the SBOM.
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -2986,15 +2984,31 @@ interface AutomaticScanModalProps {
 function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
   const [step, setStep] = useState<"config" | "tool" | "ghAction" | "script">("config");
   const [projectName, setProjectName] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
   const [sbomTool, setSbomTool] = useState("syft");
   const [ghActionOption, setGhActionOption] = useState("new");
   const [copied, setCopied] = useState(false);
 
+  const handleAddTag = () => {
+    if (tagInput.trim()) {
+      setTags([...tags, tagInput.trim()]);
+      setTagInput("");
+    }
+  };
+
+  const handleRemoveTag = (index: number) => {
+    setTags(tags.filter((_, i) => i !== index));
+  };
+
   const sbomTools = [
     { id: "syft", label: "Syft", description: "Anchore Syft for comprehensive SBOM generation" },
-    { id: "cyclonedx", label: "CycloneDX", description: "CycloneDX maven plugin for Java projects" },
+    { id: "cyclonedx", label: "CycloneDX Maven", description: "CycloneDX maven plugin for Java projects" },
     { id: "cyclonedx-npm", label: "CycloneDX NPM", description: "CycloneDX for Node.js projects" },
+    { id: "cyclonedx-gradle", label: "CycloneDX Gradle", description: "CycloneDX gradle plugin for Gradle projects" },
     { id: "spdx", label: "SPDX", description: "SPDX format for open standard SBOM" },
+    { id: "grype", label: "Grype", description: "Anchore Grype for vulnerability detection and SBOM" },
+    { id: "poetry", label: "Poetry", description: "Poetry for Python projects" },
   ];
 
   const ghActionOptions = [
@@ -3010,8 +3024,15 @@ function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
       cyclonedx: `mvn org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom -DoutputFile=sbom.xml`,
       "cyclonedx-npm": `npm install -g @cyclonedx/npm
           cyclonedx-npm --output-file sbom.json`,
+      "cyclonedx-gradle": `gradle org.cyclonedx.cyclonedxCreateBom -DoutputFile=sbom.json`,
       spdx: `curl -sSfL https://repo1.maven.org/maven2/org/spdx/tools/spdx-tools-0.8/spdx-tools-0.8-jar-with-dependencies.jar -o spdx-tools.jar
           java -jar spdx-tools.jar convert --input sbom.json --output sbom.spdx`,
+      grype: `curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh
+          grype dir:. -o json > sbom.json`,
+      poetry: `pip install poetry
+          poetry export --format=requirements.txt --output=requirements.txt
+          pip install pip-audit
+          pip-audit --desc --format=json > sbom.json`,
     };
 
     if (ghActionOption === "new") {
@@ -3176,27 +3197,75 @@ curl -X POST "https://api.example.com/artifact/upload" \\
         </div>
 
         <div className="space-y-6">
-          {/* Step 1: Project Name */}
+          {/* Step 1: Project Name and Tags */}
           {step === "config" && (
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Select Project Name <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
-                >
-                  <option value="">Select project</option>
-                  <option value="as">as</option>
-                  <option value="new-project">New Project</option>
-                  <option value="project-3">Project 3</option>
-                  <option value="project-4">Project 4</option>
-                </select>
-                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
-                  ▼
-                </span>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Select Project Name <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <select
+                    value={projectName}
+                    onChange={(e) => setProjectName(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
+                  >
+                    <option value="">Select project</option>
+                    <option value="as">as</option>
+                    <option value="new-project">New Project</option>
+                    <option value="project-3">Project 3</option>
+                    <option value="project-4">Project 4</option>
+                  </select>
+                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                    ▼
+                  </span>
+                </div>
+              </div>
+
+              {/* Tags Field */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Tags <span className="text-gray-500 text-xs">(Optional)</span>
+                </label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    placeholder="Add tags (e.g. Environment:Prod)"
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddTag();
+                      }
+                    }}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  />
+                  <button
+                    onClick={handleAddTag}
+                    className="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Add
+                  </button>
+                </div>
+                {tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs"
+                      >
+                        {tag}
+                        <button
+                          onClick={() => handleRemoveTag(index)}
+                          className="text-blue-600 hover:text-blue-900 font-bold"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
