@@ -3686,11 +3686,11 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 flex max-h-[90vh] overflow-hidden"
+        className="bg-white rounded-lg shadow-xl w-full max-w-5xl h-[90vh] mx-4 flex overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Left Sidebar */}
-        <div className="bg-gray-50 w-56 p-6 flex flex-col border-r border-gray-200">
+        <div className="bg-gray-50 w-56 p-6 flex flex-col border-r border-gray-200 overflow-y-auto">
           <div className="flex items-center gap-3 mb-8">
             <span className="text-2xl">⚙️</span>
             <h2 className="text-lg font-bold text-gray-900">Import From</h2>
