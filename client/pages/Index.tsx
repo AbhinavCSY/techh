@@ -3573,6 +3573,51 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
     });
   };
 
+  // Branches Selection state
+  const [selectedBranches, setSelectedBranches] = useState<
+    Record<string, string[]>
+  >({});
+  const [branchInputs, setBranchInputs] = useState<Record<string, string>>({});
+  const [suggestedBranches] = useState<string[]>(["main", "develop", "master", "staging", "production"]);
+
+  // Initialize selected branches and branch inputs for all repositories
+  React.useEffect(() => {
+    const initialBranches: Record<string, string[]> = {};
+    const initialInputs: Record<string, string> = {};
+    selectedRepos.forEach((repo) => {
+      if (!selectedBranches[repo]) {
+        initialBranches[repo] = ["main"];
+      }
+      if (!branchInputs[repo]) {
+        initialInputs[repo] = "";
+      }
+    });
+    if (Object.keys(initialBranches).length > 0) {
+      setSelectedBranches((prev) => ({ ...prev, ...initialBranches }));
+    }
+    if (Object.keys(initialInputs).length > 0) {
+      setBranchInputs((prev) => ({ ...prev, ...initialInputs }));
+    }
+  }, [selectedRepos]);
+
+  const addBranch = (repo: string) => {
+    const input = branchInputs[repo]?.trim();
+    if (input && !selectedBranches[repo]?.includes(input)) {
+      setSelectedBranches((prev) => ({
+        ...prev,
+        [repo]: [...(prev[repo] || []), input],
+      }));
+      setBranchInputs((prev) => ({ ...prev, [repo]: "" }));
+    }
+  };
+
+  const removeBranch = (repo: string, branch: string) => {
+    setSelectedBranches((prev) => ({
+      ...prev,
+      [repo]: prev[repo].filter((b) => b !== branch),
+    }));
+  };
+
   if (!isOpen) return null;
 
   const services = [
@@ -4398,11 +4443,189 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
             </div>
           )}
 
-          {activeStep !== "selectService" && activeStep !== "selectOrganization" && activeStep !== "selectRepositories" && activeStep !== "repositoriesSettings" && (
+          {activeStep === "selectBranches" && (
+            <div className="flex flex-col h-full">
+              <div className="flex-1 overflow-y-auto">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Select Branches
+                </h3>
+                <p className="text-sm text-gray-600 mb-6">
+                  Select protected Branches (each repository must have at least
+                  one branch selected)
+                </p>
+
+                {/* Repositories and Branches */}
+                <div className="space-y-6">
+                  {selectedRepos.map((repo) => (
+                    <div key={repo} className="border border-gray-200 rounded-lg p-4">
+                      {/* Repository Name */}
+                      <div className="mb-4 flex items-center justify-between">
+                        <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                          <span>📁</span>
+                          {repo}
+                        </h4>
+                      </div>
+
+                      {/* Selected Branches Tags */}
+                      {selectedBranches[repo]?.length > 0 && (
+                        <div className="mb-4 flex flex-wrap gap-2">
+                          {selectedBranches[repo].map((branch) => (
+                            <div
+                              key={branch}
+                              className="flex items-center gap-1 bg-blue-50 border border-blue-300 px-3 py-1 rounded-lg"
+                            >
+                              <span className="text-xs font-medium text-gray-900">
+                                {branch}
+                              </span>
+                              <button
+                                onClick={() => removeBranch(repo, branch)}
+                                className="ml-1 text-gray-400 hover:text-gray-600"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Branch Input */}
+                      <div className="relative">
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="main"
+                            value={branchInputs[repo] || ""}
+                            onChange={(e) =>
+                              setBranchInputs((prev) => ({
+                                ...prev,
+                                [repo]: e.target.value,
+                              }))
+                            }
+                            onKeyPress={(e) => {
+                              if (e.key === "Enter") {
+                                addBranch(repo);
+                              }
+                            }}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                          />
+                          <button
+                            onClick={() => addBranch(repo)}
+                            disabled={
+                              !branchInputs[repo]?.trim() ||
+                              selectedBranches[repo]?.includes(
+                                branchInputs[repo].trim()
+                              )
+                            }
+                            className={cn(
+                              "px-3 py-2 rounded-lg font-medium text-sm transition-colors",
+                              !branchInputs[repo]?.trim() ||
+                                selectedBranches[repo]?.includes(
+                                  branchInputs[repo].trim()
+                                )
+                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                : "bg-gray-300 hover:bg-gray-400 text-gray-700"
+                            )}
+                          >
+                            Add
+                          </button>
+                        </div>
+
+                        {/* Autocomplete Suggestions */}
+                        {branchInputs[repo] &&
+                          !selectedBranches[repo]?.includes(
+                            branchInputs[repo].trim()
+                          ) && (
+                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                              {suggestedBranches
+                                .filter((b) =>
+                                  b
+                                    .toLowerCase()
+                                    .includes(
+                                      branchInputs[repo].toLowerCase()
+                                    ) &&
+                                  !selectedBranches[repo]?.includes(b)
+                                )
+                                .map((branch) => (
+                                  <button
+                                    key={branch}
+                                    onClick={() => {
+                                      setBranchInputs((prev) => ({
+                                        ...prev,
+                                        [repo]: branch,
+                                      }));
+                                      // Auto-add the branch
+                                      setTimeout(() => {
+                                        setSelectedBranches((prev) => ({
+                                          ...prev,
+                                          [repo]: [
+                                            ...(prev[repo] || []),
+                                            branch,
+                                          ],
+                                        }));
+                                        setBranchInputs((prev) => ({
+                                          ...prev,
+                                          [repo]: "",
+                                        }));
+                                      }, 0);
+                                    }}
+                                    className="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm text-gray-900 border-b border-gray-200 last:border-b-0"
+                                  >
+                                    {branch}
+                                  </button>
+                                ))}
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-3 pt-6 border-t border-gray-200">
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => {
+                    const stepOrder: typeof activeStep[] = [
+                      "selectService",
+                      "selectOrganization",
+                      "selectRepositories",
+                      "repositoriesSettings",
+                      "selectBranches",
+                      "scanUponCreation",
+                    ];
+                    const currentIndex = stepOrder.indexOf(activeStep);
+                    if (currentIndex < stepOrder.length - 1) {
+                      setActiveStep(stepOrder[currentIndex + 1]);
+                    }
+                  }}
+                  disabled={
+                    selectedRepos.some((repo) => !selectedBranches[repo]?.length)
+                  }
+                  className={cn(
+                    "ml-auto px-6 py-2 rounded-lg font-medium transition-colors",
+                    selectedRepos.some(
+                      (repo) => !selectedBranches[repo]?.length
+                    )
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  )}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeStep !== "selectService" && activeStep !== "selectOrganization" && activeStep !== "selectRepositories" && activeStep !== "repositoriesSettings" && activeStep !== "selectBranches" && (
             <div className="flex items-center justify-center h-full">
               <div className="text-center text-gray-600">
                 <p className="text-lg font-semibold mb-2">
-                  {activeStep === "selectBranches" && "Select Branches"}
                   {activeStep === "scanUponCreation" && "Scan Upon Creation"}
                 </p>
                 <p className="text-sm">This step is coming soon...</p>
@@ -4410,8 +4633,8 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
             </div>
           )}
 
-          {/* Navigation Buttons - Only for non-selectOrganization and non-repositoriesSettings steps */}
-          {activeStep !== "selectService" && activeStep !== "selectOrganization" && activeStep !== "repositoriesSettings" && (
+          {/* Navigation Buttons - Only for non-selectOrganization, non-repositoriesSettings, and non-selectBranches steps */}
+          {activeStep !== "selectService" && activeStep !== "selectOrganization" && activeStep !== "repositoriesSettings" && activeStep !== "selectBranches" && (
             <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
               <button
                 onClick={onClose}
@@ -4471,6 +4694,8 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
               </button>
             </div>
           )}
+
+          {/* Navigation Buttons - For selectBranches - Already included in the component above */}
         </div>
       </div>
     </div>
