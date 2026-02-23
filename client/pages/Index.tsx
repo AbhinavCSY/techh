@@ -375,6 +375,7 @@ export default function Index() {
         <ImportFromModal
           isOpen={showImportModal}
           onClose={() => setShowImportModal(false)}
+          onStartScan={handleStartScan}
         />
       )}
 
@@ -3454,9 +3455,10 @@ curl -X POST "https://api.example.com/artifact/upload" \\
 interface ImportFromModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onStartScan?: (projectName: string) => void;
 }
 
-function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
+function ImportFromModal({ isOpen, onClose, onStartScan }: ImportFromModalProps) {
   const [activeStep, setActiveStep] = useState<
     "selectService" | "selectOrganization" | "selectRepositories" | "repositoriesSettings" | "selectBranches" | "scanUponCreation"
   >("selectService");
@@ -4661,19 +4663,107 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
             </div>
           )}
 
-          {activeStep !== "selectService" && activeStep !== "selectOrganization" && activeStep !== "selectRepositories" && activeStep !== "repositoriesSettings" && activeStep !== "selectBranches" && (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center text-gray-600">
-                <p className="text-lg font-semibold mb-2">
-                  {activeStep === "scanUponCreation" && "Scan Upon Creation"}
-                </p>
-                <p className="text-sm">This step is coming soon...</p>
+          {activeStep === "scanUponCreation" && (
+            <div className="flex flex-col h-full">
+              <div className="flex-1 overflow-y-auto">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Select Branches To Scan:
+                </h3>
+
+                {/* Toggle for Scan Upon Creation */}
+                <div className="mb-6 flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <label className="text-sm font-medium text-gray-900">
+                    Scan a branch upon creation of the project
+                  </label>
+                  <button
+                    onClick={() => {
+                      setRepoSettings({
+                        ...repoSettings,
+                        scaAutoPullRequest: !repoSettings.scaAutoPullRequest,
+                      });
+                    }}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                      repoSettings.scaAutoPullRequest
+                        ? "bg-blue-600"
+                        : "bg-gray-300"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                        repoSettings.scaAutoPullRequest
+                          ? "translate-x-6"
+                          : "translate-x-1"
+                      )}
+                    />
+                  </button>
+                </div>
+
+                {/* Repositories with Branch Selection */}
+                <div className="space-y-4">
+                  {selectedRepos.map((repo) => (
+                    <div key={repo} className="p-4 border border-gray-200 rounded-lg">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-lg">📁</span>
+                        <span className="font-semibold text-gray-900">{repo}</span>
+                      </div>
+
+                      {/* Branch Dropdown */}
+                      <div className="relative">
+                        <select
+                          value={selectedBranches[repo]?.[0] || "main"}
+                          onChange={(e) => {
+                            setSelectedBranches((prev) => ({
+                              ...prev,
+                              [repo]: [e.target.value],
+                            }));
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
+                        >
+                          {suggestedBranches.map((branch) => (
+                            <option key={branch} value={branch}>
+                              {branch}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                          ▼
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-3 pt-6 border-t border-gray-200">
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => {
+                    // Create projects and navigate to asset page
+                    const projectNames = selectedRepos.map((repo) => repo.split("/")[1] || repo);
+                    projectNames.forEach((projectName) => {
+                      onStartScan?.(projectName);
+                    });
+                    // Close the modal
+                    onClose();
+                  }}
+                  className="ml-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+                >
+                  Create Projects ({selectedRepos.length})
+                </button>
               </div>
             </div>
           )}
 
-          {/* Navigation Buttons - Only for non-selectOrganization, non-repositoriesSettings, and non-selectBranches steps */}
-          {activeStep !== "selectService" && activeStep !== "selectOrganization" && activeStep !== "repositoriesSettings" && activeStep !== "selectBranches" && (
+          {/* Navigation Buttons - Only for selectRepositories step */}
+          {activeStep === "selectRepositories" && (
             <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
               <button
                 onClick={onClose}
@@ -4736,20 +4826,7 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
 
           {/* Navigation Buttons - For selectBranches - Already included in the component above */}
 
-          {/* Fallback for unhandled activeStep */}
-          {activeStep &&
-            ![
-              "selectService",
-              "selectOrganization",
-              "selectRepositories",
-              "repositoriesSettings",
-              "selectBranches",
-              "scanUponCreation",
-            ].includes(activeStep) && (
-              <div className="text-center text-red-600 text-lg font-bold">
-                ERROR: Invalid activeStep: {activeStep}
-              </div>
-            )}
+          {/* Fallback for unhandled activeStep - should never show */}
         </div>
       </div>
     </div>
