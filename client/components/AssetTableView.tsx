@@ -87,75 +87,75 @@ export function AssetTableView({ assets, onSelectRow, scanningProject, scannedAs
             <TableHead className="font-semibold">Count</TableHead>
             <TableHead className="font-semibold">Tech Stacks</TableHead>
             <TableHead className="font-semibold">Threat</TableHead>
-            <TableHead className="font-semibold">Status</TableHead>
-            <TableHead className="font-semibold">First Seen</TableHead>
-            <TableHead className="font-semibold">Last Seen</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Object.entries(groupedAssets).map(([type, typeAssets]) => [
+          {Object.entries(groupedAssets).flatMap(([type, typeAssets]) => {
+            const rows: React.ReactNode[] = [];
+
             // Category Header Row
-            <TableRow
-              key={`category-${type}`}
-              onClick={() => toggleTypeExpanded(type)}
-              className="bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors border-b-2"
-            >
-              <TableCell className="font-semibold">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">
-                    {expandedTypes.has(type) ? "▼" : "▶"}
-                  </span>
-                  <span className="text-lg">
-                    {getAssetTypeIcon(type)}
-                  </span>
-                  <span className="capitalize">
-                    {type.replace("-", " ")}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell className="font-semibold">
-                <Badge variant="outline">{typeAssets.length}</Badge>
-              </TableCell>
-              <TableCell>
-                <div className="flex flex-wrap gap-1">
-                  {getCategoryTechStacks(typeAssets).slice(0, 2).map((ts) => (
-                    <Badge
-                      key={ts.id}
-                      variant="outline"
-                      className="text-xs"
-                    >
-                      {ts.logo} {ts.name}
-                    </Badge>
-                  ))}
-                  {getCategoryTechStacks(typeAssets).length > 2 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{getCategoryTechStacks(typeAssets).length - 2}
-                    </Badge>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell>
-                <ThreatBar
-                  cves={getCategoryThreat(typeAssets)}
-                  unscannedCount={typeAssets.reduce(
-                    (sum, asset) =>
-                      sum +
-                      asset.techStacks.reduce(
-                        (ts, t) => ts + t.unscannedThreatsCount,
-                        0,
-                      ),
-                    0,
-                  )}
-                  className="w-56"
-                />
-              </TableCell>
-              <TableCell>-</TableCell>
-              <TableCell>-</TableCell>
-              <TableCell>-</TableCell>
-            </TableRow>,
+            rows.push(
+              <TableRow
+                key={`category-${type}`}
+                onClick={() => toggleTypeExpanded(type)}
+                className="bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors border-b-2"
+              >
+                <TableCell className="font-semibold">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">
+                      {expandedTypes.has(type) ? "▼" : "▶"}
+                    </span>
+                    <span className="text-lg">
+                      {getAssetTypeIcon(type)}
+                    </span>
+                    <span className="capitalize">
+                      {type.replace("-", " ")}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="font-semibold">
+                  <Badge variant="outline">{typeAssets.length}</Badge>
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-wrap gap-1">
+                    {getCategoryTechStacks(typeAssets).slice(0, 2).map((ts) => (
+                      <Badge
+                        key={ts.id}
+                        variant="outline"
+                        className="text-xs"
+                      >
+                        {ts.logo} {ts.name}
+                      </Badge>
+                    ))}
+                    {getCategoryTechStacks(typeAssets).length > 2 && (
+                      <Badge variant="outline" className="text-xs">
+                        +{getCategoryTechStacks(typeAssets).length - 2}
+                      </Badge>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <ThreatBar
+                    cves={getCategoryThreat(typeAssets)}
+                    unscannedCount={typeAssets.reduce(
+                      (sum, asset) =>
+                        sum +
+                        asset.techStacks.reduce(
+                          (ts, t) => ts + t.unscannedThreatsCount,
+                          0,
+                        ),
+                      0,
+                    )}
+                    className="w-56"
+                  />
+                </TableCell>
+              </TableRow>
+            );
+
             // Expanded Assets Rows
-            ...(expandedTypes.has(type)
-              ? typeAssets.map((asset) => (
+            if (expandedTypes.has(type)) {
+              typeAssets.forEach((asset) => {
+                rows.push(
                   <TableRow
                     key={asset.id}
                     onClick={() => onSelectRow?.(asset)}
@@ -174,7 +174,6 @@ export function AssetTableView({ assets, onSelectRow, scanningProject, scannedAs
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell>-</TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {asset.techStacks.slice(0, 3).map((techStack) => (
@@ -229,9 +228,12 @@ export function AssetTableView({ assets, onSelectRow, scanningProject, scannedAs
                       {asset.lastSeen.toLocaleDateString()}
                     </TableCell>
                   </TableRow>
-                ))
-              : []),
-          ]).flat()}
+                );
+              });
+            }
+
+            return rows;
+          })}
         </TableBody>
       </Table>
     </div>
