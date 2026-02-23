@@ -15,6 +15,7 @@ import CVEFullDetails from "./pages/CVEFullDetails";
 import RescanHistory from "./pages/RescanHistory";
 import TechStackSlideshow from "./pages/TechStackSlideshow";
 import ThreatIntel from "./pages/ThreatIntel";
+import InformationArchitecture from "./pages/InformationArchitecture";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -57,6 +58,10 @@ const App = () => (
                     <Route
                       path="/rescan-history"
                       element={<RescanHistory />}
+                    />
+                    <Route
+                      path="/information-architecture"
+                      element={<InformationArchitecture />}
                     />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />

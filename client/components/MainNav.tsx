@@ -134,6 +134,27 @@ export function MainNav() {
             </svg>
           </button>
 
+          {/* Documentation Icon */}
+          <button
+            onClick={() => navigate("/information-architecture")}
+            className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+            title="Information Architecture"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </button>
+
           {/* Support Icon */}
           <button className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0">
             <svg
@@ -254,6 +275,24 @@ export function MainNav() {
                   )}
                 </button>
               ))}
+            </div>
+
+            {/* Documentation */}
+            <div className="py-1 border-t border-gray-200">
+              <button
+                onClick={() => {
+                  navigate("/information-architecture");
+                  setMobileOpen(false);
+                }}
+                className={cn(
+                  "w-full text-left px-2 py-1 rounded text-xs font-medium transition-colors",
+                  location.pathname === "/information-architecture"
+                    ? "bg-blue-100 text-blue-900"
+                    : "text-gray-700 hover:bg-gray-100",
+                )}
+              >
+                📋 Information Architecture
+              </button>
             </div>
           </nav>
         </div>
