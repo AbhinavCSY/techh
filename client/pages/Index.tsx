@@ -255,7 +255,31 @@ export default function Index() {
         {/* Graph View */}
         {viewType === "graph" ? (
           <div className="w-full" style={{ height: "calc(100vh - 200px)" }}>
-            <InteractiveDependencyGraph />
+            {grouping === "asset" ? (
+              <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg">
+                <div className="text-center p-8 max-w-md">
+                  <div className="text-4xl mb-4">🔗</div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Asset Dependency Graph
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Visualize relationships and dependencies between your assets
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Total Assets: {filteredAssets.length}
+                  </p>
+                  {filteredAssets.length > 0 && (
+                    <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-xs text-blue-900 font-medium">
+                        Graph view shows dependencies and relationships between assets in your inventory
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <InteractiveDependencyGraph />
+            )}
           </div>
         ) : (
           <>
