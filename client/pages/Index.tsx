@@ -3004,6 +3004,9 @@ function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
   const [sbomTool, setSbomTool] = useState("syft");
   const [ghActionOption, setGhActionOption] = useState("new");
   const [copied, setCopied] = useState(false);
+  const [showNewProjectInput, setShowNewProjectInput] = useState(false);
+  const [newProjectInputValue, setNewProjectInputValue] = useState("");
+  const [projectsList, setProjectsList] = useState<string[]>(["as", "new-project", "project-3", "project-4"]);
 
   const handleAddTag = () => {
     if (tagInput.trim()) {
@@ -3014,6 +3017,18 @@ function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
 
   const handleRemoveTag = (index: number) => {
     setTags(tags.filter((_, i) => i !== index));
+  };
+
+  const handleAddNewProject = () => {
+    if (newProjectInputValue.trim()) {
+      const projectId = newProjectInputValue.toLowerCase().replace(/\s+/g, "-");
+      if (!projectsList.includes(projectId)) {
+        setProjectsList([...projectsList, projectId]);
+        setProjectName(projectId);
+        setShowNewProjectInput(false);
+        setNewProjectInputValue("");
+      }
+    }
   };
 
   const sbomTools = [
@@ -3219,22 +3234,68 @@ curl -X POST "https://api.example.com/artifact/upload" \\
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
                   Select Project Name <span className="text-red-500">*</span>
                 </label>
-                <div className="relative">
+                <div className="relative mb-3">
                   <select
                     value={projectName}
                     onChange={(e) => setProjectName(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
                   >
                     <option value="">Select project</option>
-                    <option value="as">as</option>
-                    <option value="new-project">New Project</option>
-                    <option value="project-3">Project 3</option>
-                    <option value="project-4">Project 4</option>
+                    {projectsList.map((project) => (
+                      <option key={project} value={project}>
+                        {project}
+                      </option>
+                    ))}
                   </select>
                   <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
                     ▼
                   </span>
                 </div>
+
+                {/* New Project Button */}
+                {!showNewProjectInput && (
+                  <button
+                    onClick={() => setShowNewProjectInput(true)}
+                    className="w-full px-4 py-2 border-2 border-dashed border-blue-300 rounded-lg text-blue-600 hover:bg-blue-50 text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                  >
+                    <span className="text-lg">+</span>
+                    New Project
+                  </button>
+                )}
+
+                {/* New Project Input */}
+                {showNewProjectInput && (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Enter project name"
+                      value={newProjectInputValue}
+                      onChange={(e) => setNewProjectInputValue(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          handleAddNewProject();
+                        }
+                      }}
+                      autoFocus
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    />
+                    <button
+                      onClick={handleAddNewProject}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                    >
+                      Add
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowNewProjectInput(false);
+                        setNewProjectInputValue("");
+                      }}
+                      className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-sm font-medium transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Tags Field */}
