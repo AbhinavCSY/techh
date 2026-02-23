@@ -357,7 +357,10 @@ export default function Index() {
           isOpen={showNewProjectModal}
           onClose={() => setShowNewProjectModal(false)}
           onStartScan={handleStartScan}
-          onOpenImport={() => setShowImportModal(true)}
+          onOpenImport={() => {
+            setShowNewProjectModal(false);
+            setShowImportModal(true);
+          }}
           onOpenAutomaticScan={() => {
             setShowNewProjectModal(false);
             setShowAutomaticScanModal(true);
