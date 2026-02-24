@@ -3165,7 +3165,6 @@ function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
 
   const ghActionOptions = [
     { id: "new", icon: "📄", label: "New GitHub Action", description: "Create a new workflow file" },
-    { id: "manual", icon: "✏️", label: "Manual GH Action", description: "Copy and paste the configuration manually" },
     { id: "existing", icon: "🔗", label: "Add to Existing GH Action", description: "Add this snippet to your existing workflow" },
   ];
 
@@ -3267,7 +3266,7 @@ jobs:
             -H "X-Tenant-Id: \$TENANT_ID" \\
             -F "data-type=sbom" \\
             -F "file=@sbom.json"`;
-    } else if (ghActionOption === "existing") {
+    } else {
       return `# Add this step to your existing GitHub Actions workflow
 
       # ✅ Generate SBOM using ${sbomTools.find(t => t.id === sbomTool)?.label}
@@ -3283,29 +3282,6 @@ jobs:
             -H "X-Tenant-Id: \${{ secrets.TENANT_ID }}" \\
             -F "data-type=sbom" \\
             -F "file=@sbom.json"`;
-    } else {
-      return `# SonarQube Scan + SBOM Generation (Manual Configuration)
-
-## 1. Install sonar-scanner
-curl https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip -o sonar-scanner.zip
-unzip sonar-scanner.zip
-
-## 2. Run SonarQube Scan
-./sonar-scanner/bin/sonar-scanner \\
-  -Dsonar.projectKey=my-project \\
-  -Dsonar.sources=. \\
-  -Dsonar.host.url=\${SONAR_HOST_URL} \\
-  -Dsonar.login=\${SONAR_TOKEN}
-
-## 3. Generate SBOM
-${sbomGenCommand[sbomTool as keyof typeof sbomGenCommand]}
-
-## 4. Upload SBOM
-curl -X POST "https://api.example.com/artifact/upload" \\
-  -H "Authorization: Bearer \${API_TOKEN}" \\
-  -H "X-Tenant-Id: \${TENANT_ID}" \\
-  -F "data-type=sbom" \\
-  -F "file=@sbom.json"`;
     }
   };
 
@@ -3602,15 +3578,6 @@ curl -X POST "https://api.example.com/artifact/upload" \\
                     <li>Add the steps to your job after other build steps</li>
                     <li>Ensure the required secrets are configured</li>
                     <li>Push the changes</li>
-                  </ol>
-                )}
-                {ghActionOption === "manual" && (
-                  <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
-                    <li>Follow the manual steps provided in the code snippet</li>
-                    <li>Replace placeholders with your actual values</li>
-                    <li>Ensure all required tools are installed in your environment</li>
-                    <li>Configure environment variables or GitHub secrets as needed</li>
-                    <li>Run the commands in your CI/CD pipeline</li>
                   </ol>
                 )}
               </div>
