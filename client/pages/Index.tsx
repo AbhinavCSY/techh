@@ -2745,80 +2745,95 @@ function NewProjectModal({
                     </div>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {/* SAST */}
-                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                      <div>
-                        <p className="font-semibold text-gray-900">SAST</p>
-                        <p className="text-xs text-gray-600">
-                          CloudSek Static Application Security Testing
-                        </p>
-                      </div>
-                      <label className="relative inline-flex items-center">
+                    <div
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          scanners: {
+                            ...formData.scanners,
+                            sast: !formData.scanners.sast,
+                          },
+                        })
+                      }
+                      className={cn(
+                        "p-5 border-2 rounded-lg cursor-pointer transition-all hover:shadow-md",
+                        formData.scanners.sast
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 bg-white hover:border-gray-300"
+                      )}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">SAST</p>
+                          <p className="text-xs text-gray-600 mt-1">
+                            CloudSek Static Application Security Testing
+                          </p>
+                        </div>
                         <input
                           type="checkbox"
                           checked={formData.scanners.sast}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              scanners: {
-                                ...formData.scanners,
-                                sast: e.target.checked,
-                              },
-                            })
-                          }
-                          className="sr-only peer"
+                          onChange={(e) => e.stopPropagation()}
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-5 h-5 ml-2 flex-shrink-0 cursor-pointer accent-blue-600"
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                      </label>
+                      </div>
                     </div>
 
                     {/* SCA */}
-                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 bg-blue-50">
-                      <div>
-                        <p className="font-semibold text-gray-900">SCA</p>
-                        <p className="text-xs text-gray-600">
-                          CloudSek Software Composition Analysis
-                        </p>
-                      </div>
-                      <label className="relative inline-flex items-center">
+                    <div
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          scanners: {
+                            ...formData.scanners,
+                            sca: !formData.scanners.sca,
+                          },
+                        })
+                      }
+                      className={cn(
+                        "p-5 border-2 rounded-lg cursor-pointer transition-all hover:shadow-md",
+                        formData.scanners.sca
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 bg-white hover:border-gray-300"
+                      )}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">SCA</p>
+                          <p className="text-xs text-gray-600 mt-1">
+                            CloudSek Software Composition Analysis
+                          </p>
+                        </div>
                         <input
                           type="checkbox"
                           checked={formData.scanners.sca}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              scanners: {
-                                ...formData.scanners,
-                                sca: e.target.checked,
-                              },
-                            })
-                          }
-                          className="sr-only peer"
+                          onChange={(e) => e.stopPropagation()}
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-5 h-5 ml-2 flex-shrink-0 cursor-pointer accent-blue-600"
                         />
-                        <div className="w-11 h-6 bg-blue-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                      </label>
+                      </div>
                     </div>
 
                     {/* Container Security */}
                     <div className="relative group">
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            Container Security
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            CloudSek Container Analysis
-                          </p>
-                        </div>
-                        <label className="relative inline-flex items-center opacity-50">
+                      <div className="p-5 border-2 border-gray-200 bg-white rounded-lg opacity-60 cursor-not-allowed">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <p className="font-semibold text-gray-900">
+                              Container Security
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              CloudSek Container Analysis
+                            </p>
+                          </div>
                           <input
                             type="checkbox"
                             disabled
-                            className="sr-only peer"
+                            className="w-5 h-5 ml-2 flex-shrink-0 cursor-not-allowed opacity-40"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                        </div>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
                         <span className="text-white text-xs font-semibold whitespace-nowrap">
@@ -2829,24 +2844,23 @@ function NewProjectModal({
 
                     {/* IaC Security */}
                     <div className="relative group">
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            IaC Security
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            CloudSek Static Code Analysis for Infrastructure as
-                            Code
-                          </p>
-                        </div>
-                        <label className="relative inline-flex items-center opacity-50">
+                      <div className="p-5 border-2 border-gray-200 bg-white rounded-lg opacity-60 cursor-not-allowed">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <p className="font-semibold text-gray-900">
+                              IaC Security
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              CloudSek Static Code Analysis for Infrastructure as
+                              Code
+                            </p>
+                          </div>
                           <input
                             type="checkbox"
                             disabled
-                            className="sr-only peer"
+                            className="w-5 h-5 ml-2 flex-shrink-0 cursor-not-allowed opacity-40"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                        </div>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
                         <span className="text-white text-xs font-semibold whitespace-nowrap">
@@ -2857,23 +2871,22 @@ function NewProjectModal({
 
                     {/* API Security */}
                     <div className="relative group">
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            API Security
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            CloudSek Static Analysis for API Security
-                          </p>
-                        </div>
-                        <label className="relative inline-flex items-center opacity-50">
+                      <div className="p-5 border-2 border-gray-200 bg-white rounded-lg opacity-60 cursor-not-allowed">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <p className="font-semibold text-gray-900">
+                              API Security
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              CloudSek Static Analysis for API Security
+                            </p>
+                          </div>
                           <input
                             type="checkbox"
                             disabled
-                            className="sr-only peer"
+                            className="w-5 h-5 ml-2 flex-shrink-0 cursor-not-allowed opacity-40"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                        </div>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
                         <span className="text-white text-xs font-semibold whitespace-nowrap">
@@ -2884,29 +2897,28 @@ function NewProjectModal({
 
                     {/* OSSF Scorecard */}
                     <div className="relative group">
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-semibold text-gray-900">
-                              OSSF Scorecard
+                      <div className="p-5 border-2 border-gray-200 bg-white rounded-lg opacity-60 cursor-not-allowed">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold text-gray-900">
+                                OSSF Scorecard
+                              </p>
+                              <span className="text-gray-400 cursor-help">
+                                ℹ
+                              </span>
+                            </div>
+                            <p className="text-xs text-gray-600 mt-1">
+                              Identify risk factors throughout your project's
+                              supply chain
                             </p>
-                            <span className="text-gray-400 cursor-help">
-                              ℹ
-                            </span>
                           </div>
-                          <p className="text-xs text-gray-600">
-                            Identify risk factors throughout your project's
-                            supply chain
-                          </p>
-                        </div>
-                        <label className="relative inline-flex items-center opacity-50">
                           <input
                             type="checkbox"
                             disabled
-                            className="sr-only peer"
+                            className="w-5 h-5 ml-2 flex-shrink-0 cursor-not-allowed opacity-40"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                        </div>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
                         <span className="text-white text-xs font-semibold whitespace-nowrap">
@@ -2917,28 +2929,27 @@ function NewProjectModal({
 
                     {/* Secret Detection */}
                     <div className="relative group">
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-semibold text-gray-900">
-                              Secret Detection
+                      <div className="p-5 border-2 border-gray-200 bg-white rounded-lg opacity-60 cursor-not-allowed">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold text-gray-900">
+                                Secret Detection
+                              </p>
+                              <span className="text-gray-400 cursor-help">
+                                ℹ
+                              </span>
+                            </div>
+                            <p className="text-xs text-gray-600 mt-1">
+                              Detect unencrypted secrets in your project
                             </p>
-                            <span className="text-gray-400 cursor-help">
-                              ℹ
-                            </span>
                           </div>
-                          <p className="text-xs text-gray-600">
-                            Detect unencrypted secrets in your project
-                          </p>
-                        </div>
-                        <label className="relative inline-flex items-center opacity-50">
                           <input
                             type="checkbox"
                             disabled
-                            className="sr-only peer"
+                            className="w-5 h-5 ml-2 flex-shrink-0 cursor-not-allowed opacity-40"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                        </div>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
                         <span className="text-white text-xs font-semibold whitespace-nowrap">
