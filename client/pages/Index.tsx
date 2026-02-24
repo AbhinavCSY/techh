@@ -20,6 +20,7 @@ import { TechStacksAndAssetsChart } from "@/components/TechStacksAndAssetsChart"
 import { VulnerableLibrariesWidget } from "@/components/VulnerableLibrariesWidget";
 import { LicenseDistributionWidget } from "@/components/LicenseDistributionWidget";
 import { RiskByTechnologiesChart } from "@/components/RiskByTechnologiesChart";
+import { CloudSecurityGraph } from "@/components/CloudSecurityGraph";
 import { VersionAndLicenseWidget } from "@/components/VersionAndLicenseWidget";
 import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
@@ -67,6 +68,12 @@ export default function Index() {
   }, [filters]);
 
   const handleExport = async (format: "csv" | "json" | "pdf") => {
+    if (grouping === "security-graph") {
+      // Security graph export not yet implemented
+      alert("Export for Security Graph view coming soon");
+      return;
+    }
+
     const dataToExport =
       grouping === "tech-stack" ? filteredTechStacks : filteredAssets;
     const filename = `${grouping}-inventory-${new Date().toISOString().split("T")[0]}`;
@@ -236,6 +243,17 @@ export default function Index() {
                   >
                     📦 Tech Stacks
                   </button>
+                  <button
+                    onClick={() => setGrouping("security-graph")}
+                    className={cn(
+                      "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
+                      grouping === "security-graph"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900",
+                    )}
+                  >
+                    🔐 Security Graph
+                  </button>
                 </div>
               </div>
             </div>
@@ -279,7 +297,9 @@ export default function Index() {
         {/* Graph View */}
         {viewType === "graph" ? (
           <div className="w-full" style={{ height: "calc(100vh - 200px)" }}>
-            {grouping === "asset" ? (
+            {grouping === "security-graph" ? (
+              <CloudSecurityGraph />
+            ) : grouping === "asset" ? (
               <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg">
                 <div className="text-center p-8 max-w-md">
                   <div className="text-4xl mb-4">🔗</div>
