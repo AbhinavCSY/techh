@@ -1,4 +1,3 @@
-import { techStackDatabase } from "@/data/mockData";
 import { useMemo, useState } from "react";
 
 interface RiskByTechnologiesChartProps {
@@ -15,10 +14,17 @@ interface TechData {
   low?: number;
 }
 
+interface SeveritySegment {
+  severity: "critical" | "high" | "medium" | "low";
+  count: number;
+  color: string;
+  percentage: number;
+}
+
 export function RiskByTechnologiesChart({
   compact = false,
 }: RiskByTechnologiesChartProps) {
-  const [hoveredTech, setHoveredTech] = useState<string | null>(null);
+  const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
 
   // Technology vulnerability data with severity breakdown
   const technologyData: TechData[] = [
@@ -37,6 +43,13 @@ export function RiskByTechnologiesChart({
     [],
   );
 
+  const severityColors = {
+    critical: "#dc2626",
+    high: "#f97316",
+    medium: "#eab308",
+    low: "#16a34a",
+  };
+
   const chartData = useMemo(() => {
     let currentAngle = 0;
     return technologyData.map((tech) => {
@@ -44,6 +57,20 @@ export function RiskByTechnologiesChart({
       const sliceAngle = (percentage / 100) * 360;
       const startAngle = currentAngle;
       const endAngle = currentAngle + sliceAngle;
+
+      // Calculate severity breakdown
+      const severitySegments: SeveritySegment[] = [
+        { severity: "critical", count: tech.critical || 0, color: severityColors.critical, percentage: 0 },
+        { severity: "high", count: tech.high || 0, color: severityColors.high, percentage: 0 },
+        { severity: "medium", count: tech.medium || 0, color: severityColors.medium, percentage: 0 },
+        { severity: "low", count: tech.low || 0, color: severityColors.low, percentage: 0 },
+      ];
+
+      // Calculate percentages for each severity within this tech
+      severitySegments.forEach((segment) => {
+        segment.percentage = (segment.count / tech.vulnerabilities) * 100;
+      });
+
       currentAngle = endAngle;
 
       return {
@@ -51,11 +78,12 @@ export function RiskByTechnologiesChart({
         percentage,
         startAngle,
         endAngle,
+        severitySegments,
       };
     });
   }, []);
 
-  const createDonutSlice = (
+  const createArcPath = (
     centerX: number,
     centerY: number,
     radius: number,
@@ -91,35 +119,29 @@ export function RiskByTechnologiesChart({
 
       {/* Chart Container */}
       <div className="flex flex-col items-center relative">
-        {/* Donut Chart */}
+        {/* Burst Pie Chart */}
         <div className="flex-shrink-0 relative">
-          {/* Tooltip on hover - positioned above chart */}
-          {hoveredTech && (
-            <div className="absolute -top-32 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg p-3 w-52 shadow-lg whitespace-normal z-50">
+          {/* Tooltip on hover */}
+          {hoveredSegment && (
+            <div className="absolute -top-40 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg p-2.5 w-48 shadow-lg whitespace-normal z-50">
               {(() => {
-                const hoveredData = chartData.find((t) => t.name === hoveredTech);
-                if (!hoveredData) return null;
+                const [techName, severity] = hoveredSegment.split("|");
+                const tech = chartData.find((t) => t.name === techName);
+                if (!tech) return null;
+                const segment = tech.severitySegments.find((s) => s.severity === severity);
+                if (!segment) return null;
                 return (
-                  <div className="space-y-2">
-                    <div className="font-semibold">{hoveredData.name}</div>
-                    <div className="text-gray-300">Total: {(hoveredData.vulnerabilities / 1000).toFixed(1)}K</div>
-                    <div className="pt-1 border-t border-gray-700 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-red-600 flex-shrink-0"></div>
-                        <span>Critical: {hoveredData.critical}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0"></div>
-                        <span>High: {hoveredData.high}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-yellow-400 flex-shrink-0"></div>
-                        <span>Medium: {hoveredData.medium}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
-                        <span>Low: {hoveredData.low}</span>
-                      </div>
+                  <div className="space-y-1">
+                    <div className="font-semibold">{tech.name}</div>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-2 h-2 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: segment.color }}
+                      />
+                      <span className="capitalize">{severity}: {segment.count}</span>
+                    </div>
+                    <div className="text-gray-300 text-xs">
+                      {segment.percentage.toFixed(1)}% of {tech.name}
                     </div>
                   </div>
                 );
@@ -128,77 +150,124 @@ export function RiskByTechnologiesChart({
           )}
 
           <svg
-            width="100"
-            height="100"
-            viewBox="0 0 200 200"
+            width="140"
+            height="140"
+            viewBox="0 0 280 280"
             className="drop-shadow-sm"
           >
-            {chartData.map((slice, index) => (
-              <g key={index}>
+            {/* Inner ring: Tech stacks */}
+            {chartData.map((tech, index) => (
+              <g key={`inner-${index}`}>
                 <path
-                  d={createDonutSlice(
-                    100,
-                    100,
-                    70,
-                    45,
-                    slice.startAngle,
-                    slice.endAngle,
-                  )}
-                  fill={slice.color}
+                  d={createArcPath(140, 140, 70, 45, tech.startAngle, tech.endAngle)}
+                  fill={tech.color}
                   stroke="white"
-                  strokeWidth="2"
-                  onMouseEnter={() => setHoveredTech(slice.name)}
-                  onMouseLeave={() => setHoveredTech(null)}
+                  strokeWidth="1.5"
                   className="cursor-pointer opacity-80 hover:opacity-100 transition-opacity"
-                  style={{ filter: hoveredTech === slice.name ? "brightness(1.1)" : "none" }}
+                  onMouseEnter={() => setHoveredSegment(`${tech.name}|inner`)}
+                  onMouseLeave={() => setHoveredSegment(null)}
+                  style={{ filter: hoveredSegment?.startsWith(tech.name) ? "brightness(1.15)" : "none" }}
                 />
               </g>
             ))}
+
+            {/* Outer ring: Severity breakdown */}
+            {chartData.map((tech, techIndex) => {
+              let severityStartAngle = tech.startAngle;
+              const techSliceAngle = tech.endAngle - tech.startAngle;
+
+              return tech.severitySegments.map((segment, segIndex) => {
+                const severitySliceAngle = (segment.percentage / 100) * techSliceAngle;
+                const severityEndAngle = severityStartAngle + severitySliceAngle;
+                const segmentId = `${tech.name}|${segment.severity}`;
+
+                const path = createArcPath(
+                  140,
+                  140,
+                  110,
+                  75,
+                  severityStartAngle,
+                  severityEndAngle,
+                );
+
+                severityStartAngle = severityEndAngle;
+
+                return (
+                  <g key={`outer-${techIndex}-${segIndex}`}>
+                    <path
+                      d={path}
+                      fill={segment.color}
+                      stroke="white"
+                      strokeWidth="1"
+                      className="cursor-pointer opacity-90 hover:opacity-100 transition-opacity"
+                      onMouseEnter={() => setHoveredSegment(segmentId)}
+                      onMouseLeave={() => setHoveredSegment(null)}
+                      style={{ filter: hoveredSegment === segmentId ? "brightness(1.2)" : "none" }}
+                    />
+                  </g>
+                );
+              });
+            })}
+
             {/* Center text */}
+            <circle cx="140" cy="140" r="42" fill="white" stroke="#f3f4f6" strokeWidth="1" />
             <text
-              x="100"
-              y="95"
+              x="140"
+              y="133"
               textAnchor="middle"
               className="text-xs font-bold fill-gray-900"
             >
               Total
             </text>
             <text
-              x="100"
-              y="110"
+              x="140"
+              y="150"
               textAnchor="middle"
-              className="text-xs font-bold fill-gray-900"
+              className="text-sm font-bold fill-gray-900"
             >
               {(total / 1000).toFixed(0)}K
             </text>
           </svg>
         </div>
 
-        {/* Scrollable Legend Below */}
-        <div className="w-full mt-1 max-h-24 overflow-y-auto">
-          <div className="space-y-0.5">
-            {chartData.map((tech, index) => (
-              <div
-                key={index}
-                className={`flex items-center justify-between px-1 py-0.5 whitespace-nowrap rounded cursor-pointer transition-colors ${
-                  hoveredTech === tech.name ? "bg-gray-100" : "hover:bg-gray-50"
-                }`}
-                style={{ fontSize: "11px" }}
-                onMouseEnter={() => setHoveredTech(tech.name)}
-                onMouseLeave={() => setHoveredTech(null)}
-              >
-                <div className="flex items-center gap-1 min-w-0">
+        {/* Legend */}
+        <div className="w-full mt-2">
+          <div className="space-y-1.5">
+            {/* Tech Stacks Legend */}
+            <div className="text-xs font-semibold text-gray-700 px-1">Tech Stacks</div>
+            <div className="grid grid-cols-2 gap-1">
+              {chartData.map((tech, index) => (
+                <div
+                  key={`tech-${index}`}
+                  className="flex items-center gap-1.5 px-1.5 py-1 rounded text-xs cursor-pointer transition-colors hover:bg-gray-50"
+                  onMouseEnter={() => setHoveredSegment(`${tech.name}|inner`)}
+                  onMouseLeave={() => setHoveredSegment(null)}
+                >
                   <div
-                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                    className="w-2 h-2 rounded-full flex-shrink-0"
                     style={{ backgroundColor: tech.color }}
                   />
-                  <span className="text-gray-600 font-medium truncate">{tech.name}</span>
+                  <span className="text-gray-700 font-medium">{tech.name}</span>
+                  <span className="text-gray-600 ml-auto">
+                    {(tech.vulnerabilities / 1000).toFixed(1)}K
+                  </span>
                 </div>
-                <span className="text-gray-800 font-semibold flex-shrink-0 ml-1">
-                  {(tech.vulnerabilities / 1000).toFixed(1)}K
-                </span>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Severity Legend */}
+            <div className="text-xs font-semibold text-gray-700 px-1 mt-2">Severity</div>
+            <div className="flex gap-3 px-1.5">
+              {Object.entries(severityColors).map(([severity, color]) => (
+                <div key={severity} className="flex items-center gap-1">
+                  <div
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: color }}
+                  />
+                  <span className="text-xs text-gray-600 capitalize">{severity}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
