@@ -3118,13 +3118,30 @@ function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
   };
 
   const sbomTools = [
-    { id: "syft", label: "Syft", description: "Anchore Syft for comprehensive SBOM generation" },
-    { id: "cyclonedx", label: "CycloneDX Maven", description: "CycloneDX maven plugin for Java projects" },
-    { id: "cyclonedx-npm", label: "CycloneDX NPM", description: "CycloneDX for Node.js projects" },
-    { id: "cyclonedx-gradle", label: "CycloneDX Gradle", description: "CycloneDX gradle plugin for Gradle projects" },
-    { id: "spdx", label: "SPDX", description: "SPDX format for open standard SBOM" },
-    { id: "grype", label: "Grype", description: "Anchore Grype for vulnerability detection and SBOM" },
-    { id: "poetry", label: "Poetry", description: "Poetry for Python projects" },
+    { id: "syft", label: "Syft", description: "CLI tool that generates SBOMs from container images, filesystems, and directories (SPDX, CycloneDX supported)" },
+    { id: "cdxgen", label: "cdxgen", description: "Multi-language CycloneDX SBOM generator for applications and containers" },
+    { id: "ms-sbom-tool", label: "Microsoft sbom-tool", description: "Generates SPDX SBOMs for multiple ecosystems, often used in CI/CD pipelines" },
+    { id: "cyclonedx-cli", label: "CycloneDX CLI", description: "Tool for generating, validating, and converting CycloneDX SBOMs" },
+    { id: "spdx-tools", label: "SPDX Tools", description: "Utilities to create, validate, and manipulate SPDX SBOM documents" },
+    { id: "tern", label: "Tern", description: "Generates SBOMs for container images and Dockerfiles" },
+    { id: "trivy", label: "Trivy", description: "Security scanner that can also export SBOMs for containers and filesystems" },
+    { id: "anchore", label: "Anchore (Syft/Grype)", description: "Enterprise container security platform with SBOM generation capabilities" },
+    { id: "black-duck", label: "Black Duck (Synopsys)", description: "Enterprise SCA platform that produces detailed SBOMs" },
+    { id: "snyk", label: "Snyk", description: "Developer-focused SCA tool that exports SBOM data" },
+    { id: "mend", label: "Mend (WhiteSource)", description: "Enterprise SCA tool with automated SBOM generation" },
+    { id: "jfrog-xray", label: "JFrog Xray", description: "Artifact security scanner that can generate SBOMs" },
+    { id: "veracode-sca", label: "Veracode SCA", description: "Generates SBOMs during dependency analysis" },
+    { id: "dependency-track", label: "OWASP Dependency-Track", description: "Consumes and manages SBOMs; can integrate with generators" },
+    { id: "dependency-check", label: "OWASP Dependency-Check", description: "Scans dependencies and can produce SBOM-style outputs" },
+    { id: "cyclonedx-maven", label: "CycloneDX Maven Plugin", description: "Generates SBOMs for Maven-based Java projects" },
+    { id: "cyclonedx-gradle", label: "CycloneDX Gradle Plugin", description: "SBOM generation for Gradle builds" },
+    { id: "cyclonedx-npm", label: "CycloneDX Node Module", description: "Generates SBOMs for Node.js projects" },
+    { id: "cyclonedx-python", label: "CycloneDX Python Tool", description: "SBOM generation for Python environments" },
+    { id: "cargo-sbom", label: "Cargo SBOM", description: "Generates SBOMs for Rust projects" },
+    { id: "go-sbom", label: "Go version / Go SBOM tools", description: "Extracts dependency metadata from Go modules" },
+    { id: "distro2sbom", label: "Distro2SBOM", description: "Generates SBOMs for Linux distributions and packages" },
+    { id: "github-sbom", label: "GitHub Dependency Graph / SBOM export", description: "Generates SBOMs directly from GitHub repositories" },
+    { id: "gitlab-sbom", label: "GitLab SBOM generator", description: "Built-in SBOM generation within GitLab CI pipelines" },
   ];
 
   const ghActionOptions = [
@@ -3137,18 +3154,45 @@ function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
     const sbomGenCommand = {
       syft: `curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
           syft dir:. -o cyclonedx-json > sbom.json`,
-      cyclonedx: `mvn org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom -DoutputFile=sbom.xml`,
+      cdxgen: `npm install -g @cyclonedx/cdxgen
+          cdxgen -r -o sbom.json`,
+      "ms-sbom-tool": `curl -LO https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux
+          chmod +x sbom-tool-linux
+          ./sbom-tool-linux generate -b . -bc . -pn MyProject -pv 1.0 -ps Microsoft`,
+      "cyclonedx-cli": `npm install -g @cyclonedx/cli
+          cyclonedx-cli validate -i sbom.json`,
+      "spdx-tools": `wget https://repo1.maven.org/maven2/org/spdx/tools/spdx-tools-0.8/spdx-tools-0.8-jar-with-dependencies.jar
+          java -jar spdx-tools.jar convert --input sbom.json --output sbom.spdx`,
+      tern: `pip install tern
+          tern report -i myimage:tag -f json > sbom.json`,
+      trivy: `trivy image --format cyclonedx --output sbom.json myimage:tag`,
+      anchore: `curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
+          syft dir:. -o cyclonedx-json > sbom.json`,
+      "black-duck": `# Use Black Duck (Synopsys) UI or API for SBOM generation
+          # Configure Black Duck integration with your project`,
+      snyk: `snyk sbom --format cyclonedx > sbom.json`,
+      mend: `# Mend provides automated SBOM generation through their platform
+          # Configure via Mend UI or CLI integration`,
+      "jfrog-xray": `# JFrog Xray generates SBOMs through Artifactory integration
+          # Configure artifact scanning policies in Xray`,
+      "veracode-sca": `# Veracode SCA generates SBOMs during dependency analysis
+          # Configure via Veracode platform`,
+      "dependency-track": `# OWASP Dependency-Track consumes SBOMs from other generators
+          # Upload SBOM files to Dependency-Track for management`,
+      "dependency-check": `dependency-check.sh --scan . --format json --project MyProject > sbom-report.json`,
+      "cyclonedx-maven": `mvn org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom -DoutputFile=sbom.xml`,
+      "cyclonedx-gradle": `gradle org.cyclonedx.cyclonedxCreateBom -DoutputFile=sbom.json`,
       "cyclonedx-npm": `npm install -g @cyclonedx/npm
           cyclonedx-npm --output-file sbom.json`,
-      "cyclonedx-gradle": `gradle org.cyclonedx.cyclonedxCreateBom -DoutputFile=sbom.json`,
-      spdx: `curl -sSfL https://repo1.maven.org/maven2/org/spdx/tools/spdx-tools-0.8/spdx-tools-0.8-jar-with-dependencies.jar -o spdx-tools.jar
-          java -jar spdx-tools.jar convert --input sbom.json --output sbom.spdx`,
-      grype: `curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh
-          grype dir:. -o json > sbom.json`,
-      poetry: `pip install poetry
-          poetry export --format=requirements.txt --output=requirements.txt
-          pip install pip-audit
-          pip-audit --desc --format=json > sbom.json`,
+      "cyclonedx-python": `pip install cyclonedx-bom
+          cyclonedx-bom -o sbom.json -of json`,
+      "cargo-sbom": `cargo sbom --output sbom.json`,
+      "go-sbom": `go list -json ./... > go-deps.json`,
+      distro2sbom: `distro2sbom generate-distro-spdx rpm > sbom.spdx`,
+      "github-sbom": `# GitHub Dependency Graph exports SBOMs automatically
+          # Access via GitHub API or download from repository insights`,
+      "gitlab-sbom": `# GitLab generates SBOMs in CI/CD pipelines
+          # Configure in .gitlab-ci.yml with appropriate stages`,
     };
 
     if (ghActionOption === "new") {
