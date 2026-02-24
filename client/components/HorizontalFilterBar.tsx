@@ -340,27 +340,16 @@ export function HorizontalFilterBar({
             </button>
             <div className="relative group">
               <button
-                onClick={() => grouping !== "asset" && onViewTypeChange("graph")}
-                disabled={grouping === "asset"}
+                onClick={() => onViewTypeChange("graph")}
                 className={cn(
                   "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
-                  grouping === "asset"
-                    ? "text-gray-400 cursor-not-allowed"
-                    : viewType === "graph"
-                      ? "bg-white text-gray-900 shadow-sm"
-                      : "text-gray-600 hover:text-gray-900",
+                  viewType === "graph"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900",
                 )}
               >
                 🔗 Graph
               </button>
-              {grouping === "asset" && (
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                  <div className="bg-gray-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap">
-                    Coming Soon
-                  </div>
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
-                </div>
-              )}
             </div>
           </div>
 

@@ -255,7 +255,31 @@ export default function Index() {
         {/* Graph View */}
         {viewType === "graph" ? (
           <div className="w-full" style={{ height: "calc(100vh - 200px)" }}>
-            <InteractiveDependencyGraph />
+            {grouping === "asset" ? (
+              <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg">
+                <div className="text-center p-8 max-w-md">
+                  <div className="text-4xl mb-4">🔗</div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Asset Dependency Graph
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Visualize relationships and dependencies between your assets
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Total Assets: {filteredAssets.length}
+                  </p>
+                  {filteredAssets.length > 0 && (
+                    <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-xs text-blue-900 font-medium">
+                        Graph view shows dependencies and relationships between assets in your inventory
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <InteractiveDependencyGraph />
+            )}
           </div>
         ) : (
           <>
@@ -357,11 +381,16 @@ export default function Index() {
           isOpen={showNewProjectModal}
           onClose={() => setShowNewProjectModal(false)}
           onStartScan={handleStartScan}
-          onOpenImport={() => setShowImportModal(true)}
+          onOpenImport={() => {
+            setShowNewProjectModal(false);
+            setShowImportModal(true);
+          }}
           onOpenAutomaticScan={() => {
             setShowNewProjectModal(false);
             setShowAutomaticScanModal(true);
           }}
+          setShowImportModal={setShowImportModal}
+          setShowNewProjectModal={setShowNewProjectModal}
         />
       )}
 
@@ -370,6 +399,7 @@ export default function Index() {
         <ImportFromModal
           isOpen={showImportModal}
           onClose={() => setShowImportModal(false)}
+          onStartScan={handleStartScan}
         />
       )}
 
@@ -2206,6 +2236,8 @@ interface NewProjectModalProps {
   onStartScan: (projectName: string) => void;
   onOpenImport?: () => void;
   onOpenAutomaticScan?: () => void;
+  setShowImportModal?: (show: boolean) => void;
+  setShowNewProjectModal?: (show: boolean) => void;
 }
 
 function NewProjectModal({
@@ -2214,6 +2246,8 @@ function NewProjectModal({
   onStartScan,
   onOpenImport,
   onOpenAutomaticScan,
+  setShowImportModal,
+  setShowNewProjectModal,
 }: NewProjectModalProps) {
   const [activeStep, setActiveStep] = useState<
     "options" | "sourceCode" | "selectScanners"
@@ -2260,13 +2294,6 @@ function NewProjectModal({
       title: "New Scan - Automatic Scan",
       description: "Push the SBOM/CBOM on every gh action trigger",
       active: true,
-    },
-    {
-      id: "new-app",
-      icon: "📊",
-      title: "New Application",
-      description: "Create an application to organize your projects",
-      active: false,
     },
   ];
 
@@ -2566,6 +2593,11 @@ function NewProjectModal({
                         }
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       />
+                      {formData.sourceType === "sbom" && (
+                        <p className="text-xs text-gray-600 mt-2">
+                          ℹ️ Branch information will be extracted from the SBOM file if available. Enter a default branch name if not found in the SBOM.
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -2929,7 +2961,12 @@ function NewProjectModal({
                 onClick={() => {
                   if (option.active) {
                     if (option.id === "code-repo") {
-                      onOpenImport?.();
+                      if (onOpenImport) {
+                        onOpenImport();
+                      } else if (setShowImportModal && setShowNewProjectModal) {
+                        setShowNewProjectModal(false);
+                        setShowImportModal(true);
+                      }
                     } else if (option.id === "automatic-scan") {
                       onOpenAutomaticScan?.();
                     } else {
@@ -2986,15 +3023,46 @@ interface AutomaticScanModalProps {
 function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
   const [step, setStep] = useState<"config" | "tool" | "ghAction" | "script">("config");
   const [projectName, setProjectName] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
   const [sbomTool, setSbomTool] = useState("syft");
   const [ghActionOption, setGhActionOption] = useState("new");
   const [copied, setCopied] = useState(false);
+  const [showNewProjectInput, setShowNewProjectInput] = useState(false);
+  const [newProjectInputValue, setNewProjectInputValue] = useState("");
+  const [projectsList, setProjectsList] = useState<string[]>(["as", "new-project", "project-3", "project-4"]);
+
+  const handleAddTag = () => {
+    if (tagInput.trim()) {
+      setTags([...tags, tagInput.trim()]);
+      setTagInput("");
+    }
+  };
+
+  const handleRemoveTag = (index: number) => {
+    setTags(tags.filter((_, i) => i !== index));
+  };
+
+  const handleAddNewProject = () => {
+    if (newProjectInputValue.trim()) {
+      const projectId = newProjectInputValue.toLowerCase().replace(/\s+/g, "-");
+      if (!projectsList.includes(projectId)) {
+        setProjectsList([...projectsList, projectId]);
+        setProjectName(projectId);
+        setShowNewProjectInput(false);
+        setNewProjectInputValue("");
+      }
+    }
+  };
 
   const sbomTools = [
     { id: "syft", label: "Syft", description: "Anchore Syft for comprehensive SBOM generation" },
-    { id: "cyclonedx", label: "CycloneDX", description: "CycloneDX maven plugin for Java projects" },
+    { id: "cyclonedx", label: "CycloneDX Maven", description: "CycloneDX maven plugin for Java projects" },
     { id: "cyclonedx-npm", label: "CycloneDX NPM", description: "CycloneDX for Node.js projects" },
+    { id: "cyclonedx-gradle", label: "CycloneDX Gradle", description: "CycloneDX gradle plugin for Gradle projects" },
     { id: "spdx", label: "SPDX", description: "SPDX format for open standard SBOM" },
+    { id: "grype", label: "Grype", description: "Anchore Grype for vulnerability detection and SBOM" },
+    { id: "poetry", label: "Poetry", description: "Poetry for Python projects" },
   ];
 
   const ghActionOptions = [
@@ -3010,8 +3078,15 @@ function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
       cyclonedx: `mvn org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom -DoutputFile=sbom.xml`,
       "cyclonedx-npm": `npm install -g @cyclonedx/npm
           cyclonedx-npm --output-file sbom.json`,
+      "cyclonedx-gradle": `gradle org.cyclonedx.cyclonedxCreateBom -DoutputFile=sbom.json`,
       spdx: `curl -sSfL https://repo1.maven.org/maven2/org/spdx/tools/spdx-tools-0.8/spdx-tools-0.8-jar-with-dependencies.jar -o spdx-tools.jar
           java -jar spdx-tools.jar convert --input sbom.json --output sbom.spdx`,
+      grype: `curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh
+          grype dir:. -o json > sbom.json`,
+      poetry: `pip install poetry
+          poetry export --format=requirements.txt --output=requirements.txt
+          pip install pip-audit
+          pip-audit --desc --format=json > sbom.json`,
     };
 
     if (ghActionOption === "new") {
@@ -3176,27 +3251,121 @@ curl -X POST "https://api.example.com/artifact/upload" \\
         </div>
 
         <div className="space-y-6">
-          {/* Step 1: Project Name */}
+          {/* Step 1: Project Name and Tags */}
           {step === "config" && (
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Select Project Name <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
-                >
-                  <option value="">Select project</option>
-                  <option value="as">as</option>
-                  <option value="new-project">New Project</option>
-                  <option value="project-3">Project 3</option>
-                  <option value="project-4">Project 4</option>
-                </select>
-                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
-                  ▼
-                </span>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Select Project Name <span className="text-red-500">*</span>
+                </label>
+                <div className="relative mb-3">
+                  <select
+                    value={projectName}
+                    onChange={(e) => setProjectName(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
+                  >
+                    <option value="">Select project</option>
+                    {projectsList.map((project) => (
+                      <option key={project} value={project}>
+                        {project}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                    ▼
+                  </span>
+                </div>
+
+                {/* New Project Button */}
+                {!showNewProjectInput && (
+                  <button
+                    onClick={() => setShowNewProjectInput(true)}
+                    className="w-full px-4 py-2 border-2 border-dashed border-blue-300 rounded-lg text-blue-600 hover:bg-blue-50 text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                  >
+                    <span className="text-lg">+</span>
+                    New Project
+                  </button>
+                )}
+
+                {/* New Project Input */}
+                {showNewProjectInput && (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Enter project name"
+                      value={newProjectInputValue}
+                      onChange={(e) => setNewProjectInputValue(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          handleAddNewProject();
+                        }
+                      }}
+                      autoFocus
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    />
+                    <button
+                      onClick={handleAddNewProject}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                    >
+                      Add
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowNewProjectInput(false);
+                        setNewProjectInputValue("");
+                      }}
+                      className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-sm font-medium transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Tags Field */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Tags <span className="text-gray-500 text-xs">(Optional)</span>
+                </label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    placeholder="Add tags (e.g. Environment:Prod)"
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddTag();
+                      }
+                    }}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  />
+                  <button
+                    onClick={handleAddTag}
+                    className="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Add
+                  </button>
+                </div>
+                {tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs"
+                      >
+                        {tag}
+                        <button
+                          onClick={() => handleRemoveTag(index)}
+                          className="text-blue-600 hover:text-blue-900 font-bold"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -3371,13 +3540,197 @@ curl -X POST "https://api.example.com/artifact/upload" \\
 interface ImportFromModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onStartScan?: (projectName: string) => void;
 }
 
-function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
+function ImportFromModal({ isOpen, onClose, onStartScan }: ImportFromModalProps) {
   const [activeStep, setActiveStep] = useState<
     "selectService" | "selectOrganization" | "selectRepositories" | "repositoriesSettings" | "selectBranches" | "scanUponCreation"
   >("selectService");
   const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [orgType, setOrgType] = useState<"user" | "organization">("user");
+  const [orgSearchInput, setOrgSearchInput] = useState("");
+  const [selectedOrg, setSelectedOrg] = useState("");
+  const [repoSearchInput, setRepoSearchInput] = useState("");
+  const [selectedRepos, setSelectedRepos] = useState<string[]>([]);
+
+  // Mock repositories data
+  const mockRepositories = [
+    { id: "tech", name: "tech", icon: "📁" },
+    { id: "cft", name: "cft", icon: "📁" },
+    { id: "project-alpha", name: "project-alpha", icon: "📁" },
+    { id: "project-beta", name: "project-beta", icon: "📁" },
+    { id: "utils", name: "utils", icon: "📁" },
+  ];
+
+  const filteredRepos = mockRepositories.filter((repo) =>
+    repo.name.toLowerCase().includes(repoSearchInput.toLowerCase())
+  );
+
+  const handleRepoToggle = (repoId: string) => {
+    setSelectedRepos((prev) =>
+      prev.includes(repoId)
+        ? prev.filter((id) => id !== repoId)
+        : [...prev, repoId]
+    );
+  };
+
+  const handleSelectAllRepos = () => {
+    if (selectedRepos.length === filteredRepos.length) {
+      setSelectedRepos([]);
+    } else {
+      setSelectedRepos(filteredRepos.map((repo) => repo.id));
+    }
+  };
+
+  // Repositories Settings state
+  const [selectedRepo, setSelectedRepo] = useState<string>(
+    selectedRepos[0] || "abhinavCSYSCS/techh"
+  );
+  const [expandedSections, setExpandedSections] = useState<string[]>([
+    "permission",
+  ]);
+  const [repoSettings, setRepoSettings] = useState({
+    scanTrigger: { push: true, pullRequest: true },
+    pullRequestDecoration: true,
+    scaAutoPullRequest: false,
+    protectedBranches: ["main"],
+    protectedBranchInput: "",
+    sshKey: "",
+    assignGroups: [] as string[],
+    assignGroupsInput: "",
+    assignTags: [] as string[],
+    assignTagsInput: "",
+    criticalityLevel: 2,
+  });
+
+  const toggleSection = (section: string) => {
+    setExpandedSections((prev) =>
+      prev.includes(section)
+        ? prev.filter((s) => s !== section)
+        : [...prev, section]
+    );
+  };
+
+  const addProtectedBranch = () => {
+    if (repoSettings.protectedBranchInput.trim()) {
+      setRepoSettings({
+        ...repoSettings,
+        protectedBranches: [
+          ...repoSettings.protectedBranches,
+          repoSettings.protectedBranchInput.trim(),
+        ],
+        protectedBranchInput: "",
+      });
+    }
+  };
+
+  const removeProtectedBranch = (index: number) => {
+    setRepoSettings({
+      ...repoSettings,
+      protectedBranches: repoSettings.protectedBranches.filter(
+        (_, i) => i !== index
+      ),
+    });
+  };
+
+  const addGroup = () => {
+    if (repoSettings.assignGroupsInput.trim()) {
+      setRepoSettings({
+        ...repoSettings,
+        assignGroups: [
+          ...repoSettings.assignGroups,
+          repoSettings.assignGroupsInput.trim(),
+        ],
+        assignGroupsInput: "",
+      });
+    }
+  };
+
+  const removeGroup = (index: number) => {
+    setRepoSettings({
+      ...repoSettings,
+      assignGroups: repoSettings.assignGroups.filter((_, i) => i !== index),
+    });
+  };
+
+  const addTag = () => {
+    if (repoSettings.assignTagsInput.trim()) {
+      setRepoSettings({
+        ...repoSettings,
+        assignTags: [
+          ...repoSettings.assignTags,
+          repoSettings.assignTagsInput.trim(),
+        ],
+        assignTagsInput: "",
+      });
+    }
+  };
+
+  const removeTag = (index: number) => {
+    setRepoSettings({
+      ...repoSettings,
+      assignTags: repoSettings.assignTags.filter((_, i) => i !== index),
+    });
+  };
+
+  // Branches Selection state
+  const [selectedBranches, setSelectedBranches] = useState<
+    Record<string, string[]>
+  >({});
+  const [branchInputs, setBranchInputs] = useState<Record<string, string>>({});
+  const [suggestedBranches] = useState<string[]>(["main", "develop", "master", "staging", "production"]);
+
+  // Initialize selected branches and branch inputs for all repositories
+  useEffect(() => {
+    const initialBranches: Record<string, string[]> = {};
+    const initialInputs: Record<string, string> = {};
+    selectedRepos.forEach((repo) => {
+      if (!selectedBranches[repo]) {
+        initialBranches[repo] = ["main"];
+      }
+      if (!branchInputs[repo]) {
+        initialInputs[repo] = "";
+      }
+    });
+    if (Object.keys(initialBranches).length > 0) {
+      setSelectedBranches((prev) => ({ ...prev, ...initialBranches }));
+    }
+    if (Object.keys(initialInputs).length > 0) {
+      setBranchInputs((prev) => ({ ...prev, ...initialInputs }));
+    }
+  }, [selectedRepos]);
+
+  // Reset modal state when it opens
+  useEffect(() => {
+    if (isOpen) {
+      setActiveStep("selectService");
+      setSelectedService(null);
+      setOrgType("user");
+      setOrgSearchInput("");
+      setSelectedOrg("");
+      setRepoSearchInput("");
+      setSelectedRepos([]);
+    }
+  }, [isOpen]);
+
+  const addBranch = (repo: string) => {
+    const input = branchInputs[repo]?.trim();
+    if (input && !selectedBranches[repo]?.includes(input)) {
+      setSelectedBranches((prev) => ({
+        ...prev,
+        [repo]: [...(prev[repo] || []), input],
+      }));
+      setBranchInputs((prev) => ({ ...prev, [repo]: "" }));
+    }
+  };
+
+  const removeBranch = (repo: string, branch: string) => {
+    setSelectedBranches((prev) => ({
+      ...prev,
+      [repo]: prev[repo].filter((b) => b !== branch),
+    }));
+  };
 
   if (!isOpen) return null;
 
@@ -3427,15 +3780,15 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
+      className="fixed inset-0 z-[9999] bg-black bg-opacity-50 flex items-center justify-center"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 flex max-h-[90vh] overflow-hidden"
+        className="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[90vh] mx-4 flex overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Left Sidebar */}
-        <div className="bg-gray-50 w-56 p-6 flex flex-col border-r border-gray-200">
+        <div className="bg-gray-50 w-56 p-6 flex flex-col border-r border-gray-200 overflow-y-auto">
           <div className="flex items-center gap-3 mb-8">
             <span className="text-2xl">⚙️</span>
             <h2 className="text-lg font-bold text-gray-900">Import From</h2>
@@ -3443,34 +3796,46 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
 
           {/* Steps */}
           <div className="space-y-4 flex-1">
-            {steps.map((step) => (
-              <div key={step.id} className="flex items-start gap-3">
-                <div
-                  className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white",
-                    activeStep === steps[step.id - 1].id
-                      ? "bg-blue-600"
-                      : steps.findIndex((s) => s.id === activeStep) >= step.id - 1
-                        ? "bg-green-600"
-                        : "bg-gray-400",
-                  )}
-                >
-                  {step.id}
-                </div>
-                <div>
-                  <p
+            {steps.map((step, index) => {
+              const stepNames: typeof activeStep[] = [
+                "selectService",
+                "selectOrganization",
+                "selectRepositories",
+                "repositoriesSettings",
+                "selectBranches",
+                "scanUponCreation",
+              ];
+              const currentStepIndex = stepNames.indexOf(activeStep);
+              const isCompleted = currentStepIndex > index;
+              const isCurrent = currentStepIndex === index;
+
+              return (
+                <div key={step.id} className="flex items-start gap-3">
+                  <div
                     className={cn(
-                      "font-semibold text-sm",
-                      activeStep === steps[step.id - 1].id
-                        ? "text-gray-900"
-                        : "text-gray-600",
+                      "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white",
+                      isCurrent
+                        ? "bg-blue-600"
+                        : isCompleted
+                          ? "bg-green-600"
+                          : "bg-gray-400",
                     )}
                   >
-                    {step.label}
-                  </p>
+                    {isCompleted ? "✓" : step.id}
+                  </div>
+                  <div>
+                    <p
+                      className={cn(
+                        "font-semibold text-sm",
+                        isCurrent ? "text-gray-900" : "text-gray-600",
+                      )}
+                    >
+                      {step.label}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <button
@@ -3482,80 +3847,1015 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
         </div>
 
         {/* Right Content */}
-        <div className="flex-1 p-8 overflow-y-auto flex flex-col">
+        <div className="flex-1 p-8 overflow-y-auto flex flex-col min-h-0 bg-white">
           {activeStep === "selectService" && (
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-6">
-                Select service
-              </h3>
-              <div className="space-y-4">
-                <div className="flex gap-4 mb-6">
-                  <label className="flex items-center gap-2">
+            <div className="flex flex-col h-full">
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-gray-900 mb-6">
+                  Select service
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex gap-4 mb-6">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="hosting"
+                        value="cloud"
+                        defaultChecked
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm font-medium">Cloud-Hosted</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="hosting"
+                        value="self"
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm font-medium">Self-Hosted</span>
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3">
+                    {services.map((service) => (
+                      <button
+                        key={service.id}
+                        onClick={() => handleServiceSelect(service.id)}
+                        className="flex items-center gap-2 p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
+                      >
+                        <span className="text-2xl">{service.icon}</span>
+                        <span className="text-sm font-medium text-gray-900">
+                          {service.label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-3 pt-6 border-t border-gray-200">
+                <button
+                  onClick={onClose}
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeStep === "selectOrganization" && (
+            <div className="flex flex-col h-full">
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-gray-900 mb-6">
+                  Select Organization
+                </h3>
+
+                {/* Organization Type Selection */}
+                <div className="space-y-4 mb-6">
+                  <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                     <input
                       type="radio"
-                      name="hosting"
-                      value="cloud"
-                      defaultChecked
+                      name="org-type"
+                      value="user"
+                      checked={orgType === "user"}
+                      onChange={(e) => {
+                        setOrgType(e.target.value as "user" | "organization");
+                        setSelectedOrg("");
+                      }}
                       className="w-4 h-4"
                     />
-                    <span className="text-sm font-medium">Cloud-Hosted</span>
+                    <div>
+                      <p className="font-semibold text-gray-900 text-sm">
+                        User: abhinavCSYSCS
+                      </p>
+                    </div>
                   </label>
-                  <label className="flex items-center gap-2">
+
+                  <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                     <input
                       type="radio"
-                      name="hosting"
-                      value="self"
+                      name="org-type"
+                      value="organization"
+                      checked={orgType === "organization"}
+                      onChange={(e) => {
+                        setOrgType(e.target.value as "user" | "organization");
+                        setSelectedOrg("");
+                      }}
                       className="w-4 h-4"
                     />
-                    <span className="text-sm font-medium">Self-Hosted</span>
+                    <div>
+                      <p className="font-semibold text-gray-900 text-sm">
+                        Organization
+                      </p>
+                    </div>
                   </label>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3">
-                  {services.map((service) => (
-                    <button
-                      key={service.id}
-                      onClick={() => handleServiceSelect(service.id)}
-                      className="flex items-center gap-2 p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
+                {/* Search Input */}
+                {orgType === "organization" && (
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Type the full Org name"
+                        value={orgSearchInput}
+                        onChange={(e) => setOrgSearchInput(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      />
+                    </div>
+                    <div className="flex justify-end">
+                      <a
+                        href="#"
+                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        Grant additional organizations →
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {/* Info Message */}
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <p className="text-xs text-gray-600">
+                    {orgType === "user"
+                      ? "Automatically sync with new or transferred projects in your user account."
+                      : "Automatically sync with new or transferred projects in the organization."}
+                  </p>
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-3 pt-6 border-t border-gray-200">
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => {
+                    const stepOrder: typeof activeStep[] = [
+                      "selectService",
+                      "selectOrganization",
+                      "selectRepositories",
+                      "repositoriesSettings",
+                      "selectBranches",
+                      "scanUponCreation",
+                    ];
+                    const currentIndex = stepOrder.indexOf(activeStep);
+                    if (currentIndex < stepOrder.length - 1) {
+                      setActiveStep(stepOrder[currentIndex + 1]);
+                    }
+                  }}
+                  disabled={orgType === "organization" && !orgSearchInput.trim()}
+                  className={cn(
+                    "ml-auto px-6 py-2 rounded-lg font-medium transition-colors",
+                    orgType === "organization" && !orgSearchInput.trim()
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  )}
+                >
+                  Select Organization
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeStep === "selectRepositories" && (
+            <div className="flex flex-col h-full">
+              <div className="flex-1 overflow-y-auto">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  Select Repositories
+                </h3>
+
+                {/* Info Box */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-start gap-3">
+                  <span className="text-blue-600 text-lg mt-0.5">ℹ️</span>
+                  <div className="flex-1">
+                    <p className="text-sm text-blue-900">
+                      If you are unable to see your Repositories/Projects, check your privilege definitions
+                    </p>
+                  </div>
+                  <a
+                    href="#"
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap ml-4"
+                  >
+                    More details
+                  </a>
+                </div>
+
+                {/* Search Input */}
+                <div className="mb-4 relative">
+                  <input
+                    type="text"
+                    placeholder="Find a Repository"
+                    value={repoSearchInput}
+                    onChange={(e) => setRepoSearchInput(e.target.value)}
+                    className="w-full px-3 py-2 pl-9 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  />
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    🔍
+                  </span>
+                </div>
+
+                {/* Select All Checkbox */}
+                <div className="mb-4 flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
+                  <input
+                    type="checkbox"
+                    id="select-all"
+                    checked={
+                      filteredRepos.length > 0 &&
+                      selectedRepos.length === filteredRepos.length
+                    }
+                    onChange={handleSelectAllRepos}
+                    className="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer"
+                  />
+                  <label
+                    htmlFor="select-all"
+                    className="flex-1 text-sm font-medium text-gray-900 cursor-pointer"
+                  >
+                    Select all
+                  </label>
+                </div>
+
+                {/* Repositories List */}
+                <div className="space-y-2">
+                  {filteredRepos.map((repo) => (
+                    <div
+                      key={repo.id}
+                      className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                      <span className="text-2xl">{service.icon}</span>
-                      <span className="text-sm font-medium text-gray-900">
-                        {service.label}
-                      </span>
+                      <input
+                        type="checkbox"
+                        id={`repo-${repo.id}`}
+                        checked={selectedRepos.includes(repo.id)}
+                        onChange={() => handleRepoToggle(repo.id)}
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer"
+                      />
+                      <label
+                        htmlFor={`repo-${repo.id}`}
+                        className="flex-1 flex items-center gap-2 cursor-pointer"
+                      >
+                        <span className="text-lg">{repo.icon}</span>
+                        <span className="text-sm text-gray-900 font-medium">
+                          {repo.name}
+                        </span>
+                      </label>
+                    </div>
+                  ))}
+
+                  {filteredRepos.length === 0 && repoSearchInput && (
+                    <div className="text-center py-8">
+                      <p className="text-sm text-gray-600">
+                        No repositories found matching "{repoSearchInput}"
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-3 pt-6 border-t border-gray-200">
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => {
+                    const stepOrder: typeof activeStep[] = [
+                      "selectService",
+                      "selectOrganization",
+                      "selectRepositories",
+                      "repositoriesSettings",
+                      "selectBranches",
+                      "scanUponCreation",
+                    ];
+                    const currentIndex = stepOrder.indexOf(activeStep);
+                    if (currentIndex < stepOrder.length - 1) {
+                      setActiveStep(stepOrder[currentIndex + 1]);
+                    }
+                  }}
+                  disabled={selectedRepos.length === 0}
+                  className={cn(
+                    "ml-auto px-6 py-2 rounded-lg font-medium transition-colors",
+                    selectedRepos.length === 0
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  )}
+                >
+                  Select Repositories
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeStep === "repositoriesSettings" && (
+            <div className="flex h-full gap-4">
+              {/* Left Sidebar - Repositories List */}
+              <div className="w-64 border-r border-gray-200 overflow-y-auto">
+                <h4 className="text-sm font-semibold text-gray-900 p-4 sticky top-0 bg-white">
+                  Selected Repositories
+                </h4>
+                <div className="space-y-2 p-4">
+                  {selectedRepos.map((repo) => (
+                    <button
+                      key={repo}
+                      onClick={() => setSelectedRepo(repo)}
+                      className={cn(
+                        "w-full text-left px-3 py-2 rounded-lg transition-colors text-sm font-medium flex items-center gap-2",
+                        selectedRepo === repo
+                          ? "bg-blue-100 text-blue-900 border border-blue-300"
+                          : "text-gray-700 hover:bg-gray-100"
+                      )}
+                    >
+                      <span>📁</span>
+                      {repo}
                     </button>
                   ))}
                 </div>
               </div>
-            </div>
-          )}
 
-          {activeStep !== "selectService" && (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center text-gray-600">
-                <p className="text-lg font-semibold mb-2">
-                  {activeStep === "selectOrganization" &&
-                    "Select Organization"}
-                  {activeStep === "selectRepositories" &&
-                    "Select Repositories"}
-                  {activeStep === "repositoriesSettings" &&
-                    "Repositories Settings"}
-                  {activeStep === "selectBranches" && "Select Branches"}
-                  {activeStep === "scanUponCreation" && "Scan Upon Creation"}
-                </p>
-                <p className="text-sm">This step is coming soon...</p>
+              {/* Right Panel - Settings */}
+              <div className="flex-1 overflow-y-auto p-6">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      Repositories Settings
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Configure setting for each repository
+                    </p>
+                  </div>
+
+                  {/* Selected Repository Display */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center gap-2">
+                    <span className="text-lg">📁</span>
+                    <span className="text-sm font-semibold text-gray-900">
+                      {selectedRepo}
+                    </span>
+                    <button className="ml-auto text-gray-400 hover:text-gray-600">
+                      ›
+                    </button>
+                  </div>
+
+                  {/* Permission Settings */}
+                  <div className="border border-gray-200 rounded-lg">
+                    <button
+                      onClick={() => toggleSection("permission")}
+                      className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            "transition-transform",
+                            expandedSections.includes("permission")
+                              ? "rotate-90"
+                              : ""
+                          )}
+                        >
+                          ›
+                        </span>
+                        <span className="font-semibold text-gray-900">
+                          Permission Settings
+                        </span>
+                      </div>
+                    </button>
+
+                    {expandedSections.includes("permission") && (
+                      <div className="p-4 border-t border-gray-200 space-y-4">
+                        {/* Scan Trigger */}
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm font-medium text-gray-900">
+                            Scan Trigger: Push, Pull request
+                          </label>
+                          <button
+                            onClick={() =>
+                              setRepoSettings({
+                                ...repoSettings,
+                                scanTrigger: {
+                                  ...repoSettings.scanTrigger,
+                                  push: !repoSettings.scanTrigger.push,
+                                },
+                              })
+                            }
+                            className={cn(
+                              "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                              repoSettings.scanTrigger.push
+                                ? "bg-blue-600"
+                                : "bg-gray-300"
+                            )}
+                          >
+                            <span
+                              className={cn(
+                                "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                                repoSettings.scanTrigger.push
+                                  ? "translate-x-6"
+                                  : "translate-x-1"
+                              )}
+                            />
+                          </button>
+                        </div>
+
+                        {/* Pull Request Decoration */}
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm font-medium text-gray-900">
+                            Pull Request Decoration
+                          </label>
+                          <button
+                            onClick={() =>
+                              setRepoSettings({
+                                ...repoSettings,
+                                pullRequestDecoration:
+                                  !repoSettings.pullRequestDecoration,
+                              })
+                            }
+                            className={cn(
+                              "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                              repoSettings.pullRequestDecoration
+                                ? "bg-blue-600"
+                                : "bg-gray-300"
+                            )}
+                          >
+                            <span
+                              className={cn(
+                                "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                                repoSettings.pullRequestDecoration
+                                  ? "translate-x-6"
+                                  : "translate-x-1"
+                              )}
+                            />
+                          </button>
+                        </div>
+
+                        {/* SCA Auto Pull Request */}
+                        <div className="flex items-center justify-between group relative">
+                          <div className="flex items-center gap-2">
+                            <label className="text-sm font-medium text-gray-900">
+                              SCA Auto Pull Request
+                            </label>
+                            <div className="relative inline-block">
+                              <span
+                                className="text-gray-400 cursor-help hover:text-gray-600"
+                              >
+                                ℹ️
+                              </span>
+                              {/* Tooltip */}
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 pointer-events-none">
+                                <p>
+                                  By activating this feature, you are allowing CloudSEK to send PRs with remediated manifest files to your repository and close/remove those PR branches as needed.
+                                </p>
+                                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45 -mt-1"></div>
+                              </div>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() =>
+                              setRepoSettings({
+                                ...repoSettings,
+                                scaAutoPullRequest:
+                                  !repoSettings.scaAutoPullRequest,
+                              })
+                            }
+                            className={cn(
+                              "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                              repoSettings.scaAutoPullRequest
+                                ? "bg-blue-600"
+                                : "bg-gray-300"
+                            )}
+                          >
+                            <span
+                              className={cn(
+                                "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                                repoSettings.scaAutoPullRequest
+                                  ? "translate-x-6"
+                                  : "translate-x-1"
+                              )}
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Scanner Settings */}
+                  <div className="border border-gray-200 rounded-lg">
+                    <button
+                      onClick={() => toggleSection("scanner")}
+                      className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            "transition-transform",
+                            expandedSections.includes("scanner")
+                              ? "rotate-90"
+                              : ""
+                          )}
+                        >
+                          ›
+                        </span>
+                        <span className="font-semibold text-gray-900">
+                          Scanner Settings
+                        </span>
+                      </div>
+                    </button>
+
+                    {expandedSections.includes("scanner") && (
+                      <div className="p-4 border-t border-gray-200 space-y-4">
+                        {/* Protected Branches */}
+                        <div>
+                          <h5 className="font-semibold text-gray-900 text-sm mb-2">
+                            Protected Branches
+                          </h5>
+                          <p className="text-xs text-gray-600 mb-3">
+                            Protected branches (e.g., main or release) are
+                            critical branches with enforced rules to keep
+                            production code stable.
+                          </p>
+
+                          <div className="mb-3">
+                            <label className="block text-xs font-medium text-gray-900 mb-2">
+                              Choose Branches:
+                            </label>
+                            {repoSettings.protectedBranches.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mb-2">
+                                {repoSettings.protectedBranches.map(
+                                  (branch, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full"
+                                    >
+                                      <span className="text-xs font-medium text-gray-900">
+                                        {branch}
+                                      </span>
+                                      <button
+                                        onClick={() =>
+                                          removeProtectedBranch(idx)
+                                        }
+                                        className="text-gray-400 hover:text-gray-600 ml-1"
+                                      >
+                                        ✕
+                                      </button>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* SSH Key Input */}
+                          <div className="mb-4">
+                            <label className="block text-sm font-semibold text-gray-900 mb-2">
+                              Add SSH Key
+                            </label>
+                            <textarea
+                              placeholder="Paste your SSH key here..."
+                              value={repoSettings.sshKey}
+                              onChange={(e) =>
+                                setRepoSettings({
+                                  ...repoSettings,
+                                  sshKey: e.target.value,
+                                })
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm h-24"
+                            />
+                          </div>
+
+                          {/* Assign Groups */}
+                          <div className="mb-4">
+                            <label className="block text-sm font-semibold text-gray-900 mb-2">
+                              Assign Groups
+                            </label>
+                            {repoSettings.assignGroups.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mb-2">
+                                {repoSettings.assignGroups.map((group, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="flex items-center gap-1 bg-blue-100 px-3 py-1 rounded-full"
+                                  >
+                                    <span className="text-xs font-medium text-blue-900">
+                                      {group}
+                                    </span>
+                                    <button
+                                      onClick={() => removeGroup(idx)}
+                                      className="text-blue-600 hover:text-blue-800 ml-1"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            <input
+                              type="text"
+                              placeholder="Add Groups"
+                              value={repoSettings.assignGroupsInput}
+                              onChange={(e) =>
+                                setRepoSettings({
+                                  ...repoSettings,
+                                  assignGroupsInput: e.target.value,
+                                })
+                              }
+                              onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                  addGroup();
+                                }
+                              }}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                            />
+                          </div>
+
+                          {/* Assign Tags */}
+                          <div className="mb-4">
+                            <label className="block text-sm font-semibold text-gray-900 mb-2">
+                              Assign Tags
+                            </label>
+                            {repoSettings.assignTags.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mb-2">
+                                {repoSettings.assignTags.map((tag, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="flex items-center gap-1 bg-blue-100 px-3 py-1 rounded-full"
+                                  >
+                                    <span className="text-xs font-medium text-blue-900">
+                                      {tag}
+                                    </span>
+                                    <button
+                                      onClick={() => removeTag(idx)}
+                                      className="text-blue-600 hover:text-blue-800 ml-1"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            <input
+                              type="text"
+                              placeholder="Add Tags"
+                              value={repoSettings.assignTagsInput}
+                              onChange={(e) =>
+                                setRepoSettings({
+                                  ...repoSettings,
+                                  assignTagsInput: e.target.value,
+                                })
+                              }
+                              onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                  addTag();
+                                }
+                              }}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                            />
+                          </div>
+
+                          {/* Criticality Level */}
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <label className="text-sm font-semibold text-gray-900">
+                                Set Criticality Level
+                              </label>
+                              <span
+                                className="text-gray-400 cursor-help"
+                                title="Info about Criticality Level"
+                              >
+                                ℹ️
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <input
+                                type="range"
+                                min="1"
+                                max="5"
+                                value={repoSettings.criticalityLevel}
+                                onChange={(e) =>
+                                  setRepoSettings({
+                                    ...repoSettings,
+                                    criticalityLevel: parseInt(e.target.value),
+                                  })
+                                }
+                                className="flex-1 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                              />
+                              <span className="text-sm font-medium text-gray-900 min-w-12">
+                                {repoSettings.criticalityLevel}
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-xs text-gray-600 mt-2">
+                              <span>1</span>
+                              <span>
+                                {[
+                                  "",
+                                  "Low",
+                                  "Medium",
+                                  "High",
+                                  "Critical",
+                                  "Severe",
+                                ][repoSettings.criticalityLevel]}
+                              </span>
+                              <span>5</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {/* Navigation Buttons */}
-          <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
-            <button
-              onClick={onClose}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            {activeStep !== "selectService" && (
+          {activeStep === "selectBranches" && (
+            <div className="flex flex-col h-full">
+              <div className="flex-1 overflow-y-auto">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Select Branches
+                </h3>
+                <p className="text-sm text-gray-600 mb-6">
+                  Select protected Branches (each repository must have at least
+                  one branch selected)
+                </p>
+
+                {/* Repositories and Branches */}
+                <div className="space-y-6">
+                  {selectedRepos.map((repo) => (
+                    <div key={repo} className="border border-gray-200 rounded-lg p-4">
+                      {/* Repository Name */}
+                      <div className="mb-4 flex items-center justify-between">
+                        <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                          <span>📁</span>
+                          {repo}
+                        </h4>
+                      </div>
+
+                      {/* Selected Branches Tags */}
+                      {selectedBranches[repo]?.length > 0 && (
+                        <div className="mb-4 flex flex-wrap gap-2">
+                          {selectedBranches[repo].map((branch) => (
+                            <div
+                              key={branch}
+                              className="flex items-center gap-1 bg-blue-50 border border-blue-300 px-3 py-1 rounded-lg"
+                            >
+                              <span className="text-xs font-medium text-gray-900">
+                                {branch}
+                              </span>
+                              <button
+                                onClick={() => removeBranch(repo, branch)}
+                                className="ml-1 text-gray-400 hover:text-gray-600"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Branch Input */}
+                      <div className="relative">
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="main"
+                            value={branchInputs[repo] || ""}
+                            onChange={(e) =>
+                              setBranchInputs((prev) => ({
+                                ...prev,
+                                [repo]: e.target.value,
+                              }))
+                            }
+                            onKeyPress={(e) => {
+                              if (e.key === "Enter") {
+                                addBranch(repo);
+                              }
+                            }}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                          />
+                          <button
+                            onClick={() => addBranch(repo)}
+                            disabled={
+                              !branchInputs[repo]?.trim() ||
+                              selectedBranches[repo]?.includes(
+                                branchInputs[repo].trim()
+                              )
+                            }
+                            className={cn(
+                              "px-3 py-2 rounded-lg font-medium text-sm transition-colors",
+                              !branchInputs[repo]?.trim() ||
+                                selectedBranches[repo]?.includes(
+                                  branchInputs[repo].trim()
+                                )
+                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                : "bg-gray-300 hover:bg-gray-400 text-gray-700"
+                            )}
+                          >
+                            Add
+                          </button>
+                        </div>
+
+                        {/* Autocomplete Suggestions */}
+                        {branchInputs[repo] &&
+                          !selectedBranches[repo]?.includes(
+                            branchInputs[repo].trim()
+                          ) && (
+                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                              {suggestedBranches
+                                .filter((b) =>
+                                  b
+                                    .toLowerCase()
+                                    .includes(
+                                      branchInputs[repo].toLowerCase()
+                                    ) &&
+                                  !selectedBranches[repo]?.includes(b)
+                                )
+                                .map((branch) => (
+                                  <button
+                                    key={branch}
+                                    onClick={() => {
+                                      setBranchInputs((prev) => ({
+                                        ...prev,
+                                        [repo]: branch,
+                                      }));
+                                      // Auto-add the branch
+                                      setTimeout(() => {
+                                        setSelectedBranches((prev) => ({
+                                          ...prev,
+                                          [repo]: [
+                                            ...(prev[repo] || []),
+                                            branch,
+                                          ],
+                                        }));
+                                        setBranchInputs((prev) => ({
+                                          ...prev,
+                                          [repo]: "",
+                                        }));
+                                      }, 0);
+                                    }}
+                                    className="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm text-gray-900 border-b border-gray-200 last:border-b-0"
+                                  >
+                                    {branch}
+                                  </button>
+                                ))}
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-3 pt-6 border-t border-gray-200">
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => {
+                    const stepOrder: typeof activeStep[] = [
+                      "selectService",
+                      "selectOrganization",
+                      "selectRepositories",
+                      "repositoriesSettings",
+                      "selectBranches",
+                      "scanUponCreation",
+                    ];
+                    const currentIndex = stepOrder.indexOf(activeStep);
+                    if (currentIndex < stepOrder.length - 1) {
+                      setActiveStep(stepOrder[currentIndex + 1]);
+                    }
+                  }}
+                  disabled={
+                    selectedRepos.some((repo) => !selectedBranches[repo]?.length)
+                  }
+                  className={cn(
+                    "ml-auto px-6 py-2 rounded-lg font-medium transition-colors",
+                    selectedRepos.some(
+                      (repo) => !selectedBranches[repo]?.length
+                    )
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  )}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeStep === "scanUponCreation" && (
+            <div className="flex flex-col h-full">
+              <div className="flex-1 overflow-y-auto">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  Select Branches To Scan:
+                </h3>
+
+                {/* Toggle for Scan Upon Creation */}
+                <div className="mb-6 flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <label className="text-sm font-medium text-gray-900">
+                    Scan a branch upon creation of the project
+                  </label>
+                  <button
+                    onClick={() => {
+                      setRepoSettings({
+                        ...repoSettings,
+                        scaAutoPullRequest: !repoSettings.scaAutoPullRequest,
+                      });
+                    }}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                      repoSettings.scaAutoPullRequest
+                        ? "bg-blue-600"
+                        : "bg-gray-300"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                        repoSettings.scaAutoPullRequest
+                          ? "translate-x-6"
+                          : "translate-x-1"
+                      )}
+                    />
+                  </button>
+                </div>
+
+                {/* Repositories with Branch Selection */}
+                <div className="space-y-4">
+                  {selectedRepos.map((repo) => (
+                    <div key={repo} className="p-4 border border-gray-200 rounded-lg">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-lg">📁</span>
+                        <span className="font-semibold text-gray-900">{repo}</span>
+                      </div>
+
+                      {/* Branch Dropdown */}
+                      <div className="relative">
+                        <select
+                          value={selectedBranches[repo]?.[0] || "main"}
+                          onChange={(e) => {
+                            setSelectedBranches((prev) => ({
+                              ...prev,
+                              [repo]: [e.target.value],
+                            }));
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white cursor-pointer"
+                        >
+                          {suggestedBranches.map((branch) => (
+                            <option key={branch} value={branch}>
+                              {branch}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                          ▼
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-3 pt-6 border-t border-gray-200">
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => {
+                    // Create projects and navigate to asset page
+                    const projectNames = selectedRepos.map((repo) => repo.split("/")[1] || repo);
+                    projectNames.forEach((projectName) => {
+                      onStartScan?.(projectName);
+                    });
+                    // Close the modal
+                    onClose();
+                  }}
+                  className="ml-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+                >
+                  Create Projects ({selectedRepos.length})
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Navigation Buttons - Only for selectRepositories step */}
+          {activeStep === "selectRepositories" && (
+            <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+              <button
+                onClick={onClose}
+                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
+              >
+                Cancel
+              </button>
               <button
                 onClick={() => {
                   const stepOrder: typeof activeStep[] = [
@@ -3575,8 +4875,43 @@ function ImportFromModal({ isOpen, onClose }: ImportFromModalProps) {
               >
                 Next
               </button>
-            )}
-          </div>
+            </div>
+          )}
+
+          {/* Navigation Buttons - For repositoriesSettings */}
+          {activeStep === "repositoriesSettings" && (
+            <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+              <button
+                onClick={handleBack}
+                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+              >
+                Back
+              </button>
+              <button
+                onClick={() => {
+                  const stepOrder: typeof activeStep[] = [
+                    "selectService",
+                    "selectOrganization",
+                    "selectRepositories",
+                    "repositoriesSettings",
+                    "selectBranches",
+                    "scanUponCreation",
+                  ];
+                  const currentIndex = stepOrder.indexOf(activeStep);
+                  if (currentIndex < stepOrder.length - 1) {
+                    setActiveStep(stepOrder[currentIndex + 1]);
+                  }
+                }}
+                className="ml-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+              >
+                Next
+              </button>
+            </div>
+          )}
+
+          {/* Navigation Buttons - For selectBranches - Already included in the component above */}
+
+          {/* Fallback for unhandled activeStep - should never show */}
         </div>
       </div>
     </div>
