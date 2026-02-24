@@ -117,6 +117,27 @@ export function MainNav() {
 
         {/* Right Actions - Compact */}
         <div className="flex items-center gap-1 flex-shrink-0">
+          {/* Security Graph Icon */}
+          <button
+            onClick={() => navigate("/?view=security-graph")}
+            className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+            title="Cloud Security Graph"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+          </button>
+
           {/* Search Icon */}
           <button className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0">
             <svg

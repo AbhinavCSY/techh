@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   useFilters,
   filterTechStacks,
@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 
 export default function Index() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   // Call all hooks BEFORE any conditional logic
   const {
@@ -55,6 +56,15 @@ export default function Index() {
   const [showAutomaticScanModal, setShowAutomaticScanModal] = useState(false);
   const [scanningProject, setScanningProject] = useState<string | null>(null);
   const [scannedAssets, setScannedAssets] = useState<Set<string>>(new Set());
+
+  // Handle query parameter for security graph view
+  useEffect(() => {
+    const viewParam = searchParams.get("view");
+    if (viewParam === "security-graph") {
+      setViewType("graph");
+      setGrouping("security-graph");
+    }
+  }, [searchParams, setViewType, setGrouping]);
 
   // Filter and sort data - must be called before any early returns
   const filteredTechStacks = useMemo(() => {
@@ -242,17 +252,6 @@ export default function Index() {
                     )}
                   >
                     📦 Tech Stacks
-                  </button>
-                  <button
-                    onClick={() => setGrouping("security-graph")}
-                    className={cn(
-                      "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
-                      grouping === "security-graph"
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-gray-600 hover:text-gray-900",
-                    )}
-                  >
-                    🔐 Security Graph
                   </button>
                 </div>
               </div>
