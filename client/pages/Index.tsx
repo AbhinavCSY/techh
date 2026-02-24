@@ -140,113 +140,137 @@ export default function Index() {
         </div>
       )}
 
-      {/* Header */}
-      <header className="border-b border-gray-200 bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-2">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-3">
-              <h1 className="text-lg font-bold text-gray-900">
-                {grouping === "tech-stack" ? "Tech Stacks" : "Asset Inventory"}
+      {/* Header with improved visual hierarchy */}
+      <header className="border-b border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          {/* Primary Title Section */}
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-gray-900 mb-1">
+                {grouping === "tech-stack" ? "Tech Stack Inventory" : "Asset Inventory"}
               </h1>
-              <Button
-                onClick={() => setShowNewProjectModal(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 px-3 h-auto"
-              >
-                + New
-              </Button>
+              <p className="text-sm text-gray-600">
+                Monitor vulnerabilities, risks, and compliance across your dependencies
+              </p>
             </div>
-            <p className="text-xs text-gray-500">
-              Manage and monitor your technology dependencies
-            </p>
-          </div>
-
-          {/* Widget Panel Header with Toggle */}
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-              Tech Stack Overview
-            </h2>
-            <button
-              onClick={() => setShowWidgetPanel(!showWidgetPanel)}
-              className={cn(
-                "px-2 py-0.5 rounded text-xs font-medium transition-colors",
-                showWidgetPanel
-                  ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200",
-              )}
+            <Button
+              onClick={() => setShowNewProjectModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 h-auto"
             >
-              {showWidgetPanel ? "▼ Hide" : "▶ Show"}
-            </button>
+              + New Project
+            </Button>
           </div>
 
-          {/* Key Metrics Panel - Collapsible & Compact */}
-          {showWidgetPanel && (
-            <div className="space-y-2">
-              {/* First Row - Three widgets in single row */}
-              <div className="grid grid-cols-3 gap-2">
+          {/* Overview Section - Clear Visual Separation */}
+          <div className="space-y-3">
+            {/* Section Header with Toggle */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-sm font-semibold text-gray-900">Overview</h2>
+                <p className="text-xs text-gray-500 mt-1">Key insights and risk metrics</p>
+              </div>
+              <button
+                onClick={() => setShowWidgetPanel(!showWidgetPanel)}
+                className={cn(
+                  "px-3 py-1.5 rounded text-xs font-medium transition-colors",
+                  showWidgetPanel
+                    ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200",
+                )}
+              >
+                {showWidgetPanel ? "▼ Hide Overview" : "▶ Show Overview"}
+              </button>
+            </div>
+
+            {/* Overview Widgets */}
+            {showWidgetPanel && (
+              <div className="grid grid-cols-3 gap-3 pt-2">
                 {/* Vulnerable Tech Stacks Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
+                <div className="bg-white rounded-lg border border-gray-200 p-3 max-h-56 overflow-y-auto hover:border-gray-300 transition-colors">
                   <VulnerableLibrariesWidget compact={true} />
                 </div>
 
                 {/* Risk by Tech Stacks Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
+                <div className="bg-white rounded-lg border border-gray-200 p-3 max-h-56 overflow-y-auto hover:border-gray-300 transition-colors">
                   <RiskByTechnologiesChart compact={true} />
                 </div>
 
-                {/* Version & License Widget (Merged) */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
+                {/* Version & License Widget */}
+                <div className="bg-white rounded-lg border border-gray-200 p-3 max-h-56 overflow-y-auto hover:border-gray-300 transition-colors">
                   <VersionAndLicenseWidget compact={true} />
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </header>
 
-      {/* Group By Switch */}
-      <div className="sticky top-16 z-20 border-b border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-4">
-          <label className="font-medium text-sm text-gray-700">Group By:</label>
-          <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
-            <button
-              onClick={() => setGrouping("asset")}
-              className={cn(
-                "px-4 py-2 rounded font-medium text-sm transition-all whitespace-nowrap",
-                grouping === "asset"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900",
-              )}
-            >
-              🖥️ Asset
-            </button>
-            <button
-              onClick={() => setGrouping("tech-stack")}
-              className={cn(
-                "px-4 py-2 rounded font-medium text-sm transition-all whitespace-nowrap",
-                grouping === "tech-stack"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900",
-              )}
-            >
-              📦 Tech Stack
-            </button>
+      {/* Controls Section - Sticky with better hierarchy */}
+      <div className="sticky top-0 z-20 border-b border-gray-200 bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Primary Controls */}
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-semibold text-gray-700">View:</span>
+                <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
+                  <button
+                    onClick={() => setGrouping("asset")}
+                    className={cn(
+                      "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
+                      grouping === "asset"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900",
+                    )}
+                  >
+                    🖥️ Assets
+                  </button>
+                  <button
+                    onClick={() => setGrouping("tech-stack")}
+                    className={cn(
+                      "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
+                      grouping === "tech-stack"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900",
+                    )}
+                  >
+                    📦 Tech Stacks
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Metric Display */}
+            <div className="flex items-center gap-4 text-xs text-gray-600">
+              <div>
+                <span className="font-semibold text-gray-900">{metrics.totalTechStacks}</span>
+                <span className="ml-1">Total Tech Stacks</span>
+              </div>
+              <div className="h-4 w-px bg-gray-300"></div>
+              <div>
+                <span className="font-semibold text-gray-900">{metrics.assetsScanned}</span>
+                <span className="ml-1">Assets Scanned</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Filter Bar */}
-      <HorizontalFilterBar
-        filters={filters}
-        onFilterChange={updateFilter}
-        onClearFilters={clearFilters}
-        hasActiveFilters={hasActiveFilters}
-        viewType={viewType}
-        onViewTypeChange={setViewType}
-        onExport={handleExport}
-        grouping={grouping}
-      />
+      {/* Filter Bar - Secondary Controls */}
+      <div className="border-b border-gray-200 bg-white/50 backdrop-blur-sm">
+        <HorizontalFilterBar
+          filters={filters}
+          onFilterChange={updateFilter}
+          onClearFilters={clearFilters}
+          hasActiveFilters={hasActiveFilters}
+          viewType={viewType}
+          onViewTypeChange={setViewType}
+          onExport={handleExport}
+          grouping={grouping}
+        />
+      </div>
 
-      {/* Main Content */}
+      {/* Main Content - Clear separation */}
       <main
         className={cn(
           viewType === "graph" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-8",
@@ -283,24 +307,51 @@ export default function Index() {
           </div>
         ) : (
           <>
-            {/* Empty State */}
+            {/* Empty State - Enhanced Visual Hierarchy */}
             {filteredTechStacks.length === 0 && filteredAssets.length === 0 ? (
-              <div className="bg-white rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
-                <AlertTriangle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  No items found
+              <div className="bg-white rounded-lg border-2 border-dashed border-gray-300 p-16 text-center">
+                <div className="flex justify-center mb-6">
+                  <div className="bg-gray-100 rounded-full p-4">
+                    <AlertTriangle className="w-8 h-8 text-gray-500" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  No {grouping === "tech-stack" ? "Tech Stacks" : "Assets"} Found
                 </h3>
-                <p className="text-gray-600 mb-4">
-                  Try adjusting your filters or search criteria
+                <p className="text-gray-600 mb-6 text-sm">
+                  {hasActiveFilters
+                    ? "Try adjusting your filters to see results"
+                    : "Start by adding a new project or scanning your dependencies"}
                 </p>
-                {hasActiveFilters && (
-                  <Button onClick={clearFilters} variant="outline">
-                    Clear All Filters
+                <div className="flex items-center justify-center gap-3">
+                  {hasActiveFilters && (
+                    <Button onClick={clearFilters} variant="outline" className="text-sm">
+                      Clear All Filters
+                    </Button>
+                  )}
+                  <Button
+                    onClick={() => setShowNewProjectModal(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm"
+                  >
+                    Create New Project
                   </Button>
-                )}
+                </div>
               </div>
             ) : (
               <>
+                {/* Content Header with result count */}
+                <div className="mb-4">
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    {grouping === "tech-stack"
+                      ? `${filteredTechStacks.length} Tech Stack${filteredTechStacks.length !== 1 ? 's' : ''}`
+                      : `${filteredAssets.length} Asset${filteredAssets.length !== 1 ? 's' : ''}`
+                    }
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {viewType === "card" ? "Card view" : "Table view"}
+                  </p>
+                </div>
+
                 {/* Content - Card or Table View */}
                 {viewType === "card" ? (
                   <>
