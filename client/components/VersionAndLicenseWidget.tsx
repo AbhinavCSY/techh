@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useState } from "react";
 import { techStackDatabase } from "@/data/mockData";
 import { Maximize2, X } from "lucide-react";
 
