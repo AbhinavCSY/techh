@@ -20,7 +20,7 @@ import { TechStacksAndAssetsChart } from "@/components/TechStacksAndAssetsChart"
 import { VulnerableLibrariesWidget } from "@/components/VulnerableLibrariesWidget";
 import { LicenseDistributionWidget } from "@/components/LicenseDistributionWidget";
 import { RiskByTechnologiesChart } from "@/components/RiskByTechnologiesChart";
-import { CloudSecurityGraph } from "@/components/CloudSecurityGraph";
+import { HierarchicalSecurityGraph } from "@/components/HierarchicalSecurityGraph";
 import { VersionAndLicenseWidget } from "@/components/VersionAndLicenseWidget";
 import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
@@ -297,7 +297,7 @@ export default function Index() {
         {viewType === "graph" ? (
           <div className="w-full" style={{ height: "calc(100vh - 200px)" }}>
             {grouping === "security-graph" ? (
-              <CloudSecurityGraph />
+              <HierarchicalSecurityGraph />
             ) : grouping === "asset" ? (
               <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg">
                 <div className="text-center p-8 max-w-md">
