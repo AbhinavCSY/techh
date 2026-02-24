@@ -151,28 +151,76 @@ export function RiskByTechnologiesChart({
         <div className="flex-shrink-0 relative">
           {/* Tooltip on hover */}
           {hoveredSegment && (
-            <div className="absolute -top-40 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg p-2.5 w-48 shadow-lg whitespace-normal z-50">
+            <div className="absolute -top-52 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white rounded-lg p-3 w-56 shadow-xl whitespace-normal z-50">
               {(() => {
                 const [techName, severity] = hoveredSegment.split("|");
                 const tech = chartData.find((t) => t.name === techName);
                 if (!tech) return null;
                 const segment = tech.severitySegments.find((s) => s.severity === severity);
+
                 if (!segment) return null;
+
                 return (
-                  <div className="space-y-1">
-                    <div className="font-semibold">{tech.name}</div>
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-2 h-2 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: segment.color }}
-                      />
-                      <span className="capitalize font-medium">{severity}</span>
+                  <div className="space-y-3">
+                    {/* Tech Stack Title */}
+                    <div className="border-b border-gray-700 pb-2">
+                      <div className="font-bold text-sm text-white">{tech.name}</div>
+                      <div className="text-gray-300 text-xs mt-1">
+                        Total Issues: <span className="font-semibold text-white">{tech.vulnerabilities.toLocaleString()}</span>
+                      </div>
                     </div>
-                    <div className="text-gray-300">
-                      Count: {segment.count}
+
+                    {/* Selected Severity */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: segment.color }}
+                        />
+                        <span className="capitalize font-semibold text-white">{severity}</span>
+                      </div>
+                      <div className="ml-5 space-y-1 text-xs text-gray-200">
+                        <div className="flex justify-between">
+                          <span>Count:</span>
+                          <span className="font-semibold">{segment.count.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Percentage:</span>
+                          <span className="font-semibold">{segment.percentage.toFixed(1)}%</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-gray-400 text-xs">
-                      {segment.percentage.toFixed(1)}% of {tech.name}
+
+                    {/* All Severities Breakdown */}
+                    <div className="border-t border-gray-700 pt-2">
+                      <div className="text-xs font-semibold text-gray-300 mb-2">Severity Breakdown</div>
+                      <div className="space-y-1.5">
+                        {severityOrder.map((sev) => {
+                          const seg = tech.severitySegments.find((s) => s.severity === sev);
+                          if (!seg) return null;
+                          const isSelected = sev === severity;
+                          return (
+                            <div
+                              key={sev}
+                              className={`flex items-center justify-between text-xs px-2 py-1 rounded transition-colors ${
+                                isSelected ? "bg-gray-800" : "hover:bg-gray-800/50"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2 flex-1">
+                                <div
+                                  className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                                  style={{ backgroundColor: seg.color }}
+                                />
+                                <span className="capitalize text-gray-300">{sev}</span>
+                              </div>
+                              <div className="flex items-center gap-3 flex-shrink-0">
+                                <span className="text-gray-400 font-medium w-10 text-right">{seg.count}</span>
+                                <span className="text-gray-500 w-12 text-right">{seg.percentage.toFixed(1)}%</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 );
