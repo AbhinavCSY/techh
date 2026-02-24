@@ -19,6 +19,8 @@ interface SeveritySegment {
   count: number;
   color: string;
   percentage: number;
+  startAngle?: number;
+  endAngle?: number;
 }
 
 export function RiskByTechnologiesChart({
@@ -50,6 +52,8 @@ export function RiskByTechnologiesChart({
     low: "#16a34a",
   };
 
+  const severityOrder = ["critical", "high", "medium", "low"] as const;
+
   const chartData = useMemo(() => {
     let currentAngle = 0;
     return technologyData.map((tech) => {
@@ -58,17 +62,27 @@ export function RiskByTechnologiesChart({
       const startAngle = currentAngle;
       const endAngle = currentAngle + sliceAngle;
 
-      // Calculate severity breakdown
-      const severitySegments: SeveritySegment[] = [
-        { severity: "critical", count: tech.critical || 0, color: severityColors.critical, percentage: 0 },
-        { severity: "high", count: tech.high || 0, color: severityColors.high, percentage: 0 },
-        { severity: "medium", count: tech.medium || 0, color: severityColors.medium, percentage: 0 },
-        { severity: "low", count: tech.low || 0, color: severityColors.low, percentage: 0 },
-      ];
+      // Calculate severity breakdown in order
+      const severitySegments: SeveritySegment[] = severityOrder.map((severity) => ({
+        severity,
+        count: tech[severity] || 0,
+        color: severityColors[severity],
+        percentage: 0,
+      }));
 
       // Calculate percentages for each severity within this tech
       severitySegments.forEach((segment) => {
         segment.percentage = (segment.count / tech.vulnerabilities) * 100;
+      });
+
+      // Assign angles to severity segments
+      let severityStartAngle = startAngle;
+      const techSliceAngle = endAngle - startAngle;
+      severitySegments.forEach((segment) => {
+        const severitySliceAngle = (segment.percentage / 100) * techSliceAngle;
+        segment.startAngle = severityStartAngle;
+        segment.endAngle = severityStartAngle + severitySliceAngle;
+        severityStartAngle = segment.endAngle;
       });
 
       currentAngle = endAngle;
@@ -86,7 +100,7 @@ export function RiskByTechnologiesChart({
   const createArcPath = (
     centerX: number,
     centerY: number,
-    radius: number,
+    outerRadius: number,
     innerRadius: number,
     startAngle: number,
     endAngle: number,
@@ -95,10 +109,10 @@ export function RiskByTechnologiesChart({
     const cos = Math.cos;
     const sin = Math.sin;
 
-    const x1 = centerX + radius * cos(toRad(startAngle));
-    const y1 = centerY + radius * sin(toRad(startAngle));
-    const x2 = centerX + radius * cos(toRad(endAngle));
-    const y2 = centerY + radius * sin(toRad(endAngle));
+    const x1 = centerX + outerRadius * cos(toRad(startAngle));
+    const y1 = centerY + outerRadius * sin(toRad(startAngle));
+    const x2 = centerX + outerRadius * cos(toRad(endAngle));
+    const y2 = centerY + outerRadius * sin(toRad(endAngle));
 
     const ix1 = centerX + innerRadius * cos(toRad(startAngle));
     const iy1 = centerY + innerRadius * sin(toRad(startAngle));
@@ -107,11 +121,25 @@ export function RiskByTechnologiesChart({
 
     const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
 
-    return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${ix1} ${iy1} Z`;
+    return `M ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${ix1} ${iy1} Z`;
+  };
+
+  const getLabelPosition = (
+    centerX: number,
+    centerY: number,
+    radius: number,
+    startAngle: number,
+    endAngle: number,
+  ) => {
+    const midAngle = (startAngle + endAngle) / 2;
+    const toRad = (deg: number) => (deg * Math.PI) / 180;
+    const x = centerX + radius * Math.cos(toRad(midAngle));
+    const y = centerY + radius * Math.sin(toRad(midAngle));
+    return { x, y, midAngle };
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {/* Title */}
       <h4 className="font-semibold text-gray-900 text-xs">
         Risk by Tech Stacks
@@ -119,7 +147,7 @@ export function RiskByTechnologiesChart({
 
       {/* Chart Container */}
       <div className="flex flex-col items-center relative">
-        {/* Burst Pie Chart */}
+        {/* Sunburst Chart */}
         <div className="flex-shrink-0 relative">
           {/* Tooltip on hover */}
           {hoveredSegment && (
@@ -138,9 +166,12 @@ export function RiskByTechnologiesChart({
                         className="w-2 h-2 rounded-full flex-shrink-0"
                         style={{ backgroundColor: segment.color }}
                       />
-                      <span className="capitalize">{severity}: {segment.count}</span>
+                      <span className="capitalize font-medium">{severity}</span>
                     </div>
-                    <div className="text-gray-300 text-xs">
+                    <div className="text-gray-300">
+                      Count: {segment.count}
+                    </div>
+                    <div className="text-gray-400 text-xs">
                       {segment.percentage.toFixed(1)}% of {tech.name}
                     </div>
                   </div>
@@ -150,80 +181,116 @@ export function RiskByTechnologiesChart({
           )}
 
           <svg
-            width="140"
-            height="140"
-            viewBox="0 0 280 280"
-            className="drop-shadow-sm"
+            width="240"
+            height="240"
+            viewBox="0 0 480 480"
+            className="drop-shadow-md"
           >
-            {/* Inner ring: Tech stacks */}
+            {/* Inner ring: Tech stacks (radius 50-90) */}
             {chartData.map((tech, index) => (
               <g key={`inner-${index}`}>
                 <path
-                  d={createArcPath(140, 140, 70, 45, tech.startAngle, tech.endAngle)}
+                  d={createArcPath(240, 240, 90, 50, tech.startAngle, tech.endAngle)}
                   fill={tech.color}
                   stroke="white"
-                  strokeWidth="1.5"
-                  className="cursor-pointer opacity-80 hover:opacity-100 transition-opacity"
+                  strokeWidth="2"
+                  className="cursor-pointer transition-all"
                   onMouseEnter={() => setHoveredSegment(`${tech.name}|inner`)}
                   onMouseLeave={() => setHoveredSegment(null)}
-                  style={{ filter: hoveredSegment?.startsWith(tech.name) ? "brightness(1.15)" : "none" }}
+                  style={{
+                    opacity: hoveredSegment?.startsWith(tech.name) ? 1 : 0.85,
+                    filter: hoveredSegment?.startsWith(tech.name) ? "brightness(1.2)" : "none",
+                  }}
                 />
+                {/* Tech name label on inner ring */}
+                {tech.endAngle - tech.startAngle > 20 && (
+                  <g>
+                    {(() => {
+                      const { x, y, midAngle } = getLabelPosition(240, 240, 68, tech.startAngle, tech.endAngle);
+                      const isRight = midAngle > 270 || midAngle < 90;
+                      return (
+                        <text
+                          x={x}
+                          y={y}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          className="text-xs font-bold fill-white pointer-events-none"
+                          style={{
+                            textShadow: "0 1px 3px rgba(0,0,0,0.5)",
+                          }}
+                        >
+                          {tech.name}
+                        </text>
+                      );
+                    })()}
+                  </g>
+                )}
               </g>
             ))}
 
-            {/* Outer ring: Severity breakdown */}
+            {/* Outer ring: Severity breakdown (radius 90-160) */}
             {chartData.map((tech, techIndex) => {
-              let severityStartAngle = tech.startAngle;
-              const techSliceAngle = tech.endAngle - tech.startAngle;
-
               return tech.severitySegments.map((segment, segIndex) => {
-                const severitySliceAngle = (segment.percentage / 100) * techSliceAngle;
-                const severityEndAngle = severityStartAngle + severitySliceAngle;
+                if (!segment.startAngle || !segment.endAngle) return null;
                 const segmentId = `${tech.name}|${segment.severity}`;
-
-                const path = createArcPath(
-                  140,
-                  140,
-                  110,
-                  75,
-                  severityStartAngle,
-                  severityEndAngle,
-                );
-
-                severityStartAngle = severityEndAngle;
 
                 return (
                   <g key={`outer-${techIndex}-${segIndex}`}>
                     <path
-                      d={path}
+                      d={createArcPath(240, 240, 160, 95, segment.startAngle, segment.endAngle)}
                       fill={segment.color}
                       stroke="white"
-                      strokeWidth="1"
-                      className="cursor-pointer opacity-90 hover:opacity-100 transition-opacity"
+                      strokeWidth="1.5"
+                      className="cursor-pointer transition-all"
                       onMouseEnter={() => setHoveredSegment(segmentId)}
                       onMouseLeave={() => setHoveredSegment(null)}
-                      style={{ filter: hoveredSegment === segmentId ? "brightness(1.2)" : "none" }}
+                      style={{
+                        opacity: hoveredSegment === segmentId ? 1 : 0.8,
+                        filter: hoveredSegment === segmentId ? "brightness(1.15)" : "none",
+                      }}
                     />
+                    {/* Severity label on outer ring */}
+                    {segment.endAngle - segment.startAngle > 8 && segment.percentage > 8 && (
+                      <g>
+                        {(() => {
+                          const { x, y, midAngle } = getLabelPosition(240, 240, 125, segment.startAngle, segment.endAngle);
+                          return (
+                            <text
+                              x={x}
+                              y={y}
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              className="text-xs fill-white pointer-events-none font-semibold"
+                              style={{
+                                textShadow: "0 1px 2px rgba(0,0,0,0.6)",
+                              }}
+                            >
+                              {segment.count > 0 ? segment.count : ""}
+                            </text>
+                          );
+                        })()}
+                      </g>
+                    )}
                   </g>
                 );
               });
             })}
 
-            {/* Center text */}
-            <circle cx="140" cy="140" r="42" fill="white" stroke="#f3f4f6" strokeWidth="1" />
+            {/* Center circle */}
+            <circle cx="240" cy="240" r="45" fill="white" stroke="#e5e7eb" strokeWidth="2" />
             <text
-              x="140"
-              y="133"
+              x="240"
+              y="232"
               textAnchor="middle"
-              className="text-xs font-bold fill-gray-900"
+              className="text-xs font-semibold fill-gray-700"
             >
               Total
             </text>
             <text
-              x="140"
-              y="150"
+              x="240"
+              y="252"
               textAnchor="middle"
-              className="text-sm font-bold fill-gray-900"
+              className="text-lg font-bold fill-gray-900"
             >
               {(total / 1000).toFixed(0)}K
             </text>
@@ -231,40 +298,42 @@ export function RiskByTechnologiesChart({
         </div>
 
         {/* Legend */}
-        <div className="w-full mt-2">
-          <div className="space-y-1.5">
-            {/* Tech Stacks Legend */}
-            <div className="text-xs font-semibold text-gray-700 px-1">Tech Stacks</div>
-            <div className="grid grid-cols-2 gap-1">
+        <div className="w-full mt-3 space-y-2">
+          {/* Tech Stacks Legend */}
+          <div>
+            <div className="text-xs font-semibold text-gray-700 mb-1.5 px-1">Tech Stacks</div>
+            <div className="grid grid-cols-2 gap-1.5">
               {chartData.map((tech, index) => (
                 <div
                   key={`tech-${index}`}
-                  className="flex items-center gap-1.5 px-1.5 py-1 rounded text-xs cursor-pointer transition-colors hover:bg-gray-50"
+                  className="flex items-center gap-1.5 px-2 py-1 rounded text-xs cursor-pointer transition-colors hover:bg-gray-50"
                   onMouseEnter={() => setHoveredSegment(`${tech.name}|inner`)}
                   onMouseLeave={() => setHoveredSegment(null)}
                 >
                   <div
-                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                     style={{ backgroundColor: tech.color }}
                   />
-                  <span className="text-gray-700 font-medium">{tech.name}</span>
-                  <span className="text-gray-600 ml-auto">
+                  <span className="text-gray-700 font-medium truncate">{tech.name}</span>
+                  <span className="text-gray-600 ml-auto flex-shrink-0 text-xs">
                     {(tech.vulnerabilities / 1000).toFixed(1)}K
                   </span>
                 </div>
               ))}
             </div>
+          </div>
 
-            {/* Severity Legend */}
-            <div className="text-xs font-semibold text-gray-700 px-1 mt-2">Severity</div>
-            <div className="flex gap-3 px-1.5">
-              {Object.entries(severityColors).map(([severity, color]) => (
-                <div key={severity} className="flex items-center gap-1">
+          {/* Severity Legend */}
+          <div>
+            <div className="text-xs font-semibold text-gray-700 mb-1.5 px-1">Severity</div>
+            <div className="flex flex-wrap gap-3 px-1">
+              {severityOrder.map((severity) => (
+                <div key={severity} className="flex items-center gap-1.5">
                   <div
-                    className="w-2 h-2 rounded-full"
-                    style={{ backgroundColor: color }}
+                    className="w-2.5 h-2.5 rounded-full"
+                    style={{ backgroundColor: severityColors[severity] }}
                   />
-                  <span className="text-xs text-gray-600 capitalize">{severity}</span>
+                  <span className="text-xs text-gray-700 font-medium capitalize">{severity}</span>
                 </div>
               ))}
             </div>
