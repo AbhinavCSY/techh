@@ -10,6 +10,8 @@ export function VersionAndLicenseWidget({
   compact = false,
 }: VersionAndLicenseWidgetProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [hoveredVersionType, setHoveredVersionType] = useState<string | null>(null);
+  const [hoveredLicense, setHoveredLicense] = useState<string | null>(null);
 
   // Version Summary Data
   const eolTechStacks = techStackDatabase.filter((ts) => ts.isEOL).length;
@@ -18,13 +20,18 @@ export function VersionAndLicenseWidget({
   const eolPercent = (eolTechStacks / totalTechStacks) * 100;
   const nonEolPercent = (nonEolTechStacks / totalTechStacks) * 100;
 
-  // License Risk Data
-  const licenseRisk = {
-    high: Math.floor(Math.random() * 10),
-    medium: Math.floor(Math.random() * 20),
-    low: techStackDatabase.length - 15,
-    unknown: 4,
-  };
+  // Top Risky Licenses Data
+  const riskyLicenses = [
+    { name: "LGPL 3.0", count: 12, riskLevel: "high" },
+    { name: "Mozilla 2.0", count: 9, riskLevel: "high" },
+    { name: "MIT", count: 28, riskLevel: "medium" },
+    { name: "Apache 2.0", count: 15, riskLevel: "medium" },
+    { name: "BSD 2", count: 8, riskLevel: "low" },
+    { name: "BSD 3", count: 10, riskLevel: "low" },
+    { name: "ISC", count: 6, riskLevel: "low" },
+  ];
+
+  const licenseTotal = riskyLicenses.reduce((sum, l) => sum + l.count, 0);
 
   const createDonutSlice = (
     centerX: number,
@@ -53,19 +60,36 @@ export function VersionAndLicenseWidget({
     return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${ix1} ${iy1} Z`;
   };
 
-  // License risk distribution
-  const licenseRiskTotal = licenseRisk.high + licenseRisk.medium + licenseRisk.low + licenseRisk.unknown;
+  // License color based on risk level
+  const getLicenseColor = (riskLevel: string) => {
+    switch (riskLevel) {
+      case "high":
+        return "#f59e0b"; // amber for high risk
+      case "medium":
+        return "#9ca3af"; // gray for medium
+      case "low":
+        return "#d1d5db"; // light gray for low
+      default:
+        return "#9ca3af";
+    }
+  };
+
+  // License chart data
   let currentAngle = 0;
-  
-  const licenseChartData = [
-    { label: "High", value: licenseRisk.high, color: "#ef4444", angle: (licenseRisk.high / licenseRiskTotal) * 360 },
-    { label: "Medium", value: licenseRisk.medium, color: "#f97316", angle: (licenseRisk.medium / licenseRiskTotal) * 360 },
-    { label: "Low", value: licenseRisk.low, color: "#22c55e", angle: (licenseRisk.low / licenseRiskTotal) * 360 },
-    { label: "Unknown", value: licenseRisk.unknown, color: "#9ca3af", angle: (licenseRisk.unknown / licenseRiskTotal) * 360 },
-  ].map((item) => {
+
+  const licenseChartData = riskyLicenses.map((license) => {
+    const percentage = (license.count / licenseTotal) * 100;
+    const angle = (percentage / 100) * 360;
     const start = currentAngle;
-    currentAngle += item.angle;
-    return { ...item, startAngle: start, endAngle: currentAngle };
+    currentAngle += angle;
+    return {
+      ...license,
+      color: getLicenseColor(license.riskLevel),
+      angle,
+      percentage,
+      startAngle: start,
+      endAngle: currentAngle,
+    };
   });
 
   const CompactContent = () => (
@@ -73,7 +97,7 @@ export function VersionAndLicenseWidget({
       {/* Charts Row - Side by Side */}
       <div className="flex items-start justify-center gap-6">
         {/* Version Summary */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center relative">
           <p className="text-xs font-semibold text-gray-700 mb-2">Version</p>
           <div className="relative w-24 h-24">
             <svg viewBox="0 0 120 120" className="w-full h-full">
@@ -87,6 +111,9 @@ export function VersionAndLicenseWidget({
                 strokeWidth="10"
                 strokeDasharray={`${(eolPercent / 100) * 282.7} 282.7`}
                 transform="rotate(-90 60 60)"
+                className="cursor-pointer transition-opacity hover:opacity-80"
+                onMouseEnter={() => setHoveredVersionType("eol")}
+                onMouseLeave={() => setHoveredVersionType(null)}
               />
               {/* Non-EOL ring */}
               <circle
@@ -99,6 +126,9 @@ export function VersionAndLicenseWidget({
                 strokeDasharray={`${(nonEolPercent / 100) * 282.7} 282.7`}
                 strokeDashoffset={`${-((eolPercent / 100) * 282.7)}`}
                 transform="rotate(-90 60 60)"
+                className="cursor-pointer transition-opacity hover:opacity-80"
+                onMouseEnter={() => setHoveredVersionType("active")}
+                onMouseLeave={() => setHoveredVersionType(null)}
               />
               <text
                 x="60"
@@ -112,10 +142,26 @@ export function VersionAndLicenseWidget({
               </text>
             </svg>
           </div>
+          {/* Version Tooltip */}
+          {hoveredVersionType && (
+            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg p-2 w-40 shadow-lg z-50 whitespace-normal">
+              <div className="font-semibold mb-1">
+                {hoveredVersionType === "eol" ? "End of Life" : "Active"}
+              </div>
+              <div className="text-gray-200">
+                Count: {hoveredVersionType === "eol" ? eolTechStacks : nonEolTechStacks}
+              </div>
+              <div className="text-gray-300 text-xs mt-1">
+                {hoveredVersionType === "eol"
+                  ? `${eolPercent.toFixed(1)}% of total`
+                  : `${nonEolPercent.toFixed(1)}% of total`}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* License Risk */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center relative">
           <p className="text-xs font-semibold text-gray-700 mb-2">License</p>
           <div className="relative w-24 h-24">
             <svg viewBox="0 0 200 200" className="drop-shadow-sm w-full h-full">
@@ -133,6 +179,9 @@ export function VersionAndLicenseWidget({
                   fill={slice.color}
                   stroke="white"
                   strokeWidth="1"
+                  className="cursor-pointer transition-opacity hover:opacity-80"
+                  onMouseEnter={() => setHoveredLicense(slice.name)}
+                  onMouseLeave={() => setHoveredLicense(null)}
                 />
               ))}
               <text
@@ -142,10 +191,31 @@ export function VersionAndLicenseWidget({
                 className="text-xs font-bold fill-gray-900"
                 fontSize="11"
               >
-                {licenseRiskTotal}
+                {licenseTotal}
               </text>
             </svg>
           </div>
+          {/* License Tooltip */}
+          {hoveredLicense && (
+            <div className="absolute -top-24 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg p-2 w-40 shadow-lg z-50 whitespace-normal">
+              {(() => {
+                const license = licenseChartData.find((l) => l.name === hoveredLicense);
+                if (!license) return null;
+                return (
+                  <>
+                    <div className="font-semibold mb-1">{license.name}</div>
+                    <div className="text-gray-200">Count: {license.count}</div>
+                    <div className="text-gray-300 text-xs mt-1">
+                      {license.percentage.toFixed(1)}% of total
+                    </div>
+                    <div className="text-gray-400 text-xs mt-1 capitalize">
+                      Risk: {license.riskLevel}
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          )}
         </div>
       </div>
 
@@ -168,24 +238,19 @@ export function VersionAndLicenseWidget({
 
         {/* License Legend */}
         <div className="space-y-1">
-          <p className="text-xs font-semibold text-gray-700 mb-1">Risk</p>
+          <p className="text-xs font-semibold text-gray-700 mb-1">Top Licenses</p>
           <div className="space-y-0.5">
-            <div className="flex items-center gap-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0"></div>
-              <span className="text-gray-600" style={{ fontSize: '11px' }}>H: {licenseRisk.high}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></div>
-              <span className="text-gray-600" style={{ fontSize: '11px' }}>M: {licenseRisk.medium}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div>
-              <span className="text-gray-600" style={{ fontSize: '11px' }}>L: {licenseRisk.low}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-gray-400 flex-shrink-0"></div>
-              <span className="text-gray-600" style={{ fontSize: '11px' }}>U: {licenseRisk.unknown}</span>
-            </div>
+            {licenseChartData.slice(0, 4).map((license, index) => (
+              <div key={index} className="flex items-center gap-1">
+                <div
+                  className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: license.color }}
+                ></div>
+                <span className="text-gray-600 truncate" style={{ fontSize: '11px' }}>
+                  {license.name}: {license.count}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -197,7 +262,7 @@ export function VersionAndLicenseWidget({
       {/* Version Summary Section */}
       <div className="flex-1 flex flex-col items-center">
         <h4 className="font-semibold text-gray-900 text-sm mb-4">Version Status</h4>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center relative">
           <div className="relative w-40 h-40 mb-4">
             <svg viewBox="0 0 120 120" className="w-full h-full">
               {/* EOL ring */}
@@ -210,6 +275,9 @@ export function VersionAndLicenseWidget({
                 strokeWidth="14"
                 strokeDasharray={`${(eolPercent / 100) * 282.7} 282.7`}
                 transform="rotate(-90 60 60)"
+                className="cursor-pointer transition-opacity hover:opacity-80"
+                onMouseEnter={() => setHoveredVersionType("eol")}
+                onMouseLeave={() => setHoveredVersionType(null)}
               />
               {/* Non-EOL ring */}
               <circle
@@ -222,6 +290,9 @@ export function VersionAndLicenseWidget({
                 strokeDasharray={`${(nonEolPercent / 100) * 282.7} 282.7`}
                 strokeDashoffset={`${-((eolPercent / 100) * 282.7)}`}
                 transform="rotate(-90 60 60)"
+                className="cursor-pointer transition-opacity hover:opacity-80"
+                onMouseEnter={() => setHoveredVersionType("active")}
+                onMouseLeave={() => setHoveredVersionType(null)}
               />
               <text
                 x="60"
@@ -243,6 +314,22 @@ export function VersionAndLicenseWidget({
               </text>
             </svg>
           </div>
+          {/* Version Tooltip */}
+          {hoveredVersionType && (
+            <div className="absolute -bottom-32 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg p-3 w-48 shadow-lg z-50 whitespace-normal">
+              <div className="font-semibold mb-2">
+                {hoveredVersionType === "eol" ? "End of Life" : "Active"}
+              </div>
+              <div className="text-gray-200">
+                Count: {hoveredVersionType === "eol" ? eolTechStacks : nonEolTechStacks}
+              </div>
+              <div className="text-gray-300 text-xs mt-2">
+                {hoveredVersionType === "eol"
+                  ? `${eolPercent.toFixed(1)}% of total`
+                  : `${nonEolPercent.toFixed(1)}% of total`}
+              </div>
+            </div>
+          )}
           <div className="space-y-2 w-full">
             <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
               <div className="flex items-center gap-2">
@@ -264,8 +351,8 @@ export function VersionAndLicenseWidget({
 
       {/* License Risk Section */}
       <div className="flex-1 flex flex-col items-center">
-        <h4 className="font-semibold text-gray-900 text-sm mb-4">License Risk Distribution</h4>
-        <div className="flex flex-col items-center">
+        <h4 className="font-semibold text-gray-900 text-sm mb-4">Top 7 Risky Licenses</h4>
+        <div className="flex flex-col items-center relative">
           <div className="relative w-40 h-40 mb-4">
             <svg
               width="192"
@@ -287,6 +374,9 @@ export function VersionAndLicenseWidget({
                   fill={slice.color}
                   stroke="white"
                   strokeWidth="2"
+                  className="cursor-pointer transition-opacity hover:opacity-80"
+                  onMouseEnter={() => setHoveredLicense(slice.name)}
+                  onMouseLeave={() => setHoveredLicense(null)}
                 />
               ))}
               <text
@@ -303,39 +393,59 @@ export function VersionAndLicenseWidget({
                 textAnchor="middle"
                 className="text-lg font-bold fill-gray-900"
               >
-                {licenseRiskTotal}
+                {licenseTotal}
               </text>
             </svg>
           </div>
-          <div className="space-y-2 w-full">
-            <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                <span className="text-xs text-gray-700">High Risk</span>
-              </div>
-              <span className="font-bold text-red-900 text-xs">{licenseRisk.high}</span>
+          {/* License Tooltip */}
+          {hoveredLicense && (
+            <div className="absolute -bottom-44 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg p-3 w-48 shadow-lg z-50 whitespace-normal">
+              {(() => {
+                const license = licenseChartData.find((l) => l.name === hoveredLicense);
+                if (!license) return null;
+                return (
+                  <>
+                    <div className="font-semibold mb-2">{license.name}</div>
+                    <div className="text-gray-200">Count: {license.count}</div>
+                    <div className="text-gray-300 text-xs mt-2">
+                      {license.percentage.toFixed(1)}% of total
+                    </div>
+                    <div className="text-gray-400 text-xs mt-2 capitalize">
+                      Risk: {license.riskLevel}
+                    </div>
+                  </>
+                );
+              })()}
             </div>
-            <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg border border-orange-200">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-orange-500"></div>
-                <span className="text-xs text-gray-700">Medium Risk</span>
-              </div>
-              <span className="font-bold text-orange-900 text-xs">{licenseRisk.medium}</span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                <span className="text-xs text-gray-700">Low Risk</span>
-              </div>
-              <span className="font-bold text-green-900 text-xs">{licenseRisk.low}</span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-gray-400"></div>
-                <span className="text-xs text-gray-700">Unknown</span>
-              </div>
-              <span className="font-bold text-gray-900 text-xs">{licenseRisk.unknown}</span>
-            </div>
+          )}
+          <div className="space-y-2 w-full max-h-64 overflow-y-auto">
+            {licenseChartData.map((license, index) => {
+              const bgColor = license.riskLevel === "high"
+                ? "bg-amber-50 border-amber-200"
+                : license.riskLevel === "medium"
+                ? "bg-gray-50 border-gray-200"
+                : "bg-gray-50 border-gray-200";
+
+              const textColor = license.riskLevel === "high"
+                ? "text-amber-900"
+                : "text-gray-900";
+
+              return (
+                <div
+                  key={index}
+                  className={`flex items-center justify-between p-3 rounded-lg border ${bgColor}`}
+                >
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-4 h-4 rounded-full"
+                      style={{ backgroundColor: license.color }}
+                    ></div>
+                    <span className={`text-xs ${textColor}`}>{license.name}</span>
+                  </div>
+                  <span className={`font-bold text-xs ${textColor}`}>{license.count}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

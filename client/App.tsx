@@ -16,6 +16,8 @@ import RescanHistory from "./pages/RescanHistory";
 import TechStackSlideshow from "./pages/TechStackSlideshow";
 import ThreatIntel from "./pages/ThreatIntel";
 import InformationArchitecture from "./pages/InformationArchitecture";
+import TechStackFlow from "./pages/TechStackFlow";
+import ApplicationFlow from "./pages/ApplicationFlow";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -62,6 +64,14 @@ const App = () => (
                     <Route
                       path="/information-architecture"
                       element={<InformationArchitecture />}
+                    />
+                    <Route
+                      path="/tech-stack-flow"
+                      element={<TechStackFlow />}
+                    />
+                    <Route
+                      path="/application-flow"
+                      element={<ApplicationFlow />}
                     />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />

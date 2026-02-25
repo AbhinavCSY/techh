@@ -117,6 +117,27 @@ export function MainNav() {
 
         {/* Right Actions - Compact */}
         <div className="flex items-center gap-1 flex-shrink-0">
+          {/* Security Graph Icon */}
+          <button
+            onClick={() => navigate("/?view=security-graph")}
+            className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+            title="Cloud Security Graph"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+          </button>
+
           {/* Search Icon */}
           <button className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0">
             <svg
@@ -151,6 +172,48 @@ export function MainNav() {
                 strokeLinejoin="round"
                 strokeWidth={2}
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </button>
+
+          {/* Tech Stack Flow Icon */}
+          <button
+            onClick={() => navigate("/tech-stack-flow")}
+            className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+            title="Tech Stack Flow"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+              />
+            </svg>
+          </button>
+
+          {/* Application Flow Icon */}
+          <button
+            onClick={() => navigate("/application-flow")}
+            className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+            title="Application Flow"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
               />
             </svg>
           </button>
@@ -292,6 +355,36 @@ export function MainNav() {
                 )}
               >
                 📋 Information Architecture
+              </button>
+
+              <button
+                onClick={() => {
+                  navigate("/tech-stack-flow");
+                  setMobileOpen(false);
+                }}
+                className={cn(
+                  "w-full text-left px-2 py-1 rounded text-xs font-medium transition-colors mt-1",
+                  location.pathname === "/tech-stack-flow"
+                    ? "bg-blue-100 text-blue-900"
+                    : "text-gray-700 hover:bg-gray-100",
+                )}
+              >
+                🔗 Tech Stack Flow
+              </button>
+
+              <button
+                onClick={() => {
+                  navigate("/application-flow");
+                  setMobileOpen(false);
+                }}
+                className={cn(
+                  "w-full text-left px-2 py-1 rounded text-xs font-medium transition-colors mt-1",
+                  location.pathname === "/application-flow"
+                    ? "bg-blue-100 text-blue-900"
+                    : "text-gray-700 hover:bg-gray-100",
+                )}
+              >
+                📊 Application Flow
               </button>
             </div>
           </nav>

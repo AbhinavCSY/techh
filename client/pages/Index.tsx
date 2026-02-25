@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   useFilters,
   filterTechStacks,
@@ -20,6 +20,7 @@ import { TechStacksAndAssetsChart } from "@/components/TechStacksAndAssetsChart"
 import { VulnerableLibrariesWidget } from "@/components/VulnerableLibrariesWidget";
 import { LicenseDistributionWidget } from "@/components/LicenseDistributionWidget";
 import { RiskByTechnologiesChart } from "@/components/RiskByTechnologiesChart";
+import { HierarchicalSecurityGraph } from "@/components/HierarchicalSecurityGraph";
 import { VersionAndLicenseWidget } from "@/components/VersionAndLicenseWidget";
 import { exportAsCSV, exportAsJSON, exportAsPDF } from "@/lib/exportUtils";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ import { cn } from "@/lib/utils";
 
 export default function Index() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   // Call all hooks BEFORE any conditional logic
   const {
@@ -55,6 +57,15 @@ export default function Index() {
   const [scanningProject, setScanningProject] = useState<string | null>(null);
   const [scannedAssets, setScannedAssets] = useState<Set<string>>(new Set());
 
+  // Handle query parameter for security graph view
+  useEffect(() => {
+    const viewParam = searchParams.get("view");
+    if (viewParam === "security-graph") {
+      setViewType("graph");
+      setGrouping("security-graph");
+    }
+  }, [searchParams, setViewType, setGrouping]);
+
   // Filter and sort data - must be called before any early returns
   const filteredTechStacks = useMemo(() => {
     const filtered = filterTechStacks(techStackDatabase, filters);
@@ -67,6 +78,12 @@ export default function Index() {
   }, [filters]);
 
   const handleExport = async (format: "csv" | "json" | "pdf") => {
+    if (grouping === "security-graph") {
+      // Security graph export not yet implemented
+      alert("Export for Security Graph view coming soon");
+      return;
+    }
+
     const dataToExport =
       grouping === "tech-stack" ? filteredTechStacks : filteredAssets;
     const filename = `${grouping}-inventory-${new Date().toISOString().split("T")[0]}`;
@@ -140,113 +157,137 @@ export default function Index() {
         </div>
       )}
 
-      {/* Header */}
-      <header className="border-b border-gray-200 bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-2">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-3">
-              <h1 className="text-lg font-bold text-gray-900">
-                {grouping === "tech-stack" ? "Tech Stacks" : "Asset Inventory"}
+      {/* Header with improved visual hierarchy */}
+      <header className="border-b border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          {/* Primary Title Section */}
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-gray-900 mb-1">
+                {grouping === "tech-stack" ? "Tech Stack Inventory" : "Asset Inventory"}
               </h1>
-              <Button
-                onClick={() => setShowNewProjectModal(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 px-3 h-auto"
-              >
-                + New
-              </Button>
+              <p className="text-sm text-gray-600">
+                Monitor vulnerabilities, risks, and compliance across your dependencies
+              </p>
             </div>
-            <p className="text-xs text-gray-500">
-              Manage and monitor your technology dependencies
-            </p>
-          </div>
-
-          {/* Widget Panel Header with Toggle */}
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-              Tech Stack Overview
-            </h2>
-            <button
-              onClick={() => setShowWidgetPanel(!showWidgetPanel)}
-              className={cn(
-                "px-2 py-0.5 rounded text-xs font-medium transition-colors",
-                showWidgetPanel
-                  ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200",
-              )}
+            <Button
+              onClick={() => setShowNewProjectModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 h-auto"
             >
-              {showWidgetPanel ? "▼ Hide" : "▶ Show"}
-            </button>
+              + New Project
+            </Button>
           </div>
 
-          {/* Key Metrics Panel - Collapsible & Compact */}
-          {showWidgetPanel && (
-            <div className="space-y-2">
-              {/* First Row - Three widgets in single row */}
-              <div className="grid grid-cols-3 gap-2">
+          {/* Overview Section - Clear Visual Separation */}
+          <div className="space-y-3">
+            {/* Section Header with Toggle */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-sm font-semibold text-gray-900">Overview</h2>
+                <p className="text-xs text-gray-500 mt-1">Key insights and risk metrics</p>
+              </div>
+              <button
+                onClick={() => setShowWidgetPanel(!showWidgetPanel)}
+                className={cn(
+                  "px-3 py-1.5 rounded text-xs font-medium transition-colors",
+                  showWidgetPanel
+                    ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200",
+                )}
+              >
+                {showWidgetPanel ? "▼ Hide Overview" : "▶ Show Overview"}
+              </button>
+            </div>
+
+            {/* Overview Widgets */}
+            {showWidgetPanel && (
+              <div className="grid grid-cols-3 gap-3 pt-2">
                 {/* Vulnerable Tech Stacks Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
+                <div className="bg-white rounded-lg border border-gray-200 p-3 max-h-56 overflow-y-auto hover:border-gray-300 transition-colors">
                   <VulnerableLibrariesWidget compact={true} />
                 </div>
 
                 {/* Risk by Tech Stacks Widget */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
+                <div className="bg-white rounded-lg border border-gray-200 p-3 max-h-56 overflow-y-auto hover:border-gray-300 transition-colors">
                   <RiskByTechnologiesChart compact={true} />
                 </div>
 
-                {/* Version & License Widget (Merged) */}
-                <div className="bg-white rounded-lg border border-gray-200 p-1.5 max-h-56 overflow-y-auto">
+                {/* Version & License Widget */}
+                <div className="bg-white rounded-lg border border-gray-200 p-3 max-h-56 overflow-y-auto hover:border-gray-300 transition-colors">
                   <VersionAndLicenseWidget compact={true} />
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </header>
 
-      {/* Group By Switch */}
-      <div className="sticky top-16 z-20 border-b border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-4">
-          <label className="font-medium text-sm text-gray-700">Group By:</label>
-          <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
-            <button
-              onClick={() => setGrouping("asset")}
-              className={cn(
-                "px-4 py-2 rounded font-medium text-sm transition-all whitespace-nowrap",
-                grouping === "asset"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900",
-              )}
-            >
-              🖥️ Asset
-            </button>
-            <button
-              onClick={() => setGrouping("tech-stack")}
-              className={cn(
-                "px-4 py-2 rounded font-medium text-sm transition-all whitespace-nowrap",
-                grouping === "tech-stack"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900",
-              )}
-            >
-              📦 Tech Stack
-            </button>
+      {/* Controls Section - Sticky with better hierarchy */}
+      <div className="sticky top-0 z-20 border-b border-gray-200 bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Primary Controls */}
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-semibold text-gray-700">View:</span>
+                <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
+                  <button
+                    onClick={() => setGrouping("asset")}
+                    className={cn(
+                      "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
+                      grouping === "asset"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900",
+                    )}
+                  >
+                    🖥️ Assets
+                  </button>
+                  <button
+                    onClick={() => setGrouping("tech-stack")}
+                    className={cn(
+                      "px-3 py-1.5 rounded font-medium text-sm transition-all whitespace-nowrap",
+                      grouping === "tech-stack"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900",
+                    )}
+                  >
+                    📦 Tech Stacks
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Metric Display */}
+            <div className="flex items-center gap-4 text-xs text-gray-600">
+              <div>
+                <span className="font-semibold text-gray-900">{metrics.totalTechStacks}</span>
+                <span className="ml-1">Total Tech Stacks</span>
+              </div>
+              <div className="h-4 w-px bg-gray-300"></div>
+              <div>
+                <span className="font-semibold text-gray-900">{metrics.assetsScanned}</span>
+                <span className="ml-1">Assets Scanned</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Filter Bar */}
-      <HorizontalFilterBar
-        filters={filters}
-        onFilterChange={updateFilter}
-        onClearFilters={clearFilters}
-        hasActiveFilters={hasActiveFilters}
-        viewType={viewType}
-        onViewTypeChange={setViewType}
-        onExport={handleExport}
-        grouping={grouping}
-      />
+      {/* Filter Bar - Secondary Controls */}
+      <div className="border-b border-gray-200 bg-white/50 backdrop-blur-sm">
+        <HorizontalFilterBar
+          filters={filters}
+          onFilterChange={updateFilter}
+          onClearFilters={clearFilters}
+          hasActiveFilters={hasActiveFilters}
+          viewType={viewType}
+          onViewTypeChange={setViewType}
+          onExport={handleExport}
+          grouping={grouping}
+        />
+      </div>
 
-      {/* Main Content */}
+      {/* Main Content - Clear separation */}
       <main
         className={cn(
           viewType === "graph" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-8",
@@ -255,7 +296,9 @@ export default function Index() {
         {/* Graph View */}
         {viewType === "graph" ? (
           <div className="w-full" style={{ height: "calc(100vh - 200px)" }}>
-            {grouping === "asset" ? (
+            {grouping === "security-graph" ? (
+              <HierarchicalSecurityGraph />
+            ) : grouping === "asset" ? (
               <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg">
                 <div className="text-center p-8 max-w-md">
                   <div className="text-4xl mb-4">🔗</div>
@@ -283,24 +326,51 @@ export default function Index() {
           </div>
         ) : (
           <>
-            {/* Empty State */}
+            {/* Empty State - Enhanced Visual Hierarchy */}
             {filteredTechStacks.length === 0 && filteredAssets.length === 0 ? (
-              <div className="bg-white rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
-                <AlertTriangle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  No items found
+              <div className="bg-white rounded-lg border-2 border-dashed border-gray-300 p-16 text-center">
+                <div className="flex justify-center mb-6">
+                  <div className="bg-gray-100 rounded-full p-4">
+                    <AlertTriangle className="w-8 h-8 text-gray-500" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  No {grouping === "tech-stack" ? "Tech Stacks" : "Assets"} Found
                 </h3>
-                <p className="text-gray-600 mb-4">
-                  Try adjusting your filters or search criteria
+                <p className="text-gray-600 mb-6 text-sm">
+                  {hasActiveFilters
+                    ? "Try adjusting your filters to see results"
+                    : "Start by adding a new project or scanning your dependencies"}
                 </p>
-                {hasActiveFilters && (
-                  <Button onClick={clearFilters} variant="outline">
-                    Clear All Filters
+                <div className="flex items-center justify-center gap-3">
+                  {hasActiveFilters && (
+                    <Button onClick={clearFilters} variant="outline" className="text-sm">
+                      Clear All Filters
+                    </Button>
+                  )}
+                  <Button
+                    onClick={() => setShowNewProjectModal(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm"
+                  >
+                    Create New Project
                   </Button>
-                )}
+                </div>
               </div>
             ) : (
               <>
+                {/* Content Header with result count */}
+                <div className="mb-4">
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    {grouping === "tech-stack"
+                      ? `${filteredTechStacks.length} Tech Stack${filteredTechStacks.length !== 1 ? 's' : ''}`
+                      : `${filteredAssets.length} Asset${filteredAssets.length !== 1 ? 's' : ''}`
+                    }
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {viewType === "card" ? "Card view" : "Table view"}
+                  </p>
+                </div>
+
                 {/* Content - Card or Table View */}
                 {viewType === "card" ? (
                   <>
@@ -2694,80 +2764,95 @@ function NewProjectModal({
                     </div>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {/* SAST */}
-                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                      <div>
-                        <p className="font-semibold text-gray-900">SAST</p>
-                        <p className="text-xs text-gray-600">
-                          CloudSek Static Application Security Testing
-                        </p>
-                      </div>
-                      <label className="relative inline-flex items-center">
+                    <div
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          scanners: {
+                            ...formData.scanners,
+                            sast: !formData.scanners.sast,
+                          },
+                        })
+                      }
+                      className={cn(
+                        "p-5 border-2 rounded-lg cursor-pointer transition-all hover:shadow-md",
+                        formData.scanners.sast
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 bg-white hover:border-gray-300"
+                      )}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">SAST</p>
+                          <p className="text-xs text-gray-600 mt-1">
+                            CloudSek Static Application Security Testing
+                          </p>
+                        </div>
                         <input
                           type="checkbox"
                           checked={formData.scanners.sast}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              scanners: {
-                                ...formData.scanners,
-                                sast: e.target.checked,
-                              },
-                            })
-                          }
-                          className="sr-only peer"
+                          onChange={(e) => e.stopPropagation()}
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-5 h-5 ml-2 flex-shrink-0 cursor-pointer accent-blue-600"
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                      </label>
+                      </div>
                     </div>
 
                     {/* SCA */}
-                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 bg-blue-50">
-                      <div>
-                        <p className="font-semibold text-gray-900">SCA</p>
-                        <p className="text-xs text-gray-600">
-                          CloudSek Software Composition Analysis
-                        </p>
-                      </div>
-                      <label className="relative inline-flex items-center">
+                    <div
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          scanners: {
+                            ...formData.scanners,
+                            sca: !formData.scanners.sca,
+                          },
+                        })
+                      }
+                      className={cn(
+                        "p-5 border-2 rounded-lg cursor-pointer transition-all hover:shadow-md",
+                        formData.scanners.sca
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 bg-white hover:border-gray-300"
+                      )}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">SCA</p>
+                          <p className="text-xs text-gray-600 mt-1">
+                            CloudSek Software Composition Analysis
+                          </p>
+                        </div>
                         <input
                           type="checkbox"
                           checked={formData.scanners.sca}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              scanners: {
-                                ...formData.scanners,
-                                sca: e.target.checked,
-                              },
-                            })
-                          }
-                          className="sr-only peer"
+                          onChange={(e) => e.stopPropagation()}
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-5 h-5 ml-2 flex-shrink-0 cursor-pointer accent-blue-600"
                         />
-                        <div className="w-11 h-6 bg-blue-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                      </label>
+                      </div>
                     </div>
 
                     {/* Container Security */}
                     <div className="relative group">
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            Container Security
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            CloudSek Container Analysis
-                          </p>
-                        </div>
-                        <label className="relative inline-flex items-center opacity-50">
+                      <div className="p-5 border-2 border-gray-200 bg-white rounded-lg opacity-60 cursor-not-allowed">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <p className="font-semibold text-gray-900">
+                              Container Security
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              CloudSek Container Analysis
+                            </p>
+                          </div>
                           <input
                             type="checkbox"
                             disabled
-                            className="sr-only peer"
+                            className="w-5 h-5 ml-2 flex-shrink-0 cursor-not-allowed opacity-40"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                        </div>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
                         <span className="text-white text-xs font-semibold whitespace-nowrap">
@@ -2778,24 +2863,23 @@ function NewProjectModal({
 
                     {/* IaC Security */}
                     <div className="relative group">
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            IaC Security
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            CloudSek Static Code Analysis for Infrastructure as
-                            Code
-                          </p>
-                        </div>
-                        <label className="relative inline-flex items-center opacity-50">
+                      <div className="p-5 border-2 border-gray-200 bg-white rounded-lg opacity-60 cursor-not-allowed">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <p className="font-semibold text-gray-900">
+                              IaC Security
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              CloudSek Static Code Analysis for Infrastructure as
+                              Code
+                            </p>
+                          </div>
                           <input
                             type="checkbox"
                             disabled
-                            className="sr-only peer"
+                            className="w-5 h-5 ml-2 flex-shrink-0 cursor-not-allowed opacity-40"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                        </div>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
                         <span className="text-white text-xs font-semibold whitespace-nowrap">
@@ -2806,23 +2890,22 @@ function NewProjectModal({
 
                     {/* API Security */}
                     <div className="relative group">
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            API Security
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            CloudSek Static Analysis for API Security
-                          </p>
-                        </div>
-                        <label className="relative inline-flex items-center opacity-50">
+                      <div className="p-5 border-2 border-gray-200 bg-white rounded-lg opacity-60 cursor-not-allowed">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <p className="font-semibold text-gray-900">
+                              API Security
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              CloudSek Static Analysis for API Security
+                            </p>
+                          </div>
                           <input
                             type="checkbox"
                             disabled
-                            className="sr-only peer"
+                            className="w-5 h-5 ml-2 flex-shrink-0 cursor-not-allowed opacity-40"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                        </div>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
                         <span className="text-white text-xs font-semibold whitespace-nowrap">
@@ -2833,29 +2916,28 @@ function NewProjectModal({
 
                     {/* OSSF Scorecard */}
                     <div className="relative group">
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-semibold text-gray-900">
-                              OSSF Scorecard
+                      <div className="p-5 border-2 border-gray-200 bg-white rounded-lg opacity-60 cursor-not-allowed">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold text-gray-900">
+                                OSSF Scorecard
+                              </p>
+                              <span className="text-gray-400 cursor-help">
+                                ℹ
+                              </span>
+                            </div>
+                            <p className="text-xs text-gray-600 mt-1">
+                              Identify risk factors throughout your project's
+                              supply chain
                             </p>
-                            <span className="text-gray-400 cursor-help">
-                              ℹ
-                            </span>
                           </div>
-                          <p className="text-xs text-gray-600">
-                            Identify risk factors throughout your project's
-                            supply chain
-                          </p>
-                        </div>
-                        <label className="relative inline-flex items-center opacity-50">
                           <input
                             type="checkbox"
                             disabled
-                            className="sr-only peer"
+                            className="w-5 h-5 ml-2 flex-shrink-0 cursor-not-allowed opacity-40"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                        </div>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
                         <span className="text-white text-xs font-semibold whitespace-nowrap">
@@ -2866,28 +2948,27 @@ function NewProjectModal({
 
                     {/* Secret Detection */}
                     <div className="relative group">
-                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg opacity-70 cursor-not-allowed">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-semibold text-gray-900">
-                              Secret Detection
+                      <div className="p-5 border-2 border-gray-200 bg-white rounded-lg opacity-60 cursor-not-allowed">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold text-gray-900">
+                                Secret Detection
+                              </p>
+                              <span className="text-gray-400 cursor-help">
+                                ℹ
+                              </span>
+                            </div>
+                            <p className="text-xs text-gray-600 mt-1">
+                              Detect unencrypted secrets in your project
                             </p>
-                            <span className="text-gray-400 cursor-help">
-                              ℹ
-                            </span>
                           </div>
-                          <p className="text-xs text-gray-600">
-                            Detect unencrypted secrets in your project
-                          </p>
-                        </div>
-                        <label className="relative inline-flex items-center opacity-50">
                           <input
                             type="checkbox"
                             disabled
-                            className="sr-only peer"
+                            className="w-5 h-5 ml-2 flex-shrink-0 cursor-not-allowed opacity-40"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                        </label>
+                        </div>
                       </div>
                       <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 flex items-center justify-center">
                         <span className="text-white text-xs font-semibold whitespace-nowrap">
@@ -3056,18 +3137,34 @@ function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
   };
 
   const sbomTools = [
-    { id: "syft", label: "Syft", description: "Anchore Syft for comprehensive SBOM generation" },
-    { id: "cyclonedx", label: "CycloneDX Maven", description: "CycloneDX maven plugin for Java projects" },
-    { id: "cyclonedx-npm", label: "CycloneDX NPM", description: "CycloneDX for Node.js projects" },
-    { id: "cyclonedx-gradle", label: "CycloneDX Gradle", description: "CycloneDX gradle plugin for Gradle projects" },
-    { id: "spdx", label: "SPDX", description: "SPDX format for open standard SBOM" },
-    { id: "grype", label: "Grype", description: "Anchore Grype for vulnerability detection and SBOM" },
-    { id: "poetry", label: "Poetry", description: "Poetry for Python projects" },
+    { id: "syft", label: "Syft", description: "CLI tool that generates SBOMs from container images, filesystems, and directories (SPDX, CycloneDX supported)" },
+    { id: "cdxgen", label: "cdxgen", description: "Multi-language CycloneDX SBOM generator for applications and containers" },
+    { id: "ms-sbom-tool", label: "Microsoft sbom-tool", description: "Generates SPDX SBOMs for multiple ecosystems, often used in CI/CD pipelines" },
+    { id: "cyclonedx-cli", label: "CycloneDX CLI", description: "Tool for generating, validating, and converting CycloneDX SBOMs" },
+    { id: "spdx-tools", label: "SPDX Tools", description: "Utilities to create, validate, and manipulate SPDX SBOM documents" },
+    { id: "tern", label: "Tern", description: "Generates SBOMs for container images and Dockerfiles" },
+    { id: "trivy", label: "Trivy", description: "Security scanner that can also export SBOMs for containers and filesystems" },
+    { id: "anchore", label: "Anchore (Syft/Grype)", description: "Enterprise container security platform with SBOM generation capabilities" },
+    { id: "black-duck", label: "Black Duck (Synopsys)", description: "Enterprise SCA platform that produces detailed SBOMs" },
+    { id: "snyk", label: "Snyk", description: "Developer-focused SCA tool that exports SBOM data" },
+    { id: "mend", label: "Mend (WhiteSource)", description: "Enterprise SCA tool with automated SBOM generation" },
+    { id: "jfrog-xray", label: "JFrog Xray", description: "Artifact security scanner that can generate SBOMs" },
+    { id: "veracode-sca", label: "Veracode SCA", description: "Generates SBOMs during dependency analysis" },
+    { id: "dependency-track", label: "OWASP Dependency-Track", description: "Consumes and manages SBOMs; can integrate with generators" },
+    { id: "dependency-check", label: "OWASP Dependency-Check", description: "Scans dependencies and can produce SBOM-style outputs" },
+    { id: "cyclonedx-maven", label: "CycloneDX Maven Plugin", description: "Generates SBOMs for Maven-based Java projects" },
+    { id: "cyclonedx-gradle", label: "CycloneDX Gradle Plugin", description: "SBOM generation for Gradle builds" },
+    { id: "cyclonedx-npm", label: "CycloneDX Node Module", description: "Generates SBOMs for Node.js projects" },
+    { id: "cyclonedx-python", label: "CycloneDX Python Tool", description: "SBOM generation for Python environments" },
+    { id: "cargo-sbom", label: "Cargo SBOM", description: "Generates SBOMs for Rust projects" },
+    { id: "go-sbom", label: "Go version / Go SBOM tools", description: "Extracts dependency metadata from Go modules" },
+    { id: "distro2sbom", label: "Distro2SBOM", description: "Generates SBOMs for Linux distributions and packages" },
+    { id: "github-sbom", label: "GitHub Dependency Graph / SBOM export", description: "Generates SBOMs directly from GitHub repositories" },
+    { id: "gitlab-sbom", label: "GitLab SBOM generator", description: "Built-in SBOM generation within GitLab CI pipelines" },
   ];
 
   const ghActionOptions = [
     { id: "new", icon: "📄", label: "New GitHub Action", description: "Create a new workflow file" },
-    { id: "manual", icon: "✏️", label: "Manual GH Action", description: "Copy and paste the configuration manually" },
     { id: "existing", icon: "🔗", label: "Add to Existing GH Action", description: "Add this snippet to your existing workflow" },
   ];
 
@@ -3075,18 +3172,45 @@ function AutomaticScanModal({ isOpen, onClose }: AutomaticScanModalProps) {
     const sbomGenCommand = {
       syft: `curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
           syft dir:. -o cyclonedx-json > sbom.json`,
-      cyclonedx: `mvn org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom -DoutputFile=sbom.xml`,
+      cdxgen: `npm install -g @cyclonedx/cdxgen
+          cdxgen -r -o sbom.json`,
+      "ms-sbom-tool": `curl -LO https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux
+          chmod +x sbom-tool-linux
+          ./sbom-tool-linux generate -b . -bc . -pn MyProject -pv 1.0 -ps Microsoft`,
+      "cyclonedx-cli": `npm install -g @cyclonedx/cli
+          cyclonedx-cli validate -i sbom.json`,
+      "spdx-tools": `wget https://repo1.maven.org/maven2/org/spdx/tools/spdx-tools-0.8/spdx-tools-0.8-jar-with-dependencies.jar
+          java -jar spdx-tools.jar convert --input sbom.json --output sbom.spdx`,
+      tern: `pip install tern
+          tern report -i myimage:tag -f json > sbom.json`,
+      trivy: `trivy image --format cyclonedx --output sbom.json myimage:tag`,
+      anchore: `curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
+          syft dir:. -o cyclonedx-json > sbom.json`,
+      "black-duck": `# Use Black Duck (Synopsys) UI or API for SBOM generation
+          # Configure Black Duck integration with your project`,
+      snyk: `snyk sbom --format cyclonedx > sbom.json`,
+      mend: `# Mend provides automated SBOM generation through their platform
+          # Configure via Mend UI or CLI integration`,
+      "jfrog-xray": `# JFrog Xray generates SBOMs through Artifactory integration
+          # Configure artifact scanning policies in Xray`,
+      "veracode-sca": `# Veracode SCA generates SBOMs during dependency analysis
+          # Configure via Veracode platform`,
+      "dependency-track": `# OWASP Dependency-Track consumes SBOMs from other generators
+          # Upload SBOM files to Dependency-Track for management`,
+      "dependency-check": `dependency-check.sh --scan . --format json --project MyProject > sbom-report.json`,
+      "cyclonedx-maven": `mvn org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom -DoutputFile=sbom.xml`,
+      "cyclonedx-gradle": `gradle org.cyclonedx.cyclonedxCreateBom -DoutputFile=sbom.json`,
       "cyclonedx-npm": `npm install -g @cyclonedx/npm
           cyclonedx-npm --output-file sbom.json`,
-      "cyclonedx-gradle": `gradle org.cyclonedx.cyclonedxCreateBom -DoutputFile=sbom.json`,
-      spdx: `curl -sSfL https://repo1.maven.org/maven2/org/spdx/tools/spdx-tools-0.8/spdx-tools-0.8-jar-with-dependencies.jar -o spdx-tools.jar
-          java -jar spdx-tools.jar convert --input sbom.json --output sbom.spdx`,
-      grype: `curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh
-          grype dir:. -o json > sbom.json`,
-      poetry: `pip install poetry
-          poetry export --format=requirements.txt --output=requirements.txt
-          pip install pip-audit
-          pip-audit --desc --format=json > sbom.json`,
+      "cyclonedx-python": `pip install cyclonedx-bom
+          cyclonedx-bom -o sbom.json -of json`,
+      "cargo-sbom": `cargo sbom --output sbom.json`,
+      "go-sbom": `go list -json ./... > go-deps.json`,
+      distro2sbom: `distro2sbom generate-distro-spdx rpm > sbom.spdx`,
+      "github-sbom": `# GitHub Dependency Graph exports SBOMs automatically
+          # Access via GitHub API or download from repository insights`,
+      "gitlab-sbom": `# GitLab generates SBOMs in CI/CD pipelines
+          # Configure in .gitlab-ci.yml with appropriate stages`,
     };
 
     if (ghActionOption === "new") {
@@ -3142,7 +3266,7 @@ jobs:
             -H "X-Tenant-Id: \$TENANT_ID" \\
             -F "data-type=sbom" \\
             -F "file=@sbom.json"`;
-    } else if (ghActionOption === "existing") {
+    } else {
       return `# Add this step to your existing GitHub Actions workflow
 
       # ✅ Generate SBOM using ${sbomTools.find(t => t.id === sbomTool)?.label}
@@ -3158,29 +3282,6 @@ jobs:
             -H "X-Tenant-Id: \${{ secrets.TENANT_ID }}" \\
             -F "data-type=sbom" \\
             -F "file=@sbom.json"`;
-    } else {
-      return `# SonarQube Scan + SBOM Generation (Manual Configuration)
-
-## 1. Install sonar-scanner
-curl https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip -o sonar-scanner.zip
-unzip sonar-scanner.zip
-
-## 2. Run SonarQube Scan
-./sonar-scanner/bin/sonar-scanner \\
-  -Dsonar.projectKey=my-project \\
-  -Dsonar.sources=. \\
-  -Dsonar.host.url=\${SONAR_HOST_URL} \\
-  -Dsonar.login=\${SONAR_TOKEN}
-
-## 3. Generate SBOM
-${sbomGenCommand[sbomTool as keyof typeof sbomGenCommand]}
-
-## 4. Upload SBOM
-curl -X POST "https://api.example.com/artifact/upload" \\
-  -H "Authorization: Bearer \${API_TOKEN}" \\
-  -H "X-Tenant-Id: \${TENANT_ID}" \\
-  -F "data-type=sbom" \\
-  -F "file=@sbom.json"`;
     }
   };
 
@@ -3477,15 +3578,6 @@ curl -X POST "https://api.example.com/artifact/upload" \\
                     <li>Add the steps to your job after other build steps</li>
                     <li>Ensure the required secrets are configured</li>
                     <li>Push the changes</li>
-                  </ol>
-                )}
-                {ghActionOption === "manual" && (
-                  <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
-                    <li>Follow the manual steps provided in the code snippet</li>
-                    <li>Replace placeholders with your actual values</li>
-                    <li>Ensure all required tools are installed in your environment</li>
-                    <li>Configure environment variables or GitHub secrets as needed</li>
-                    <li>Run the commands in your CI/CD pipeline</li>
                   </ol>
                 )}
               </div>

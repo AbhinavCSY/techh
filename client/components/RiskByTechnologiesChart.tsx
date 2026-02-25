@@ -1,4 +1,3 @@
-import { techStackDatabase } from "@/data/mockData";
 import { useMemo, useState } from "react";
 
 interface RiskByTechnologiesChartProps {
@@ -15,10 +14,18 @@ interface TechData {
   low?: number;
 }
 
+interface SeveritySegment {
+  severity: "critical" | "high" | "medium" | "low";
+  count: number;
+  color: string;
+  percentage: number;
+}
+
 export function RiskByTechnologiesChart({
   compact = false,
 }: RiskByTechnologiesChartProps) {
   const [hoveredTech, setHoveredTech] = useState<string | null>(null);
+  const [hoveredSeverity, setHoveredSeverity] = useState<string | null>(null);
 
   // Technology vulnerability data with severity breakdown
   const technologyData: TechData[] = [
@@ -32,173 +39,391 @@ export function RiskByTechnologiesChart({
     { name: "PHP", vulnerabilities: 4900, color: "#8b5cf6", critical: 20, high: 75, medium: 98, low: 79 },
   ];
 
+  const severityColors = {
+    critical: "#dc2626",
+    high: "#f97316",
+    medium: "#eab308",
+    low: "#16a34a",
+  };
+
+  const severityOrder = ["critical", "high", "medium", "low"] as const;
+
   const total = useMemo(
     () => technologyData.reduce((sum, tech) => sum + tech.vulnerabilities, 0),
     [],
   );
 
   const chartData = useMemo(() => {
-    let currentAngle = 0;
     return technologyData.map((tech) => {
       const percentage = (tech.vulnerabilities / total) * 100;
-      const sliceAngle = (percentage / 100) * 360;
-      const startAngle = currentAngle;
-      const endAngle = currentAngle + sliceAngle;
-      currentAngle = endAngle;
+
+      const severitySegments: SeveritySegment[] = severityOrder.map((severity) => ({
+        severity,
+        count: tech[severity] || 0,
+        color: severityColors[severity],
+        percentage: (tech[severity] || 0) / tech.vulnerabilities * 100,
+      }));
 
       return {
         ...tech,
         percentage,
-        startAngle,
-        endAngle,
+        severitySegments,
       };
     });
   }, []);
 
-  const createDonutSlice = (
-    centerX: number,
-    centerY: number,
-    radius: number,
-    innerRadius: number,
-    startAngle: number,
-    endAngle: number,
-  ) => {
-    const toRad = (deg: number) => (deg * Math.PI) / 180;
-    const cos = Math.cos;
-    const sin = Math.sin;
+  // Calculate node positions in a network layout
+  const nodePositions = useMemo(() => {
+    const radius = 140;
+    const centerX = 300;
+    const centerY = 180;
 
-    const x1 = centerX + radius * cos(toRad(startAngle));
-    const y1 = centerY + radius * sin(toRad(startAngle));
-    const x2 = centerX + radius * cos(toRad(endAngle));
-    const y2 = centerY + radius * sin(toRad(endAngle));
+    return chartData.map((tech, index) => {
+      const angle = (index / chartData.length) * 2 * Math.PI;
+      return {
+        x: centerX + radius * Math.cos(angle),
+        y: centerY + radius * Math.sin(angle),
+        tech: tech.name,
+      };
+    });
+  }, []);
 
-    const ix1 = centerX + innerRadius * cos(toRad(startAngle));
-    const iy1 = centerY + innerRadius * sin(toRad(startAngle));
-    const ix2 = centerX + innerRadius * cos(toRad(endAngle));
-    const iy2 = centerY + innerRadius * sin(toRad(endAngle));
-
-    const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
-
-    return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${ix1} ${iy1} Z`;
+  // Get severity badge count for a tech
+  const getCriticalCount = (tech: TechData) => {
+    return tech.severitySegments.find(s => s.severity === 'critical')?.count || 0;
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       {/* Title */}
-      <h4 className="font-semibold text-gray-900 text-xs">
+      <h4 className="font-semibold text-gray-900 text-sm">
         Risk by Tech Stacks
       </h4>
 
-      {/* Chart Container */}
-      <div className="flex flex-col items-center relative">
-        {/* Donut Chart */}
-        <div className="flex-shrink-0 relative">
-          {/* Tooltip on hover - positioned above chart */}
-          {hoveredTech && (
-            <div className="absolute -top-32 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg p-3 w-52 shadow-lg whitespace-normal z-50">
-              {(() => {
-                const hoveredData = chartData.find((t) => t.name === hoveredTech);
-                if (!hoveredData) return null;
-                return (
-                  <div className="space-y-2">
-                    <div className="font-semibold">{hoveredData.name}</div>
-                    <div className="text-gray-300">Total: {(hoveredData.vulnerabilities / 1000).toFixed(1)}K</div>
-                    <div className="pt-1 border-t border-gray-700 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-red-600 flex-shrink-0"></div>
-                        <span>Critical: {hoveredData.critical}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0"></div>
-                        <span>High: {hoveredData.high}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-yellow-400 flex-shrink-0"></div>
-                        <span>Medium: {hoveredData.medium}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
-                        <span>Low: {hoveredData.low}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-          )}
-
+      {/* Network Graph Container */}
+      <div className="bg-gradient-to-b from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
+        <div className="relative w-full" style={{ paddingBottom: '60%' }}>
           <svg
-            width="100"
-            height="100"
-            viewBox="0 0 200 200"
-            className="drop-shadow-sm"
+            viewBox="0 0 600 360"
+            preserveAspectRatio="xMidYMid meet"
+            className="absolute inset-0 w-full h-full drop-shadow-sm"
           >
-            {chartData.map((slice, index) => (
-              <g key={index}>
-                <path
-                  d={createDonutSlice(
-                    100,
-                    100,
-                    70,
-                    45,
-                    slice.startAngle,
-                    slice.endAngle,
+            {/* Connection lines between all techs */}
+            {nodePositions.map((node1, idx1) =>
+              nodePositions.map((node2, idx2) => {
+                if (idx1 >= idx2) return null;
+                const tech1 = chartData[idx1];
+                const tech2 = chartData[idx2];
+                const isHovered = hoveredTech === tech1.name || hoveredTech === tech2.name;
+
+                return (
+                  <line
+                    key={`line-${idx1}-${idx2}`}
+                    x1={node1.x}
+                    y1={node1.y}
+                    x2={node2.x}
+                    y2={node2.y}
+                    stroke="#cbd5e1"
+                    strokeWidth={isHovered ? "2" : "1"}
+                    opacity={hoveredTech ? (isHovered ? 0.6 : 0.15) : 0.3}
+                    className="transition-all duration-200"
+                  />
+                );
+              })
+            )}
+
+            {/* Tech stack nodes */}
+            {nodePositions.map((pos, index) => {
+              const tech = chartData[index];
+              const isHovered = hoveredTech === tech.name;
+              const criticalCount = getCriticalCount(tech);
+
+              return (
+                <g key={`tech-node-${index}`}>
+                  {/* Node circle */}
+                  <circle
+                    cx={pos.x}
+                    cy={pos.y}
+                    r={isHovered ? 28 : 24}
+                    fill={tech.color}
+                    stroke="white"
+                    strokeWidth="2"
+                    className="cursor-pointer transition-all duration-200"
+                    onMouseEnter={() => setHoveredTech(tech.name)}
+                    onMouseLeave={() => setHoveredTech(null)}
+                    style={{
+                      opacity: hoveredTech ? (isHovered ? 1 : 0.4) : 0.85,
+                      filter: isHovered ? "brightness(1.15) drop-shadow(0 4px 6px rgba(0,0,0,0.2))" : "none",
+                    }}
+                  />
+
+                  {/* Critical severity badge */}
+                  {criticalCount > 0 && (
+                    <circle
+                      cx={pos.x + 18}
+                      cy={pos.y - 18}
+                      r="12"
+                      fill={severityColors.critical}
+                      stroke="white"
+                      strokeWidth="1.5"
+                      className="cursor-pointer transition-all"
+                      onMouseEnter={() => setHoveredTech(tech.name)}
+                      onMouseLeave={() => setHoveredTech(null)}
+                    />
                   )}
-                  fill={slice.color}
-                  stroke="white"
-                  strokeWidth="2"
-                  onMouseEnter={() => setHoveredTech(slice.name)}
-                  onMouseLeave={() => setHoveredTech(null)}
-                  className="cursor-pointer opacity-80 hover:opacity-100 transition-opacity"
-                  style={{ filter: hoveredTech === slice.name ? "brightness(1.1)" : "none" }}
-                />
-              </g>
-            ))}
-            {/* Center text */}
-            <text
-              x="100"
-              y="95"
-              textAnchor="middle"
-              className="text-xs font-bold fill-gray-900"
-            >
-              Total
-            </text>
-            <text
-              x="100"
-              y="110"
-              textAnchor="middle"
-              className="text-xs font-bold fill-gray-900"
-            >
-              {(total / 1000).toFixed(0)}K
-            </text>
+
+                  {/* Critical count text */}
+                  {criticalCount > 0 && (
+                    <text
+                      x={pos.x + 18}
+                      y={pos.y - 15}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      className="text-xs font-bold fill-white pointer-events-none"
+                    >
+                      {criticalCount > 99 ? "99+" : criticalCount}
+                    </text>
+                  )}
+
+                  {/* Tech name label */}
+                  <text
+                    x={pos.x}
+                    y={pos.y}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    className="text-xs font-bold fill-white pointer-events-none"
+                    style={{
+                      fontSize: isHovered ? "12px" : "11px",
+                    }}
+                  >
+                    {tech.name}
+                  </text>
+
+                  {/* Tooltip on hover */}
+                  {isHovered && (
+                    <g>
+                      <rect
+                        x={pos.x - 80}
+                        y={pos.y - 130}
+                        width="160"
+                        height="110"
+                        fill="white"
+                        stroke="#e5e7eb"
+                        strokeWidth="1"
+                        rx="8"
+                        className="drop-shadow-lg"
+                      />
+
+                      {/* Tech name in tooltip */}
+                      <text
+                        x={pos.x}
+                        y={pos.y - 110}
+                        textAnchor="middle"
+                        className="text-sm font-bold fill-gray-900 pointer-events-none"
+                      >
+                        {tech.name}
+                      </text>
+
+                      {/* Total vulnerabilities */}
+                      <text
+                        x={pos.x - 70}
+                        y={pos.y - 90}
+                        className="text-xs fill-gray-600 pointer-events-none font-medium"
+                      >
+                        Total Issues:
+                      </text>
+                      <text
+                        x={pos.x + 70}
+                        y={pos.y - 90}
+                        textAnchor="end"
+                        className="text-xs fill-gray-900 pointer-events-none font-bold"
+                      >
+                        {tech.vulnerabilities.toLocaleString()}
+                      </text>
+
+                      {/* Severity breakdown */}
+                      {severityOrder.map((severity, idx) => {
+                        const segment = tech.severitySegments.find(s => s.severity === severity);
+                        if (!segment || segment.count === 0) return null;
+
+                        return (
+                          <g key={`tooltip-sev-${severity}`}>
+                            <circle
+                              cx={pos.x - 68}
+                              cy={pos.y - 70 + idx * 18}
+                              r="3"
+                              fill={segment.color}
+                            />
+                            <text
+                              x={pos.x - 58}
+                              y={pos.y - 67 + idx * 18}
+                              className="text-xs fill-gray-700 pointer-events-none capitalize font-medium"
+                            >
+                              {severity}:
+                            </text>
+                            <text
+                              x={pos.x + 70}
+                              y={pos.y - 67 + idx * 18}
+                              textAnchor="end"
+                              className="text-xs fill-gray-900 pointer-events-none font-semibold"
+                            >
+                              {segment.count}
+                            </text>
+                          </g>
+                        );
+                      })}
+                    </g>
+                  )}
+                </g>
+              );
+            })}
+
+            {/* Center info card */}
+            <g>
+              <rect
+                x="230"
+                y="280"
+                width="140"
+                height="70"
+                fill="white"
+                stroke="#e5e7eb"
+                strokeWidth="1.5"
+                rx="8"
+                className="drop-shadow-md"
+              />
+              <text
+                x="300"
+                y="300"
+                textAnchor="middle"
+                className="text-xs fill-gray-600 pointer-events-none font-medium"
+              >
+                Total Vulnerabilities
+              </text>
+              <text
+                x="300"
+                y="325"
+                textAnchor="middle"
+                className="text-2xl fill-gray-900 pointer-events-none font-bold"
+              >
+                {(total / 1000).toFixed(1)}K
+              </text>
+            </g>
           </svg>
         </div>
+      </div>
 
-        {/* Scrollable Legend Below */}
-        <div className="w-full mt-1 max-h-24 overflow-y-auto">
-          <div className="space-y-0.5">
-            {chartData.map((tech, index) => (
+      {/* Severity Overview Bar */}
+      <div className="space-y-2">
+        <div className="text-xs font-semibold text-gray-700">Severity Distribution</div>
+        <div className="flex gap-2">
+          {severityOrder.map((severity) => {
+            const count = chartData.reduce((sum, tech) => {
+              const seg = tech.severitySegments.find(s => s.severity === severity);
+              return sum + (seg?.count || 0);
+            }, 0);
+            const percentage = (count / total) * 100;
+
+            return (
               <div
-                key={index}
-                className={`flex items-center justify-between px-1 py-0.5 whitespace-nowrap rounded cursor-pointer transition-colors ${
-                  hoveredTech === tech.name ? "bg-gray-100" : "hover:bg-gray-50"
-                }`}
-                style={{ fontSize: "11px" }}
-                onMouseEnter={() => setHoveredTech(tech.name)}
-                onMouseLeave={() => setHoveredTech(null)}
+                key={severity}
+                className="flex-1"
+                onMouseEnter={() => setHoveredSeverity(severity)}
+                onMouseLeave={() => setHoveredSeverity(null)}
               >
-                <div className="flex items-center gap-1 min-w-0">
-                  <div
-                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: tech.color }}
-                  />
-                  <span className="text-gray-600 font-medium truncate">{tech.name}</span>
+                <div
+                  className="h-2 rounded-full transition-all cursor-pointer"
+                  style={{
+                    backgroundColor: severityColors[severity],
+                    opacity: hoveredSeverity ? (hoveredSeverity === severity ? 1 : 0.4) : 0.8,
+                  }}
+                />
+                <div className="text-xs text-gray-600 mt-1 flex justify-between">
+                  <span className="capitalize font-medium">{severity}</span>
+                  <span className="text-gray-700 font-semibold">{percentage.toFixed(0)}%</span>
                 </div>
-                <span className="text-gray-800 font-semibold flex-shrink-0 ml-1">
-                  {(tech.vulnerabilities / 1000).toFixed(1)}K
-                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Tech Stacks Table */}
+      <div className="space-y-2">
+        <div className="text-xs font-semibold text-gray-700">Tech Stacks Overview</div>
+        <div className="space-y-1.5">
+          {chartData.map((tech) => (
+            <div
+              key={tech.name}
+              className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
+              onMouseEnter={() => setHoveredTech(tech.name)}
+              onMouseLeave={() => setHoveredTech(null)}
+            >
+              {/* Tech color indicator */}
+              <div
+                className="w-3 h-3 rounded-full flex-shrink-0"
+                style={{ backgroundColor: tech.color }}
+              />
+
+              {/* Tech name */}
+              <span className="text-sm font-medium text-gray-900 min-w-16">{tech.name}</span>
+
+              {/* Critical badge */}
+              {getCriticalCount(tech) > 0 && (
+                <div className="ml-auto flex items-center gap-1.5 px-2 py-1 bg-red-100 rounded-md">
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-600" />
+                  <span className="text-xs font-semibold text-red-700">{getCriticalCount(tech)}</span>
+                </div>
+              )}
+
+              {/* Vulnerability count */}
+              <div className="ml-auto text-right">
+                <div className="text-sm font-bold text-gray-900">{(tech.vulnerabilities / 1000).toFixed(1)}K</div>
+                <div className="text-xs text-gray-500">{tech.percentage.toFixed(1)}%</div>
+              </div>
+
+              {/* Severity indicators */}
+              <div className="flex gap-0.5 flex-shrink-0">
+                {severityOrder.map((severity) => {
+                  const seg = tech.severitySegments.find(s => s.severity === severity);
+                  if (!seg || seg.count === 0) return null;
+                  return (
+                    <div
+                      key={severity}
+                      className="w-1.5 h-5 rounded-sm"
+                      style={{ backgroundColor: seg.color }}
+                      title={`${severity}: ${seg.count}`}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="grid grid-cols-2 gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+        <div>
+          <div className="text-xs font-semibold text-gray-700 mb-2">Severity Levels</div>
+          <div className="space-y-1.5">
+            {severityOrder.map((severity) => (
+              <div key={severity} className="flex items-center gap-2">
+                <div
+                  className="w-2.5 h-2.5 rounded-full"
+                  style={{ backgroundColor: severityColors[severity] }}
+                />
+                <span className="text-xs text-gray-700 capitalize font-medium">{severity}</span>
               </div>
             ))}
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-semibold text-gray-700 mb-2">Key Indicators</div>
+          <div className="space-y-1.5 text-xs text-gray-600">
+            <div>• Red badges show critical issues</div>
+            <div>• Node size indicates severity</div>
+            <div>• Lines show tech relationships</div>
+            <div>• Hover for detailed info</div>
           </div>
         </div>
       </div>
