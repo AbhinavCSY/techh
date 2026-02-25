@@ -197,6 +197,27 @@ export function MainNav() {
             </svg>
           </button>
 
+          {/* Application Flow Icon */}
+          <button
+            onClick={() => navigate("/application-flow")}
+            className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+            title="Application Flow"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+              />
+            </svg>
+          </button>
+
           {/* Support Icon */}
           <button className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0">
             <svg
@@ -349,6 +370,21 @@ export function MainNav() {
                 )}
               >
                 🔗 Tech Stack Flow
+              </button>
+
+              <button
+                onClick={() => {
+                  navigate("/application-flow");
+                  setMobileOpen(false);
+                }}
+                className={cn(
+                  "w-full text-left px-2 py-1 rounded text-xs font-medium transition-colors mt-1",
+                  location.pathname === "/application-flow"
+                    ? "bg-blue-100 text-blue-900"
+                    : "text-gray-700 hover:bg-gray-100",
+                )}
+              >
+                📊 Application Flow
               </button>
             </div>
           </nav>
