@@ -176,6 +176,27 @@ export function MainNav() {
             </svg>
           </button>
 
+          {/* Tech Stack Flow Icon */}
+          <button
+            onClick={() => navigate("/tech-stack-flow")}
+            className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+            title="Tech Stack Flow"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+              />
+            </svg>
+          </button>
+
           {/* Support Icon */}
           <button className="text-gray-600 hover:text-gray-900 p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0">
             <svg
@@ -313,6 +334,21 @@ export function MainNav() {
                 )}
               >
                 📋 Information Architecture
+              </button>
+
+              <button
+                onClick={() => {
+                  navigate("/tech-stack-flow");
+                  setMobileOpen(false);
+                }}
+                className={cn(
+                  "w-full text-left px-2 py-1 rounded text-xs font-medium transition-colors mt-1",
+                  location.pathname === "/tech-stack-flow"
+                    ? "bg-blue-100 text-blue-900"
+                    : "text-gray-700 hover:bg-gray-100",
+                )}
+              >
+                🔗 Tech Stack Flow
               </button>
             </div>
           </nav>
